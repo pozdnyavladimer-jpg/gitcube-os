@@ -6,6 +6,37 @@ from runtime.bindu import bindu_decision
 from core.neuromodulator import NeuroModulator, NeuroState, RuntimeConfig
 
 
+def apply_neuro_bias(results, neuro_state):
+    """
+    Додає ваги до агентів на основі нейро стану
+    """
+    adjusted = {}
+
+    for agent, data in results.items():
+        score = data["score"]
+
+        # --- NEURO BIAS ---
+        if agent == "explorer":
+            score *= (1 + neuro_state.adrenaline)
+
+        elif agent == "stabilizer":
+            score *= (1 + neuro_state.serotonin)
+
+        elif agent == "planner":
+            score *= (1 + neuro_state.dopamine)
+
+        # cortisol = штраф
+        score *= (1 - neuro_state.cortisol * 0.5)
+
+        adjusted[agent] = (score, data)
+
+    # вибір нового best
+    best_agent = max(adjusted, key=lambda x: adjusted[x][0])
+    best_data = adjusted[best_agent][1]
+
+    return best_agent, best_data
+
+
 def run_episode(steps=5):
     state = default_state()
     memory = EpisodeMemory()
@@ -33,12 +64,14 @@ def run_episode(steps=5):
         print(f"\n--- step {step} ---")
 
         best, results = choose_best_agent(state)
-        best_data = results[best]
-        metrics = best_data["metrics"]
 
+        # 🔥 ОСЬ ГОЛОВНЕ — NEURO ВТРУЧАЄТЬСЯ
+        best, best_data = apply_neuro_bias(results, neuro.state)
+
+        metrics = best_data["metrics"]
         bindu = bindu_decision(metrics)
 
-        print(f"selected: {best}")
+        print(f"selected (neuro): {best}")
         print(f"metrics: {metrics}")
         print(f"bindu: {bindu}")
 
