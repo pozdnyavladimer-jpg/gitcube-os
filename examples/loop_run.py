@@ -3,6 +3,7 @@ from runtime.agent_loop import choose_best_agent
 from runtime.memory import EpisodeMemory
 from runtime.bindu import bindu_decision
 from runtime.reroute import choose_next_agent
+from runtime.compression import compress_memory
 
 
 def run_episode(steps=5):
@@ -82,6 +83,9 @@ def run_episode(steps=5):
 
     print("\n=== MEMORY SUMMARY ===")
     print(memory.summary())
+
+    print("\n=== COMPRESSED MEMORY ===")
+    print(compress_memory(memory))
 
 
 if __name__ == "__main__":
