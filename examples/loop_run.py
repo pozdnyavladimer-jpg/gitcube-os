@@ -2,6 +2,7 @@ from core.state import default_state
 from runtime.agent_loop import choose_best_agent
 from runtime.memory import EpisodeMemory
 from runtime.bindu import bindu_decision
+from runtime.reroute import choose_next_agent
 
 
 def run_episode(steps=5):
@@ -31,8 +32,28 @@ def run_episode(steps=5):
                 state=best_data["state"].to_dict(),
             )
             state = best_data["state"]
+            continue
+
+        print("REJECTED -> trying reroute")
+
+        reroute_name, reroute_data = choose_next_agent(results, best)
+        reroute_metrics = reroute_data["metrics"]
+        reroute_bind = bindu_decision(reroute_metrics)
+
+        print(f"reroute_selected: {reroute_name}")
+        print(f"reroute_metrics: {reroute_metrics}")
+        print(f"reroute_bind: {reroute_bind}")
+
+        if reroute_bind["decision"] in ["COMMIT", "SOFT_COMMIT"]:
+            memory.add(
+                step=step,
+                agent=reroute_name,
+                metrics=reroute_metrics,
+                state=reroute_data["state"].to_dict(),
+            )
+            state = reroute_data["state"]
         else:
-            print("REJECTED -> state not updated")
+            print("REROUTE REJECTED -> state not updated")
 
     print("\n=== FINAL STATE ===")
     print(state.to_dict())
