@@ -1,9 +1,11 @@
 from core.state import default_state
 from runtime.agent_loop import choose_best_agent
+from runtime.memory import EpisodeMemory
 
 
 def run_episode(steps=5):
     state = default_state()
+    memory = EpisodeMemory()
 
     print("=== START EPISODE ===")
 
@@ -11,14 +13,25 @@ def run_episode(steps=5):
         print(f"\n--- step {step} ---")
 
         best, results = choose_best_agent(state)
+        best_data = results[best]
 
         print(f"selected: {best}")
-        print(f"metrics: {results[best]['metrics']}")
+        print(f"metrics: {best_data['metrics']}")
 
-        state = results[best]["state"]
+        memory.add(
+            step=step,
+            agent=best,
+            metrics=best_data["metrics"],
+            state=best_data["state"].to_dict(),
+        )
+
+        state = best_data["state"]
 
     print("\n=== FINAL STATE ===")
     print(state.to_dict())
+
+    print("\n=== MEMORY SUMMARY ===")
+    print(memory.summary())
 
 
 if __name__ == "__main__":
