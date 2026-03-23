@@ -4,24 +4,38 @@ from runtime.memory import EpisodeMemory
 from runtime.bindu import bindu_decision
 from runtime.reroute import choose_next_agent
 from runtime.compression import compress_memory
+from runtime.environment_score import apply_environment_to_score
+from runtime.env_select import get_environment
 
 
-def run_episode(steps=5):
+def run_episode(steps=5, environment_name="balanced"):
     state = default_state()
     memory = EpisodeMemory()
+    env = get_environment(environment_name)
 
     print("=== START EPISODE ===")
+    print(f"environment: {env.name}")
 
     for step in range(steps):
         print(f"\n--- step {step} ---")
 
-        best, results = choose_best_agent(state)
-        best_data = results[best]
+        _, results = choose_best_agent(state)
+
+        ranked = []
+        for name, data in results.items():
+            env_score = apply_environment_to_score(data["metrics"], env)
+            ranked.append((name, env_score, data))
+
+        ranked.sort(key=lambda x: x[1], reverse=True)
+
+        best = ranked[0][0]
+        best_data = ranked[0][2]
         metrics = best_data["metrics"]
 
         bindu = bindu_decision(metrics)
 
         print(f"selected: {best}")
+        print(f"env_score: {ranked[0][1]}")
         print(f"metrics: {metrics}")
         print(f"bindu: {bindu}")
 
@@ -49,11 +63,13 @@ def run_episode(steps=5):
 
         print("REJECTED -> trying reroute")
 
-        reroute_name, reroute_data = choose_next_agent(results, best)
+        reroute_name, reroute_data = choose_next_agent(results, best, env=env)
         reroute_metrics = reroute_data["metrics"]
         reroute_bind = bindu_decision(reroute_metrics)
+        reroute_env_score = apply_environment_to_score(reroute_metrics, env)
 
         print(f"reroute_selected: {reroute_name}")
+        print(f"reroute_env_score: {reroute_env_score}")
         print(f"reroute_metrics: {reroute_metrics}")
         print(f"reroute_bind: {reroute_bind}")
 
@@ -89,4 +105,4 @@ def run_episode(steps=5):
 
 
 if __name__ == "__main__":
-    run_episode(steps=5)
+    run_episode(steps=5, environment_name="balanced")
