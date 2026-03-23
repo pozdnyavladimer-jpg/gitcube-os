@@ -74,3 +74,82 @@ It is designed to answer:
 - whether that state is healthy
 - what transition is allowed next
 - what should be retained
+# GitCube OS
+
+GitCube OS is the runtime execution layer of the GitCube system.
+
+It does not define meaning.
+
+It enforces it.
+
+---
+
+## 🔧 What OS does
+
+- executes agent loops  
+- applies bindu decisions  
+- controls memory  
+- performs rerouting  
+- applies environment pressure  
+
+---
+
+## 🧿 Bindu
+
+Bindu is implemented in runtime:
+
+- COMMIT → update state + memory  
+- SOFT_COMMIT → conditional update  
+- REJECT → reroute  
+- REROUTE → alternative agent  
+
+---
+
+## 🔁 Execution Loop
+
+1. select agent  
+2. compute metrics  
+3. apply bindu  
+4. update or reject  
+5. reroute if needed  
+6. write memory  
+
+---
+
+## 🧠 Memory
+
+OS enforces:
+
+- only stable states persist  
+- rejected states are discarded  
+
+---
+
+## 🌍 Environment
+
+Environment modifies:
+
+- metric weighting  
+- selection pressure  
+
+But does NOT redefine meaning.
+
+---
+
+## 🔗 System Architecture
+
+GitCube OS is part of a 3-layer system:
+
+- GitCube Lab → experiments  
+- Geometry Navigator → meaning  
+- GitCube OS → execution (this repo)  
+
+Flow:
+
+Lab → Navigator → OS  
+
+---
+
+## ⚡ One-line
+
+OS executes decisions defined by Navigator and validated through runtime survival.
