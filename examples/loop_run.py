@@ -24,12 +24,24 @@ def run_episode(steps=5):
         print(f"metrics: {metrics}")
         print(f"bindu: {bindu}")
 
-        if bindu["decision"] in ["COMMIT", "SOFT_COMMIT"]:
+        if bindu["decision"] == "COMMIT":
             memory.add(
                 step=step,
                 agent=best,
                 metrics=metrics,
                 state=best_data["state"].to_dict(),
+                status="accepted",
+            )
+            state = best_data["state"]
+            continue
+
+        if bindu["decision"] == "SOFT_COMMIT":
+            memory.add(
+                step=step,
+                agent=best,
+                metrics=metrics,
+                state=best_data["state"].to_dict(),
+                status="soft",
             )
             state = best_data["state"]
             continue
@@ -44,12 +56,22 @@ def run_episode(steps=5):
         print(f"reroute_metrics: {reroute_metrics}")
         print(f"reroute_bind: {reroute_bind}")
 
-        if reroute_bind["decision"] in ["COMMIT", "SOFT_COMMIT"]:
+        if reroute_bind["decision"] == "COMMIT":
             memory.add(
                 step=step,
                 agent=reroute_name,
                 metrics=reroute_metrics,
                 state=reroute_data["state"].to_dict(),
+                status="accepted",
+            )
+            state = reroute_data["state"]
+        elif reroute_bind["decision"] == "SOFT_COMMIT":
+            memory.add(
+                step=step,
+                agent=reroute_name,
+                metrics=reroute_metrics,
+                state=reroute_data["state"].to_dict(),
+                status="soft",
             )
             state = reroute_data["state"]
         else:
