@@ -5,6 +5,7 @@ from runtime.bindu import bindu_decision
 
 from core.neuromodulator import NeuroModulator, NeuroState, RuntimeConfig
 from runtime.symbiosis_controller import SymbiosisParams, apply_symbiosis, get_mode
+from core.projector import state_to_visual_spec
 
 
 def apply_neuro_bias(results, neuro_state, symbiosis_params):
@@ -16,7 +17,6 @@ def apply_neuro_bias(results, neuro_state, symbiosis_params):
     for agent, data in results.items():
         score = data["score"]
 
-        # Neuro bias
         if agent == "explorer":
             score *= (1 + neuro_state.adrenaline * 0.8)
             score *= (1 + symbiosis_params.future * 0.3)
@@ -29,7 +29,7 @@ def apply_neuro_bias(results, neuro_state, symbiosis_params):
             score *= (1 + neuro_state.dopamine * 0.8)
             score *= (1 + symbiosis_params.structure * 0.2)
 
-        # Global caution effect
+        # global caution
         score *= (1 - neuro_state.cortisol * 0.4)
 
         adjusted[agent] = (score, data)
@@ -71,21 +71,19 @@ def run_episode(steps=5):
         future=0.5,
     )
 
+    last_mode = "mixed"
+
     print("=== START EPISODE ===")
 
     for step in range(steps):
         print(f"\n--- step {step} ---")
 
-        # Apply neuro to runtime config
         modulated = neuro.apply(runtime_cfg)
-
-        # Apply neuro to symbiosis params
         symbiosis = apply_symbiosis(neuro.state, symbiosis_base)
         mode = get_mode(symbiosis)
+        last_mode = mode
 
         best, results = choose_best_agent(state)
-
-        # Neuro + symbiosis drive actual selection
         best, best_data = apply_neuro_bias(results, neuro.state, symbiosis)
 
         metrics = best_data["metrics"]
@@ -94,13 +92,11 @@ def run_episode(steps=5):
         print(f"selected (driven): {best}")
         print(f"metrics: {metrics}")
         print(f"bindu: {bindu}")
-
         print(f"neuro_state: {neuro.state}")
         print(f"modulated_config: {modulated}")
         print(f"symbiosis_params: {symbiosis}")
         print(f"symbiosis_mode: {mode}")
 
-        # --- DECISION ---
         if bindu["decision"] == "COMMIT":
             memory.add(
                 step=step,
@@ -124,7 +120,6 @@ def run_episode(steps=5):
         else:
             print("REJECTED -> state not updated")
 
-        # --- UPDATE NEURO ---
         shadow = metrics.get("shadow", 0.0)
         coherence = metrics.get("coherence", 0.0)
 
@@ -140,10 +135,24 @@ def run_episode(steps=5):
         print(f"updated_neuro: {neuro.state}")
 
     print("\n=== FINAL STATE ===")
-    print(state.to_dict())
+    final_state = state.to_dict()
+    print(final_state)
 
     print("\n=== MEMORY SUMMARY ===")
     print(memory.summary())
+
+    print("\n=== VISUAL STATE ===")
+    visual = state_to_visual_spec(
+        final_state=final_state,
+        neuro=neuro.state,
+        symbiosis_mode=last_mode,
+    )
+    print("mood:", visual.mood)
+    print("palette:", visual.palette)
+    print("composition:", visual.composition)
+    print("texture:", visual.texture)
+    print("intensity:", visual.intensity)
+    print("prompt:", visual.prompt)
 
 
 if __name__ == "__main__":
