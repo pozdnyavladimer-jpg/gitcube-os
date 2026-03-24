@@ -1,65 +1,54 @@
-from dataclasses import dataclass
+def evaluate_state(state: dict) -> dict:
+    score = 0.0
+    issues = []
 
+    coherence = state.get("balance", 0)
+    structure = state.get("structure", 0)
+    law = state.get("law", 0)
+    future = state.get("future", 0)
 
-@dataclass
-class CubeState:
-    pressure: float     # risk / load
-    flow: float         # throughput / activity
-    structure: float    # API / code integrity
-    balance: float      # internal coherence
-    law: float          # canonical compliance
-    future: float       # experimental divergence
+    # --- coherence ---
+    if coherence < 0.3:
+        issues.append("low_coherence")
+    else:
+        score += coherence
 
+    # --- structure ---
+    if structure < 0.3:
+        issues.append("weak_structure")
+    else:
+        score += structure
 
-@dataclass
-class CubeValidationResult:
-    fit_score: float
-    shadow_pressure: float
-    is_stable: bool
-    is_crystal: bool
+    # --- law ---
+    if law < 0.2:
+        issues.append("no_constraints")
+    else:
+        score += law
 
+    # --- exploration ---
+    if future > 0.8:
+        issues.append("too_chaotic")
 
-def validate_cube(cube: CubeState) -> CubeValidationResult:
-    weights = {
-        "pressure": 0.2,
-        "flow": 0.1,
-        "structure": 0.2,
-        "balance": 0.2,
-        "law": 0.2,
-        "future": 0.1,
+    return {
+        "score": round(score, 3),
+        "issues": issues,
+        "status": "stable" if score > 1.0 else "unstable"
     }
 
-    fit_score = (
-        (1 - cube.pressure) * weights["pressure"] +
-        cube.flow * weights["flow"] +
-        cube.structure * weights["structure"] +
-        cube.balance * weights["balance"] +
-        cube.law * weights["law"] +
-        (1 - cube.future) * weights["future"]
-    )
 
-    shadow_pressure = (
-        cube.pressure +
-        (1 - cube.structure) +
-        (1 - cube.balance) +
-        (1 - cube.law)
-    ) / 4
+def suggest_fix(state: dict, issues: list) -> dict:
+    new_state = dict(state)
 
-    is_stable = (
-        cube.balance > 0.7 and
-        cube.structure > 0.7 and
-        cube.law > 0.8
-    )
+    if "low_coherence" in issues:
+        new_state["balance"] += 0.2
 
-    is_crystal = (
-        is_stable and
-        shadow_pressure < 0.2 and
-        fit_score > 0.85
-    )
+    if "weak_structure" in issues:
+        new_state["structure"] += 0.2
 
-    return CubeValidationResult(
-        fit_score=fit_score,
-        shadow_pressure=shadow_pressure,
-        is_stable=is_stable,
-        is_crystal=is_crystal
-    )
+    if "no_constraints" in issues:
+        new_state["law"] += 0.2
+
+    if "too_chaotic" in issues:
+        new_state["future"] -= 0.2
+
+    return new_state
