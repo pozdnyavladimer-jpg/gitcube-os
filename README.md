@@ -5,151 +5,153 @@ GitCube OS is not a model.
 It is an operating system for pattern evolution:
 a framework for evaluating, compressing, and promoting adaptive structures under pressure.
 
+---
+
 ## Core Idea
 
 The system does not optimize for maximum safety or maximum novelty.
 
 It optimizes for sustainable adaptability.
 
+---
+
 ## Repository Map
 
-- `docs/` → laws and architecture
-- `core/` → kernel logic
-- `runtime/` → execution loop
-- `examples/` → minimal runnable entry points
-- `tests/` → stability checks
+- docs/ → laws and architecture
+- core/ → kernel logic
+- runtime/ → execution loop
+- examples/ → runnable entry points
+- tests/ → stability checks
+
+---
 
 ## Related Repositories
 
-- `geometric-state-navigator` → state engine (GSL)
-- `gitcube-lab` → experimental sandbox
-- `gitcube-os` → stabilized operating layer
+- geometric-state-navigator → state engine
+- gitcube-lab → experimental sandbox
+- gitcube-os → execution layer (this repo)
+
+---
 
 ## Quick Start
 
-1. Read `START_HERE.md`
+1. Read START_HERE.md  
 2. Run:
 
-```bash
-python examples/simple_loop.py
-```
-One-line Summary
-GitCube OS decides what patterns deserve to survive.
----
+    python examples/simple_loop.py
 
-# 3. Встав `START_HERE.md`
+3. Then explore:
 
-```md
-# START HERE
-```
-
-This repository is the OS layer of the GitCube system.
-
-## What to do first
-
-1. Read:
-   - `docs/ARCHITECTURE.md`
-
-2. Run:
-   - `python examples/simple_loop.py`
-
-3. Explore:
-   - `core/state.py`
-   - `core/evaluation.py`
-   - `runtime/agent_loop.py`
-
-## Mental Model
-
-Lab explores.  
-OS stabilizes.  
-Memory preserves.
-
-## What this repo does
-
-This repo takes pattern logic out of experimental notebooks and moves it into a stable executable layer.
-
-It is designed to answer:
-
-- what state is the system in
-- whether that state is healthy
-- what transition is allowed next
-- what should be retained
-# GitCube OS
-
-GitCube OS is the runtime execution layer of the GitCube system.
-
-It does not define meaning.
-
-It enforces it.
+- examples/loop_run.py
+- runtime/agent_loop.py
+- runtime/adaptive_bindu.py
+- runtime/memory_control.py
+- runtime/agent_learning.py
 
 ---
 
-## 🔧 What OS does
+## Current System Capabilities
 
-- executes agent loops  
-- applies bindu decisions  
-- controls memory  
-- performs rerouting  
-- applies environment pressure  
+The OS layer currently includes:
 
----
-
-## 🧿 Bindu
-
-Bindu is implemented in runtime:
-
-- COMMIT → update state + memory  
-- SOFT_COMMIT → conditional update  
-- REJECT → reroute  
-- REROUTE → alternative agent  
+- adaptive bindu thresholds
+- memory-driven decision control
+- topological filtering
+- agent selection and biasing
+- neuro state modulation
+- rerouting logic
 
 ---
 
-## 🔁 Execution Loop
+## Execution Flow (Detailed)
 
-1. select agent  
-2. compute metrics  
-3. apply bindu  
-4. update or reject  
-5. reroute if needed  
-6. write memory  
+At runtime, the system follows this sequence:
 
----
+1. agent selection  
+2. metric evaluation  
+3. topological filtering  
+4. memory-derived control  
+5. adaptive bindu decision  
+6. state update or rejection  
+7. memory write  
+8. neuro modulation update  
 
-## 🧠 Memory
-
-OS enforces:
-
-- only stable states persist  
-- rejected states are discarded  
+This loop forms a closed adaptive cycle.
 
 ---
 
-## 🌍 Environment
+## Adaptive Behavior
 
-Environment modifies:
+The system evolves during execution through:
 
-- metric weighting  
-- selection pressure  
+- dynamic threshold adjustment (bindu)
+- memory feedback loops
+- agent performance biasing
+- topological validation constraints
 
-But does NOT redefine meaning.
+This allows the OS to shift from static execution to adaptive regulation.
 
 ---
 
-## 🔗 System Architecture
+## Visual Projection
+
+The OS can optionally project internal state into visual form:
+
+- mood
+- palette
+- composition
+- texture
+- intensity
+- prompt
+
+Handled via:
+
+- core/projector.py
+- runtime/render_adapter.py
+
+---
+
+## Notes
+
+- deterministic structure, adaptive thresholds  
+- memory is session-based unless persisted  
+- topological filter validates structure  
+
+---
+
+## Philosophy
+
+GitCube OS is not trying to generate answers.
+
+It decides:
+
+- which structures are valid  
+- which transitions are allowed  
+- which trajectories survive  
+
+---
+
+## System Architecture
 
 GitCube OS is part of a 3-layer system:
 
 - GitCube Lab → experiments  
 - Geometry Navigator → meaning  
-- GitCube OS → execution (this repo)  
+- GitCube OS → execution  
 
 Flow:
 
-Lab → Navigator → OS  
+Lab → Navigator → OS
 
 ---
 
-## ⚡ One-line
+## One-line Summary
 
-OS executes decisions defined by Navigator and validated through runtime survival.
+GitCube OS decides what patterns deserve to survive.
+
+---
+
+## One-line (Strict)
+
+GitCube OS enforces survival through adaptive structural validation.
+
