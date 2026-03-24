@@ -4,33 +4,36 @@ from runtime.memory import EpisodeMemory
 from runtime.bindu import bindu_decision
 
 from core.neuromodulator import NeuroModulator, NeuroState, RuntimeConfig
+from runtime.symbiosis_controller import SymbiosisParams, apply_symbiosis, get_mode
 
 
-def apply_neuro_bias(results, neuro_state):
+def apply_neuro_bias(results, neuro_state, symbiosis_params):
     """
-    Додає ваги до агентів на основі нейро стану
+    Neuro + symbiosis influence on agent selection.
     """
     adjusted = {}
 
     for agent, data in results.items():
         score = data["score"]
 
-        # --- NEURO BIAS ---
+        # Neuro bias
         if agent == "explorer":
-            score *= (1 + neuro_state.adrenaline)
+            score *= (1 + neuro_state.adrenaline * 0.8)
+            score *= (1 + symbiosis_params.future * 0.3)
 
         elif agent == "stabilizer":
-            score *= (1 + neuro_state.serotonin)
+            score *= (1 + neuro_state.serotonin * 0.8)
+            score *= (1 + symbiosis_params.balance * 0.3)
 
         elif agent == "planner":
-            score *= (1 + neuro_state.dopamine)
+            score *= (1 + neuro_state.dopamine * 0.8)
+            score *= (1 + symbiosis_params.structure * 0.2)
 
-        # cortisol = штраф
-        score *= (1 - neuro_state.cortisol * 0.5)
+        # Global caution effect
+        score *= (1 - neuro_state.cortisol * 0.4)
 
         adjusted[agent] = (score, data)
 
-    # вибір нового best
     best_agent = max(adjusted, key=lambda x: adjusted[x][0])
     best_data = adjusted[best_agent][1]
 
@@ -58,27 +61,44 @@ def run_episode(steps=5):
         stability_bias=1.0,
     )
 
+    # --- SYMBIOSIS BASE ---
+    symbiosis_base = SymbiosisParams(
+        pressure=0.4,
+        flow=0.5,
+        structure=0.5,
+        balance=0.5,
+        law=0.4,
+        future=0.5,
+    )
+
     print("=== START EPISODE ===")
 
     for step in range(steps):
         print(f"\n--- step {step} ---")
 
+        # Apply neuro to runtime config
+        modulated = neuro.apply(runtime_cfg)
+
+        # Apply neuro to symbiosis params
+        symbiosis = apply_symbiosis(neuro.state, symbiosis_base)
+        mode = get_mode(symbiosis)
+
         best, results = choose_best_agent(state)
 
-        # 🔥 ОСЬ ГОЛОВНЕ — NEURO ВТРУЧАЄТЬСЯ
-        best, best_data = apply_neuro_bias(results, neuro.state)
+        # Neuro + symbiosis drive actual selection
+        best, best_data = apply_neuro_bias(results, neuro.state, symbiosis)
 
         metrics = best_data["metrics"]
         bindu = bindu_decision(metrics)
 
-        print(f"selected (neuro): {best}")
+        print(f"selected (driven): {best}")
         print(f"metrics: {metrics}")
         print(f"bindu: {bindu}")
 
-        # --- APPLY NEURO ---
-        modulated = neuro.apply(runtime_cfg)
         print(f"neuro_state: {neuro.state}")
         print(f"modulated_config: {modulated}")
+        print(f"symbiosis_params: {symbiosis}")
+        print(f"symbiosis_mode: {mode}")
 
         # --- DECISION ---
         if bindu["decision"] == "COMMIT":
