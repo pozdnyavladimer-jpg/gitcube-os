@@ -8,14 +8,16 @@ from core.projector import state_to_visual_spec
 from core.topological_filter import TopologicalFilter
 from runtime.adaptive_bindu import adaptive_bindu_decision
 from runtime.memory_control import derive_memory_control
+from runtime.agent_learning import derive_agent_bias
 
 
-def apply_neuro_bias(results, neuro_state, symbiosis_params):
+def apply_neuro_bias(results, neuro_state, symbiosis_params, agent_bias):
     adjusted = {}
 
     for agent, data in results.items():
         score = data["score"]
 
+        # neuro influence
         if agent == "explorer":
             score *= (1 + neuro_state.adrenaline * 0.8)
 
@@ -25,7 +27,11 @@ def apply_neuro_bias(results, neuro_state, symbiosis_params):
         elif agent == "planner":
             score *= (1 + neuro_state.dopamine * 0.8)
 
+        # cortisol penalizes all
         score *= (1 - neuro_state.cortisol * 0.4)
+
+        # memory learning bias
+        score *= (1 + agent_bias.get(agent, 0.0))
 
         adjusted[agent] = (score, data)
 
@@ -83,8 +89,15 @@ def run_episode(steps=5):
         mode = get_mode(symbiosis)
         last_mode = mode
 
+        memory_summary = memory.summary()
+        memory_control = derive_memory_control(memory_summary)
+        agent_bias = derive_agent_bias(memory_summary)
+
+        print("memory_control:", memory_control)
+        print("agent_bias:", agent_bias)
+
         best, results = choose_best_agent(state)
-        best, best_data = apply_neuro_bias(results, neuro.state, symbiosis)
+        best, best_data = apply_neuro_bias(results, neuro.state, symbiosis, agent_bias)
 
         metrics = best_data["metrics"]
 
@@ -92,11 +105,8 @@ def run_episode(steps=5):
         seq = sequence_from_candidate(best, metrics)
         topo_result = topo.process(seq)
 
-        memory_summary = memory.summary()
-        memory_control = derive_memory_control(memory_summary)
-
+        print("selected_agent:", best)
         print("topo:", topo_result)
-        print("memory_control:", memory_control)
 
         bindu = adaptive_bindu_decision(metrics, topo_result, memory_control)
         print("bindu:", bindu)
