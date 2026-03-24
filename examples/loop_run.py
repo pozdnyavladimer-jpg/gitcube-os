@@ -7,6 +7,7 @@ from runtime.symbiosis_controller import SymbiosisParams, apply_symbiosis, get_m
 from core.projector import state_to_visual_spec
 from core.topological_filter import TopologicalFilter
 from runtime.adaptive_bindu import adaptive_bindu_decision
+from runtime.memory_control import derive_memory_control
 
 
 def apply_neuro_bias(results, neuro_state, symbiosis_params):
@@ -91,9 +92,13 @@ def run_episode(steps=5):
         seq = sequence_from_candidate(best, metrics)
         topo_result = topo.process(seq)
 
-        print("topo:", topo_result)
+        memory_summary = memory.summary()
+        memory_control = derive_memory_control(memory_summary)
 
-        bindu = adaptive_bindu_decision(metrics, topo_result)
+        print("topo:", topo_result)
+        print("memory_control:", memory_control)
+
+        bindu = adaptive_bindu_decision(metrics, topo_result, memory_control)
         print("bindu:", bindu)
 
         if bindu["decision"] == "COMMIT":
@@ -133,7 +138,8 @@ def run_episode(steps=5):
     print(final_state)
 
     print("\n=== MEMORY SUMMARY ===")
-    print(memory.summary())
+    summary = memory.summary()
+    print(summary)
 
     print("\n=== VISUAL STATE ===")
     visual = state_to_visual_spec(
