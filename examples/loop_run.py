@@ -1,169 +1,89 @@
 from core.state import default_state
 from runtime.agent_loop import choose_best_agent
-from runtime.memory import EpisodeMemory
-
-from core.neuromodulator import NeuroModulator, NeuroState, RuntimeConfig
-from runtime.symbiosis_controller import SymbiosisParams, apply_symbiosis, get_mode
-from core.projector import state_to_visual_spec
-from core.topological_filter import TopologicalFilter
-from runtime.adaptive_bindu import adaptive_bindu_decision
-from runtime.memory_control import derive_memory_control
-from runtime.agent_learning import derive_agent_bias
+from runtime.adaptive_bindu import adaptive_bindu
+from runtime.binary_cube import (
+    to_binary_state,
+    state_to_tuple,
+    transition_allowed,
+)
 
 
-def apply_neuro_bias(results, neuro_state, symbiosis_params, agent_bias):
-    adjusted = {}
-
-    for agent, data in results.items():
-        score = data["score"]
-
-        # neuro influence
-        if agent == "explorer":
-            score *= (1 + neuro_state.adrenaline * 0.8)
-
-        elif agent == "stabilizer":
-            score *= (1 + neuro_state.serotonin * 0.8)
-
-        elif agent == "planner":
-            score *= (1 + neuro_state.dopamine * 0.8)
-
-        # cortisol penalizes all
-        score *= (1 - neuro_state.cortisol * 0.4)
-
-        # memory learning bias
-        score *= (1 + agent_bias.get(agent, 0.0))
-
-        adjusted[agent] = (score, data)
-
-    best_agent = max(adjusted, key=lambda x: adjusted[x][0])
-    return best_agent, adjusted[best_agent][1]
-
-
-def sequence_from_candidate(agent_name, metrics):
-    tokens = [agent_name.upper()]
-    tokens.append("ALIGN" if metrics.get("coherence", 0) > 0.8 else "DRIFT")
-    tokens.append("CLEAR" if metrics.get("shadow", 0) < 0.1 else "SHADOW")
-    tokens.append("LIVE" if metrics.get("vitality", 0) > 0.3 else "WEAK")
-    tokens.append("TARGET" if metrics.get("target_fit", 0) > 0.45 else "MISS")
-    return tokens
-
-
-def run_episode(steps=5):
+def run(steps: int = 12):
     state = default_state()
-    memory = EpisodeMemory()
+    prev_tuple = None
 
-    neuro = NeuroModulator(
-        NeuroState(
-            adrenaline=0.5,
-            dopamine=0.5,
-            cortisol=0.4,
-            serotonin=0.6,
-        )
-    )
+    allowed_moves = 0
+    blocked_moves = 0
 
-    runtime_cfg = RuntimeConfig(
-        exploration_rate=1.0,
-        memory_gain=1.0,
-        penalty_weight=1.0,
-        stability_bias=1.0,
-    )
-
-    symbiosis_base = SymbiosisParams(
-        pressure=0.4,
-        flow=0.5,
-        structure=0.5,
-        balance=0.5,
-        law=0.4,
-        future=0.5,
-    )
-
-    last_mode = "mixed"
-
-    print("=== START EPISODE ===")
+    print("\n=== GITCUBE OS LOOP (WITH BINARY CONSTRAINT) ===\n")
 
     for step in range(steps):
-        print(f"\n--- step {step} ---")
+        print(f"--- step {step} ---")
 
-        modulated = neuro.apply(runtime_cfg)
-        symbiosis = apply_symbiosis(neuro.state, symbiosis_base)
-        mode = get_mode(symbiosis)
-        last_mode = mode
-
-        memory_summary = memory.summary()
-        memory_control = derive_memory_control(memory_summary)
-        agent_bias = derive_agent_bias(memory_summary)
-
-        print("memory_control:", memory_control)
-        print("agent_bias:", agent_bias)
-
-        best, results = choose_best_agent(state)
-        best, best_data = apply_neuro_bias(results, neuro.state, symbiosis, agent_bias)
-
+        # 1. choose best agent
+        best_agent, results = choose_best_agent(state)
+        best_data = results[best_agent]
         metrics = best_data["metrics"]
+        next_state = best_data["state"]
 
-        topo = TopologicalFilter()
-        seq = sequence_from_candidate(best, metrics)
-        topo_result = topo.process(seq)
+        print("agent:", best_agent)
+        print("metrics:", {k: round(v, 3) for k, v in metrics.items()})
 
-        print("selected_agent:", best)
-        print("topo:", topo_result)
+        # 2. convert to binary cube state
+        binary = to_binary_state(metrics)
+        current_tuple = state_to_tuple(binary)
 
-        bindu = adaptive_bindu_decision(metrics, topo_result, memory_control)
-        print("bindu:", bindu)
+        print("binary_state:", binary)
+        print("cube_position:", current_tuple)
 
-        if bindu["decision"] == "COMMIT":
-            memory.add(
-                step=step,
-                agent=best,
-                metrics=metrics,
-                state=best_data["state"].to_dict(),
-                status="accepted",
-            )
-            state = best_data["state"]
-            print("COMMIT")
+        # 3. transition check
+        allowed = True
+        if prev_tuple is not None:
+            allowed = transition_allowed(prev_tuple, current_tuple)
+            print("transition_allowed:", allowed)
 
-        elif bindu["decision"] == "SOFT_COMMIT":
-            memory.add(
-                step=step,
-                agent=best,
-                metrics=metrics,
-                state=best_data["state"].to_dict(),
-                status="soft",
-            )
-            state = best_data["state"]
-            print("SOFT COMMIT")
+            if allowed:
+                allowed_moves += 1
+            else:
+                blocked_moves += 1
+                print("BLOCKED: non-local transition detected")
 
+        # 4. bindu decision
+        decision = adaptive_bindu(
+            metrics,
+            force_reject=not allowed,
+        )
+
+        print("bindu:", decision)
+
+        # 5. apply state only if allowed by decision
+        if decision["decision"] in ("COMMIT", "SOFT_COMMIT"):
+            state = next_state
+            print(decision["decision"])
         else:
             print("REJECT")
 
-        neuro.update_from_signal(
-            steps_to_commit=step,
-            reroute_count=1 if bindu["decision"] == "REJECT" else 0,
-            shadow_pressure=metrics.get("shadow", 0),
-            coherence=metrics.get("coherence", 0),
-        )
+        # 6. update previous cube state
+        prev_tuple = current_tuple
+        print()
 
-    print("\n=== FINAL STATE ===")
-    final_state = state.to_dict()
-    print(final_state)
+    total_checked = allowed_moves + blocked_moves
+    stability_score = round((allowed_moves / total_checked), 3) if total_checked else 1.0
 
-    print("\n=== MEMORY SUMMARY ===")
-    summary = memory.summary()
-    print(summary)
+    print("=== FINAL STATE ===")
+    print(state.to_dict())
 
-    print("\n=== VISUAL STATE ===")
-    visual = state_to_visual_spec(
-        final_state=final_state,
-        neuro=neuro.state,
-        symbiosis_mode=last_mode,
+    print("\n=== TRANSITION SUMMARY ===")
+    print(
+        {
+            "allowed_moves": allowed_moves,
+            "blocked_moves": blocked_moves,
+            "stability_score": stability_score,
+        }
     )
-    print("mood:", visual.mood)
-    print("palette:", visual.palette)
-    print("composition:", visual.composition)
-    print("texture:", visual.texture)
-    print("intensity:", visual.intensity)
-    print("prompt:", visual.prompt)
+
+    print("\n=== DONE ===")
 
 
 if __name__ == "__main__":
-    run_episode(steps=5)
+    run(steps=12)
