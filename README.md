@@ -155,3 +155,88 @@ GitCube OS decides what patterns deserve to survive.
 
 GitCube OS enforces survival through adaptive structural validation.
 
+---
+
+## 🔬 Experimental Layer (Current Implementation)
+
+The current implementation introduces a discrete binary state space:
+
+Each state:
+(0,0,0) → (1,1,1)
+
+Transitions are constrained:
+only local moves are allowed.
+
+---
+
+## 🧊 Binary State Cube
+
+The system operates inside a 3D binary cube.
+
+- nodes → states
+- edges → valid transitions
+- invalid jumps are blocked
+
+---
+
+## 🤖 Agent Modes
+
+We tested multiple behavioral modes:
+
+- balanced
+- planner-biased
+- explorer-biased
+- stabilizer-biased
+
+---
+
+## 📊 Results
+
+Experiment (60 steps):
+
+- stabilizer-biased → max stability (but stagnation)
+- planner-biased → best balance
+- explorer-biased → high exploration, low stability
+- balanced → neutral baseline
+
+Conclusion:
+
+Planner-biased mode provides the most устойчивий adaptive behavior.
+
+---
+
+## 🔁 Additional Mechanics
+
+New system features:
+
+- anti-stuck penalty
+- curiosity bonus
+- adaptive temperature (reject-driven)
+- transition memory feedback
+
+---
+
+## 🧪 Run Experiment
+
+PYTHONPATH=. python examples/compare_modes.py
+
+---
+
+## 🧠 Interpretation
+
+The system confirms:
+
+- pure stability leads to collapse (no movement)
+- pure exploration leads to chaos
+- structured bias leads to устойчивість
+
+---
+
+## 🔭 Next Direction
+
+Planned extensions:
+
+- image-space navigation
+- latent geometry mapping
+- adaptive visual projection
+---
