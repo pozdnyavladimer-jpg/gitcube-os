@@ -1,272 +1,303 @@
-import os
-import sys
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
+import json
+import time
+from typing import Any, Dict, List
 
 import streamlit as st
-import networkx as nx
-import matplotlib.pyplot as plt
-from streamlit_autorefresh import st_autorefresh
 
-from app.live_agent import LiveAgent
+from app.state_engine import StateEngine
 
 
-def heat_color(count, max_count):
-    if max_count <= 0:
-        return "lightgray"
-    ratio = count / max_count
-    if ratio >= 0.85:
-        return "red"
-    if ratio >= 0.6:
-        return "orange"
-    if ratio >= 0.3:
-        return "deepskyblue"
-    if ratio > 0:
-        return "lightgreen"
-    return "lightgray"
+st.set_page_config(page_title="GitCube OS", layout="wide")
 
 
-def draw_cube(view, history, allowed_history, blocked_history, visit_counts):
-    G = nx.Graph()
-    current = tuple(view["current"])
+def init_session():
+    if "engine" not in st.session_state:
+        st.session_state.engine = StateEngine(mode="balanced")
 
-    for node in view["nodes"]:
-        G.add_node(tuple(node["id"]))
+    if "history" not in st.session_state:
+        st.session_state.history = []
 
-    nodes = list(G.nodes)
-    for a in nodes:
-        for b in nodes:
-            if a != b and sum(x != y for x, y in zip(a, b)) == 1:
-                G.add_edge(a, b)
+    if "auto_running" not in st.session_state:
+        st.session_state.auto_running = False
 
-    pos = {
-        (0, 0, 0): (-1.0, -1.0),
-        (0, 0, 1): (-1.0,  0.2),
-        (0, 1, 0): ( 0.2, -1.0),
-        (0, 1, 1): ( 0.2,  0.2),
-        (1, 0, 0): (-0.2, -0.2),
-        (1, 0, 1): (-0.2,  1.0),
-        (1, 1, 0): ( 1.0, -0.2),
-        (1, 1, 1): ( 1.0,  1.0),
-    }
+    if "speed_ms" not in st.session_state:
+        st.session_state.speed_ms = 1000
 
-    max_count = max(visit_counts.values()) if visit_counts else 0
 
-    node_colors = []
-    node_sizes = []
-    for n in G.nodes:
-        if n == current:
-            node_colors.append("gold")
-            node_sizes.append(1500)
-        else:
-            count = visit_counts.get(n, 0)
-            node_colors.append(heat_color(count, max_count))
-            node_sizes.append(800 + count * 12)
+def reset_engine(mode: str):
+    st.session_state.engine = StateEngine(mode=mode)
+    st.session_state.history = []
+    st.session_state.auto_running = False
 
-    edge_colors = []
-    edge_widths = []
-    for a, b in G.edges:
-        if a == current or b == current:
-            edge_colors.append("limegreen")
-            edge_widths.append(2.5)
-        else:
-            edge_colors.append("gray")
-            edge_widths.append(1.5)
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    fig.patch.set_facecolor("#0e1117")
-    ax.set_facecolor("#0e1117")
+def run_one_step():
+    result = st.session_state.engine.step()
+    st.session_state.history.append(result)
+    return result
 
-    nx.draw_networkx_edges(G, pos, ax=ax, edge_color=edge_colors, width=edge_widths, alpha=0.85)
-    nx.draw_networkx_nodes(
-        G, pos, ax=ax, node_color=node_colors, node_size=node_sizes,
-        edgecolors="white", linewidths=1.2
-    )
-    nx.draw_networkx_labels(G, pos, ax=ax, font_color="white", font_size=10)
 
-    for a, b in allowed_history:
-        ax.plot(
-            [pos[a][0], pos[b][0]],
-            [pos[a][1], pos[b][1]],
-            color="cyan",
-            linewidth=2.2,
-            alpha=0.9,
-            linestyle="--",
+def get_last_result() -> Dict[str, Any] | None:
+    if st.session_state.history:
+        return st.session_state.history[-1]
+    return None
+
+
+def pretty_json(data: Any):
+    st.code(json.dumps(data, indent=2, ensure_ascii=False), language="json")
+
+
+def render_header():
+    st.title("GitCube OS")
+    st.caption("Adaptive decision-making in a constrained binary state space.")
+
+
+def render_controls():
+    st.subheader("Controls")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        mode = st.selectbox(
+            "Mode",
+            options=["balanced", "planner", "critic", "explorer", "stabilizer"],
+            index=["balanced", "planner", "critic", "explorer", "stabilizer"].index(
+                st.session_state.engine.mode
+            )
+            if st.session_state.engine.mode in ["balanced", "planner", "critic", "explorer", "stabilizer"]
+            else 0,
         )
 
-    for a, b in blocked_history:
-        ax.plot(
-            [pos[a][0], pos[b][0]],
-            [pos[a][1], pos[b][1]],
-            color="red",
-            linewidth=2.6,
-            alpha=0.95,
-            linestyle="--",
+    with col2:
+        speed_ms = st.number_input(
+            "Auto speed (ms)",
+            min_value=100,
+            max_value=5000,
+            value=st.session_state.speed_ms,
+            step=100,
+        )
+        st.session_state.speed_ms = int(speed_ms)
+
+    with col3:
+        if st.button("STEP", use_container_width=True):
+            st.session_state.engine.set_mode(mode)
+            run_one_step()
+
+    with col4:
+        if st.button("RESET", use_container_width=True):
+            reset_engine(mode)
+
+    col5, col6, col7 = st.columns(3)
+
+    with col5:
+        if st.button("RUN x10", use_container_width=True):
+            st.session_state.engine.set_mode(mode)
+            for _ in range(10):
+                run_one_step()
+
+    with col6:
+        if st.button("START AUTO", use_container_width=True):
+            st.session_state.engine.set_mode(mode)
+            st.session_state.auto_running = True
+
+    with col7:
+        if st.button("STOP AUTO", use_container_width=True):
+            st.session_state.auto_running = False
+
+
+def render_state_block(last: Dict[str, Any] | None):
+    st.subheader("State")
+
+    if not last:
+        st.info("Press STEP, RUN x10, or START AUTO.")
+        return
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("### Current")
+        st.write(f"Step: **{last['step']}**")
+        st.write(f"Agent: **{last['agent']}**")
+        st.write(f"Mode: **{last['mode']}**")
+
+    with col2:
+        st.markdown("### Runtime")
+        st.write(f"Temperature: **{last['temperature']}**")
+        st.write(f"Reject streak: **{last['reject_streak']}**")
+        st.write(f"Applied: **{last['applied']}**")
+
+    with col3:
+        st.markdown("### Cube")
+        st.write(f"Binary state: **{tuple(last['binary_state'])}**")
+        st.write(f"Cube position: **{last['cube_position']}**")
+        st.write(f"Transition allowed: **{last['transition_allowed']}**")
+
+
+def render_kernel_block(last: Dict[str, Any] | None):
+    st.subheader("Kernel")
+
+    if not last or "kernel" not in last:
+        st.info("Kernel data will appear after first step.")
+        return
+
+    kernel = last["kernel"]
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric("Winner", kernel.get("winner", "-"))
+
+    with col2:
+        st.metric("Score", kernel.get("score", "-"))
+
+
+def render_decision_block(last: Dict[str, Any] | None):
+    st.subheader("Decision")
+
+    if not last:
+        return
+
+    decision = last["decision"]
+    metrics = last["metrics"]
+    summary = last["summary"]
+    transition_memory = last.get("transition_memory", {})
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### Decision Output")
+        pretty_json(decision)
+
+        st.markdown("### Summary")
+        pretty_json(summary)
+
+    with col2:
+        st.markdown("### Metrics")
+        pretty_json(metrics)
+
+        st.markdown("### Transition Memory")
+        pretty_json(transition_memory)
+
+
+def render_vision_block(last: Dict[str, Any] | None):
+    st.subheader("Vision")
+
+    if not last:
+        return
+
+    pretty_json(last["vision"])
+
+
+def render_state_values(last: Dict[str, Any] | None):
+    st.subheader("State Values")
+
+    if not last:
+        return
+
+    pretty_json(last["state"])
+
+
+def render_agent_scores(last: Dict[str, Any] | None):
+    st.subheader("Agent Scores")
+
+    if not last:
+        return
+
+    scores = last["agent_scores"]
+    pretty_json(scores)
+
+
+def render_history():
+    st.subheader("Agent History")
+
+    history: List[Dict[str, Any]] = st.session_state.history
+    if not history:
+        st.info("No history yet.")
+        return
+
+    lines = []
+    for item in reversed(history[-20:]):
+        decision_name = item["decision"]["decision"] if isinstance(item["decision"], dict) else str(item["decision"])
+        cube_pos = item.get("cube_position")
+        allowed = item.get("transition_allowed")
+        lines.append(
+            f"step {item['step']} | {item['agent']} | mode={item['mode']} | "
+            f"{decision_name} | {cube_pos} | allowed={allowed}"
         )
 
-    ax.set_title("Binary State Cube", color="white", fontsize=14)
-    ax.set_axis_off()
-    plt.tight_layout()
-    return fig
+    st.code("\n".join(lines), language="text")
 
 
-if "agent" not in st.session_state:
-    st.session_state.agent = LiveAgent(mode="balanced")
+def render_trajectory():
+    st.subheader("Trajectory")
 
-if "packet" not in st.session_state:
-    st.session_state.packet = None
+    history: List[Dict[str, Any]] = st.session_state.history
+    if not history:
+        st.info("No trajectory yet.")
+        return
 
-if "auto_run" not in st.session_state:
-    st.session_state.auto_run = False
+    points = [str(item.get("cube_position")) for item in history[-30:]]
+    st.write(" → ".join(points))
 
-if "mode" not in st.session_state:
-    st.session_state.mode = "balanced"
 
-agent = st.session_state.agent
+def render_visit_heat():
+    st.subheader("Visit Heat")
 
-st.set_page_config(layout="wide")
-st.title("🧠 GitCube OS — Unified Navigator")
+    history: List[Dict[str, Any]] = st.session_state.history
+    if not history:
+        st.info("No visits yet.")
+        return
 
-top1, top2, top3, top4 = st.columns([1, 1, 1, 2])
+    counts: Dict[str, int] = {}
+    for item in history:
+        key = str(item.get("cube_position"))
+        counts[key] = counts.get(key, 0) + 1
 
-with top1:
-    if st.button("▶ STEP"):
-        st.session_state.packet = agent.step()
+    pretty_json(counts)
 
-with top2:
-    if st.button("⏩ RUN x10"):
-        st.session_state.packet = agent.run(steps=10)
 
-with top3:
-    if st.button("🔄 RESET"):
-        st.session_state.agent = LiveAgent(mode=st.session_state.mode)
-        st.session_state.packet = None
-        st.session_state.auto_run = False
+def render_auto_status():
+    st.subheader("Auto")
 
-with top4:
-    speed_ms = st.slider("Auto speed (ms)", 300, 2000, 1000, 100)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.write(f"Running: **{st.session_state.auto_running}**")
+    with col2:
+        st.write(f"Speed ms: **{st.session_state.speed_ms}**")
+    with col3:
+        st.write(f"History size: **{len(st.session_state.history)}**")
 
-mode = st.selectbox(
-    "Agent mode",
-    ["balanced", "planner-biased", "explorer-biased", "stabilizer-biased"],
-    index=["balanced", "planner-biased", "explorer-biased", "stabilizer-biased"].index(st.session_state.mode),
-)
 
-if mode != st.session_state.mode:
-    st.session_state.mode = mode
-    st.session_state.agent.set_mode(mode)
+def auto_run_if_needed():
+    if st.session_state.auto_running:
+        run_one_step()
+        time.sleep(st.session_state.speed_ms / 1000.0)
+        st.rerun()
 
-auto_col1, auto_col2 = st.columns(2)
-with auto_col1:
-    if st.button("🟢 START AUTO"):
-        st.session_state.auto_run = True
-with auto_col2:
-    if st.button("⛔ STOP AUTO"):
-        st.session_state.auto_run = False
 
-agent = st.session_state.agent
+def main():
+    init_session()
+    render_header()
+    render_controls()
 
-if st.session_state.auto_run:
-    st_autorefresh(interval=speed_ms, key="gitcube_auto_refresh")
-    st.session_state.packet = agent.step()
+    last = get_last_result()
 
-if st.session_state.packet:
-    packet = st.session_state.packet
-    result = packet["result"]
-    view = packet["view"]
-    history = packet["history"]
-    allowed_history = packet["allowed_history"]
-    blocked_history = packet["blocked_history"]
-    visit_counts = packet["visit_counts"]
-
-    left, center, right = st.columns([1, 2, 1])
+    left, right = st.columns([1.2, 1])
 
     with left:
-        st.subheader("📊 Metrics")
-        for k, v in view["metrics"].items():
-            try:
-                st.write(f"{k}: {round(v, 3)}")
-            except TypeError:
-                st.write(f"{k}: {v}")
-
-        st.subheader("🧠 Memory")
-        st.json(view["memory"])
-
-        st.subheader("🤖 Auto")
-        st.write("Running:", st.session_state.auto_run)
-        st.write("Speed ms:", speed_ms)
-        st.write("Mode:", st.session_state.mode)
-        st.write("Temperature:", result.get("temperature", 1.0))
-        st.write("Reject streak:", result.get("reject_streak", 0))
-
-        if "vision" in result:
-            st.subheader("👁️ Vision")
-            st.write("Anomaly:", result["vision"]["anomaly"])
-            st.write("Blink:", result["vision"]["blink_gate"])
-            st.write("Phase:", result["vision"]["vibration_phase"])
-
-            st.markdown("**Coarse**")
-            st.json(result["vision"]["coarse"])
-
-            st.markdown("**Mid**")
-            st.json(result["vision"]["mid"])
-
-            st.markdown("**Fine**")
-            st.json(result["vision"]["fine"])
-
-    with center:
-        st.subheader("🧊 State Space")
-        st.write("Current:", view["current"])
-
-        fig = draw_cube(view, history, allowed_history, blocked_history, visit_counts)
-        st.pyplot(fig)
-
-        st.subheader("Trajectory")
-        st.write(" → ".join(str(tuple(h['current'])) for h in history[-20:]))
-
-        st.subheader("Legend")
-        st.write("🟡 Current state")
-        st.write("🟩 Rarely visited")
-        st.write("🔵 Medium visited")
-        st.write("🟧 Highly visited")
-        st.write("🟥 Dominant state")
-        st.write("➖ Cyan dashed = allowed path")
-        st.write("➖ Red dashed = blocked jump")
+        render_state_block(last)
+        render_kernel_block(last)
+        render_decision_block(last)
+        render_trajectory()
+        render_visit_heat()
 
     with right:
-        st.subheader("⚡ Decision")
-        decision = view["decision"]
+        render_auto_status()
+        render_vision_block(last)
+        render_state_values(last)
+        render_agent_scores(last)
+        render_history()
 
-        st.write("Type:", decision["decision"])
-        st.write("Reason:", decision["reason"])
+    auto_run_if_needed()
 
-        if "thresholds" in decision:
-            st.subheader("Thresholds")
-            st.json(decision["thresholds"])
 
-        st.subheader("📈 Summary")
-        st.json(view["summary"])
-
-        st.subheader("🔥 Visit Heat")
-        for node, count in sorted(visit_counts.items(), key=lambda x: x[1], reverse=True):
-            st.write(f"{node}: {count}")
-
-        st.subheader("🏁 Agent Scores")
-        if "agent_scores" in result:
-            st.json(result["agent_scores"])
-
-        st.subheader("🤖 Agent History")
-        for item in reversed(history[-12:]):
-            line = (
-                f"step {item['step']} | "
-                f"{item['agent']} | "
-                f"{item['mode']} | "
-                f"{item['decision']} | "
-                f"{item['current']} | "
-                f"allowed={item['allowed']}"
-            )
-            st.write(line)
-else:
-    st.info("Press STEP, RUN x10, or START AUTO.")
+if __name__ == "__main__":
+    main()
