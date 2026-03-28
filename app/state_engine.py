@@ -2,6 +2,8 @@ from typing import Dict, Any
 from collections import Counter
 
 from core.state import default_state
+from core.decision_kernel import DecisionKernel
+
 from runtime.agent_loop import choose_best_agent
 from runtime.adaptive_bindu import adaptive_bindu
 from runtime.binary_cube import (
@@ -34,6 +36,7 @@ class StateEngine:
         self.vision_history = []
 
         self.guard = PerelmanGuard(loop_threshold=12)
+        self.kernel = DecisionKernel()
 
     def reset(self):
         mode = self.mode
@@ -121,8 +124,14 @@ class StateEngine:
         _, raw_results = choose_best_agent(self.state)
         results = self._apply_mode_bias(raw_results)
 
-        best_agent = max(results, key=lambda k: results[k]["adjusted_score"])
-        best_data = results[best_agent]
+        kernel_pick = self.kernel.decide(
+            results=results,
+            temperature=self.temperature,
+            state_visits=self.state_visits,
+        )
+
+        best_agent = kernel_pick["agent"]
+        best_data = kernel_pick["data"]
 
         metrics = best_data["metrics"]
         next_state = best_data["state"]
@@ -190,6 +199,10 @@ class StateEngine:
                         }
                         for k, v in results.items()
                     },
+                    "kernel": {
+                        "winner": best_agent,
+                        "score": round(kernel_pick["score"], 6),
+                    },
                     "metrics": metrics,
                     "binary_state": binary,
                     "cube_position": escape_state,
@@ -251,6 +264,10 @@ class StateEngine:
                     "adjusted_score": round(v["adjusted_score"], 3),
                 }
                 for k, v in results.items()
+            },
+            "kernel": {
+                "winner": best_agent,
+                "score": round(kernel_pick["score"], 6),
             },
             "metrics": metrics,
             "binary_state": binary,
