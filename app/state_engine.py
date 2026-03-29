@@ -15,6 +15,7 @@ from runtime.fractal_vision import FractalVision
 from runtime.perelman_guard import PerelmanGuard
 from runtime.school_layer import (
     class_fatigue_penalty,
+    environment_pressure_bonus,
     build_school_profile,
 )
 
@@ -54,6 +55,13 @@ class StateEngine:
         adjusted = {}
 
         total_visits = sum(self.state_visits.values()) + 1
+
+        blocked_moves_now = getattr(self, "blocked_moves", 0)
+        allowed_moves_now = getattr(self, "allowed_moves", 0)
+        reject_streak_now = getattr(self, "reject_streak", 0)
+
+        total_now = allowed_moves_now + blocked_moves_now
+        stability_now = round(allowed_moves_now / total_now, 3) if total_now else 1.0
 
         for agent_name, agent_data in results.items():
             metrics = dict(agent_data["metrics"])
@@ -96,12 +104,21 @@ class StateEngine:
             dominant_class = agent_data.get("dominant_class", "UNKNOWN")
             fatigue_penalty = class_fatigue_penalty(dominant_class, self.class_history)
 
+            school_bonus = environment_pressure_bonus(
+                class_name=dominant_class,
+                stability_score=stability_now,
+                blocked_moves=blocked_moves_now,
+                reject_streak=reject_streak_now,
+                allowed_moves=allowed_moves_now,
+            )
+
             adjusted_score = (
                 base_score
                 + mode_bias
                 - repeat_penalty
                 + curiosity_bonus
                 - fatigue_penalty
+                + school_bonus
             )
 
             adjusted[agent_name] = {
@@ -114,6 +131,7 @@ class StateEngine:
                 "repeat_penalty": repeat_penalty,
                 "curiosity_bonus": curiosity_bonus,
                 "fatigue_penalty": fatigue_penalty,
+                "school_bonus": school_bonus,
                 "adjusted_score": adjusted_score,
             }
 
@@ -189,7 +207,6 @@ class StateEngine:
             allowed_moves=self.allowed_moves,
         )
 
-        # ---- PERELMAN GUARD ----
         loop_detected, loop_state, loop_count = self.guard.detect_loop(self.vision_history)
 
         total = self.allowed_moves + self.blocked_moves
@@ -205,6 +222,13 @@ class StateEngine:
                 })
 
             escape_state = self.guard.force_escape(current_tuple, candidates)
+
+            # fallback if guard returns same state
+            if escape_state == current_tuple:
+                for candidate in candidates:
+                    if candidate["state"] != current_tuple:
+                        escape_state = candidate["state"]
+                        break
 
             if escape_state != current_tuple:
                 self.state_visits[escape_state] += 1
@@ -239,6 +263,7 @@ class StateEngine:
                             "repeat_penalty": round(v["repeat_penalty"], 3),
                             "curiosity_bonus": round(v["curiosity_bonus"], 3),
                             "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                            "school_bonus": round(v.get("school_bonus", 0.0), 3),
                             "adjusted_score": round(v["adjusted_score"], 3),
                             "dominant_class": v.get("dominant_class", "UNKNOWN"),
                         }
@@ -284,7 +309,6 @@ class StateEngine:
         self._update_temperature(decision["decision"])
         self.prev_tuple = current_tuple
 
-        # store class history after decision
         self.class_history.append(dominant_class)
         self.class_history = self.class_history[-50:]
 
@@ -314,6 +338,7 @@ class StateEngine:
                     "repeat_penalty": round(v["repeat_penalty"], 3),
                     "curiosity_bonus": round(v["curiosity_bonus"], 3),
                     "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                    "school_bonus": round(v.get("school_bonus", 0.0), 3),
                     "adjusted_score": round(v["adjusted_score"], 3),
                     "dominant_class": v.get("dominant_class", "UNKNOWN"),
                 }
@@ -338,4 +363,4 @@ class StateEngine:
                 "blocked_moves": self.blocked_moves,
                 "stability_score": stability_score,
             },
-        }
+            }
