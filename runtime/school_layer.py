@@ -10,7 +10,6 @@ CLASS_TO_ROLE = {
     "ASSASSIN": "auditor",
 }
 
-
 CLASS_TO_MODE = {
     "TANK": "stability",
     "ARCHER": "targeting",
@@ -18,7 +17,6 @@ CLASS_TO_MODE = {
     "HEALER": "repair",
     "ASSASSIN": "surgical",
 }
-
 
 CLASS_COMPANIONS = {
     "TANK": ["HEALER", "ARCHER"],
@@ -29,10 +27,77 @@ CLASS_COMPANIONS = {
 }
 
 
+def _clamp(value: float, low: float, high: float) -> float:
+    return max(low, min(high, value))
+
+
 def class_fatigue_penalty(class_name: str, history: List[str], window: int = 10) -> float:
+    """
+    Плавний штраф за повтор одного й того ж класу.
+    Перші 2-3 повтори майже не караємо.
+    Далі тиск росте.
+    """
+    if not class_name:
+        return 0.0
+
     recent = history[-window:]
     count = recent.count(class_name)
-    return round(count * 0.05, 3)
+
+    if count <= 2:
+        return 0.0
+
+    penalty = (count - 2) * 0.04
+    return round(_clamp(penalty, 0.0, 0.32), 3)
+
+
+def environment_pressure_bonus(
+    class_name: str,
+    stability_score: float,
+    blocked_moves: int,
+    reject_streak: int,
+    allowed_moves: int,
+) -> float:
+    """
+    Плавний бонус від середовища.
+    Не рубильник, а тиск.
+    """
+
+    bonus = 0.0
+
+    instability = _clamp(1.0 - stability_score, 0.0, 1.0)
+    blocked_pressure = _clamp(blocked_moves / 12.0, 0.0, 1.0)
+    reject_pressure = _clamp(reject_streak / 6.0, 0.0, 1.0)
+    system_maturity = _clamp(allowed_moves / 20.0, 0.0, 1.0)
+
+    # TANK потрібен, коли система нестабільна
+    if class_name == "TANK":
+        bonus += instability * 0.28
+        bonus += blocked_pressure * 0.10
+
+    # HEALER потрібен, коли система хворіє reject-ами
+    elif class_name == "HEALER":
+        bonus += reject_pressure * 0.32
+        bonus += instability * 0.08
+
+    # MAGE має рости в більш спокійному середовищі
+    elif class_name == "MAGE":
+        calm = _clamp(stability_score - 0.55, 0.0, 0.45)
+        bonus += calm * 0.45
+        bonus += system_maturity * 0.08
+
+    # ARCHER корисний, коли система вже не в кризі і можна цілитися
+    elif class_name == "ARCHER":
+        calm = _clamp(stability_score - 0.50, 0.0, 0.50)
+        bonus += calm * 0.26
+        bonus += system_maturity * 0.06
+
+    # ASSASSIN корисний при локальній кризі, але не має домінувати завжди
+    elif class_name == "ASSASSIN":
+        bonus += blocked_pressure * 0.16
+        bonus += reject_pressure * 0.12
+        bonus -= system_maturity * 0.06
+
+    return round(_clamp(bonus, -0.10, 0.40), 3)
 
 
 def infer_school_stage(
@@ -72,7 +137,10 @@ def build_school_profile(
     stability_score: float,
     reject_streak: int,
 ) -> Dict[str, Any]:
-    dominant_class = max(class_votes, key=lambda k: (class_votes[k], class_score_sum.get(k, 0.0)))
+    dominant_class = max(
+        class_votes,
+        key=lambda k: (class_votes[k], class_score_sum.get(k, 0.0))
+    )
 
     role = CLASS_TO_ROLE.get(dominant_class, "generalist")
     party_mode = CLASS_TO_MODE.get(dominant_class, "balanced")
