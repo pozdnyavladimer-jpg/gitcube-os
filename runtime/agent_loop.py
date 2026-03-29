@@ -1,62 +1,62 @@
 import random
 from typing import Dict, Any, Tuple
 
+from core.state import SystemState, normalize_state
+from core.evaluation import compute_metrics
+
 
 CLASSES = {
-    "TANK": {"coherence": 0.6, "shadow": -0.6, "target_fit": 0.1, "vitality": 0.1},
-    "ARCHER": {"coherence": 0.2, "shadow": -0.2, "target_fit": 0.8, "vitality": 0.2},
-    "MAGE": {"coherence": 0.3, "shadow": -0.2, "target_fit": 0.3, "vitality": 0.7},
-    "HEALER": {"coherence": 0.8, "shadow": -0.5, "target_fit": 0.1, "vitality": 0.2},
-    "ASSASSIN": {"coherence": 0.2, "shadow": -0.4, "target_fit": 0.6, "vitality": 0.3},
+    "TANK": {"pressure": -0.1, "structure": 0.2, "balance": 0.2},
+    "ARCHER": {"balance": 0.2, "structure": 0.1, "future": 0.2},
+    "MAGE": {"flow": 0.2, "future": 0.2, "pressure": 0.05},
+    "HEALER": {"balance": 0.25, "flow": 0.1, "pressure": -0.15},
+    "ASSASSIN": {"pressure": -0.2, "structure": -0.1, "future": 0.15},
 }
 
 
-def _generate_metrics(weights):
-    return {
-        "coherence": round(min(1.0, max(0.1, 0.5 + weights["coherence"] * random.uniform(0.1, 0.4))), 4),
-        "shadow": round(min(1.0, max(0.0, 0.3 + weights["shadow"] * random.uniform(0.1, 0.3))), 4),
-        "target_fit": round(min(1.0, max(0.1, 0.4 + weights["target_fit"] * random.uniform(0.1, 0.5))), 4),
-        "vitality": round(min(1.0, max(0.1, 0.4 + weights["vitality"] * random.uniform(0.1, 0.5))), 4),
-    }
+def mutate_state(state: SystemState, weights: Dict[str, float]) -> SystemState:
+    base = state.to_dict()
 
+    new_values = {}
 
-def _score_class(metrics, weights):
-    return (
-        metrics["coherence"] * weights["coherence"]
-        + metrics["shadow"] * weights["shadow"]
-        + metrics["target_fit"] * weights["target_fit"]
-        + metrics["vitality"] * weights["vitality"]
-    )
+    for k, v in base.items():
+        delta = weights.get(k, 0.0) * random.uniform(0.5, 1.5)
+        new_values[k] = v + delta
+
+    normalized = normalize_state(new_values)
+    return SystemState.from_dict(normalized)
 
 
 def choose_best_agent(current_state: Any) -> Tuple[str, Dict[str, Any]]:
     results = {}
 
     for agent in ["planner", "explorer", "stabilizer"]:
-        best_class = None
         best_score = -999
+        best_class = None
         best_metrics = None
+        best_state = None
 
         for class_name, weights in CLASSES.items():
-            metrics = _generate_metrics(weights)
-            score = _score_class(metrics, weights)
+            candidate_state = mutate_state(current_state, weights)
+            metrics = compute_metrics(candidate_state)
+
+            score = (
+                metrics["coherence"]
+                - metrics["shadow"]
+                + metrics["target_fit"]
+                + metrics["vitality"]
+            )
 
             if score > best_score:
                 best_score = score
                 best_class = class_name
                 best_metrics = metrics
-
-        candidate = (
-            random.randint(0, 1),
-            random.randint(0, 1),
-            random.randint(0, 1),
-        )
+                best_state = candidate_state
 
         results[agent] = {
             "metrics": best_metrics,
-            "state": current_state,
-            "candidate_tuple": candidate,
-            "dominant_class": best_class,  # 🔥 КЛЮЧОВЕ
+            "state": best_state,
+            "dominant_class": best_class,
         }
 
     return "PARTY", results
