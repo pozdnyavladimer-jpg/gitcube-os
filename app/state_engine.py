@@ -13,8 +13,10 @@ from runtime.transition_memory import derive_transition_memory
 from runtime.agent_modes import get_mode_bias
 from runtime.fractal_vision import FractalVision
 from runtime.perelman_guard import PerelmanGuard
-from runtime.class_layer import annotate_results_with_classes
-from runtime.party_profile import build_party_profile
+from runtime.school_layer import (
+    class_fatigue_penalty,
+    build_school_profile,
+)
 
 
 class StateEngine:
@@ -36,6 +38,9 @@ class StateEngine:
         self.vision_history = []
 
         self.guard = PerelmanGuard(loop_threshold=12)
+
+        # school / party dynamics
+        self.class_history = []
 
     def reset(self):
         mode = self.mode
@@ -88,11 +93,15 @@ class StateEngine:
             rarity = 1.0 - (repeat_count / total_visits)
             curiosity_bonus = round(rarity * 0.15 * self.temperature, 3)
 
+            dominant_class = agent_data.get("dominant_class", "UNKNOWN")
+            fatigue_penalty = class_fatigue_penalty(dominant_class, self.class_history)
+
             adjusted_score = (
                 base_score
                 + mode_bias
                 - repeat_penalty
                 + curiosity_bonus
+                - fatigue_penalty
             )
 
             adjusted[agent_name] = {
@@ -104,30 +113,11 @@ class StateEngine:
                 "mode_bias": mode_bias,
                 "repeat_penalty": repeat_penalty,
                 "curiosity_bonus": curiosity_bonus,
+                "fatigue_penalty": fatigue_penalty,
                 "adjusted_score": adjusted_score,
             }
 
-        # додаємо поверх класову інтерпретацію
-        adjusted = annotate_results_with_classes(
-            results=adjusted,
-            state_visits=self.state_visits,
-            prev_tuple=self.prev_tuple,
-            temperature=self.temperature,
-        )
-
-        # класовий бонус додаємо в фінальний score
-        final_adjusted = {}
-        for agent_name, agent_data in adjusted.items():
-            class_bonus = round(agent_data["dominant_class_score"] * 0.12, 6)
-            final_score = round(agent_data["adjusted_score"] + class_bonus, 6)
-
-            final_adjusted[agent_name] = {
-                **agent_data,
-                "class_bonus": class_bonus,
-                "final_score": final_score,
-            }
-
-        return final_adjusted
+        return adjusted
 
     def _update_temperature(self, decision_name: str):
         if decision_name == "REJECT":
@@ -137,13 +127,45 @@ class StateEngine:
             self.reject_streak = 0
             self.temperature = max(0.7, round(self.temperature - 0.03, 3))
 
+    def _build_party_summary(self, results: Dict[str, Any], stability_score: float) -> Dict[str, Any]:
+        class_votes = {
+            "TANK": 0,
+            "ARCHER": 0,
+            "MAGE": 0,
+            "HEALER": 0,
+            "ASSASSIN": 0,
+        }
+        class_score_sum = {
+            "TANK": 0.0,
+            "ARCHER": 0.0,
+            "MAGE": 0.0,
+            "HEALER": 0.0,
+            "ASSASSIN": 0.0,
+        }
+
+        for _, data in results.items():
+            cls = data.get("dominant_class", None)
+            if cls in class_votes:
+                class_votes[cls] += 1
+                class_score_sum[cls] += data.get("adjusted_score", 0.0)
+
+        return build_school_profile(
+            class_votes=class_votes,
+            class_score_sum=class_score_sum,
+            class_history=self.class_history,
+            allowed_moves=self.allowed_moves,
+            blocked_moves=self.blocked_moves,
+            stability_score=stability_score,
+            reject_streak=self.reject_streak,
+        )
+
     def step(self) -> Dict[str, Any]:
         self.step_count += 1
 
         _, raw_results = choose_best_agent(self.state)
         results = self._apply_mode_bias(raw_results)
 
-        best_agent = max(results, key=lambda k: results[k]["final_score"])
+        best_agent = max(results, key=lambda k: results[k]["adjusted_score"])
         best_data = results[best_agent]
 
         metrics = best_data["metrics"]
@@ -151,7 +173,7 @@ class StateEngine:
         current_tuple = best_data["candidate_tuple"]
         binary = to_binary_state(metrics)
         frame = best_data["vision_frame"]
-        party = build_party_profile(results)
+        dominant_class = best_data.get("dominant_class", "UNKNOWN")
 
         allowed = True
         if self.prev_tuple is not None:
@@ -167,7 +189,12 @@ class StateEngine:
             allowed_moves=self.allowed_moves,
         )
 
+        # ---- PERELMAN GUARD ----
         loop_detected, loop_state, loop_count = self.guard.detect_loop(self.vision_history)
+
+        total = self.allowed_moves + self.blocked_moves
+        stability_score = round(self.allowed_moves / total, 3) if total else 1.0
+        party_summary = self._build_party_summary(results, stability_score)
 
         if loop_detected:
             candidates = []
@@ -179,20 +206,16 @@ class StateEngine:
 
             escape_state = self.guard.force_escape(current_tuple, candidates)
 
-            # страховка: якщо guard повернув той самий стан — не валимо систему
-            if escape_state == current_tuple:
-                for candidate in candidates:
-                    if candidate["state"] != current_tuple:
-                        escape_state = candidate["state"]
-                        break
-
             if escape_state != current_tuple:
-                self.state_visits[escape_state] = self.state_visits.get(escape_state, 0) + 1
+                self.state_visits[escape_state] += 1
                 self.vision_history.append(escape_state)
                 self.prev_tuple = escape_state
+                self.class_history.append("ASSASSIN")
+                self.class_history = self.class_history[-50:]
 
                 total = self.allowed_moves + self.blocked_moves
                 stability_score = round(self.allowed_moves / total, 3) if total else 1.0
+                party_summary = self._build_party_summary(results, stability_score)
 
                 return {
                     "step": self.step_count,
@@ -209,21 +232,15 @@ class StateEngine:
                         "blink_gate": frame.blink_gate,
                         "anomaly": frame.anomaly,
                     },
-                    "party": party,
-                    "kernel": {
-                        "winner": "GUARD",
-                        "score": round(best_data["final_score"], 6),
-                        "dominant_class": party["dominant_class"],
-                    },
                     "agent_scores": {
                         k: {
                             "base_score": round(v["base_score"], 3),
                             "mode_bias": round(v["mode_bias"], 3),
                             "repeat_penalty": round(v["repeat_penalty"], 3),
                             "curiosity_bonus": round(v["curiosity_bonus"], 3),
-                            "class_bonus": round(v["class_bonus"], 3),
-                            "adjusted_score": round(v["final_score"], 3),
-                            "dominant_class": v["dominant_class"],
+                            "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                            "adjusted_score": round(v["adjusted_score"], 3),
+                            "dominant_class": v.get("dominant_class", "UNKNOWN"),
                         }
                         for k, v in results.items()
                     },
@@ -236,6 +253,12 @@ class StateEngine:
                         "decision": "FORCE_ESCAPE",
                         "reason": f"loop_detected_{loop_state}_{loop_count}",
                     },
+                    "kernel": {
+                        "winner": best_agent,
+                        "score": round(best_data["adjusted_score"], 6),
+                        "dominant_class": dominant_class,
+                    },
+                    "party": party_summary,
                     "applied": True,
                     "state": self.state.to_dict(),
                     "summary": {
@@ -254,15 +277,20 @@ class StateEngine:
         applied = False
         if decision["decision"] in ("COMMIT", "SOFT_COMMIT"):
             self.state = next_state
-            self.state_visits[current_tuple] = self.state_visits.get(current_tuple, 0) + 1
+            self.state_visits[current_tuple] += 1
             self.vision_history.append(current_tuple)
             applied = True
 
         self._update_temperature(decision["decision"])
         self.prev_tuple = current_tuple
 
+        # store class history after decision
+        self.class_history.append(dominant_class)
+        self.class_history = self.class_history[-50:]
+
         total = self.allowed_moves + self.blocked_moves
         stability_score = round(self.allowed_moves / total, 3) if total else 1.0
+        party_summary = self._build_party_summary(results, stability_score)
 
         return {
             "step": self.step_count,
@@ -279,21 +307,15 @@ class StateEngine:
                 "blink_gate": frame.blink_gate,
                 "anomaly": frame.anomaly,
             },
-            "party": party,
-            "kernel": {
-                "winner": best_agent,
-                "score": round(best_data["final_score"], 6),
-                "dominant_class": best_data["dominant_class"],
-            },
             "agent_scores": {
                 k: {
                     "base_score": round(v["base_score"], 3),
                     "mode_bias": round(v["mode_bias"], 3),
                     "repeat_penalty": round(v["repeat_penalty"], 3),
                     "curiosity_bonus": round(v["curiosity_bonus"], 3),
-                    "class_bonus": round(v["class_bonus"], 3),
-                    "adjusted_score": round(v["final_score"], 3),
-                    "dominant_class": v["dominant_class"],
+                    "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                    "adjusted_score": round(v["adjusted_score"], 3),
+                    "dominant_class": v.get("dominant_class", "UNKNOWN"),
                 }
                 for k, v in results.items()
             },
@@ -303,6 +325,12 @@ class StateEngine:
             "transition_allowed": allowed,
             "transition_memory": transition_memory,
             "decision": decision,
+            "kernel": {
+                "winner": best_agent,
+                "score": round(best_data["adjusted_score"], 6),
+                "dominant_class": dominant_class,
+            },
+            "party": party_summary,
             "applied": applied,
             "state": self.state.to_dict(),
             "summary": {
