@@ -15,6 +15,8 @@ from runtime.fractal_vision import FractalVision
 from runtime.perelman_guard import PerelmanGuard
 from runtime.school_layer import (
     class_fatigue_penalty,
+    class_dominance_penalty,
+    counter_class_bonus,
     environment_pressure_bonus,
     build_school_profile,
 )
@@ -40,7 +42,6 @@ class StateEngine:
 
         self.guard = PerelmanGuard(loop_threshold=12)
 
-        # school / party dynamics
         self.class_history = []
 
     def reset(self):
@@ -102,14 +103,19 @@ class StateEngine:
             curiosity_bonus = round(rarity * 0.15 * self.temperature, 3)
 
             dominant_class = agent_data.get("dominant_class", "UNKNOWN")
-            fatigue_penalty = class_fatigue_penalty(dominant_class, self.class_history)
 
+            fatigue_penalty = class_fatigue_penalty(dominant_class, self.class_history)
+            dominance_penalty = class_dominance_penalty(dominant_class, self.class_history)
             school_bonus = environment_pressure_bonus(
                 class_name=dominant_class,
                 stability_score=stability_now,
                 blocked_moves=blocked_moves_now,
                 reject_streak=reject_streak_now,
                 allowed_moves=allowed_moves_now,
+            )
+            counter_bonus = counter_class_bonus(
+                class_name=dominant_class,
+                history=self.class_history,
             )
 
             adjusted_score = (
@@ -118,7 +124,9 @@ class StateEngine:
                 - repeat_penalty
                 + curiosity_bonus
                 - fatigue_penalty
+                - dominance_penalty
                 + school_bonus
+                + counter_bonus
             )
 
             adjusted[agent_name] = {
@@ -131,7 +139,9 @@ class StateEngine:
                 "repeat_penalty": repeat_penalty,
                 "curiosity_bonus": curiosity_bonus,
                 "fatigue_penalty": fatigue_penalty,
+                "dominance_penalty": dominance_penalty,
                 "school_bonus": school_bonus,
+                "counter_bonus": counter_bonus,
                 "adjusted_score": adjusted_score,
             }
 
@@ -223,7 +233,6 @@ class StateEngine:
 
             escape_state = self.guard.force_escape(current_tuple, candidates)
 
-            # fallback if guard returns same state
             if escape_state == current_tuple:
                 for candidate in candidates:
                     if candidate["state"] != current_tuple:
@@ -263,7 +272,9 @@ class StateEngine:
                             "repeat_penalty": round(v["repeat_penalty"], 3),
                             "curiosity_bonus": round(v["curiosity_bonus"], 3),
                             "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                            "dominance_penalty": round(v.get("dominance_penalty", 0.0), 3),
                             "school_bonus": round(v.get("school_bonus", 0.0), 3),
+                            "counter_bonus": round(v.get("counter_bonus", 0.0), 3),
                             "adjusted_score": round(v["adjusted_score"], 3),
                             "dominant_class": v.get("dominant_class", "UNKNOWN"),
                         }
@@ -338,7 +349,9 @@ class StateEngine:
                     "repeat_penalty": round(v["repeat_penalty"], 3),
                     "curiosity_bonus": round(v["curiosity_bonus"], 3),
                     "fatigue_penalty": round(v["fatigue_penalty"], 3),
+                    "dominance_penalty": round(v.get("dominance_penalty", 0.0), 3),
                     "school_bonus": round(v.get("school_bonus", 0.0), 3),
+                    "counter_bonus": round(v.get("counter_bonus", 0.0), 3),
                     "adjusted_score": round(v["adjusted_score"], 3),
                     "dominant_class": v.get("dominant_class", "UNKNOWN"),
                 }
