@@ -1,76 +1,62 @@
-from typing import Dict, Tuple
-
-from core.state import SystemState, normalize_state
-from core.evaluation import compute_metrics, evaluate_status
+import random
+from typing import Dict, Any, Tuple
 
 
-AGENTS = {
-    "planner": {
-        "pressure": -0.04,
-        "flow": 0.02,
-        "structure": 0.10,
-        "balance": 0.06,
-        "law": 0.00,
-        "future": 0.00,
-    },
-    "critic": {
-        "pressure": -0.02,
-        "flow": -0.04,
-        "structure": 0.05,
-        "balance": 0.00,
-        "law": 0.10,
-        "future": 0.00,
-    },
-    "explorer": {
-        "pressure": 0.00,
-        "flow": 0.12,
-        "structure": -0.04,
-        "balance": 0.00,
-        "law": 0.00,
-        "future": 0.05,
-    },
-    "stabilizer": {
-        "pressure": -0.08,
-        "flow": 0.03,
-        "structure": 0.00,
-        "balance": 0.10,
-        "law": 0.00,
-        "future": 0.00,
-    },
+CLASSES = {
+    "TANK": {"coherence": 0.6, "shadow": -0.6, "target_fit": 0.1, "vitality": 0.1},
+    "ARCHER": {"coherence": 0.2, "shadow": -0.2, "target_fit": 0.8, "vitality": 0.2},
+    "MAGE": {"coherence": 0.3, "shadow": -0.2, "target_fit": 0.3, "vitality": 0.7},
+    "HEALER": {"coherence": 0.8, "shadow": -0.5, "target_fit": 0.1, "vitality": 0.2},
+    "ASSASSIN": {"coherence": 0.2, "shadow": -0.4, "target_fit": 0.6, "vitality": 0.3},
 }
 
 
-def apply_delta(state: SystemState, delta: Dict[str, float]) -> SystemState:
-    base = state.to_dict()
-    updated = {k: base[k] + delta.get(k, 0.0) for k in base}
-    return SystemState.from_dict(normalize_state(updated))
+def _generate_metrics(weights):
+    return {
+        "coherence": round(min(1.0, max(0.1, 0.5 + weights["coherence"] * random.uniform(0.1, 0.4))), 4),
+        "shadow": round(min(1.0, max(0.0, 0.3 + weights["shadow"] * random.uniform(0.1, 0.3))), 4),
+        "target_fit": round(min(1.0, max(0.1, 0.4 + weights["target_fit"] * random.uniform(0.1, 0.5))), 4),
+        "vitality": round(min(1.0, max(0.1, 0.4 + weights["vitality"] * random.uniform(0.1, 0.5))), 4),
+    }
 
 
-def score_state(state: SystemState) -> Tuple[float, Dict[str, float], str]:
-    metrics = compute_metrics(state)
-    verdict = evaluate_status(metrics)
-
-    score = (
-        metrics["coherence"] * 0.4
-        - metrics["shadow"] * 0.3
-        + metrics["target_fit"] * 0.2
-        + metrics["vitality"] * 0.1
+def _score_class(metrics, weights):
+    return (
+        metrics["coherence"] * weights["coherence"]
+        + metrics["shadow"] * weights["shadow"]
+        + metrics["target_fit"] * weights["target_fit"]
+        + metrics["vitality"] * weights["vitality"]
     )
-    return round(score, 3), metrics, verdict
 
 
-def choose_best_agent(state: SystemState):
+def choose_best_agent(current_state: Any) -> Tuple[str, Dict[str, Any]]:
     results = {}
 
-    for name, delta in AGENTS.items():
-        next_state = apply_delta(state, delta)
-        score, metrics, verdict = score_state(next_state)
-        results[name] = {
-            "state": next_state,
-            "score": score,
-            "metrics": metrics,
-            "verdict": verdict,
+    for agent in ["planner", "explorer", "stabilizer"]:
+        best_class = None
+        best_score = -999
+        best_metrics = None
+
+        for class_name, weights in CLASSES.items():
+            metrics = _generate_metrics(weights)
+            score = _score_class(metrics, weights)
+
+            if score > best_score:
+                best_score = score
+                best_class = class_name
+                best_metrics = metrics
+
+        candidate = (
+            random.randint(0, 1),
+            random.randint(0, 1),
+            random.randint(0, 1),
+        )
+
+        results[agent] = {
+            "metrics": best_metrics,
+            "state": current_state,
+            "candidate_tuple": candidate,
+            "dominant_class": best_class,  # 🔥 КЛЮЧОВЕ
         }
 
-    best_name = max(results.items(), key=lambda x: x[1]["score"])[0]
-    return best_name, results
+    return "PARTY", results
