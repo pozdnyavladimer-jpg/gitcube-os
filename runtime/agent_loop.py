@@ -57,38 +57,41 @@ def _class_score(class_name: str, metrics: Dict[str, float]) -> float:
     target_fit = metrics["target_fit"]
     vitality = metrics["vitality"]
 
+    # базова формула
     score = coherence - shadow + target_fit + vitality
 
+    # --- BALANCE FIX ---
+
     if class_name == "TANK":
-        score += 0.10
+        score += 0.08
         if shadow > 0.12:
             score += 0.08
         if coherence < 0.86:
-            score += 0.06
-
-    elif class_name == "HEALER":
-        score += 0.08
-        if shadow > 0.10:
-            score += 0.10
-        if coherence < 0.90:
-            score += 0.08
-
-    elif class_name == "MAGE":
-        score += 0.06
-        if vitality > 0.70:
-            score += 0.08
-        if target_fit > 0.30:
             score += 0.05
 
+    elif class_name == "HEALER":
+        score += 0.10
+        if shadow > 0.10:
+            score += 0.12
+        if vitality < 0.4:
+            score += 0.10
+
+    elif class_name == "MAGE":
+        score += 0.03
+        if vitality > 0.75:
+            score += 0.05
+        if target_fit > 0.35:
+            score += 0.03
+
     elif class_name == "ARCHER":
-        score += 0.05
+        score += 0.07
         if target_fit > 0.34:
             score += 0.10
         if coherence > 0.88:
-            score += 0.03
+            score += 0.04
 
     elif class_name == "ASSASSIN":
-        # ASSASSIN = кризовий інструмент, а не базовий режим
+        # кризовий клас — не базовий
         score -= 0.22
         if shadow > 0.14:
             score += 0.18
@@ -112,6 +115,7 @@ def choose_best_agent(current_state: Any) -> Tuple[str, Dict[str, Any]]:
         for class_name, weights in CLASSES.items():
             candidate_state = mutate_state(current_state, weights)
             metrics = compute_metrics(candidate_state)
+
             score = _class_score(class_name, metrics)
 
             if score > best_score:
