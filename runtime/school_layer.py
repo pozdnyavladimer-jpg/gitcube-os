@@ -32,10 +32,6 @@ def _clamp(value: float, low: float, high: float) -> float:
 
 
 def class_fatigue_penalty(class_name: str, history: List[str], window: int = 12) -> float:
-    """
-    Плавна втома класу.
-    ASSASSIN втомлюється значно швидше, бо це рідкісний інструмент.
-    """
     if not class_name:
         return 0.0
 
@@ -50,18 +46,14 @@ def class_fatigue_penalty(class_name: str, history: List[str], window: int = 12)
         "ARCHER": 0.05,
         "MAGE": 0.06,
         "HEALER": 0.05,
-        "ASSASSIN": 0.16,
+        "ASSASSIN": 0.18,
     }.get(class_name, 0.05)
 
     penalty = (count - 1) * base_multiplier
-    return round(_clamp(penalty, 0.0, 0.75), 3)
+    return round(_clamp(penalty, 0.0, 0.85), 3)
 
 
 def class_dominance_penalty(class_name: str, history: List[str], window: int = 10) -> float:
-    """
-    Додатковий штраф, якщо один клас займає надто велику частку історії.
-    Особливо важливо для ASSASSIN.
-    """
     if not class_name:
         return 0.0
 
@@ -79,11 +71,11 @@ def class_dominance_penalty(class_name: str, history: List[str], window: int = 1
         "ARCHER": 0.10,
         "MAGE": 0.12,
         "HEALER": 0.10,
-        "ASSASSIN": 0.25,
+        "ASSASSIN": 0.30,
     }.get(class_name, 0.1)
 
     penalty = (ratio - 0.5) * multiplier * 4.0
-    return round(_clamp(penalty, 0.0, 0.65), 3)
+    return round(_clamp(penalty, 0.0, 0.75), 3)
 
 
 def environment_pressure_bonus(
@@ -93,14 +85,6 @@ def environment_pressure_bonus(
     reject_streak: int,
     allowed_moves: int,
 ) -> float:
-    """
-    Плавна атмосфера:
-    - TANK потрібен при нестабільності
-    - HEALER потрібен при reject / recovery
-    - MAGE і ARCHER ростуть у спокої
-    - ASSASSIN вмикається тільки при справжній кризі
-    """
-
     bonus = 0.0
 
     instability = _clamp(1.0 - stability_score, 0.0, 1.0)
@@ -128,26 +112,18 @@ def environment_pressure_bonus(
     elif class_name == "ASSASSIN":
         crisis = max(blocked_pressure, reject_pressure)
 
-        # Якщо кризи немає — ассасин небажаний
         if crisis < 0.25:
-            bonus -= 0.28
+            bonus -= 0.30
         else:
             bonus += crisis * 0.18
 
-        # У спокійному середовищі шкодить
         bonus -= calmness * 0.14
         bonus -= system_maturity * 0.06
 
-    return round(_clamp(bonus, -0.45, 0.45), 3)
+    return round(_clamp(bonus, -0.50, 0.45), 3)
 
 
 def counter_class_bonus(class_name: str, history: List[str], window: int = 10) -> float:
-    """
-    Контр-реакція на перекіс історії.
-    Якщо домінує ASSASSIN -> трохи підсилюємо TANK / HEALER.
-    Якщо домінує TANK -> трохи підсилюємо MAGE / ARCHER.
-    Якщо домінує MAGE -> трохи ARCHER.
-    """
     recent = history[-window:]
     if not recent:
         return 0.0
