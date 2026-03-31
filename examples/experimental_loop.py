@@ -1,0 +1,700 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyO6bCU39IgjmJUgsvktVqkL",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/pozdnyavladimer-jpg/gitcube-os/blob/main/examples/experimental_loop.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "YkiJf6kW8ASd",
+        "outputId": "5b80e4d4-d3b4-4bfd-e652-9e5f7acb4134"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Colab is alive\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(\"Colab is alive\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "\n",
+        "os.makedirs(\"core\", exist_ok=True)\n",
+        "os.makedirs(\"runtime\", exist_ok=True)\n",
+        "\n",
+        "print(\"Folders created:\", os.listdir())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "7AB9o8oS8F4k",
+        "outputId": "b93b1dbf-a886-48c4-8a57-917d6e1aa4c7"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Folders created: ['.config', 'core', 'runtime', 'sample_data']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile core/state.py\n",
+        "from dataclasses import dataclass\n",
+        "\n",
+        "STATE_KEYS = [\"pressure\", \"flow\", \"structure\", \"balance\", \"law\", \"future\"]\n",
+        "\n",
+        "\n",
+        "@dataclass\n",
+        "class SystemState:\n",
+        "    pressure: float\n",
+        "    flow: float\n",
+        "    structure: float\n",
+        "    balance: float\n",
+        "    law: float\n",
+        "    future: float\n",
+        "\n",
+        "    def to_dict(self):\n",
+        "        return self.__dict__\n",
+        "\n",
+        "    @classmethod\n",
+        "    def from_dict(cls, d):\n",
+        "        return cls(**d)\n",
+        "\n",
+        "\n",
+        "def normalize_state(d):\n",
+        "    d = {k: max(0.0, float(d.get(k, 0.0))) for k in STATE_KEYS}\n",
+        "    s = sum(d.values()) or 1.0\n",
+        "    return {k: d[k] / s for k in STATE_KEYS}\n",
+        "\n",
+        "\n",
+        "def default_state():\n",
+        "    return SystemState.from_dict(normalize_state({\n",
+        "        \"pressure\": 0.22,\n",
+        "        \"flow\": 0.14,\n",
+        "        \"structure\": 0.18,\n",
+        "        \"balance\": 0.14,\n",
+        "        \"law\": 0.14,\n",
+        "        \"future\": 0.18,\n",
+        "    }))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5mTiP3AE8IK0",
+        "outputId": "6f5ce9fc-70e0-4198-ef49-59d67f81797a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing core/state.py\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile core/evaluation.py\n",
+        "def compute_metrics(state):\n",
+        "    v = state.to_dict()\n",
+        "\n",
+        "    shadow = v[\"pressure\"]\n",
+        "\n",
+        "    coherence = 1.0 - min(\n",
+        "        1.0,\n",
+        "        abs(v[\"balance\"] - v[\"structure\"]) +\n",
+        "        abs(v[\"balance\"] - v[\"flow\"])\n",
+        "    )\n",
+        "\n",
+        "    target_fit = v[\"balance\"] + v[\"structure\"]\n",
+        "    vitality = v[\"flow\"] + v[\"future\"]\n",
+        "\n",
+        "    return {\n",
+        "        \"shadow\": round(shadow, 3),\n",
+        "        \"coherence\": round(coherence, 3),\n",
+        "        \"target_fit\": round(target_fit, 3),\n",
+        "        \"vitality\": round(vitality, 3),\n",
+        "    }"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5tBgebdp8K-u",
+        "outputId": "5746027c-1a86-4723-8321-5f4d99c3349d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing core/evaluation.py\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile runtime/agent_loop.py\n",
+        "import random\n",
+        "from core.state import SystemState, normalize_state\n",
+        "from core.evaluation import compute_metrics\n",
+        "\n",
+        "\n",
+        "CLASSES = {\n",
+        "    \"TANK\": {\n",
+        "        \"pressure\": -0.10,\n",
+        "        \"structure\": 0.24,\n",
+        "        \"balance\": 0.14,\n",
+        "        \"law\": 0.06,\n",
+        "    },\n",
+        "    \"ARCHER\": {\n",
+        "        \"balance\": 0.14,\n",
+        "        \"structure\": 0.08,\n",
+        "        \"future\": 0.20,\n",
+        "        \"flow\": 0.05,\n",
+        "    },\n",
+        "    \"MAGE\": {\n",
+        "        \"flow\": 0.22,\n",
+        "        \"future\": 0.22,\n",
+        "        \"balance\": 0.04,\n",
+        "        \"pressure\": 0.03,\n",
+        "    },\n",
+        "    \"HEALER\": {\n",
+        "        \"balance\": 0.28,\n",
+        "        \"flow\": 0.12,\n",
+        "        \"pressure\": -0.18,\n",
+        "        \"law\": 0.04,\n",
+        "    },\n",
+        "    \"ASSASSIN\": {\n",
+        "        \"pressure\": -0.05,\n",
+        "        \"structure\": -0.10,\n",
+        "        \"future\": 0.12,\n",
+        "        \"balance\": -0.05,\n",
+        "    },\n",
+        "}\n",
+        "\n",
+        "\n",
+        "def mutate(state, w):\n",
+        "    d = state.to_dict()\n",
+        "    new = {}\n",
+        "\n",
+        "    for k, v in d.items():\n",
+        "        delta = w.get(k, 0.0) * random.uniform(0.65, 1.35)\n",
+        "        new[k] = v + delta\n",
+        "\n",
+        "    return SystemState.from_dict(normalize_state(new))\n",
+        "\n",
+        "\n",
+        "def score(cls, m, v_current, history):\n",
+        "    s = (\n",
+        "        m[\"coherence\"] * 1.45\n",
+        "        + m[\"vitality\"] * 1.70\n",
+        "        + m[\"target_fit\"] * 0.90\n",
+        "        - m[\"shadow\"] * 1.10\n",
+        "    )\n",
+        "\n",
+        "    recent = history[-10:]\n",
+        "    count_recent = recent.count(cls)\n",
+        "    if count_recent > 1:\n",
+        "        fatigue_map = {\n",
+        "            \"TANK\": 0.08,\n",
+        "            \"ARCHER\": 0.09,\n",
+        "            \"MAGE\": 0.11,\n",
+        "            \"HEALER\": 0.08,\n",
+        "            \"ASSASSIN\": 0.18,\n",
+        "        }\n",
+        "        s -= (count_recent - 1) * fatigue_map.get(cls, 0.1)\n",
+        "\n",
+        "    if v_current < 0.30:\n",
+        "        if cls == \"HEALER\":\n",
+        "            s += 1.4\n",
+        "        elif cls == \"TANK\":\n",
+        "            s += 0.45\n",
+        "        elif cls == \"MAGE\":\n",
+        "            s -= 0.40\n",
+        "        elif cls == \"ARCHER\":\n",
+        "            s -= 0.80\n",
+        "        elif cls == \"ASSASSIN\":\n",
+        "            s -= 1.10\n",
+        "\n",
+        "    elif v_current > 0.72:\n",
+        "        if cls == \"MAGE\":\n",
+        "            s += 1.0\n",
+        "        elif cls == \"ARCHER\":\n",
+        "            s += 0.35\n",
+        "        elif cls == \"HEALER\":\n",
+        "            s -= 0.10\n",
+        "\n",
+        "    else:\n",
+        "        if cls == \"ARCHER\":\n",
+        "            s += 0.18\n",
+        "        if cls == \"TANK\":\n",
+        "            s += 0.12\n",
+        "\n",
+        "    if cls == \"TANK\":\n",
+        "        if m[\"shadow\"] > 0.12:\n",
+        "            s += 0.10\n",
+        "        if m[\"coherence\"] < 0.86:\n",
+        "            s += 0.06\n",
+        "\n",
+        "    elif cls == \"HEALER\":\n",
+        "        if m[\"shadow\"] > 0.10:\n",
+        "            s += 0.16\n",
+        "        if m[\"coherence\"] < 0.90:\n",
+        "            s += 0.08\n",
+        "\n",
+        "    elif cls == \"MAGE\":\n",
+        "        if m[\"vitality\"] > 0.72:\n",
+        "            s += 0.08\n",
+        "        if m[\"target_fit\"] > 0.34:\n",
+        "            s += 0.06\n",
+        "\n",
+        "    elif cls == \"ARCHER\":\n",
+        "        if m[\"target_fit\"] > 0.34:\n",
+        "            s += 0.10\n",
+        "        if m[\"coherence\"] > 0.88:\n",
+        "            s += 0.04\n",
+        "\n",
+        "    elif cls == \"ASSASSIN\":\n",
+        "        s -= 0.18\n",
+        "        if m[\"shadow\"] > 0.16:\n",
+        "            s += 0.22\n",
+        "        if m[\"coherence\"] > 0.92 and m[\"shadow\"] < 0.08:\n",
+        "            s -= 0.12\n",
+        "\n",
+        "    return s\n",
+        "\n",
+        "\n",
+        "def step(state, v_current, history):\n",
+        "    best_state = None\n",
+        "    best_class = None\n",
+        "    best_metrics = None\n",
+        "    best_score = -999.0\n",
+        "\n",
+        "    for cls, w in CLASSES.items():\n",
+        "        candidate_state = mutate(state, w)\n",
+        "        metrics = compute_metrics(candidate_state)\n",
+        "        sc = score(cls, metrics, v_current, history)\n",
+        "\n",
+        "        if sc > best_score:\n",
+        "            best_score = sc\n",
+        "            best_class = cls\n",
+        "            best_metrics = metrics\n",
+        "            best_state = candidate_state\n",
+        "\n",
+        "    return best_class, best_metrics, best_state, round(best_score, 3)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4IEREsih8N54",
+        "outputId": "af5d849f-4468-46a5-a0ba-dfbfe349651a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing runtime/agent_loop.py\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile runtime/market_engine.py\n",
+        "def get_phase(step):\n",
+        "    return \"DAY\" if (step % 40) < 20 else \"NIGHT\"\n",
+        "\n",
+        "\n",
+        "def update_vitality(cls, decision, v, phase):\n",
+        "    cost_map = {\n",
+        "        \"COMMIT\": 0.05,\n",
+        "        \"SOFT_COMMIT\": 0.025,\n",
+        "        \"REJECT\": 0.01,\n",
+        "    }\n",
+        "    cost = cost_map.get(decision, 0.02)\n",
+        "\n",
+        "    if cls == \"TANK\":\n",
+        "        cost *= 0.75\n",
+        "    elif cls == \"ARCHER\":\n",
+        "        cost *= 1.00\n",
+        "    elif cls == \"MAGE\":\n",
+        "        cost *= 1.20\n",
+        "    elif cls == \"HEALER\":\n",
+        "        cost *= 0.85\n",
+        "    elif cls == \"ASSASSIN\":\n",
+        "        cost *= 1.65\n",
+        "\n",
+        "    if phase == \"NIGHT\":\n",
+        "        if cls == \"MAGE\":\n",
+        "            cost *= 1.15\n",
+        "        if cls == \"TANK\":\n",
+        "            cost *= 0.92\n",
+        "    else:\n",
+        "        if cls == \"ARCHER\":\n",
+        "            cost *= 0.95\n",
+        "\n",
+        "    bonus = 0.0\n",
+        "    if cls == \"HEALER\" and decision != \"REJECT\":\n",
+        "        bonus += 0.08\n",
+        "    elif cls == \"MAGE\" and decision == \"COMMIT\":\n",
+        "        bonus += 0.04\n",
+        "    elif cls == \"TANK\" and decision != \"REJECT\":\n",
+        "        bonus += 0.02\n",
+        "    elif cls == \"ARCHER\" and decision == \"COMMIT\":\n",
+        "        bonus += 0.015\n",
+        "\n",
+        "    new_v = v - cost + bonus\n",
+        "    return max(0.05, min(1.0, new_v))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "oGOSwyKE8SKL",
+        "outputId": "c8775a19-6a21-4e77-bd47-34996bd0c890"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing runtime/market_engine.py\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile runtime/market_transaction.py\n",
+        "def role_transaction(cls, metrics, vitality, history_len):\n",
+        "    shadow = metrics[\"shadow\"]\n",
+        "    coherence = metrics[\"coherence\"]\n",
+        "    target_fit = metrics[\"target_fit\"]\n",
+        "\n",
+        "    decision_override = None\n",
+        "    energy_delta = 0.0\n",
+        "    role_score = 0.0\n",
+        "\n",
+        "    if cls == \"HEALER\":\n",
+        "        if vitality < 0.30:\n",
+        "            decision_override = \"SOFT_COMMIT\"\n",
+        "            energy_delta += 0.08\n",
+        "            role_score += 1.2\n",
+        "        if shadow > 0.12:\n",
+        "            energy_delta += 0.04\n",
+        "            role_score += 0.5\n",
+        "\n",
+        "    elif cls == \"TANK\":\n",
+        "        if shadow > 0.14 or coherence < 0.82:\n",
+        "            decision_override = \"SOFT_COMMIT\"\n",
+        "            energy_delta += 0.03\n",
+        "            role_score += 0.8\n",
+        "        else:\n",
+        "            energy_delta += 0.01\n",
+        "\n",
+        "    elif cls == \"MAGE\":\n",
+        "        if vitality > 0.55 and coherence > 0.80:\n",
+        "            role_score += 1.0\n",
+        "            energy_delta += 0.02\n",
+        "        else:\n",
+        "            role_score -= 0.4\n",
+        "\n",
+        "    elif cls == \"ARCHER\":\n",
+        "        if 0.30 <= vitality <= 0.75:\n",
+        "            role_score += 0.7\n",
+        "        if target_fit > 0.32:\n",
+        "            role_score += 0.4\n",
+        "            energy_delta += 0.015\n",
+        "\n",
+        "    elif cls == \"ASSASSIN\":\n",
+        "        if shadow > 0.18 or history_len > 12:\n",
+        "            role_score += 0.5\n",
+        "            energy_delta -= 0.03\n",
+        "        else:\n",
+        "            role_score -= 1.0\n",
+        "            energy_delta -= 0.05\n",
+        "\n",
+        "    return {\n",
+        "        \"decision_override\": decision_override,\n",
+        "        \"energy_delta\": round(energy_delta, 3),\n",
+        "        \"role_score\": round(role_score, 3),\n",
+        "    }"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1Jzffvc28Vzp",
+        "outputId": "3d5361f0-7ff4-498d-baf1-2e5517e5ddd9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing runtime/market_transaction.py\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import sys\n",
+        "import os\n",
+        "\n",
+        "cwd = os.getcwd()\n",
+        "if cwd not in sys.path:\n",
+        "    sys.path.append(cwd)\n",
+        "\n",
+        "for k in list(sys.modules.keys()):\n",
+        "    if k.startswith((\"core.\", \"runtime.\")):\n",
+        "        del sys.modules[k]\n",
+        "\n",
+        "print(\"Path fixed + cache cleared\")\n",
+        "print(\"cwd =\", cwd)\n",
+        "print(\"root files =\", os.listdir())\n",
+        "print(\"core files =\", os.listdir(\"core\"))\n",
+        "print(\"runtime files =\", os.listdir(\"runtime\"))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "u62_PnTp8Y5H",
+        "outputId": "96697223-3859-47dd-8a81-061474abed0f"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Path fixed + cache cleared\n",
+            "cwd = /content\n",
+            "root files = ['.config', 'core', 'runtime', 'sample_data']\n",
+            "core files = ['evaluation.py', 'state.py']\n",
+            "runtime files = ['market_transaction.py', 'market_engine.py', 'agent_loop.py']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from core.state import default_state\n",
+        "from runtime.agent_loop import step\n",
+        "from runtime.market_engine import update_vitality, get_phase\n",
+        "from runtime.market_transaction import role_transaction\n",
+        "\n",
+        "print(\"Imports OK\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ShUByaMv8cep",
+        "outputId": "f9c7e59c-e29c-4b6f-e8ed-d56dc250adf3"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Imports OK\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from collections import Counter\n",
+        "\n",
+        "state = default_state()\n",
+        "vitality = 0.40\n",
+        "history = []\n",
+        "logs = []\n",
+        "\n",
+        "print(f\"{'step':<4} {'class':<10} {'decision':<12} {'v':<6} {'phase':<6} {'econ':<6}\")\n",
+        "print(\"-\" * 56)\n",
+        "\n",
+        "for i in range(100):\n",
+        "    phase = get_phase(i)\n",
+        "\n",
+        "    cls, metrics, state, sc = step(state, vitality, history)\n",
+        "\n",
+        "    if metrics[\"coherence\"] > 0.87 and metrics[\"shadow\"] <= 0.14:\n",
+        "        decision = \"COMMIT\"\n",
+        "    elif metrics[\"coherence\"] > 0.74:\n",
+        "        decision = \"SOFT_COMMIT\"\n",
+        "    else:\n",
+        "        decision = \"REJECT\"\n",
+        "\n",
+        "    tx = role_transaction(\n",
+        "        cls=cls,\n",
+        "        metrics=metrics,\n",
+        "        vitality=vitality,\n",
+        "        history_len=len(history),\n",
+        "    )\n",
+        "\n",
+        "    if tx[\"decision_override\"] is not None:\n",
+        "        decision = tx[\"decision_override\"]\n",
+        "\n",
+        "    vitality = update_vitality(cls, decision, vitality, phase)\n",
+        "    vitality = max(0.05, min(1.0, vitality + tx[\"energy_delta\"]))\n",
+        "\n",
+        "    history.append(cls)\n",
+        "\n",
+        "    logs.append({\n",
+        "        \"step\": i,\n",
+        "        \"class\": cls,\n",
+        "        \"decision\": decision,\n",
+        "        \"vitality\": round(vitality, 3),\n",
+        "        \"phase\": phase,\n",
+        "        \"econ\": tx,\n",
+        "        \"score\": sc,\n",
+        "        \"metrics\": metrics,\n",
+        "    })\n",
+        "\n",
+        "    if i % 5 == 0:\n",
+        "        print(\n",
+        "            f\"{i:<4} {cls:<10} {decision:<12} {round(vitality,3):<6} {phase:<6} {tx['role_score']:<6}\"\n",
+        "        )\n",
+        "\n",
+        "print(\"-\" * 56)\n",
+        "print(\"done\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eSDZ0LDY8fAI",
+        "outputId": "f7449209-e1d1-4b5a-8dfb-62cccbbf10f0"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "step class      decision     v      phase  econ  \n",
+            "--------------------------------------------------------\n",
+            "0    ARCHER     SOFT_COMMIT  0.391  DAY    1.1   \n",
+            "5    MAGE       COMMIT       0.328  DAY    -0.4  \n",
+            "10   HEALER     SOFT_COMMIT  0.431  DAY    1.2   \n",
+            "15   ASSASSIN   SOFT_COMMIT  0.345  DAY    0.5   \n",
+            "20   MAGE       COMMIT       0.404  NIGHT  -0.4  \n",
+            "25   MAGE       SOFT_COMMIT  0.355  NIGHT  -0.4  \n",
+            "30   TANK       SOFT_COMMIT  0.315  NIGHT  0.0   \n",
+            "35   TANK       SOFT_COMMIT  0.467  NIGHT  0.8   \n",
+            "40   ASSASSIN   COMMIT       0.193  DAY    0.5   \n",
+            "45   ARCHER     COMMIT       0.286  DAY    1.1   \n",
+            "50   ARCHER     COMMIT       0.371  DAY    1.1   \n",
+            "55   TANK       COMMIT       0.383  DAY    0.0   \n",
+            "60   MAGE       COMMIT       0.319  NIGHT  -0.4  \n",
+            "65   MAGE       SOFT_COMMIT  0.413  NIGHT  -0.4  \n",
+            "70   TANK       COMMIT       0.301  NIGHT  0.0   \n",
+            "75   ARCHER     SOFT_COMMIT  0.371  NIGHT  1.1   \n",
+            "80   MAGE       SOFT_COMMIT  0.282  DAY    -0.4  \n",
+            "85   TANK       COMMIT       0.396  DAY    0.0   \n",
+            "90   ARCHER     COMMIT       0.323  DAY    1.1   \n",
+            "95   TANK       SOFT_COMMIT  0.333  DAY    0.8   \n",
+            "--------------------------------------------------------\n",
+            "done\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from collections import Counter\n",
+        "\n",
+        "class_counts = Counter([x[\"class\"] for x in logs])\n",
+        "decision_counts = Counter([x[\"decision\"] for x in logs])\n",
+        "\n",
+        "print(\"Evolution:\", dict(class_counts))\n",
+        "print(\"Decisions:\", dict(decision_counts))\n",
+        "print(\"Final vitality:\", round(logs[-1][\"vitality\"], 3))"
+      ],
+      "metadata": {
+        "id": "bHC8W5oh8iNv",
+        "outputId": "e873e367-3afb-447b-a911-4edc48f3217d",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Evolution: {'ARCHER': 38, 'MAGE': 25, 'TANK': 18, 'HEALER': 12, 'ASSASSIN': 7}\n",
+            "Decisions: {'SOFT_COMMIT': 52, 'COMMIT': 44, 'REJECT': 4}\n",
+            "Final vitality: 0.436\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
