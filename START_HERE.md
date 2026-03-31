@@ -139,3 +139,16 @@ Run again and compare behavior.
 
 This system learns by restricting what is allowed to happen next.
 
+---
+
+
+## Experimental Features
+
+Recent updates introduce:
+
+- class-based agents
+- survival economy (vitality)
+- ecology penalties
+- class interaction effects
+
+These are currently tested separately and may not be fully active in all execution paths.
