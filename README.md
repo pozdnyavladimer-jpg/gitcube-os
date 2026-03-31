@@ -69,6 +69,11 @@ The system is currently evolving beyond pure constraint-based execution into a r
 
 A new experimental layer introduces **class-driven dynamics and survival economics**.
 
+Experimental Colab demo:
+
+- `examples/experimental_loop.ipynb`
+
+This notebook contains the current sandbox implementation of the field-driven survival economy loop.
 ### Agent-Class System
 
 Each agent operates through a dominant class:
