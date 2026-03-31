@@ -63,6 +63,101 @@ The OS layer currently includes:
 
 ---
 
+## Runtime Evolution Layer (Experimental)
+
+The system is currently evolving beyond pure constraint-based execution into a richer adaptive runtime.
+
+A new experimental layer introduces **class-driven dynamics and survival economics**.
+
+### Agent-Class System
+
+Each agent operates through a dominant class:
+
+- TANK -> structural stabilizer
+- ARCHER -> directional optimizer
+- MAGE -> flow and expansion driver
+- HEALER -> recovery and coherence stabilizer
+- ASSASSIN -> disruption and escape mechanism
+
+Classes are not cosmetic — they modify how state transitions behave.
+
+Implemented in:
+
+- `runtime/agent_loop.py`
+
+### Market & Vitality Dynamics (Experimental)
+
+State evolution now includes a simple resource model:
+
+- actions consume energy
+- different classes have different costs
+- survival depends on maintaining vitality
+
+Key properties:
+
+- COMMIT -> highest cost
+- SOFT_COMMIT -> moderate cost
+- REJECT -> minimal cost
+- FORCE_ESCAPE -> controlled reset cost
+
+Class modifiers:
+
+- ASSASSIN -> high cost (chaotic)
+- MAGE -> expensive (high activity)
+- TANK / HEALER -> efficient (stabilizing)
+
+Implemented in:
+
+- `runtime/market_engine.py`
+
+> Note: market richness and environment effects are currently partial and subject to integration.
+
+### Ecology Pressure
+
+The system penalizes over-dominance of a single class:
+
+- repeated use of the same class reduces its effectiveness
+- encourages diversity in behavioral patterns
+
+Implemented in:
+
+- `runtime/ecology.py`
+
+### Class Interaction Effects
+
+Classes influence each other through short-term memory.
+
+Examples:
+
+- ASSASSIN weakens in presence of TANK
+- HEALER gains value in chaotic environments
+- MAGE synergy depends on ARCHER presence
+
+Implemented in:
+
+- `runtime/class_interactions.py`
+
+### Interpretation
+
+This layer shifts the system from:
+
+> static constraint validation
+
+to:
+
+> adaptive survival under resource and interaction pressure
+
+The system begins to behave more like an ecosystem than a filter.
+
+### Status
+
+This layer is **experimental** and not yet fully integrated into the main execution loop (`StateEngine`).
+
+Future work includes:
+
+- full integration into decision pipeline
+- coupling with adaptive bindu thresholds
+- market-state feedback into metrics
 ## Execution Flow (Detailed)
 
 At runtime, the system follows this sequence:
