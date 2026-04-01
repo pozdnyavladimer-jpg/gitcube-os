@@ -1,154 +1,125 @@
 # START HERE
 
-This repository is the OS layer of the GitCube system.
+This repo has two paths:
+
+- Stable Runtime
+- Experimental Runtime
 
 ---
 
-## What to do first
-
-1. Read:
-   docs/ARCHITECTURE.md
-
-2. Run:
-
-    python examples/simple_loop.py
-
-3. Then explore:
-
-- examples/loop_run.py
-- runtime/agent_loop.py
-- runtime/adaptive_bindu.py
-- runtime/memory_control.py
-- runtime/agent_learning.py
-
----
-
-## Minimal Mental Model
-
-Think of the system as:
-
-state → agents → metrics → filters → decision → memory → adaptation
-
-Each step modifies what is possible next.
-
----
-
-## Key Files
-
-Core logic:
-
-- core/state.py
-- core/topological_filter.py
-
-Runtime:
-
-- runtime/agent_loop.py
-- runtime/adaptive_bindu.py
-- runtime/memory_control.py
-- runtime/agent_learning.py
-
-Integration:
-
-- examples/loop_run.py
-
----
-
-## What To Look For During Execution
+## 1. Stable Runtime
 
 Run:
 
-    python examples/loop_run.py
+PYTHONPATH=. python examples/simple_loop.py
 
-Watch for:
+Use this if you want:
 
-- selected_agent
-- agent_bias
-- memory_control
-- bindu decision
-- threshold changes
+- canonical behavior
+- bindu logic
+- transition memory
 
-These logs show how the system adapts.
+Key files:
+
+- app/state_engine.py
+- core/state.py
+- core/evaluation.py
+- runtime/agent_loop.py
 
 ---
 
-## Interpreting Output
+## 2. Experimental Runtime
 
-- many SOFT_COMMIT → system is uncertain  
-- many REJECT → thresholds are tightening  
-- COMMIT appears → stable trajectory  
+Run:
+
+PYTHONPATH=. python examples/experimental_loop.py
+
+This gives:
+
+- field (environment)
+- class dynamics
+- vitality economy
+- adaptive behavior
+
+Key files:
+
+- runtime_experimental/field_engine.py
+- runtime_experimental/agent_loop.py
+- runtime_experimental/role_transaction.py
+- runtime_experimental/vitality_engine.py
+
+---
+
+## Mental Model
+
+Stable:
+
+state → decision → update
+
+Experimental:
+
+state → field → class → decision → vitality → update
+
+---
+
+## Repo Structure
+
+app/
+core/
+runtime/
+runtime_experimental/
+examples/
+docs/
+
+---
+
+## Which to use
+
+Stable → control, debugging  
+Experimental → behavior, evolution  
+
+---
+
+## What to watch
+
+Stable:
+
+- decision
+- bindu
+- state change
+
+Experimental:
+
+- class
+- vitality
+- field mode
+- decisions
 
 ---
 
 ## Important
 
-Do not treat this as a standard ML system.
+Do not mix experimental into stable too early.
 
-There is:
-
-- no loss function  
-- no gradient descent  
-- no probability sampling  
-
-Instead:
-
-- structure replaces probability  
-- filtering replaces scoring  
-- survival replaces optimization  
+runtime/ = stable  
+runtime_experimental/ = evolving  
 
 ---
 
-## Execution Logic (Simple)
+## Entry Point
 
-1. select agent  
-2. compute metrics  
-3. apply topological filter  
-4. apply bindu decision  
-5. update or reject state  
-6. write memory  
-7. adapt thresholds  
+Best start:
 
----
-
-## What this repo does
-
-This repo takes pattern logic out of experimental notebooks
-and moves it into a stable executable layer.
-
-It answers:
-
-- what state the system is in  
-- whether that state is valid  
-- what transition is allowed next  
-- what should be retained  
-
----
-
-## Next Step
-
-Once comfortable:
-
-- modify adaptive_bindu.py
-- modify memory_control.py
-- observe agent_learning.py
-
-Run again and compare behavior.
+PYTHONPATH=. python examples/experimental_loop.py
 
 ---
 
 ## One-line
 
-This system learns by restricting what is allowed to happen next.
+GitCube OS executes adaptive state logic.
 
 ---
 
+## One-line (Experimental)
 
-## Experimental Features
-
-Recent updates introduce:
-
-- class-based agents
-- survival economy (vitality)
-- ecology penalties
-- class interaction effects
-
-These are currently tested separately and may not be fully active in all execution paths.
+Experimental runtime turns the system into a living adaptive field.
