@@ -1,42 +1,142 @@
-# GitCube OS Architecture
+# GitCube OS — Architecture
+
+GitCube OS is a layered execution system.
+
+It transforms abstract structure into runtime behavior.
 
 ---
 
-## Overview
+## 1. Global Structure
 
-GitCube OS is an execution system built around constrained state transitions.
+The system is divided into 3 layers:
 
-Unlike traditional AI systems, it does not optimize outputs.
+1. Lab Layer  
+2. Navigator Layer  
+3. OS Layer  
 
-It enforces which states are allowed to exist and persist.
+Flow:
 
----
-
-## Core Principle
-
-The system operates as a constraint-driven loop:
-
-state → agents → metrics → filter → decision → memory → adaptation
-
-Each stage restricts the next.
+Lab → Navigator → OS
 
 ---
 
-## System Layers
+## 2. OS Layer (This Repo)
 
-The architecture can be understood as layered execution:
+GitCube OS is responsible for:
+
+- execution
+- validation
+- decision making
+- adaptive control
+
+It answers:
+
+- what state is valid
+- what transition is allowed
+- what survives
 
 ---
 
-### 1. State Layer
+## 3. Internal Layers
 
-Represents the current system condition.
+Inside GitCube OS:
 
-Defined in:
+### core/
 
-core/state.py
+Pure logic:
 
-Contains:
+- state definition
+- normalization
+- metrics
+
+Files:
+
+- state.py
+- evaluation.py
+
+---
+
+### runtime/
+
+Stable execution engine:
+
+- agent loop
+- bindu logic
+- transition control
+- memory
+
+This layer is deterministic and safe.
+
+---
+
+### runtime_experimental/
+
+Adaptive field layer:
+
+- environment (field)
+- class dynamics
+- vitality system
+- role transactions
+
+This layer introduces:
+
+- non-linear behavior
+- adaptive priorities
+- ecological dynamics
+
+---
+
+### app/
+
+High-level orchestration:
+
+- state engine
+- system coordination
+
+---
+
+### examples/
+
+Entry points:
+
+- simple_loop.py → stable
+- experimental_loop.py → adaptive
+
+---
+
+## 4. Execution Models
+
+### Stable Model
+
+state  
+→ metrics  
+→ decision  
+→ update  
+→ memory  
+
+This is a closed deterministic loop.
+
+---
+
+### Experimental Model
+
+state  
+→ field  
+→ class selection  
+→ role interaction  
+→ decision  
+→ vitality update  
+→ state update  
+
+This is a dynamic adaptive loop.
+
+---
+
+## 5. Core Concepts
+
+### State
+
+6-dimensional vector:
 
 - pressure
 - flow
@@ -45,230 +145,97 @@ Contains:
 - law
 - future
 
-State is the primary object of transformation.
+---
+
+### Metrics
+
+Derived values:
+
+- shadow → instability / pressure
+- coherence → alignment
+- target_fit → goal alignment
+- vitality → energy / survival
 
 ---
 
-### 2. Agent Layer
+### Bindu
 
-Agents are transformation functions:
+Decision threshold:
 
-T_i : S -> S
+- determines commit vs reject
+- adapts over time
 
-Implemented in:
+---
 
-runtime/agent_loop.py
+### Field (Experimental)
+
+Environment that modifies behavior.
 
 Examples:
 
-- planner
-- critic
-- explorer
-- stabilizer
-
-Agents propose candidate next states.
+- CRISIS
+- FLOW
+- STAGNATION
+- REFRACTORY
 
 ---
 
-### 3. Metric Layer
+### Classes (Experimental)
 
-Each candidate state is evaluated through metrics:
+Behavior roles:
 
-- coherence
-- shadow
-- target_fit
-- vitality
-
-These define whether a state is viable.
-
----
-
-### 4. Topological Filter
-
-Implemented in:
-
-core/topological_filter.py
-
-Purpose:
-
-Reject structurally invalid states before decision.
-
-This acts as a hard constraint system.
-
-If a state fails here, it cannot propagate further.
+- TANK → stabilize
+- ARCHER → act
+- MAGE → transform
+- HEALER → restore
+- ASSASSIN → disrupt
 
 ---
 
-### 5. Decision Layer (Bindu)
+## 6. System Evolution
 
-Implemented in:
+The system evolves in layers:
 
-runtime/adaptive_bindu.py
-
-Produces:
-
-- COMMIT
-- SOFT_COMMIT
-- REJECT
-
-Decision is not binary acceptance.
-
-It is adaptive and depends on:
-
-- metrics
-- memory
-- thresholds
+1. static validation
+2. adaptive thresholds
+3. environment influence
+4. role-based behavior
+5. full ecosystem
 
 ---
 
-### 6. Memory Layer
+## 7. Design Principle
 
-Implemented in:
+The system is not probabilistic.
 
-runtime/memory.py
+It is:
 
-Stores:
-
-- accepted states
-- rejected attempts
-- agent behavior history
-
-Memory is not passive.
-
-It actively modifies system behavior.
+- constraint-driven
+- state-based
+- survival-oriented
 
 ---
 
-### 7. Memory Control
+## 8. Future Direction
 
-Implemented in:
+Planned:
 
-runtime/memory_control.py
-
-Derives:
-
-- coherence bonus
-- shadow tolerance
-- caution bias
-
-This affects decision thresholds.
+- memory-aware field
+- graph-based field input
+- attractor dynamics
+- long-term vitality control
+- navigator integration
 
 ---
 
-### 8. Agent Learning
+## 9. Summary
 
-Implemented in:
+GitCube OS is an execution engine.
 
-runtime/agent_learning.py
-
-Adjusts:
-
-- agent selection bias
-
-Agents that succeed gain influence.
-
-Agents that fail lose influence.
+It converts structure into behavior.
 
 ---
 
-### 9. Execution Loop
+## One-line
 
-Implemented in:
-
-examples/loop_run.py
-
-Flow:
-
-1. select agent
-2. generate candidate state
-3. compute metrics
-4. apply topological filter
-5. apply bindu decision
-6. update state if accepted
-7. update memory
-8. adjust thresholds
-
----
-
-## Data Flow
-
-state → agent → candidate  
-candidate → metrics  
-metrics → filter  
-filter → decision  
-decision → memory  
-memory → future decisions  
-
-This creates a closed adaptive loop.
-
----
-
-## Key Properties
-
-### Constraint-driven
-
-The system enforces validity instead of optimizing output.
-
----
-
-### Stateful
-
-Decisions depend on history, not only current input.
-
----
-
-### Adaptive
-
-Thresholds and behavior change over time.
-
----
-
-### Non-probabilistic
-
-No sampling, no logits, no softmax.
-
----
-
-## Conceptual Mapping
-
-GitCube OS can be viewed as:
-
-- a constraint satisfaction system
-- a dynamical system
-- a control system with feedback
-- an execution OS for adaptive agents
-
----
-
-## What Makes It Different
-
-Traditional systems:
-
-- generate outputs
-- optimize likelihood
-- rely on training
-
-GitCube OS:
-
-- filters possible states
-- enforces structure
-- adapts through runtime memory
-
----
-
-## Interpretation
-
-The system does not ask:
-
-"What is the best answer?"
-
-It asks:
-
-"Is this state allowed to exist?"
-
----
-
-## One-line Summary
-
-GitCube OS is an execution system that stabilizes behavior by restricting invalid state transitions.
-
+Architecture = structure → decision → survival
