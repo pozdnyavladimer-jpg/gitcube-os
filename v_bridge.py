@@ -1,42 +1,34 @@
 import json
 import os
+import tempfile
+import time
 from datetime import datetime
 
+
 class VBridge:
-    def __init__(self, path="v_resonance.json"):
-        self.path = path
+    def __init__(self, file_path="v_resonance.json"):
+        self.file_path = file_path
 
-    def read(self):
-        if not os.path.exists(self.path):
-            return None
-        with open(self.path, "r") as f:
-            return json.load(f)
+    def read_state(self):
+        if not os.path.exists(self.file_path):
+            return {}
+        try:
+            with open(self.file_path, "r") as f:
+                return json.load(f)
+        except:
+            return {}
 
-    def write(self, data):
-        with open(self.path, "w") as f:
+    def write_state(self, data):
+        with open(self.file_path, "w") as f:
             json.dump(data, f, indent=2)
 
-    def update_flower(self, updates: dict):
-        data = self.read()
-        if not data:
-            return
-        data["flower"].update(updates)
-        data["meta"]["step"] += 1
-        data["meta"]["timestamp"] = str(datetime.utcnow())
-        self.write(data)
+    def update(self, section, patch):
+        state = self.read_state()
 
-    def set_signal(self, source, target, action, bond="NONE"):
-        data = self.read()
-        if not data:
-            return
-        data["signal"] = {
-            "source": source,
-            "target": target,
-            "action": action,
-            "bond": bond
-        }
-        self.write(data)
+        if section not in state:
+            state[section] = {}
 
-    def get_signal(self):
-        data = self.read()
-        return data.get("signal") if data else None
+        state[section].update(patch)
+        state["meta"]["updated_at"] = datetime.utcnow().isoformat()
+
+        self.write_state(state)

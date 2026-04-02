@@ -1,23 +1,28 @@
 from v_bridge import VBridge
+import time
 
-bridge = VBridge()
 
-def act():
-    signal = bridge.get_signal()
+def main():
+    bridge = VBridge()
 
-    if not signal:
-        return
+    state = bridge.read_state()
+    signal = state.get("signal", {})
 
-    if signal["action"] == "EXECUTE":
-        print("ACTOR EXECUTING:", signal)
+    action = signal.get("action", "WAIT")
 
-        # імітація дії
-        bridge.update_flower({
-            "structure": 0.9,
-            "law": 0.8
-        })
+    print("[ACTOR] action:", action)
 
-        bridge.set_signal("ACTOR", "CORE", "DONE", signal["bond"])
+    if action == "BUILD":
+        print("[ACTOR] building...")
+        bridge.update("flower", {"structure": 0.8})
+
+    elif action == "STABILIZE":
+        print("[ACTOR] stabilizing...")
+        bridge.update("flower", {"balance": 0.8})
+
+    # reset
+    bridge.update("signal", {"action": "WAIT"})
+
 
 if __name__ == "__main__":
-    act()
+    main()

@@ -1,11 +1,11 @@
 {
   "flower": {
     "pressure": 0.5,
-    "future": 0.5,
     "flow": 0.5,
-    "balance": 0.5,
     "structure": 0.5,
-    "law": 0.5
+    "balance": 0.5,
+    "law": 0.5,
+    "future": 0.5
   },
   "meta": {
     "step": 0,
@@ -14,9 +14,6 @@
     "vitality": 0.42
   },
   "signal": {
-    "source": "NONE",
-    "target": "NONE",
-    "action": "WAIT",
-    "bond": "NONE"
+    "action": "WAIT"
   }
 }
