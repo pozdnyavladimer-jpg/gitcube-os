@@ -8,9 +8,7 @@ from runtime_experimental.agent_loop import choose_best_agent
 from runtime_experimental.vitality_engine import update_vitality
 from runtime_experimental.lab_bridge import build_lab_field_patch
 
-
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
-
 
 def merge_field(base_field: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, Any]:
     out = dict(base_field)
@@ -18,14 +16,11 @@ def merge_field(base_field: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, 
         **base_field.get("weights", {}),
         **patch.get("weights", {}),
     }
-
-    for key, value in patch.items():
-        if key == "weights":
+    for k, v in patch.items():
+        if k == "weights":
             continue
-        out[key] = value
-
+        out[k] = v
     return out
-
 
 def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
     override = role_tx.get("decision_override")
@@ -41,23 +36,11 @@ def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
 
     if shadow <= 0.10 and coherence >= 0.88 and commit_score >= 1.45:
         return "COMMIT"
-
     if shadow <= 0.16 and coherence >= 0.78:
         return "SOFT_COMMIT"
-
     return "REJECT"
 
-
-def build_signal_payload(
-    *,
-    field: Dict[str, Any],
-    winner_agent: str,
-    dominant_class: str,
-    decision: str,
-    vitality: float,
-) -> Dict[str, Any]:
-    target = "ACTOR"
-
+def build_signal_payload(*, field, winner_agent, dominant_class, decision, vitality):
     if decision == "COMMIT":
         action = "BUILD"
     elif decision == "SOFT_COMMIT":
@@ -67,7 +50,7 @@ def build_signal_payload(
 
     return {
         "source": "CORE",
-        "target": target,
+        "target": "ACTOR",
         "action": action,
         "decision": decision,
         "winner_agent": winner_agent,
@@ -79,8 +62,7 @@ def build_signal_payload(
         "vitality": round(float(vitality), 3),
     }
 
-
-def main() -> None:
+def main():
     bridge = VBridge(BUS_PATH)
     bus = bridge.read_state()
 
@@ -92,17 +74,9 @@ def main() -> None:
     class_history = []
 
     field_engine = FieldEngine()
-    field = field_engine.build_field(
-        step=step,
-        vitality=vitality,
-        class_history=class_history,
-    )
+    field = field_engine.build_field(step=step, vitality=vitality, class_history=class_history)
 
-    patch = build_lab_field_patch(
-        step=step,
-        vitality=vitality,
-        history=class_history,
-    )
+    patch = build_lab_field_patch(step=step, vitality=vitality, history=class_history)
     field = merge_field(field, patch)
 
     _, agent_results = choose_best_agent(
@@ -112,10 +86,7 @@ def main() -> None:
         class_history=class_history,
     )
 
-    winner_agent = max(
-        agent_results,
-        key=lambda name: agent_results[name]["experimental_score"],
-    )
+    winner_agent = max(agent_results, key=lambda n: agent_results[n]["experimental_score"])
     winner = agent_results[winner_agent]
 
     dominant_class = str(winner["dominant_class"])
@@ -171,7 +142,6 @@ def main() -> None:
     print("phase:", field.get("phase", "DAY"))
     print("mode:", field.get("mode", "active"))
     print("vitality:", round(float(vitality), 3))
-
 
 if __name__ == "__main__":
     main()
