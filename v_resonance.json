@@ -1,19 +1,31 @@
 {
   "flower": {
-    "pressure": 0.5,
-    "flow": 0.5,
-    "structure": 0.5,
-    "balance": 0.5,
-    "law": 0.5,
-    "future": 0.5
+    "pressure": 0.111,
+    "flow": 0.133,
+    "structure": 0.175,
+    "balance": 0.8,
+    "law": 0.111,
+    "future": 0.259
   },
   "meta": {
-    "step": 0,
+    "step": 1,
     "phase": "DAY",
-    "mode": "FLOW",
-    "vitality": 0.42
+    "mode": "active",
+    "vitality": 0.43,
+    "updated_at": "2026-04-03T06:47:12.929613Z",
+    "updated_by": "UNKNOWN"
   },
   "signal": {
-    "action": "WAIT"
+    "action": "WAIT",
+    "source": "CORE",
+    "target": "ACTOR",
+    "winner_agent": "stabilizer",
+    "dominant_class": "ARCHER",
+    "decision": "SOFT_COMMIT",
+    "phase": "DAY",
+    "mode": "active",
+    "bond": "NONE",
+    "reason": "archer_soft_commit",
+    "vitality": 0.43
   }
 }

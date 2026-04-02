@@ -14,7 +14,7 @@ from runtime_experimental.vitality_engine import update_vitality
 from runtime_experimental.lab_bridge import build_lab_field_patch
 
 
-BUS_PATH = os.environ.get("V_RESONANCE_PATH", "./v_resonance.json")
+BUS_PATH = os.environ.get("V_RESONANCE_PATH", os.path.join(ROOT, "v_resonance.json"))
 
 
 def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
@@ -62,12 +62,13 @@ def build_signal_payload(
     vitality: float,
 ) -> Dict[str, Any]:
     target = "ACTOR"
-    action = "WAIT"
 
     if decision == "COMMIT":
         action = "BUILD"
     elif decision == "SOFT_COMMIT":
         action = "STABILIZE"
+    else:
+        action = "WAIT"
 
     return {
         "source": "CORE",
@@ -76,24 +77,24 @@ def build_signal_payload(
         "dominant_class": dominant_class,
         "decision": decision,
         "action": action,
-        "bond": "NONE",
         "phase": field.get("phase", "DAY"),
         "mode": field.get("mode", "active"),
-        "vitality": round(vitality, 3),
+        "bond": "NONE",
+        "reason": f"{dominant_class.lower()}_{decision.lower()}",
+        "vitality": round(float(vitality), 3),
     }
 
 
 def main() -> None:
     bridge = VBridge(BUS_PATH)
-    bus = bridge.read_state()
+    bus = bridge.read_state() or {}
 
-    flower = dict(bus.get("flower", {}))
-    meta = dict(bus.get("meta", {}))
+    meta = bus.get("meta", {}) if isinstance(bus, dict) else {}
+    step = int(meta.get("step", 0))
+    vitality = float(meta.get("vitality", 0.42))
 
     state = default_state()
-    vitality = float(meta.get("vitality", 0.42))
     class_history = []
-    step = int(meta.get("step", 0))
 
     field_engine = FieldEngine()
     field = field_engine.build_field(
@@ -133,7 +134,7 @@ def main() -> None:
         decision=decision,
         vitality=vitality,
         field=field,
-        role_tx=role_tx,
+        state=state.to_dict(),
     )
 
     if decision in ("COMMIT", "SOFT_COMMIT"):
@@ -152,7 +153,7 @@ def main() -> None:
         "step": step + 1,
         "phase": field.get("phase", "DAY"),
         "mode": field.get("mode", "active"),
-        "vitality": round(vitality, 3),
+        "vitality": round(float(vitality), 3),
     }
 
     signal_patch = build_signal_payload(
@@ -167,13 +168,13 @@ def main() -> None:
     bridge.update("meta", meta_patch, updated_by="CORE")
     bridge.update("signal", signal_patch, updated_by="CORE")
 
-    print("CORE step:", step)
+    print("CORE STEP:", step)
     print("winner_agent:", winner_agent)
     print("dominant_class:", dominant_class)
     print("decision:", decision)
     print("phase:", field.get("phase", "DAY"))
     print("mode:", field.get("mode", "active"))
-    print("vitality:", round(vitality, 3))
+    print("vitality:", round(float(vitality), 3))
 
 
 if __name__ == "__main__":
