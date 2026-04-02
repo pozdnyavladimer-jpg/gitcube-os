@@ -1,10 +1,5 @@
 import os
-import sys
 from typing import Dict, Any
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
 
 from v_bridge import VBridge
 from core.state import default_state
@@ -14,7 +9,22 @@ from runtime_experimental.vitality_engine import update_vitality
 from runtime_experimental.lab_bridge import build_lab_field_patch
 
 
-BUS_PATH = os.environ.get("V_RESONANCE_PATH", os.path.join(ROOT, "v_resonance.json"))
+BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
+
+
+def merge_field(base_field: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, Any]:
+    out = dict(base_field)
+    out["weights"] = {
+        **base_field.get("weights", {}),
+        **patch.get("weights", {}),
+    }
+
+    for key, value in patch.items():
+        if key == "weights":
+            continue
+        out[key] = value
+
+    return out
 
 
 def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
@@ -38,23 +48,8 @@ def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
     return "REJECT"
 
 
-def merge_field(base_field: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, Any]:
-    out = dict(base_field)
-
-    out["weights"] = {
-        **base_field.get("weights", {}),
-        **patch.get("weights", {}),
-    }
-
-    for key, value in patch.items():
-        if key == "weights":
-            continue
-        out[key] = value
-
-    return out
-
-
 def build_signal_payload(
+    *,
     field: Dict[str, Any],
     winner_agent: str,
     dominant_class: str,
@@ -73,27 +68,27 @@ def build_signal_payload(
     return {
         "source": "CORE",
         "target": target,
+        "action": action,
+        "decision": decision,
         "winner_agent": winner_agent,
         "dominant_class": dominant_class,
-        "decision": decision,
-        "action": action,
         "phase": field.get("phase", "DAY"),
         "mode": field.get("mode", "active"),
         "bond": "NONE",
-        "reason": f"{dominant_class.lower()}_{decision.lower()}",
+        "reason": f"{dominant_class}_{decision}".lower(),
         "vitality": round(float(vitality), 3),
     }
 
 
 def main() -> None:
     bridge = VBridge(BUS_PATH)
-    bus = bridge.read_state() or {}
+    bus = bridge.read_state()
 
-    meta = bus.get("meta", {}) if isinstance(bus, dict) else {}
-    step = int(meta.get("step", 0))
-    vitality = float(meta.get("vitality", 0.42))
+    meta = bus.get("meta", {})
 
     state = default_state()
+    vitality = float(meta.get("vitality", 0.42))
+    step = int(meta.get("step", 0))
     class_history = []
 
     field_engine = FieldEngine()
@@ -135,6 +130,7 @@ def main() -> None:
         vitality=vitality,
         field=field,
         state=state.to_dict(),
+        role_tx=role_tx,
     )
 
     if decision in ("COMMIT", "SOFT_COMMIT"):
