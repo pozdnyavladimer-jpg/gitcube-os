@@ -1,11 +1,14 @@
 from typing import Dict, Any, List, Optional
 
 
-def tank_guard(state: Dict[str, float]) -> Optional[Dict[str, Any]]:
+def tank_guard(state: Dict[str, float], action_history: List[str]) -> Optional[Dict[str, Any]]:
     structure = float(state.get("structure", 0.0))
     balance = float(state.get("balance", 0.0))
 
-    if structure < 0.20:
+    recent = [str(x) for x in action_history[-5:]]
+    tank_count = recent.count("EMERGENCY_STABILIZE")
+
+    if structure < 0.20 and tank_count < 3:
         return {
             "role": "TANK",
             "action": "EMERGENCY_STABILIZE",
@@ -14,7 +17,7 @@ def tank_guard(state: Dict[str, float]) -> Optional[Dict[str, Any]]:
             "priority": 100,
         }
 
-    if balance < 0.15:
+    if balance < 0.15 and tank_count < 3:
         return {
             "role": "TANK",
             "action": "REBALANCE",
@@ -39,6 +42,7 @@ def mage_anti_stall(action_history: List[str]) -> Optional[Dict[str, Any]]:
             "new_mode": "law_boost",
             "reason": f"loop_detected:{last_actions[0]}",
             "priority": 80,
+            "repair_state": True,
         }
 
     return None
@@ -87,7 +91,7 @@ def choose_coordination_effect(
 ) -> Dict[str, Any]:
     effects = []
 
-    tank = tank_guard(state)
+    tank = tank_guard(state, action_history)
     if tank:
         effects.append(tank)
 

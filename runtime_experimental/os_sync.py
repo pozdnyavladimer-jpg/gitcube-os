@@ -2,7 +2,7 @@ import os
 from typing import Dict, Any, List
 
 from v_bridge import VBridge
-from core.state import default_state
+from core.state import default_state, normalize_state, SystemState
 from runtime_experimental.field_engine import FieldEngine
 from runtime_experimental.agent_loop import choose_best_agent
 from runtime_experimental.vitality_engine import update_vitality
@@ -50,6 +50,16 @@ def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
     return "REJECT"
 
 
+def apply_mage_repair(state_vector: Dict[str, float]) -> Dict[str, float]:
+    patched = dict(state_vector)
+    patched["structure"] = float(patched.get("structure", 0.0)) + 0.04
+    patched["law"] = float(patched.get("law", 0.0)) + 0.03
+    patched["flow"] = float(patched.get("flow", 0.0)) + 0.01
+    patched["future"] = max(0.0, float(patched.get("future", 0.0)) - 0.02)
+    patched["pressure"] = max(0.0, float(patched.get("pressure", 0.0)) - 0.01)
+    return normalize_state(patched)
+
+
 def build_signal_payload(*, field, winner_agent, dominant_class, decision, vitality, coordination):
     if decision == "COMMIT":
         action = "BUILD"
@@ -89,7 +99,6 @@ def main():
 
     flower = dict(bus.get("flower", {}))
     meta = dict(bus.get("meta", {}))
-    prev_signal = dict(bus.get("signal", {}))
 
     state = default_state()
     vitality = float(meta.get("vitality", 0.42))
@@ -133,6 +142,12 @@ def main():
 
     if coordination.get("new_mode"):
         field["mode"] = coordination["new_mode"]
+
+    repaired = False
+    if coordination.get("role") == "MAGE" and coordination.get("repair_state"):
+        current_state_vector = apply_mage_repair(current_state_vector)
+        state = SystemState.from_dict(current_state_vector)
+        repaired = True
 
     _, agent_results = choose_best_agent(
         state,
@@ -214,6 +229,7 @@ def main():
     print("coordination_role:", coordination.get("role", "NONE"))
     print("coordination_action:", coordination.get("action", "STABLE"))
     print("coordination_reason:", coordination.get("reason", "none"))
+    print("mage_repair_applied:", repaired)
     print("vitality:", round(float(vitality), 3))
 
 
