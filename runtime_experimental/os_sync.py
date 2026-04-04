@@ -12,6 +12,12 @@ from runtime_experimental.navigator_bridge import (
     build_feedback_patch,
 )
 from runtime_experimental.agents_logic import choose_coordination_effect
+from runtime_experimental.explorer_sensor import (
+    load_external_signal,
+    build_explorer_patch,
+    build_task_object,
+)
+from runtime_experimental.object_store import add_object, get_open_tasks, load_objects
 
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
@@ -70,6 +76,16 @@ def apply_mage_repair(state_vector: Dict[str, float]) -> Dict[str, float]:
     return normalize_state(patched)
 
 
+def apply_explorer_input(
+    state_vector: Dict[str, float],
+    explorer_patch: Dict[str, Any],
+) -> Dict[str, float]:
+    patched = dict(state_vector)
+    patched["pressure"] = float(patched.get("pressure", 0.0)) + float(explorer_patch.get("pressure_delta", 0.0))
+    patched["future"] = float(patched.get("future", 0.0)) + float(explorer_patch.get("future_delta", 0.0))
+    return normalize_state(patched)
+
+
 def apply_epigenetic_clamp(
     state_vector: Dict[str, float],
     structure_floor: float,
@@ -115,6 +131,9 @@ def build_signal_payload(
     decision: str,
     vitality: float,
     coordination: Dict[str, Any],
+    explorer_patch: Dict[str, Any],
+    open_task_count: int,
+    latest_task_id: str,
 ) -> Dict[str, Any]:
     if decision == "COMMIT":
         actor_action = "BUILD"
@@ -139,6 +158,11 @@ def build_signal_payload(
         "coordination_role": coordination.get("role", "NONE"),
         "coordination_action": coordination.get("action", "STABLE"),
         "coordination_reason": coordination.get("reason", "none"),
+        "explorer_kind": explorer_patch.get("kind", "none"),
+        "explorer_pressure_delta": explorer_patch.get("pressure_delta", 0.0),
+        "explorer_future_delta": explorer_patch.get("future_delta", 0.0),
+        "open_task_count": int(open_task_count),
+        "latest_task_id": latest_task_id,
     }
 
 
@@ -175,6 +199,19 @@ def main():
         "future": float(flower.get("future", state.future)),
     }
 
+    external_signal = load_external_signal()
+    explorer_patch = build_explorer_patch(external_signal)
+    current_state_vector = apply_explorer_input(current_state_vector, explorer_patch)
+    state = SystemState.from_dict(current_state_vector)
+
+    latest_task_id = ""
+    if explorer_patch.get("kind") in ("task", "issue", "opportunity", "warning"):
+        task_obj = build_task_object(external_signal)
+        created = add_object(task_obj)
+        latest_task_id = str(created.get("id", ""))
+
+    open_task_count = len(get_open_tasks())
+
     field_engine = FieldEngine()
     field = field_engine.build_field(
         step=step,
@@ -193,17 +230,15 @@ def main():
     navigator_patch = build_feedback_patch(navigator_feedback)
     field = merge_field(field, navigator_patch)
 
+    if explorer_patch.get("mode"):
+        field["mode"] = explorer_patch["mode"]
+
     coordination = choose_coordination_effect(
         state=current_state_vector,
         action_history=action_history,
         vitality_history=vitality_history,
     )
 
-    # OCTAVE HANDOVER:
-    # Archer -> default flow
-    # Mage -> only on loop
-    # Tank -> only on structural danger / repeated stabilize
-    # Explorer -> not active yet
     if coordination.get("new_mode"):
         field["mode"] = coordination["new_mode"]
 
@@ -300,6 +335,8 @@ def main():
         "class_history": updated_class_history,
         "action_history": updated_action_history,
         "vitality_history": updated_vitality_history,
+        "external_signal_kind": explorer_patch.get("kind", "none"),
+        "object_count": len(load_objects()),
     }
 
     signal_patch = build_signal_payload(
@@ -309,6 +346,9 @@ def main():
         decision=decision,
         vitality=vitality,
         coordination=coordination,
+        explorer_patch=explorer_patch,
+        open_task_count=open_task_count,
+        latest_task_id=latest_task_id,
     )
 
     bridge.update("flower", flower_patch, updated_by="CORE")
@@ -322,7 +362,9 @@ def main():
     print("decision:", decision)
     print("phase:", field.get("phase", "DAY"))
     print("mode:", field.get("mode", "active"))
-    print("navigator_action:", field.get("navigator_action", "STABLE"))
+    print("explorer_kind:", explorer_patch.get("kind", "none"))
+    print("explorer_pressure_delta:", explorer_patch.get("pressure_delta", 0.0))
+    print("explorer_future_delta:", explorer_patch.get("future_delta", 0.0))
     print("coordination_role:", coordination.get("role", "NONE"))
     print("coordination_action:", coordination.get("action", "STABLE"))
     print("coordination_reason:", coordination.get("reason", "none"))
@@ -332,6 +374,8 @@ def main():
     print("law:", flower_patch["law"])
     print("structure_floor:", floors["structure_floor"])
     print("law_floor:", floors["law_floor"])
+    print("open_task_count:", open_task_count)
+    print("latest_task_id:", latest_task_id)
     print("vitality:", round(float(vitality), 3))
 
 

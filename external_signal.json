@@ -1,0 +1,10 @@
+{
+  "source": "EXPLORER",
+  "kind": "task",
+  "intensity": 0.7,
+  "novelty": 0.6,
+  "payload": {
+    "title": "Need a new routing path",
+    "origin": "mock_issue"
+  }
+}

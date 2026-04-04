@@ -1,0 +1,92 @@
+[
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_1",
+    "result_path": "reports/task_1_20260404_114616.md"
+  },
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_2",
+    "result_path": "reports/task_2_20260404_114746.md"
+  },
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_3",
+    "result_path": "reports/task_3_20260404_114748.md"
+  },
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_4",
+    "result_path": "reports/task_4_20260404_114750.md"
+  },
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_5",
+    "result_path": "reports/task_5_20260404_114752.md"
+  },
+  {
+    "type": "task",
+    "title": "Need a new routing path",
+    "origin": "mock_issue",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.7,
+    "novelty": 0.6,
+    "payload": {
+      "title": "Need a new routing path",
+      "origin": "mock_issue"
+    },
+    "id": "task_6",
+    "result_path": "reports/task_6_20260404_114755.md"
+  }
+]
