@@ -45,9 +45,19 @@ def decide(metrics: Dict[str, float], role_tx: Dict[str, Any]) -> str:
 
     if shadow <= 0.10 and coherence >= 0.88 and commit_score >= 1.45:
         return "COMMIT"
+
     if shadow <= 0.16 and coherence >= 0.78:
         return "SOFT_COMMIT"
+
     return "REJECT"
+
+
+def apply_tank_build(state_vector: Dict[str, float]) -> Dict[str, float]:
+    patched = dict(state_vector)
+    patched["structure"] = float(patched.get("structure", 0.0)) + 0.05
+    patched["balance"] = float(patched.get("balance", 0.0)) + 0.03
+    patched["flow"] = float(patched.get("flow", 0.0)) + 0.01
+    return normalize_state(patched)
 
 
 def apply_mage_repair(state_vector: Dict[str, float]) -> Dict[str, float]:
@@ -60,18 +70,63 @@ def apply_mage_repair(state_vector: Dict[str, float]) -> Dict[str, float]:
     return normalize_state(patched)
 
 
-def build_signal_payload(*, field, winner_agent, dominant_class, decision, vitality, coordination):
+def apply_epigenetic_clamp(
+    state_vector: Dict[str, float],
+    structure_floor: float,
+    law_floor: float,
+) -> Dict[str, float]:
+    clamped = dict(state_vector)
+    clamped["structure"] = max(float(clamped.get("structure", 0.0)), float(structure_floor))
+    clamped["law"] = max(float(clamped.get("law", 0.0)), float(law_floor))
+    return normalize_state(clamped)
+
+
+def update_floors(
+    *,
+    state_vector: Dict[str, float],
+    coordination: Dict[str, Any],
+    structure_floor: float,
+    law_floor: float,
+) -> Dict[str, float]:
+    new_structure_floor = float(structure_floor)
+    new_law_floor = float(law_floor)
+
+    role = coordination.get("role")
+    action = coordination.get("action")
+
+    if role == "TANK" and action == "BUILD_STRUCTURE":
+        new_structure_floor = max(new_structure_floor, float(state_vector.get("structure", 0.0)) * 0.90)
+
+    if role == "MAGE" and coordination.get("repair_state"):
+        new_law_floor = max(new_law_floor, float(state_vector.get("law", 0.0)) * 0.85)
+        new_structure_floor = max(new_structure_floor, float(state_vector.get("structure", 0.0)) * 0.85)
+
+    return {
+        "structure_floor": round(new_structure_floor, 3),
+        "law_floor": round(new_law_floor, 3),
+    }
+
+
+def build_signal_payload(
+    *,
+    field: Dict[str, Any],
+    winner_agent: str,
+    dominant_class: str,
+    decision: str,
+    vitality: float,
+    coordination: Dict[str, Any],
+) -> Dict[str, Any]:
     if decision == "COMMIT":
-        action = "BUILD"
+        actor_action = "BUILD"
     elif decision == "SOFT_COMMIT":
-        action = "STABILIZE"
+        actor_action = "STABILIZE"
     else:
-        action = "WAIT"
+        actor_action = "WAIT"
 
     return {
         "source": "CORE",
         "target": "ACTOR",
-        "action": action,
+        "action": actor_action,
         "decision": decision,
         "winner_agent": winner_agent,
         "dominant_class": dominant_class,
@@ -103,9 +158,13 @@ def main():
     state = default_state()
     vitality = float(meta.get("vitality", 0.42))
     step = int(meta.get("step", 0))
+
     class_history = _tail_list(meta.get("class_history", []), 20)
     action_history = _tail_list(meta.get("action_history", []), 10)
     vitality_history = _tail_list(meta.get("vitality_history", []), 10)
+
+    structure_floor = float(meta.get("structure_floor", 0.15))
+    law_floor = float(meta.get("law_floor", 0.10))
 
     current_state_vector = {
         "pressure": float(flower.get("pressure", state.pressure)),
@@ -140,14 +199,26 @@ def main():
         vitality_history=vitality_history,
     )
 
+    # OCTAVE HANDOVER:
+    # Archer -> default flow
+    # Mage -> only on loop
+    # Tank -> only on structural danger / repeated stabilize
+    # Explorer -> not active yet
     if coordination.get("new_mode"):
         field["mode"] = coordination["new_mode"]
 
-    repaired = False
+    tank_build_applied = False
+    mage_repair_applied = False
+
+    if coordination.get("role") == "TANK" and coordination.get("build_state"):
+        current_state_vector = apply_tank_build(current_state_vector)
+        state = SystemState.from_dict(current_state_vector)
+        tank_build_applied = True
+
     if coordination.get("role") == "MAGE" and coordination.get("repair_state"):
         current_state_vector = apply_mage_repair(current_state_vector)
         state = SystemState.from_dict(current_state_vector)
-        repaired = True
+        mage_repair_applied = True
 
     _, agent_results = choose_best_agent(
         state,
@@ -158,7 +229,7 @@ def main():
 
     winner_agent = max(
         agent_results,
-        key=lambda n: agent_results[n]["experimental_score"],
+        key=lambda name: agent_results[name]["experimental_score"],
     )
     winner = agent_results[winner_agent]
 
@@ -180,6 +251,30 @@ def main():
     if decision in ("COMMIT", "SOFT_COMMIT"):
         state = winner["state"]
 
+    committed_state_vector = {
+        "pressure": float(state.pressure),
+        "flow": float(state.flow),
+        "structure": float(state.structure),
+        "balance": float(state.balance),
+        "law": float(state.law),
+        "future": float(state.future),
+    }
+
+    floors = update_floors(
+        state_vector=committed_state_vector,
+        coordination=coordination,
+        structure_floor=structure_floor,
+        law_floor=law_floor,
+    )
+
+    committed_state_vector = apply_epigenetic_clamp(
+        committed_state_vector,
+        floors["structure_floor"],
+        floors["law_floor"],
+    )
+
+    state = SystemState.from_dict(committed_state_vector)
+
     flower_patch = {
         "pressure": round(float(state.pressure), 3),
         "flow": round(float(state.flow), 3),
@@ -200,6 +295,8 @@ def main():
         "phase": field.get("phase", "DAY"),
         "mode": field.get("mode", "active"),
         "vitality": round(float(vitality), 3),
+        "structure_floor": floors["structure_floor"],
+        "law_floor": floors["law_floor"],
         "class_history": updated_class_history,
         "action_history": updated_action_history,
         "vitality_history": updated_vitality_history,
@@ -229,7 +326,12 @@ def main():
     print("coordination_role:", coordination.get("role", "NONE"))
     print("coordination_action:", coordination.get("action", "STABLE"))
     print("coordination_reason:", coordination.get("reason", "none"))
-    print("mage_repair_applied:", repaired)
+    print("tank_build_applied:", tank_build_applied)
+    print("mage_repair_applied:", mage_repair_applied)
+    print("structure:", flower_patch["structure"])
+    print("law:", flower_patch["law"])
+    print("structure_floor:", floors["structure_floor"])
+    print("law_floor:", floors["law_floor"])
     print("vitality:", round(float(vitality), 3))
 
 
