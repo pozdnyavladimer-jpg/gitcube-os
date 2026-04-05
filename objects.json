@@ -1,92 +1,920 @@
 [
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_1",
-    "result_path": "reports/task_1_20260404_114616.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/54",
+    "result_path": "reports/task_1_20260405_101631.md"
   },
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_2",
-    "result_path": "reports/task_2_20260404_114746.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/55",
+    "result_path": "reports/task_2_20260405_101718.md"
   },
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_3",
-    "result_path": "reports/task_3_20260404_114748.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/56",
+    "result_path": "reports/task_3_20260405_101729.md"
   },
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_4",
-    "result_path": "reports/task_4_20260404_114750.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/57",
+    "result_path": "reports/task_4_20260405_101739.md"
   },
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_5",
-    "result_path": "reports/task_5_20260404_114752.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/58",
+    "result_path": "reports/task_5_20260405_101750.md"
   },
   {
     "type": "task",
-    "title": "Need a new routing path",
-    "origin": "mock_issue",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
     "status": "done",
     "kind": "task",
-    "intensity": 0.7,
+    "intensity": 0.9,
     "novelty": 0.6,
     "payload": {
-      "title": "Need a new routing path",
-      "origin": "mock_issue"
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
     },
     "id": "task_6",
-    "result_path": "reports/task_6_20260404_114755.md"
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/59",
+    "result_path": "reports/task_6_20260405_101800.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_7",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/60",
+    "result_path": "reports/task_7_20260405_101811.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_8",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/61",
+    "result_path": "reports/task_8_20260405_101822.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_9",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/62",
+    "result_path": "reports/task_9_20260405_101832.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_10",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/63",
+    "result_path": "reports/task_10_20260405_101843.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_11",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/64",
+    "result_path": "reports/task_11_20260405_101853.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_12",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/65",
+    "result_path": "reports/task_12_20260405_101904.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_13",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/66",
+    "result_path": "reports/task_13_20260405_101914.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_14",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/67",
+    "result_path": "reports/task_14_20260405_101925.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_15",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/68",
+    "result_path": "reports/task_15_20260405_101935.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_16",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/69",
+    "result_path": "reports/task_16_20260405_101946.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_17",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/70",
+    "result_path": "reports/task_17_20260405_101957.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_18",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/71",
+    "result_path": "reports/task_18_20260405_102007.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_19",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/72",
+    "result_path": "reports/task_19_20260405_102018.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_20",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/73",
+    "result_path": "reports/task_20_20260405_102028.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_21",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/74",
+    "result_path": "reports/task_21_20260405_102039.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_22",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/75",
+    "result_path": "reports/task_22_20260405_102049.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_23",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/76",
+    "result_path": "reports/task_23_20260405_102100.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_24",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/77",
+    "result_path": "reports/task_24_20260405_102110.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_25",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/78",
+    "result_path": "reports/task_25_20260405_102121.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_26",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/79",
+    "result_path": "reports/task_26_20260405_102132.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_27",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/80",
+    "result_path": "reports/task_27_20260405_102142.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_28",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/81",
+    "result_path": "reports/task_28_20260405_102153.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_29",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/82",
+    "result_path": "reports/task_29_20260405_102203.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_30",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/83",
+    "result_path": "reports/task_30_20260405_102214.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_31",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/84",
+    "result_path": "reports/task_31_20260405_102225.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_32",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/85",
+    "result_path": "reports/task_32_20260405_102235.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_33",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/86",
+    "result_path": "reports/task_33_20260405_102246.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_34",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/87",
+    "result_path": "reports/task_34_20260405_102256.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_35",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/88",
+    "result_path": "reports/task_35_20260405_102307.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_36",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/89",
+    "result_path": "reports/task_36_20260405_102317.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_37",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/90",
+    "result_path": "reports/task_37_20260405_102328.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_38",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/91",
+    "result_path": "reports/task_38_20260405_102339.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_39",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/92",
+    "result_path": "reports/task_39_20260405_102350.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_40",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/93",
+    "result_path": "reports/task_40_20260405_102401.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_41",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/94",
+    "result_path": "reports/task_41_20260405_102412.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_42",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/95",
+    "result_path": "reports/task_42_20260405_102422.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_43",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/96",
+    "result_path": "reports/task_43_20260405_102433.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_44",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/97",
+    "result_path": "reports/task_44_20260405_102444.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_45",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/98",
+    "result_path": "reports/task_45_20260405_102455.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_46",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/99",
+    "result_path": "reports/task_46_20260405_102506.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_47",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/100",
+    "result_path": "reports/task_47_20260405_102517.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_48",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/101",
+    "result_path": "reports/task_48_20260405_102528.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_49",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/102",
+    "result_path": "reports/task_49_20260405_102538.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_50",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/103",
+    "result_path": "reports/task_50_20260405_102549.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_51",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/104",
+    "result_path": "reports/task_51_20260405_102559.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_52",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/105",
+    "result_path": "reports/task_52_20260405_102610.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_53",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/106",
+    "result_path": "reports/task_53_20260405_102621.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "id": "task_54",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/107",
+    "result_path": "reports/task_54_20260405_102631.md"
   }
 ]

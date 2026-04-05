@@ -8,7 +8,18 @@ def tank_guard(state: Dict[str, float], action_history: List[str]) -> Optional[D
     recent = [str(x) for x in action_history[-5:]]
     tank_count = recent.count("EMERGENCY_STABILIZE")
 
-    if structure < 0.20 and tank_count < 3:
+    # 🔥 Якщо Танк вже 3 рази підряд — переходить у BUILD режим
+    if tank_count >= 3:
+        return {
+            "role": "TANK",
+            "action": "BUILD_STRUCTURE",
+            "new_mode": "structure_build",
+            "reason": "repeated_stabilize → build_mode",
+            "priority": 110,
+            "build_state": True,
+        }
+
+    if structure < 0.20:
         return {
             "role": "TANK",
             "action": "EMERGENCY_STABILIZE",
@@ -17,7 +28,7 @@ def tank_guard(state: Dict[str, float], action_history: List[str]) -> Optional[D
             "priority": 100,
         }
 
-    if balance < 0.15 and tank_count < 3:
+    if balance < 0.15:
         return {
             "role": "TANK",
             "action": "REBALANCE",

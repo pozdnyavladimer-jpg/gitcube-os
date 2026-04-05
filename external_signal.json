@@ -1,10 +1,10 @@
 {
   "source": "EXPLORER",
   "kind": "task",
-  "intensity": 0.7,
+  "intensity": 0.9,
   "novelty": 0.6,
   "payload": {
-    "title": "Need a new routing path",
-    "origin": "mock_issue"
+    "title": "High priority routing failure",
+    "origin": "manual_test_high"
   }
 }
