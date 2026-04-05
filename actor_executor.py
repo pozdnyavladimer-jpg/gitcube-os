@@ -20,6 +20,7 @@ BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
 MIN_INTENSITY_FOR_GITHUB = 0.8
 MIN_NOVELTY_FOR_GITHUB = 0.85
+GITHUB_COOLDOWN_SECONDS = 300  # 5 хвилин
 
 
 def ensure_dir(path: str) -> None:
@@ -92,6 +93,49 @@ def build_graph_text(task: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def parse_generated_at(text: str) -> Optional[datetime]:
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except Exception:
+        return None
+
+
+def get_last_published_time() -> Optional[datetime]:
+    latest_dt = None
+
+    for obj in load_objects():
+        if not obj.get("published_to_github"):
+            continue
+
+        dt_raw = obj.get("published_at") or obj.get("generated_at")
+        if not dt_raw:
+            continue
+
+        dt = parse_generated_at(str(dt_raw))
+        if dt is None:
+            continue
+
+        if latest_dt is None or dt > latest_dt:
+            latest_dt = dt
+
+    return latest_dt
+
+
+def cooldown_blocked() -> tuple[bool, str]:
+    last_dt = get_last_published_time()
+    if last_dt is None:
+        return False, "no_previous_publish"
+
+    now_dt = datetime.now(UTC)
+    delta = (now_dt - last_dt).total_seconds()
+
+    if delta < GITHUB_COOLDOWN_SECONDS:
+        remaining = int(GITHUB_COOLDOWN_SECONDS - delta)
+        return True, f"cooldown_active:{remaining}s"
+
+    return False, "cooldown_passed"
+
+
 def main():
     bridge = VBridge(BUS_PATH)
     state = bridge.read_state()
@@ -133,6 +177,8 @@ def main():
     duplicate_id = str(duplicate.get("id", "")) if duplicate else ""
     duplicate_url = str(duplicate.get("github_url", "")) if duplicate else ""
 
+    now_iso = datetime.now(UTC).isoformat()
+
     report_text = (
         "GitCube Task Report\n\n"
         f"id: {task.get('id')}\n"
@@ -140,7 +186,7 @@ def main():
         f"origin: {task.get('origin')}\n"
         f"kind: {task.get('kind')}\n"
         f"status: done\n"
-        f"generated_at: {datetime.now(UTC).isoformat()}\n"
+        f"generated_at: {now_iso}\n"
         f"action: {action}\n"
         f"intensity: {task.get('intensity')}\n"
         f"novelty: {task.get('novelty')}\n"
@@ -155,6 +201,9 @@ def main():
         f.write(report_text)
 
     done_task = mark_task_done(str(task.get("id")), path)
+    if done_task is not None:
+        done_task["generated_at"] = now_iso
+
     print("CREATED:", path)
 
     allow_publish, reason = should_publish_to_github(task)
@@ -172,6 +221,11 @@ def main():
         print("SKIP_GITHUB: below publish threshold")
         return
 
+    cooldown_is_on, cooldown_reason = cooldown_blocked()
+    if cooldown_is_on:
+        print("SKIP_GITHUB:", cooldown_reason)
+        return
+
     if not is_github_enabled():
         print("SKIP_GITHUB: GitHub not configured")
         return
@@ -185,6 +239,13 @@ def main():
 
     if result.get("ok"):
         mark_task_published(str(task.get("id")), result.get("url", ""))
+        data = load_objects()
+        for obj in data:
+            if str(obj.get("id")) == str(task.get("id")):
+                obj["published_at"] = now_iso
+                break
+        from runtime_experimental.object_store import save_objects
+        save_objects(data)
         print("ISSUE:", result.get("url", ""))
     else:
         print("ERROR:", result.get("error", "unknown error"))
