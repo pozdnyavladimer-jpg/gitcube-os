@@ -1,32 +1,32 @@
 {
   "flower": {
-    "pressure": 0.049,
-    "flow": 0.155,
+    "pressure": 0.042,
+    "flow": 0.17,
     "structure": 0.296,
-    "balance": 0.138,
+    "balance": 0.171,
     "law": 0.098,
-    "future": 0.264
+    "future": 0.223
   },
   "meta": {
-    "step": 255,
+    "step": 275,
     "phase": "DAY",
     "mode": "flow_boost",
     "vitality": 1.0,
-    "updated_at": "2026-04-05T10:26:31.708585Z",
+    "updated_at": "2026-04-05T14:51:41.782920Z",
     "updated_by": "CORE",
     "class_history": [
+      "TANK",
       "MAGE",
-      "ARCHER",
+      "TANK",
       "MAGE",
       "TANK",
       "MAGE",
       "TANK",
       "MAGE",
-      "ARCHER",
+      "TANK",
       "MAGE",
       "TANK",
       "MAGE",
-      "ARCHER",
       "TANK",
       "MAGE",
       "TANK",
@@ -37,8 +37,8 @@
       "MAGE"
     ],
     "action_history": [
-      "INCREASE_FLOW",
       "REBALANCE",
+      "INCREASE_FLOW",
       "REBALANCE",
       "INCREASE_FLOW",
       "REBALANCE",
@@ -49,7 +49,7 @@
       "INCREASE_FLOW"
     ],
     "vitality_history": [
-      1.0,
+      0.995,
       1.0,
       0.995,
       1.0,
@@ -63,7 +63,7 @@
     "structure_floor": 0.343,
     "law_floor": 0.113,
     "external_signal_kind": "task",
-    "object_count": 54
+    "object_count": 2
   },
   "signal": {
     "action": "BUILD",
@@ -85,6 +85,6 @@
     "explorer_pressure_delta": 0.045,
     "explorer_future_delta": 0.036,
     "open_task_count": 1,
-    "latest_task_id": "task_54"
+    "latest_task_id": "task_2"
   }
 }

@@ -172,6 +172,21 @@ def _tail_list(value: Any, max_len: int) -> List[Any]:
     return value[-max_len:]
 
 
+def _find_latest_task() -> Dict[str, Any] | None:
+    data = load_objects()
+    tasks = [o for o in data if o.get("type") == "task"]
+    if not tasks:
+        return None
+
+    def task_num(obj: Dict[str, Any]) -> int:
+        obj_id = str(obj.get("id", "task_0"))
+        tail = obj_id.split("_")[-1]
+        return int(tail) if tail.isdigit() else 0
+
+    tasks.sort(key=task_num)
+    return tasks[-1]
+
+
 def main():
     bridge = VBridge(BUS_PATH)
     bus = bridge.read_state()
@@ -205,8 +220,26 @@ def main():
     state = SystemState.from_dict(current_state_vector)
 
     latest_task_id = ""
+
     if explorer_patch.get("kind") in ("task", "issue", "opportunity", "warning"):
+        latest_existing = _find_latest_task()
+
+        parent_id = None
+        related_to = []
+        graph_depth = 0
+
+        if latest_existing is not None:
+            parent_id = str(latest_existing.get("id"))
+            related_to = [parent_id]
+            graph_depth = int(latest_existing.get("graph_depth", 0)) + 1
+
         task_obj = build_task_object(external_signal)
+
+        task_obj["title"] = f"Task step {step + 1}"
+        task_obj["parent_id"] = parent_id
+        task_obj["related_to"] = related_to
+        task_obj["graph_depth"] = graph_depth
+
         created = add_object(task_obj)
         latest_task_id = str(created.get("id", ""))
 
@@ -355,6 +388,10 @@ def main():
     bridge.update("meta", meta_patch, updated_by="CORE")
     bridge.update("signal", signal_patch, updated_by="CORE")
 
+    created_task = _find_latest_task()
+    created_parent = created_task.get("parent_id") if created_task else None
+    created_depth = created_task.get("graph_depth") if created_task else 0
+
     print("=== OS SYNC ===")
     print("step:", step)
     print("winner_agent:", winner_agent)
@@ -376,6 +413,8 @@ def main():
     print("law_floor:", floors["law_floor"])
     print("open_task_count:", open_task_count)
     print("latest_task_id:", latest_task_id)
+    print("parent_id:", created_parent)
+    print("graph_depth:", created_depth)
     print("vitality:", round(float(vitality), 3))
 
 
