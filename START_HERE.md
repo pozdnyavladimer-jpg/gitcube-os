@@ -123,3 +123,26 @@ GitCube OS executes adaptive state logic.
 ## One-line (Experimental)
 
 Experimental runtime turns the system into a living adaptive field.
+
+---
+
+# 1. Встанови змінні:
+
+.env файл:
+
+GITHUB_TOKEN=...
+GITHUB_REPO=...
+
+2. Запусти:
+
+./run.sh
+
+3. Дивись результат:
+- reports/
+- GitHub issues
+
+4. Для автозапуску:
+
+./run_loop.sh
+
+---
