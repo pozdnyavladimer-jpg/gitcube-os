@@ -176,3 +176,52 @@ GitCube OS turns structural meaning into runtime behavior.
 ## One-line (Experimental)
 
 runtime_experimental is a living field engine with roles, phases, and vitality.
+
+---
+
+# Автономна система, яка:
+- генерує задачі
+- будує граф (parent → child)
+- приймає рішення
+- створює GitHub issues
+- самостійно регулює частоту дій (cooldown)
+
+## Як запустити
+
+1. Додай .env:
+
+GITHUB_TOKEN=your_token  
+GITHUB_REPO=your/repo  
+
+2. Запуск одного циклу:
+
+./run.sh
+
+3. Автоматичний цикл:
+
+./run_loop.sh
+
+## Як це працює
+
+- os_sync.py → створює задачі і стан
+- actor_executor.py → виконує і публікує
+- objects.json → памʼять (граф задач)
+- v_resonance.json → стан системи
+
+## Граф
+
+Кожна задача має:
+- parent_id
+- related_to
+- graph_depth
+
+Це створює ланцюг:
+
+task_1 → task_2 → task_3
+
+## Безпека
+
+- cooldown захищає від спаму GitHub
+- anti-duplicate не дає дублювати задачі
+
+  ---
