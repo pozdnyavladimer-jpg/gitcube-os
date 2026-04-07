@@ -1,227 +1,186 @@
-# GitCube OS
+🚀 GitCube OS — Autonomous Code Intelligence System
 
-GitCube OS is the execution layer of the GitCube system.
-
-It is not the experimental lab.
-It is not the canonical meaning layer.
-
-It is the place where adaptive logic becomes executable behavior.
+«System that analyzes, understands, and restructures codebases automatically.»
 
 ---
 
-## System Position
+🧠 What is this?
 
-GitCube OS is part of a 3-layer architecture:
+GitCube OS is an experimental autonomous system that:
 
-- GitCube Lab → exploration and mutation
-- Geometry Navigator → canonical meaning and interpretation
-- GitCube OS → runtime execution
+- scans your repository
+- detects structural and logical issues
+- groups problems into meaningful tasks
+- prioritizes them
+- optionally publishes them to GitHub Issues
 
-Flow:
-
-Lab → Navigator → OS
-
-Meaning:
-
-- Lab invents
-- Navigator explains
-- OS executes
+👉 In short:
+it turns messy code into actionable structure
 
 ---
 
-## Core Idea
+⚙️ Core Capabilities
 
-GitCube OS executes an adaptive control loop that decides:
+🔍 Repository Analysis
 
-- what state is valid
-- what transition is allowed
-- what should persist
-- when the system should reroute
-
----
-
-## Repository Map
-
-- app/
-- core/
-- runtime/
-- runtime_experimental/
-- examples/
-- docs/
-- tests/
+- Detects:
+  - debug prints
+  - TODO markers
+  - missing "__init__.py"
+  - structural inconsistencies
 
 ---
 
-## ▶️ Quick Start
+🧩 Task Generation
 
-### Stable runtime
+Instead of noise like:
 
-Run:
+Fix debug print in file1.py
+Fix debug print in file2.py
 
-PYTHONPATH=. python examples/simple_loop.py
+It creates:
 
-Explore:
-
-- examples/loop_run.py
-- app/state_engine.py
-- runtime/agent_loop.py
-- runtime/adaptive_bindu.py
-- runtime/transition_memory.py
+Refactor debug prints across repo
 
 ---
 
-### Experimental runtime
+🧠 Intelligence Layer
 
-Run:
+System uses internal agents:
 
-PYTHONPATH=. python examples/experimental_loop.py
-
-This activates:
-
-- field (environment)
-- roles (classes)
-- vitality economy
-- adaptive selection
-
-Main files:
-
-- runtime_experimental/field_engine.py
-- runtime_experimental/agent_loop.py
-- runtime_experimental/role_transaction.py
-- runtime_experimental/vitality_engine.py
-- runtime_experimental/lab_bridge.py
+- Explorer → scans repo
+- Planner → builds tasks
+- Actor → executes decisions
+- Coordinator (ARCHER / TANK / MAGE) → balances system
 
 ---
 
-## Stable Runtime Flow
+🔁 Autonomous Loop
 
-state  
-→ agent  
-→ metrics  
-→ bindu  
-→ decision  
-→ update  
-→ memory  
+analyze → decide → act → repeat
 
 ---
 
-## Experimental Runtime Flow
+🔗 GitHub Integration
 
-state  
-→ field  
-→ class candidates  
-→ role logic  
-→ decision  
-→ vitality update  
-→ state update  
+- Automatically creates Issues
+- Links tasks to GitHub
+- Stores reports in "/reports"
 
 ---
 
-## State Language
+🏗 Project Structure
 
-State vector:
-
-- pressure
-- flow
-- structure
-- balance
-- law
-- future
-
-Metrics:
-
-- shadow
-- coherence
-- target_fit
-- vitality
-
----
-
-## Classes (Experimental)
-
-- TANK → stability
-- ARCHER → direction
-- MAGE → transformation
-- HEALER → recovery
-- ASSASSIN → anti-stagnation
+gitcube-os/
+│
+├── app/                  # Core application layer
+├── core/                 # System logic
+├── runtime_experimental/ # Agents + engines
+├── examples/             # Demo scenarios
+├── reports/              # Generated reports
+│
+├── repo_analyzer.py      # Main analyzer
+├── run_loop.py           # Continuous loop
+├── run.sh                # Entry point
+├── status.py             # System state viewer
+│
+└── objects.json          # Task graph storage
 
 ---
 
-## Why runtime_experimental exists
+▶️ How to Run
 
-To allow evolution of the system without breaking stable runtime.
-
-It is:
-
-- adaptive
-- experimental
-- environment-driven
-
----
-
-## Philosophy
-
-This system does not optimize probability.
-
-It selects survivable state transitions.
-
----
-
-## One-line
-
-GitCube OS turns structural meaning into runtime behavior.
-
----
-
-## One-line (Experimental)
-
-runtime_experimental is a living field engine with roles, phases, and vitality.
-
----
-
-# Автономна система, яка:
-- генерує задачі
-- будує граф (parent → child)
-- приймає рішення
-- створює GitHub issues
-- самостійно регулює частоту дій (cooldown)
-
-## Як запустити
-
-1. Додай .env:
-
-GITHUB_TOKEN=your_token  
-GITHUB_REPO=your/repo  
-
-2. Запуск одного циклу:
+1. Start system
 
 ./run.sh
 
-3. Автоматичний цикл:
+---
 
-./run_loop.sh
+2. Check system state
 
-## Як це працює
+python status.py
 
-- os_sync.py → створює задачі і стан
-- actor_executor.py → виконує і публікує
-- objects.json → памʼять (граф задач)
-- v_resonance.json → стан системи
+---
 
-## Граф
+3. Run analyzer manually
 
-Кожна задача має:
-- parent_id
-- related_to
-- graph_depth
+python repo_analyzer.py
 
-Це створює ланцюг:
+---
 
-task_1 → task_2 → task_3
+📊 Example Output
 
-## Безпека
+TASK_CREATED: Refactor debug prints across repo
+TASK_CREATED: Resolve TODO markers across repo
+TASK_CREATED: Review Python package structure
 
-- cooldown захищає від спаму GitHub
-- anti-duplicate не дає дублювати задачі
+---
 
-  ---
+🧠 System State Example
+
+phase: DAY
+decision: COMMIT
+signal_action: BUILD
+open_tasks: 14
+
+---
+
+🔥 Philosophy
+
+GitCube is not just a tool.
+
+It’s:
+
+- a self-organizing system
+- a codebase observer
+- a task generator
+- a developer assistant without UI
+
+---
+
+🚧 Current Status
+
+🟢 MVP READY
+
+- ✅ Analyzer works
+- ✅ Task aggregation works
+- ✅ GitHub integration works
+- ⚠️ PR automation — in progress
+
+---
+
+🚀 Roadmap
+
+- [ ] Auto-close resolved tasks
+- [ ] Dependency graph between tasks
+- [ ] Auto-generated Pull Requests
+- [ ] UI dashboard
+
+---
+
+🧪 Use Cases
+
+- Clean legacy repositories
+- Maintain large codebases
+- Assist solo developers
+- Continuous code hygiene
+
+---
+
+⚡ Quick Demo Idea
+
+«Run GitCube on any repo → it generates a structured task system automatically.»
+
+---
+
+📌 Author
+
+Volodymyr Pozdnyak
+
+---
+
+🧬 Vision
+
+«Codebases should organize themselves.»
+
+GitCube is a step toward autonomous development systems.
