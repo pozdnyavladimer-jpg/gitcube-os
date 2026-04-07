@@ -235,7 +235,12 @@ def main():
 
         task_obj = build_task_object(external_signal)
 
-        task_obj["title"] = f"Task step {step + 1}"
+        payload_title = str(task_obj.get("payload", {}).get("title", "")).strip()
+        if payload_title:
+            task_obj["title"] = payload_title
+        else:
+            task_obj["title"] = f"Task step {step + 1}"
+
         task_obj["parent_id"] = parent_id
         task_obj["related_to"] = related_to
         task_obj["graph_depth"] = graph_depth
@@ -391,6 +396,7 @@ def main():
     created_task = _find_latest_task()
     created_parent = created_task.get("parent_id") if created_task else None
     created_depth = created_task.get("graph_depth") if created_task else 0
+    created_title = created_task.get("title") if created_task else ""
 
     print("=== OS SYNC ===")
     print("step:", step)
@@ -413,6 +419,7 @@ def main():
     print("law_floor:", floors["law_floor"])
     print("open_task_count:", open_task_count)
     print("latest_task_id:", latest_task_id)
+    print("task_title:", created_title)
     print("parent_id:", created_parent)
     print("graph_depth:", created_depth)
     print("vitality:", round(float(vitality), 3))

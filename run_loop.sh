@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 
-for i in 1 2 3 4 5
+echo "=== GitCube LOOP START ==="
+
+ITER=1
+
+while true
 do
-  echo "=== ITERATION $i ==="
+  echo ""
+  echo "=== ITERATION $ITER ==="
+
   ./run.sh
-  sleep 10
+
+  echo "--- sleeping 60s ---"
+  sleep 60
+
+  ITER=$((ITER+1))
 done
