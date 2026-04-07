@@ -7,6 +7,7 @@ from runtime_experimental.object_store import (
     mark_task_done,
     mark_task_published,
     load_objects,
+    save_objects,
 )
 from runtime_experimental.github_bridge import (
     is_github_enabled,
@@ -20,7 +21,7 @@ BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
 MIN_INTENSITY_FOR_GITHUB = 0.8
 MIN_NOVELTY_FOR_GITHUB = 0.85
-GITHUB_COOLDOWN_SECONDS = 300  # 5 хвилин
+GITHUB_COOLDOWN_SECONDS = 300
 
 
 def ensure_dir(path: str) -> None:
@@ -179,6 +180,9 @@ def main():
 
     now_iso = datetime.now(UTC).isoformat()
 
+    audit_status = str(task.get("audit_status", "none"))
+    audit_reason = str(task.get("audit_reason", "none"))
+
     report_text = (
         "GitCube Task Report\n\n"
         f"id: {task.get('id')}\n"
@@ -190,6 +194,8 @@ def main():
         f"action: {action}\n"
         f"intensity: {task.get('intensity')}\n"
         f"novelty: {task.get('novelty')}\n"
+        f"audit_status: {audit_status}\n"
+        f"audit_reason: {audit_reason}\n"
         f"duplicate_found: {bool(duplicate)}\n"
         f"duplicate_id: {duplicate_id}\n"
         f"duplicate_url: {duplicate_url}\n\n"
@@ -204,11 +210,26 @@ def main():
     if done_task is not None:
         done_task["generated_at"] = now_iso
 
+    data = load_objects()
+    for obj in data:
+        if str(obj.get("id")) == str(task.get("id")):
+            obj["generated_at"] = now_iso
+            obj["audit_status"] = audit_status
+            obj["audit_reason"] = audit_reason
+            break
+    save_objects(data)
+
     print("CREATED:", path)
+    print("AUDIT_STATUS:", audit_status)
+    print("AUDIT_REASON:", audit_reason)
 
     allow_publish, reason = should_publish_to_github(task)
     print("PUBLISH_DECISION:", allow_publish)
     print("PUBLISH_REASON:", reason)
+
+    if audit_status == "LOW":
+        print("SKIP_GITHUB: audit_status LOW")
+        return
 
     if duplicate:
         print("DUPLICATE_FOUND:", duplicate_id)
@@ -231,9 +252,13 @@ def main():
         return
 
     issue = build_issue_from_task(done_task or task, action, path)
-
     graph_block = "\n\n" + build_graph_text(done_task or task)
-    issue["body"] = issue["body"] + graph_block
+    audit_block = (
+        "\n\nAudit\n\n"
+        f"audit_status: {audit_status}\n"
+        f"audit_reason: {audit_reason}\n"
+    )
+    issue["body"] = issue["body"] + graph_block + audit_block
 
     result = create_issue(issue["title"], issue["body"])
 
@@ -244,7 +269,6 @@ def main():
             if str(obj.get("id")) == str(task.get("id")):
                 obj["published_at"] = now_iso
                 break
-        from runtime_experimental.object_store import save_objects
         save_objects(data)
         print("ISSUE:", result.get("url", ""))
     else:

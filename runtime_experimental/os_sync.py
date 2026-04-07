@@ -18,6 +18,7 @@ from runtime_experimental.explorer_sensor import (
     build_task_object,
 )
 from runtime_experimental.object_store import add_object, get_open_tasks, load_objects
+from runtime_experimental.resonance_audit import audit_task
 
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
@@ -237,9 +238,13 @@ def main():
 
         payload_title = str(task_obj.get("payload", {}).get("title", "")).strip()
         if payload_title:
-            task_obj["title"] = payload_title
+            task_obj["title"] = f"{payload_title} / step {step + 1}"
         else:
             task_obj["title"] = f"Task step {step + 1}"
+
+        audit = audit_task(task_obj)
+        task_obj["audit_status"] = audit["status"]
+        task_obj["audit_reason"] = audit["reason"]
 
         task_obj["parent_id"] = parent_id
         task_obj["related_to"] = related_to
@@ -397,6 +402,8 @@ def main():
     created_parent = created_task.get("parent_id") if created_task else None
     created_depth = created_task.get("graph_depth") if created_task else 0
     created_title = created_task.get("title") if created_task else ""
+    created_audit_status = created_task.get("audit_status") if created_task else "none"
+    created_audit_reason = created_task.get("audit_reason") if created_task else "none"
 
     print("=== OS SYNC ===")
     print("step:", step)
@@ -422,6 +429,8 @@ def main():
     print("task_title:", created_title)
     print("parent_id:", created_parent)
     print("graph_depth:", created_depth)
+    print("audit_status:", created_audit_status)
+    print("audit_reason:", created_audit_reason)
     print("vitality:", round(float(vitality), 3))
 
 

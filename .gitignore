@@ -3,3 +3,7 @@ __pycache__/
 reports/
 reports/
 .env
+reports/
+objects.json
+v_resonance.json
+.env
