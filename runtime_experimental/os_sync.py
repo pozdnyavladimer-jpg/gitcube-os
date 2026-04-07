@@ -19,6 +19,7 @@ from runtime_experimental.explorer_sensor import (
 )
 from runtime_experimental.object_store import add_object, get_open_tasks, load_objects
 from runtime_experimental.resonance_audit import audit_task
+from runtime_experimental.pressure_policy import apply_pressure
 
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
@@ -221,6 +222,14 @@ def main():
     state = SystemState.from_dict(current_state_vector)
 
     latest_task_id = ""
+    pressure_result = {
+        "applied": False,
+        "reason": "none",
+        "intensity_before": 0.0,
+        "intensity_after": 0.0,
+        "novelty_before": 0.0,
+        "novelty_after": 0.0,
+    }
 
     if explorer_patch.get("kind") in ("task", "issue", "opportunity", "warning"):
         latest_existing = _find_latest_task()
@@ -245,6 +254,13 @@ def main():
         audit = audit_task(task_obj)
         task_obj["audit_status"] = audit["status"]
         task_obj["audit_reason"] = audit["reason"]
+
+        task_obj, pressure_result = apply_pressure(task_obj)
+
+        if pressure_result.get("applied"):
+            vitality_before = vitality
+            vitality = max(0.0, vitality - 0.02)
+            print("pressure_vitality_drop:", round(vitality_before, 3), "->", round(vitality, 3))
 
         task_obj["parent_id"] = parent_id
         task_obj["related_to"] = related_to
@@ -431,6 +447,12 @@ def main():
     print("graph_depth:", created_depth)
     print("audit_status:", created_audit_status)
     print("audit_reason:", created_audit_reason)
+    print("pressure_applied:", pressure_result["applied"])
+    print("pressure_reason:", pressure_result["reason"])
+    print("intensity_before:", pressure_result["intensity_before"])
+    print("intensity_after:", pressure_result["intensity_after"])
+    print("novelty_before:", pressure_result["novelty_before"])
+    print("novelty_after:", pressure_result["novelty_after"])
     print("vitality:", round(float(vitality), 3))
 
 
