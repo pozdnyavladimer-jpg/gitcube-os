@@ -1,18 +1,18 @@
 {
   "flower": {
-    "pressure": 0.042,
-    "flow": 0.17,
-    "structure": 0.296,
-    "balance": 0.171,
-    "law": 0.098,
-    "future": 0.223
+    "pressure": 0.062,
+    "flow": 0.165,
+    "structure": 0.295,
+    "balance": 0.178,
+    "law": 0.097,
+    "future": 0.203
   },
   "meta": {
-    "step": 275,
+    "step": 283,
     "phase": "DAY",
     "mode": "flow_boost",
     "vitality": 1.0,
-    "updated_at": "2026-04-05T14:51:41.782920Z",
+    "updated_at": "2026-04-07T04:44:18.873073Z",
     "updated_by": "CORE",
     "class_history": [
       "TANK",
@@ -39,13 +39,13 @@
     "action_history": [
       "REBALANCE",
       "INCREASE_FLOW",
-      "REBALANCE",
+      "INCREASE_FLOW",
+      "INCREASE_FLOW",
+      "FORCE_MODE_SHIFT",
       "INCREASE_FLOW",
       "REBALANCE",
       "INCREASE_FLOW",
-      "REBALANCE",
       "INCREASE_FLOW",
-      "REBALANCE",
       "INCREASE_FLOW"
     ],
     "vitality_history": [
@@ -63,13 +63,13 @@
     "structure_floor": 0.343,
     "law_floor": 0.113,
     "external_signal_kind": "task",
-    "object_count": 2
+    "object_count": 10
   },
   "signal": {
     "action": "BUILD",
     "source": "CORE",
     "target": "ACTOR",
-    "winner_agent": "explorer",
+    "winner_agent": "planner",
     "dominant_class": "MAGE",
     "decision": "COMMIT",
     "phase": "DAY",
@@ -85,6 +85,6 @@
     "explorer_pressure_delta": 0.045,
     "explorer_future_delta": 0.036,
     "open_task_count": 1,
-    "latest_task_id": "task_2"
+    "latest_task_id": "task_10"
   }
 }

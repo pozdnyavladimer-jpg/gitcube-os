@@ -40,5 +40,184 @@
     "published_to_github": true,
     "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/119",
     "result_path": "reports/task_2_20260405_145141.md"
+  },
+  {
+    "type": "task",
+    "title": "Task step 276",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_2",
+    "related_to": [
+      "task_2"
+    ],
+    "graph_depth": 2,
+    "id": "task_3",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/120",
+    "result_path": "reports/task_3_20260405_150927.md",
+    "published_at": "2026-04-05T15:09:27.124226+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Task step 277",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_3",
+    "related_to": [
+      "task_3"
+    ],
+    "graph_depth": 3,
+    "id": "task_4",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_4_20260405_150930.md"
+  },
+  {
+    "type": "task",
+    "title": "Task step 278",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_4",
+    "related_to": [
+      "task_4"
+    ],
+    "graph_depth": 4,
+    "id": "task_5",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_5_20260406_064822.md"
+  },
+  {
+    "type": "task",
+    "title": "Task step 279",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_5",
+    "related_to": [
+      "task_5"
+    ],
+    "graph_depth": 5,
+    "id": "task_6",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/121",
+    "result_path": "reports/task_6_20260406_064926.md",
+    "published_at": "2026-04-06T06:49:26.137361+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Task step 280",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_6",
+    "related_to": [
+      "task_6"
+    ],
+    "graph_depth": 6,
+    "id": "task_7",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_7_20260406_065349.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_7",
+    "related_to": [
+      "task_7"
+    ],
+    "graph_depth": 7,
+    "id": "task_8",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/122",
+    "result_path": "reports/task_8_20260406_073338.md",
+    "published_at": "2026-04-06T07:33:38.062983+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_8",
+    "related_to": [
+      "task_8"
+    ],
+    "graph_depth": 8,
+    "id": "task_9",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_9_20260406_154452.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "parent_id": "task_9",
+    "related_to": [
+      "task_9"
+    ],
+    "graph_depth": 9,
+    "id": "task_10",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_10_20260407_044418.md"
   }
 ]
