@@ -219,5 +219,481 @@
     "published_to_github": false,
     "github_url": "",
     "result_path": "reports/task_10_20260407_044418.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 284",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_10",
+    "related_to": [
+      "task_10"
+    ],
+    "graph_depth": 10,
+    "id": "task_11",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/123",
+    "result_path": "reports/task_11_20260407_113105.md",
+    "published_at": "2026-04-07T11:31:05.173081+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 285",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_11",
+    "related_to": [
+      "task_11"
+    ],
+    "graph_depth": 11,
+    "id": "task_12",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/124",
+    "result_path": "reports/task_12_20260407_114219.md",
+    "generated_at": "2026-04-07T11:42:19.096132+00:00",
+    "published_at": "2026-04-07T11:42:19.096132+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 286",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_12",
+    "related_to": [
+      "task_12"
+    ],
+    "graph_depth": 12,
+    "id": "task_13",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/125",
+    "result_path": "reports/task_13_20260407_121223.md",
+    "generated_at": "2026-04-07T12:12:23.405329+00:00",
+    "published_at": "2026-04-07T12:12:23.405329+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 287",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_13",
+    "related_to": [
+      "task_13"
+    ],
+    "graph_depth": 13,
+    "id": "task_14",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/126",
+    "result_path": "reports/task_14_20260407_123540.md",
+    "generated_at": "2026-04-07T12:35:40.496694+00:00",
+    "published_at": "2026-04-07T12:35:40.496694+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Review package structure in environments",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "missing_init",
+      "path": "environments"
+    },
+    "id": "task_15",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in actor_executor.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "actor_executor.py"
+    },
+    "id": "task_16",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in run_loop.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "run_loop.py"
+    },
+    "id": "task_17",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in repo_analyzer.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "repo_analyzer.py"
+    },
+    "id": "task_18",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/experimental_loop.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/experimental_loop.py"
+    },
+    "id": "task_19",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/test_engine_with_vision.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/test_engine_with_vision.py"
+    },
+    "id": "task_20",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/test_engine.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/test_engine.py"
+    },
+    "id": "task_21",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/test_eye_pairs.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/test_eye_pairs.py"
+    },
+    "id": "task_22",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/demo_fractal_vision.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/demo_fractal_vision.py"
+    },
+    "id": "task_23",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Review debug prints in examples/test_eye_party.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.65,
+    "payload": {
+      "problem": "debug_prints",
+      "path": "examples/test_eye_party.py"
+    },
+    "id": "task_24",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 288",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_24",
+    "related_to": [
+      "task_24"
+    ],
+    "graph_depth": 1,
+    "id": "task_25",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/127",
+    "result_path": "reports/task_25_20260407_142901.md",
+    "generated_at": "2026-04-07T14:29:01.478874+00:00",
+    "published_at": "2026-04-07T14:29:01.478874+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Review Python package structure",
+    "origin": "repo_analyzer_v2",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.86,
+    "novelty": 0.74,
+    "payload": {
+      "problem": "missing_init_group",
+      "paths": [
+        ".",
+        "environments",
+        "tests"
+      ],
+      "count": 3,
+      "priority": "high"
+    },
+    "id": "task_26",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Resolve TODO markers across repo",
+    "origin": "repo_analyzer_v2",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.79,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "todo_group",
+      "paths": [
+        "repo_analyzer.py"
+      ],
+      "count": 1,
+      "priority": "medium"
+    },
+    "id": "task_27",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "Refactor debug prints across repo",
+    "origin": "repo_analyzer_v2",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.74,
+    "novelty": 0.67,
+    "payload": {
+      "problem": "debug_prints_group",
+      "paths": [
+        "actor_executor.py",
+        "run_loop.py",
+        "examples/experimental_loop.py",
+        "examples/test_engine_with_vision.py",
+        "examples/test_engine.py",
+        "examples/test_eye_pairs.py",
+        "examples/demo_fractal_vision.py",
+        "examples/test_eye_party.py",
+        "examples/test_view.py",
+        "examples/test_guard.py",
+        "runtime/sd_client.py"
+      ],
+      "count": 11,
+      "priority": "medium"
+    },
+    "id": "task_28",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 289",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_28",
+    "related_to": [
+      "task_28"
+    ],
+    "graph_depth": 1,
+    "id": "task_29",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/128",
+    "result_path": "reports/task_29_20260407_144215.md",
+    "generated_at": "2026-04-07T14:42:15.054078+00:00",
+    "published_at": "2026-04-07T14:42:15.054078+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 290",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_29",
+    "related_to": [
+      "task_29"
+    ],
+    "graph_depth": 2,
+    "id": "task_30",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_30_20260407_144226.md",
+    "generated_at": "2026-04-07T14:42:26.123687+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 291",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_30",
+    "related_to": [
+      "task_30"
+    ],
+    "graph_depth": 3,
+    "id": "task_31",
+    "published_to_github": false,
+    "github_url": "",
+    "result_path": "reports/task_31_20260407_144235.md",
+    "generated_at": "2026-04-07T14:42:35.862010+00:00"
   }
 ]
