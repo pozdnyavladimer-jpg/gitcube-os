@@ -1,3 +1,4 @@
+from runtime_experimental.pr_actor import run_pr_task
 import os
 from datetime import datetime, UTC
 from typing import Optional, Dict, Any
@@ -225,6 +226,12 @@ def main():
 
     allow_publish, reason = should_publish_to_github(task)
     print("PUBLISH_DECISION:", allow_publish)
+success, pr_reason = run_pr_task(task)
+print('PR_ATTEMPT:', success, pr_reason)
+if success:
+    print('PR_CREATED → SKIP ISSUE')
+    exit()
+
     print("PUBLISH_REASON:", reason)
 
     if audit_status == "LOW":
