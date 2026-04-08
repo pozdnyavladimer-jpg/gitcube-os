@@ -93,11 +93,9 @@ def run_experiment(
     class_history: List[str] = []
     logs: List[Dict[str, Any]] = []
 
-    print(
         f"{'step':<4} {'agent':<10} {'class':<10} {'decision':<12} "
         f"{'v':<6} {'mode':<10} {'score':<8}"
     )
-    print("-" * 80)
 
     for step in range(steps):
 
@@ -175,14 +173,11 @@ def run_experiment(
 
         # ---- PRINT ----
         if step % 5 == 0:
-            print(
                 f"{step:<4} {winner_agent:<10} {dominant_class:<10} "
                 f"{decision:<12} {round(vitality,3):<6} "
                 f"{str(field.get('mode','FLOW')):<10} {round(score,3):<8}"
             )
 
-    print("-" * 80)
-    print("done")
 
     return logs
 
@@ -195,13 +190,8 @@ def print_summary(logs: List[Dict[str, Any]]) -> None:
     decision_counts = Counter([x["decision"] for x in logs])
     agent_counts = Counter([x["agent"] for x in logs])
 
-    print("Class counts:", dict(class_counts))
-    print("Decision counts:", dict(decision_counts))
-    print("Agent counts:", dict(agent_counts))
 
     if logs:
-        print("Final vitality:", logs[-1]["vitality"])
-        print("Final mode:", logs[-1]["mode"])
 
 
 # =========================

@@ -23,8 +23,6 @@ def demo():
 
     result = stack_cubes(cube_a, cube_b)
 
-    print("=== CUBE STACKING DEMO ===")
-    print(result)
 
 
 if __name__ == "__main__":

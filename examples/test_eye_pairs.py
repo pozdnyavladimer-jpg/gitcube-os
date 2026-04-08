@@ -24,10 +24,8 @@ SCENARIOS = [
     },
 ]
 
-print("\n=== PAIR TEST ===\n")
 
 for s in SCENARIOS:
-    print(f"\n--- {s['name']} ---")
 
     results = evaluate_all_pairs(
         "test",
@@ -38,6 +36,4 @@ for s in SCENARIOS:
     )
 
     for r in results[:5]:
-        print(r)
 
-    print("BEST:", results[0])

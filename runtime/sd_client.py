@@ -20,16 +20,13 @@ def generate_image(render_request, output_path="generated.png", api_url=None):
         "sampler_name": render_request.sampler,
     }
 
-    print(f"Sending request to {url} ...")
     response = requests.post(url, json=payload, timeout=180)
 
     if response.status_code != 200:
-        print("ERROR:", response.status_code, response.text)
         return None
 
     data = response.json()
     if "images" not in data or not data["images"]:
-        print("ERROR: no images returned")
         return None
 
     image_base64 = data["images"][0]
@@ -38,5 +35,4 @@ def generate_image(render_request, output_path="generated.png", api_url=None):
     with open(output_path, "wb") as f:
         f.write(image_bytes)
 
-    print(f"CRYSTAL MANIFESTED: {output_path}")
     return output_path

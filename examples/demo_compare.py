@@ -33,11 +33,6 @@ def run_step(state, memory, label):
 
     decision = adaptive_bindu_decision(metrics, topo_result, memory_control)
 
-    print(f"\n[{label}]")
-    print("agent:", selected_agent)
-    print("metrics:", {k: round(v, 3) for k, v in metrics.items()})
-    print("decision:", decision["decision"])
-    print("reason:", decision["reason"])
 
     if memory:
         memory.add(
@@ -50,15 +45,12 @@ def run_step(state, memory, label):
 
 
 def demo():
-    print("=== COMPARISON DEMO ===")
 
     state = default_state()
 
-    print("\n--- WITHOUT MEMORY ---")
     for i in range(3):
         run_step(state, None, f"no-memory step {i}")
 
-    print("\n--- WITH MEMORY ---")
     memory = EpisodeMemory()
 
     for i in range(3):

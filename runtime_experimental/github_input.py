@@ -43,7 +43,6 @@ def fetch_latest_issue():
             }
 
     except Exception as e:
-        print("GITHUB_INPUT_ERROR:", e)
         return None
 
 
@@ -69,10 +68,8 @@ def write_external_signal(issue):
 def run():
     issue = fetch_latest_issue()
     if issue:
-        print("GITHUB_INPUT: issue found", issue["number"])
         write_external_signal(issue)
     else:
-        print("GITHUB_INPUT: no issues")
 
 
 if __name__ == "__main__":

@@ -18,7 +18,6 @@ def sequence_from_candidate(agent_name, metrics):
 
 
 def demo():
-    print("=== GITCUBE OS ADAPTIVE DEMO ===")
 
     state = default_state()
     memory = EpisodeMemory()
@@ -46,23 +45,15 @@ def demo():
         status="accepted",
     )
 
-    print("\n--- memory summary ---")
     memory_summary = memory.summary()
-    print(memory_summary)
 
     memory_control = derive_memory_control(memory_summary)
     agent_bias = derive_agent_bias(memory_summary)
 
-    print("\n--- derived controls ---")
-    print("memory_control:", memory_control)
-    print("agent_bias:", agent_bias)
 
     best, results = choose_best_agent(state)
 
-    print("\n--- raw agent scores ---")
     raw_scores = {agent: round(data["score"], 3) for agent, data in results.items()}
-    print(raw_scores)
-    print("raw_best:", best)
 
     # Apply simple bias manually for demo visibility
     adjusted_scores = {}
@@ -73,29 +64,15 @@ def demo():
     selected_data = results[selected_agent]
     metrics = selected_data["metrics"]
 
-    print("\n--- biased selection ---")
-    print("adjusted_scores:", adjusted_scores)
-    print("selected_agent:", selected_agent)
-    print("metrics:", metrics)
 
     topo = TopologicalFilter()
     topo_sequence = sequence_from_candidate(selected_agent, metrics)
     topo_result = topo.process(topo_sequence)
 
-    print("\n--- topological filter ---")
-    print("topo_sequence:", topo_sequence)
-    print("topo_result:", topo_result)
 
     decision = adaptive_bindu_decision(metrics, topo_result, memory_control)
 
-    print("\n--- adaptive bindu ---")
-    print(decision)
 
-    print("\n=== FINAL INTERPRETATION ===")
-    print(f"Agent selected: {selected_agent}")
-    print(f"Decision: {decision['decision']}")
-    print(f"Reason: {decision['reason']}")
-    print(f"Thresholds: {decision['thresholds']}")
 
 
 if __name__ == "__main__":

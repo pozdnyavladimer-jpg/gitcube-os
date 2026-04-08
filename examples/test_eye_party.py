@@ -27,10 +27,8 @@ SCENARIOS = [
     },
 ]
 
-print("\n=== PARTY TEST ===\n")
 
 for s in SCENARIOS:
-    print(f"\n--- {s['name']} ---")
 
     results = evaluate_party(
         s["content"],
@@ -41,6 +39,4 @@ for s in SCENARIOS:
     )
 
     for r in results:
-        print(r)
 
-    print("BEST:", results[0])

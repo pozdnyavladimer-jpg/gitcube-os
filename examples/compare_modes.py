@@ -39,7 +39,6 @@ def run_mode(mode: str, steps: int = STEPS):
 
 
 def main():
-    print("\n=== GITCUBE OS MODE COMPARISON ===\n")
 
     all_results = []
 
@@ -47,24 +46,13 @@ def main():
         report = run_mode(mode)
         all_results.append(report)
 
-        print(f"--- mode: {mode} ---")
-        print("steps:", report["steps"])
-        print("summary:", report["summary"])
-        print("temperature:", report["temperature"])
-        print("reject_streak:", report["reject_streak"])
-        print("last_agent:", report["last_agent"])
-        print("last_decision:", report["last_decision"])
-        print("top_states:", report["top_states"])
-        print()
 
-    print("=== FINAL RANKING (by stability_score) ===")
     ranked = sorted(
         all_results,
         key=lambda x: x["summary"]["stability_score"],
         reverse=True
     )
     for item in ranked:
-        print(
             item["mode"],
             "-> stability:",
             item["summary"]["stability_score"],

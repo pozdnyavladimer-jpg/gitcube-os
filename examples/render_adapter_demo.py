@@ -28,8 +28,6 @@ def demo():
 
     req = build_render_request(spec, mode="image")
 
-    print("=== RENDER ADAPTER DEMO ===")
-    print(render_request_to_dict(req))
 
 
 if __name__ == "__main__":

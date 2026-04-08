@@ -12,11 +12,8 @@ def run_env_demo():
 
     envs = [BALANCED, HARSH, EXPLORATORY]
 
-    print("=== ENVIRONMENT DEMO ===")
-    print()
 
     for env in envs:
-        print(f"--- environment: {env.name} ---")
         scored = []
 
         for name, data in results.items():
@@ -26,10 +23,7 @@ def run_env_demo():
         scored.sort(key=lambda x: x[1], reverse=True)
 
         for name, env_score, metrics in scored:
-            print(f"{name:10} | env_score={env_score} | metrics={metrics}")
 
-        print(f"selected_in_{env.name}: {scored[0][0]}")
-        print()
 
 
 if __name__ == "__main__":
