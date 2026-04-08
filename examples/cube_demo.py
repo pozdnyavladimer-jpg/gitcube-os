@@ -13,8 +13,6 @@ def demo():
 
     result = validate_cube(cube)
 
-    print("=== CUBE VALIDATION ===")
-    print(result)
 
 
 if __name__ == "__main__":

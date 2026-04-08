@@ -33,15 +33,10 @@ def run_experiment(steps=20):
 
 
 def demo():
-    print("=== EXPERIMENT: STATE STABILITY ===")
 
     result = run_experiment(steps=30)
 
-    print(result)
 
-    print("\nInterpretation:")
-    print("allowed_moves = smooth evolution")
-    print("jumps = chaotic transitions")
 
 
 if __name__ == "__main__":

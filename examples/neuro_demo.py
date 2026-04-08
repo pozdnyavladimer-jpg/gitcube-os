@@ -18,12 +18,8 @@ def demo():
         stability_bias=1.0,
     )
 
-    print("=== NEURO DEMO ===")
-    print("base_config:", base)
-    print("initial_neuro_state:", neuro.state)
 
     applied = neuro.apply(base)
-    print("modulated_config:", applied)
 
     neuro.update_from_signal(
         steps_to_commit=5,
@@ -32,10 +28,8 @@ def demo():
         coherence=0.78,
     )
 
-    print("updated_neuro_state:", neuro.state)
 
     applied2 = neuro.apply(base)
-    print("new_modulated_config:", applied2)
 
 
 if __name__ == "__main__":

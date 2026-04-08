@@ -12,7 +12,6 @@ def demo():
         ("gitcube-os", "runtime"),
     ]
 
-    print("=== PROMOTION AGENT DEMO ===")
 
     for repo_name, idea_status in scenarios:
         result = agent.inspect_repo(repo_name, idea_status)
@@ -26,11 +25,6 @@ def demo():
             cube_validation=cube_validation,
         )
 
-        print()
-        print(f"repo: {repo_name}")
-        print(f"idea_status: {idea_status}")
-        print(f"cube_validation: {cube_validation}")
-        print(f"promotion_decision: {promotion}")
 
 
 if __name__ == "__main__":

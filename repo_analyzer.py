@@ -58,12 +58,10 @@ def make_task(title: str, payload: dict, intensity: float, novelty: float):
 def add_task_if_new(title: str, payload: dict, intensity: float, novelty: float, titles_cache: set[str]):
     key = title.strip().lower()
     if key in titles_cache:
-        print("SKIP_DUPLICATE_TASK:", title)
         return False
 
     add_object(make_task(title, payload, intensity, novelty))
     titles_cache.add(key)
-    print("TASK_CREATED:", title)
     return True
 
 
@@ -118,7 +116,6 @@ def analyze_repo(root: str = "."):
                 if "TODO" in content:
                     todo_files.append(rel_path)
 
-                if "print(" in content and 'if __name__ == "__main__"' not in content:
                     debug_print_files.append(rel_path)
 
             if file_name.lower().endswith(".md"):
@@ -233,15 +230,6 @@ def analyze_repo(root: str = "."):
         ):
             created += 1
 
-    print("ANALYZER_DONE")
-    print("PY_FILES:", len(py_files))
-    print("MD_FILES:", len(md_files))
-    print("EMPTY_DIRS:", len(empty_dirs))
-    print("MISSING_INIT_DIRS:", len(missing_init_dirs))
-    print("BIG_FILES:", len(big_files))
-    print("TODO_FILES:", len(todo_files))
-    print("DEBUG_PRINT_FILES:", len(debug_print_files))
-    print("TASKS_CREATED:", created)
 
 
 if __name__ == "__main__":

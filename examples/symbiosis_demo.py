@@ -22,11 +22,6 @@ def demo():
     result = apply_symbiosis(neuro, base)
     mode = get_mode(result)
 
-    print("=== SYMBIOSIS DEMO ===")
-    print("neuro:", neuro)
-    print("base:", base)
-    print("result:", result)
-    print("mode:", mode)
 
 
 if __name__ == "__main__":

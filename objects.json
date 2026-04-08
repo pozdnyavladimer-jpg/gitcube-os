@@ -346,7 +346,7 @@
     "type": "task",
     "title": "Review debug prints in actor_executor.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -359,7 +359,8 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_16_20260408_112054.md"
   },
   {
     "type": "task",
@@ -695,5 +696,77 @@
     "github_url": "",
     "result_path": "reports/task_31_20260407_144235.md",
     "generated_at": "2026-04-07T14:42:35.862010+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 292",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_31",
+    "related_to": [
+      "task_31"
+    ],
+    "graph_depth": 4,
+    "id": "task_32",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 293",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_32",
+    "related_to": [
+      "task_32"
+    ],
+    "graph_depth": 5,
+    "id": "task_33",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/129",
+    "result_path": "reports/task_33_20260408_111321.md",
+    "generated_at": "2026-04-08T11:13:21.054341+00:00",
+    "published_at": "2026-04-08T11:13:21.054341+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 294",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_33",
+    "related_to": [
+      "task_33"
+    ],
+    "graph_depth": 6,
+    "id": "task_34",
+    "published_to_github": false,
+    "github_url": ""
   }
 ]

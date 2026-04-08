@@ -260,7 +260,6 @@ def main():
         if pressure_result.get("applied"):
             vitality_before = vitality
             vitality = max(0.0, vitality - 0.02)
-            print("pressure_vitality_drop:", round(vitality_before, 3), "->", round(vitality, 3))
 
         task_obj["parent_id"] = parent_id
         task_obj["related_to"] = related_to
@@ -421,39 +420,6 @@ def main():
     created_audit_status = created_task.get("audit_status") if created_task else "none"
     created_audit_reason = created_task.get("audit_reason") if created_task else "none"
 
-    print("=== OS SYNC ===")
-    print("step:", step)
-    print("winner_agent:", winner_agent)
-    print("dominant_class:", dominant_class)
-    print("decision:", decision)
-    print("phase:", field.get("phase", "DAY"))
-    print("mode:", field.get("mode", "active"))
-    print("explorer_kind:", explorer_patch.get("kind", "none"))
-    print("explorer_pressure_delta:", explorer_patch.get("pressure_delta", 0.0))
-    print("explorer_future_delta:", explorer_patch.get("future_delta", 0.0))
-    print("coordination_role:", coordination.get("role", "NONE"))
-    print("coordination_action:", coordination.get("action", "STABLE"))
-    print("coordination_reason:", coordination.get("reason", "none"))
-    print("tank_build_applied:", tank_build_applied)
-    print("mage_repair_applied:", mage_repair_applied)
-    print("structure:", flower_patch["structure"])
-    print("law:", flower_patch["law"])
-    print("structure_floor:", floors["structure_floor"])
-    print("law_floor:", floors["law_floor"])
-    print("open_task_count:", open_task_count)
-    print("latest_task_id:", latest_task_id)
-    print("task_title:", created_title)
-    print("parent_id:", created_parent)
-    print("graph_depth:", created_depth)
-    print("audit_status:", created_audit_status)
-    print("audit_reason:", created_audit_reason)
-    print("pressure_applied:", pressure_result["applied"])
-    print("pressure_reason:", pressure_result["reason"])
-    print("intensity_before:", pressure_result["intensity_before"])
-    print("intensity_after:", pressure_result["intensity_after"])
-    print("novelty_before:", pressure_result["novelty_before"])
-    print("novelty_after:", pressure_result["novelty_after"])
-    print("vitality:", round(float(vitality), 3))
 
 
 if __name__ == "__main__":

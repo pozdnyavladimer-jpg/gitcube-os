@@ -11,16 +11,10 @@ def demo():
         "future": 0.9,
     }
 
-    print("=== INITIAL STATE ===")
-    print(state)
 
     result = evaluate_state(state)
-    print("\n=== EVALUATION ===")
-    print(result)
 
     fixed = suggest_fix(state, result["issues"])
-    print("\n=== FIXED STATE ===")
-    print(fixed)
 
 
 if __name__ == "__main__":

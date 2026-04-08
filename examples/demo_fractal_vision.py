@@ -25,14 +25,6 @@ for step in range(1, 9):
         history=history[:-1],
     )
 
-    print(f"\n--- step {step} ---")
-    print("current:", frame.current)
-    print("coarse:", frame.coarse)
-    print("mid:", frame.mid)
-    print("fine:", frame.fine)
-    print("blink_gate:", frame.blink_gate)
-    print("phase:", frame.vibration_phase)
-    print("anomaly:", frame.anomaly)
 
     # невелика симуляція руху
     if step % 2 == 0:

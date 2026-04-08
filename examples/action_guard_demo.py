@@ -12,7 +12,6 @@ def demo():
         ("gitcube-os", "runtime"),
     ]
 
-    print("=== ACTION GUARD DEMO ===")
 
     for repo_name, idea_status in scenarios:
         result = agent.inspect_repo(repo_name, idea_status)
@@ -30,12 +29,6 @@ def demo():
             allowed_actions=allowed_actions,
         )
 
-        print()
-        print(f"repo: {repo_name}")
-        print(f"idea_status: {idea_status}")
-        print(f"requested_action: {requested_action}")
-        print(f"cube_validation: {cube_validation}")
-        print(f"guard_result: {guard}")
 
 
 if __name__ == "__main__":

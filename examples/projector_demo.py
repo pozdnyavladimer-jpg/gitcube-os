@@ -25,13 +25,6 @@ def demo():
         symbiosis_mode="stability",
     )
 
-    print("=== PROJECTOR DEMO ===")
-    print("mood:", spec.mood)
-    print("palette:", spec.palette)
-    print("composition:", spec.composition)
-    print("texture:", spec.texture)
-    print("intensity:", spec.intensity)
-    print("prompt:", spec.prompt)
 
 
 if __name__ == "__main__":

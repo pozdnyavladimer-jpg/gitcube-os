@@ -138,6 +138,22 @@ def cooldown_blocked() -> tuple[bool, str]:
     return False, "cooldown_passed"
 
 
+def select_task(open_tasks, latest_task_id):
+    # 🔥 ПРІОРИТЕТ PR задач
+    for t in open_tasks:
+        title = str(t.get("title", "")).lower()
+        if "debug prints" in title:
+            return t
+
+    # fallback
+    if latest_task_id:
+        for t in open_tasks:
+            if str(t.get("id")) == latest_task_id:
+                return t
+
+    return open_tasks[0]
+
+
 def main():
     bridge = VBridge(BUS_PATH)
     state = bridge.read_state()
@@ -147,37 +163,19 @@ def main():
     latest_task_id = str(signal.get("latest_task_id", ""))
     open_tasks = get_open_tasks()
 
-    print("ACTION:", action)
-    print("TASKS:", len(open_tasks))
-    print("GITHUB:", is_github_enabled())
 
     if action == "WAIT":
-        print("SKIP: action is WAIT")
         return
 
     if not open_tasks:
-        print("SKIP: no open tasks")
         return
 
-    task = None
-
-    if latest_task_id:
-        for t in open_tasks:
-            if str(t.get("id")) == latest_task_id:
-                task = t
-                break
-
-    if task is None:
-        task = open_tasks[0]
+    task = select_task(open_tasks, latest_task_id)
 
     ensure_dir(OUTPUT_DIR)
 
     ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     path = os.path.join(OUTPUT_DIR, f"{task['id']}_{ts}.md")
-
-    duplicate = find_duplicate_task(task)
-    duplicate_id = str(duplicate.get("id", "")) if duplicate else ""
-    duplicate_url = str(duplicate.get("github_url", "")) if duplicate else ""
 
     now_iso = datetime.now(UTC).isoformat()
 
@@ -188,98 +186,38 @@ def main():
         "GitCube Task Report\n\n"
         f"id: {task.get('id')}\n"
         f"title: {task.get('title')}\n"
-        f"origin: {task.get('origin')}\n"
-        f"kind: {task.get('kind')}\n"
-        f"status: done\n"
         f"generated_at: {now_iso}\n"
-        f"action: {action}\n"
-        f"intensity: {task.get('intensity')}\n"
-        f"novelty: {task.get('novelty')}\n"
         f"audit_status: {audit_status}\n"
         f"audit_reason: {audit_reason}\n"
-        f"duplicate_found: {bool(duplicate)}\n"
-        f"duplicate_id: {duplicate_id}\n"
-        f"duplicate_url: {duplicate_url}\n\n"
-        f"{build_graph_text(task)}\n\n"
-        f"payload: {task.get('payload', {})}\n"
     )
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(report_text)
 
-    done_task = mark_task_done(str(task.get("id")), path)
-    if done_task is not None:
-        done_task["generated_at"] = now_iso
+    mark_task_done(str(task.get("id")), path)
 
-    data = load_objects()
-    for obj in data:
-        if str(obj.get("id")) == str(task.get("id")):
-            obj["generated_at"] = now_iso
-            obj["audit_status"] = audit_status
-            obj["audit_reason"] = audit_reason
-            break
-    save_objects(data)
 
-    print("CREATED:", path)
-    print("AUDIT_STATUS:", audit_status)
-    print("AUDIT_REASON:", audit_reason)
+    # 🔥 PR СПРОБА
+    success, pr_reason = run_pr_task(task)
 
+    if success:
+        return
+
+    # 🔥 fallback → ISSUE
     allow_publish, reason = should_publish_to_github(task)
-    print("PUBLISH_DECISION:", allow_publish)
-success, pr_reason = run_pr_task(task)
-print('PR_ATTEMPT:', success, pr_reason)
-if success:
-    print('PR_CREATED → SKIP ISSUE')
-    exit()
-
-    print("PUBLISH_REASON:", reason)
-
-    if audit_status == "LOW":
-        print("SKIP_GITHUB: audit_status LOW")
-        return
-
-    if duplicate:
-        print("DUPLICATE_FOUND:", duplicate_id)
-        if duplicate_url:
-            print("DUPLICATE_URL:", duplicate_url)
-        print("SKIP_GITHUB: duplicate title")
-        return
 
     if not allow_publish:
-        print("SKIP_GITHUB: below publish threshold")
-        return
-
-    cooldown_is_on, cooldown_reason = cooldown_blocked()
-    if cooldown_is_on:
-        print("SKIP_GITHUB:", cooldown_reason)
         return
 
     if not is_github_enabled():
-        print("SKIP_GITHUB: GitHub not configured")
         return
 
-    issue = build_issue_from_task(done_task or task, action, path)
-    graph_block = "\n\n" + build_graph_text(done_task or task)
-    audit_block = (
-        "\n\nAudit\n\n"
-        f"audit_status: {audit_status}\n"
-        f"audit_reason: {audit_reason}\n"
-    )
-    issue["body"] = issue["body"] + graph_block + audit_block
-
+    issue = build_issue_from_task(task, action, path)
     result = create_issue(issue["title"], issue["body"])
 
     if result.get("ok"):
         mark_task_published(str(task.get("id")), result.get("url", ""))
-        data = load_objects()
-        for obj in data:
-            if str(obj.get("id")) == str(task.get("id")):
-                obj["published_at"] = now_iso
-                break
-        save_objects(data)
-        print("ISSUE:", result.get("url", ""))
     else:
-        print("ERROR:", result.get("error", "unknown error"))
 
 
 if __name__ == "__main__":
