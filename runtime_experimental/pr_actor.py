@@ -22,10 +22,6 @@ SAFE_PREFIXES = (
     "tests/",
 )
 
-SAFE_PATTERNS = [
-    "print(",
-]
-
 
 def run(cmd: str):
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
@@ -100,58 +96,18 @@ def extract_target_path(task):
     return normalize_path(path)
 
 
-def line_has_debug_print(line: str) -> bool:
-    return any(pattern in line for pattern in SAFE_PATTERNS)
+def force_remove_prints(path: str):
+    changed = False
 
-
-def indent_of(line: str) -> str:
-    return line[: len(line) - len(line.lstrip(" "))]
-
-
-def next_significant_line(lines, start_index):
-    for j in range(start_index + 1, len(lines)):
-        raw = lines[j]
-        stripped = raw.strip()
-        if not stripped:
-            continue
-        if stripped.startswith("#"):
-            continue
-        return j, raw
-    return None, None
-
-
-def safe_remove_debug(path: str):
     with open(path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    changed = False
     new_lines = []
-
-    for i, line in enumerate(lines):
-        if not line_has_debug_print(line):
-            new_lines.append(line)
+    for line in lines:
+        if "print(" in line:
+            changed = True
             continue
-
-        current_indent = indent_of(line)
-        next_idx, next_line = next_significant_line(lines, i)
-
-        replace_with_pass = False
-
-        if next_line is None:
-            replace_with_pass = True
-        else:
-            next_indent = indent_of(next_line)
-            if len(next_indent) < len(current_indent):
-                replace_with_pass = True
-
-        if replace_with_pass:
-            newline = "\n" if line.endswith("\n") else ""
-            new_lines.append(f"{current_indent}pass{newline}")
-        else:
-            # безпечно видаляємо рядок, якщо після нього є інший код у тому ж/глибшому блоці
-            pass
-
-        changed = True
+        new_lines.append(line)
 
     if changed:
         with open(path, "w", encoding="utf-8") as f:
@@ -176,7 +132,7 @@ def run_pr_task(task):
         return False, f"branch_create_failed:{err or out}"
 
     try:
-        changed = safe_remove_debug(target_path)
+        changed = force_remove_prints(target_path)
     except Exception as e:
         run("git checkout main")
         return False, f"edit_failed:{e}"

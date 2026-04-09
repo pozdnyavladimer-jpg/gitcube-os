@@ -53,7 +53,7 @@ def find_duplicate_task(task: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         return None
 
     for obj in load_objects():
-        if str(obj.get("id")) == current_id:
+        if str(obj.get("id", "")) == current_id:
             continue
         if normalize_title(obj.get("title", "")) == current_title:
             return obj
@@ -67,30 +67,21 @@ def ensure_safe_payload(task):
     if path:
         return task
 
-    # fallback → знайти safe файл
     for root, _, files in os.walk("examples"):
         for f in files:
             if f.endswith(".py"):
                 safe_path = os.path.join(root, f).replace("\\", "/")
                 task["payload"] = {"path": safe_path}
-                task["title"] = f"Remove debug prints in {safe_path}"
+                task["title"] = f"Review debug prints in {safe_path}"
                 return task
 
     return task
 
 
 def select_task(open_tasks, latest_task_id):
-    for t in open_tasks:
-        title = str(t.get("title", "")).lower()
-        if "debug prints" in title:
-            return t
-
-    if latest_task_id:
-        for t in open_tasks:
-            if str(t.get("id")) == latest_task_id:
-                return t
-
-    return open_tasks[0]
+    if open_tasks:
+        return open_tasks[-1]
+    return None
 
 
 def main():
@@ -104,6 +95,7 @@ def main():
 
     print("ACTION:", action)
     print("TASKS:", len(open_tasks))
+    print("GITHUB:", is_github_enabled())
 
     if action == "WAIT":
         print("SKIP: WAIT")
@@ -114,6 +106,10 @@ def main():
         return
 
     task = select_task(open_tasks, latest_task_id)
+    if task is None:
+        print("SKIP: task is none")
+        return
+
     task = ensure_safe_payload(task)
 
     print("SELECTED TASK:", task.get("title"))
@@ -123,7 +119,6 @@ def main():
 
     ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     path = os.path.join(OUTPUT_DIR, f"{task['id']}_{ts}.md")
-
     now_iso = datetime.now(UTC).isoformat()
 
     report_text = (
@@ -131,26 +126,24 @@ def main():
         f"id: {task.get('id')}\n"
         f"title: {task.get('title')}\n"
         f"generated_at: {now_iso}\n"
+        f"action: {action}\n"
+        f"payload: {task.get('payload', {})}\n"
     )
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(report_text)
 
     mark_task_done(str(task.get("id")), path)
-
     print("REPORT:", path)
 
-    # 🔥 PR
     success, pr_reason = run_pr_task(task)
     print("PR_ATTEMPT:", success, pr_reason)
 
     if success:
-        print("PR_CREATED → DONE")
+        print("PR_CREATED -> DONE")
         return
 
-    # fallback → ISSUE
     allow_publish, reason = should_publish_to_github(task)
-
     print("PUBLISH:", allow_publish, reason)
 
     if not allow_publish:
@@ -162,7 +155,7 @@ def main():
 
     duplicate = find_duplicate_task(task)
     if duplicate:
-        print("DUPLICATE → SKIP")
+        print("DUPLICATE -> SKIP")
         return
 
     issue = build_issue_from_task(task, action, path)
