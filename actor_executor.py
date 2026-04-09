@@ -8,7 +8,6 @@ from runtime_experimental.object_store import (
     mark_task_done,
     mark_task_published,
     load_objects,
-    save_objects,
 )
 from runtime_experimental.github_bridge import (
     is_github_enabled,
@@ -22,7 +21,6 @@ BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
 MIN_INTENSITY_FOR_GITHUB = 0.8
 MIN_NOVELTY_FOR_GITHUB = 0.85
-GITHUB_COOLDOWN_SECONDS = 300
 
 
 def ensure_dir(path: str) -> None:
@@ -55,97 +53,38 @@ def find_duplicate_task(task: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         return None
 
     for obj in load_objects():
-        obj_id = str(obj.get("id", ""))
-        if obj_id == current_id:
+        if str(obj.get("id")) == current_id:
             continue
-        if normalize_title(str(obj.get("title", ""))) == current_title:
+        if normalize_title(obj.get("title", "")) == current_title:
             return obj
     return None
 
 
-def find_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
-    for obj in load_objects():
-        if str(obj.get("id")) == str(task_id):
-            return obj
-    return None
+def ensure_safe_payload(task):
+    payload = task.get("payload", {}) or {}
+    path = payload.get("path")
 
+    if path:
+        return task
 
-def build_graph_text(task: Dict[str, Any]) -> str:
-    parent_id = task.get("parent_id")
-    related_to = task.get("related_to", [])
-    graph_depth = task.get("graph_depth", 0)
+    # fallback → знайти safe файл
+    for root, _, files in os.walk("examples"):
+        for f in files:
+            if f.endswith(".py"):
+                safe_path = os.path.join(root, f).replace("\\", "/")
+                task["payload"] = {"path": safe_path}
+                task["title"] = f"Remove debug prints in {safe_path}"
+                return task
 
-    parent_url = ""
-    if parent_id:
-        parent_task = find_task_by_id(str(parent_id))
-        if parent_task:
-            parent_url = str(parent_task.get("github_url", ""))
-
-    lines = [
-        "Graph Context",
-        "",
-        f"parent_id: {parent_id}",
-        f"graph_depth: {graph_depth}",
-        f"related_to: {related_to}",
-    ]
-
-    if parent_url:
-        lines.append(f"parent_github_url: {parent_url}")
-
-    return "\n".join(lines)
-
-
-def parse_generated_at(text: str) -> Optional[datetime]:
-    try:
-        return datetime.fromisoformat(text.replace("Z", "+00:00"))
-    except Exception:
-        return None
-
-
-def get_last_published_time() -> Optional[datetime]:
-    latest_dt = None
-
-    for obj in load_objects():
-        if not obj.get("published_to_github"):
-            continue
-
-        dt_raw = obj.get("published_at") or obj.get("generated_at")
-        if not dt_raw:
-            continue
-
-        dt = parse_generated_at(str(dt_raw))
-        if dt is None:
-            continue
-
-        if latest_dt is None or dt > latest_dt:
-            latest_dt = dt
-
-    return latest_dt
-
-
-def cooldown_blocked() -> tuple[bool, str]:
-    last_dt = get_last_published_time()
-    if last_dt is None:
-        return False, "no_previous_publish"
-
-    now_dt = datetime.now(UTC)
-    delta = (now_dt - last_dt).total_seconds()
-
-    if delta < GITHUB_COOLDOWN_SECONDS:
-        remaining = int(GITHUB_COOLDOWN_SECONDS - delta)
-        return True, f"cooldown_active:{remaining}s"
-
-    return False, "cooldown_passed"
+    return task
 
 
 def select_task(open_tasks, latest_task_id):
-    # 🔥 ПРІОРИТЕТ PR задач
     for t in open_tasks:
         title = str(t.get("title", "")).lower()
         if "debug prints" in title:
             return t
 
-    # fallback
     if latest_task_id:
         for t in open_tasks:
             if str(t.get("id")) == latest_task_id:
@@ -163,14 +102,22 @@ def main():
     latest_task_id = str(signal.get("latest_task_id", ""))
     open_tasks = get_open_tasks()
 
+    print("ACTION:", action)
+    print("TASKS:", len(open_tasks))
 
     if action == "WAIT":
+        print("SKIP: WAIT")
         return
 
     if not open_tasks:
+        print("SKIP: no tasks")
         return
 
     task = select_task(open_tasks, latest_task_id)
+    task = ensure_safe_payload(task)
+
+    print("SELECTED TASK:", task.get("title"))
+    print("TARGET PATH:", task.get("payload", {}).get("path"))
 
     ensure_dir(OUTPUT_DIR)
 
@@ -179,16 +126,11 @@ def main():
 
     now_iso = datetime.now(UTC).isoformat()
 
-    audit_status = str(task.get("audit_status", "none"))
-    audit_reason = str(task.get("audit_reason", "none"))
-
     report_text = (
         "GitCube Task Report\n\n"
         f"id: {task.get('id')}\n"
         f"title: {task.get('title')}\n"
         f"generated_at: {now_iso}\n"
-        f"audit_status: {audit_status}\n"
-        f"audit_reason: {audit_reason}\n"
     )
 
     with open(path, "w", encoding="utf-8") as f:
@@ -196,20 +138,31 @@ def main():
 
     mark_task_done(str(task.get("id")), path)
 
+    print("REPORT:", path)
 
-    # 🔥 PR СПРОБА
+    # 🔥 PR
     success, pr_reason = run_pr_task(task)
+    print("PR_ATTEMPT:", success, pr_reason)
 
     if success:
+        print("PR_CREATED → DONE")
         return
 
-    # 🔥 fallback → ISSUE
+    # fallback → ISSUE
     allow_publish, reason = should_publish_to_github(task)
+
+    print("PUBLISH:", allow_publish, reason)
 
     if not allow_publish:
         return
 
     if not is_github_enabled():
+        print("GitHub not enabled")
+        return
+
+    duplicate = find_duplicate_task(task)
+    if duplicate:
+        print("DUPLICATE → SKIP")
         return
 
     issue = build_issue_from_task(task, action, path)
@@ -217,7 +170,9 @@ def main():
 
     if result.get("ok"):
         mark_task_published(str(task.get("id")), result.get("url", ""))
+        print("ISSUE:", result.get("url"))
     else:
+        print("ERROR:", result.get("error", "unknown"))
 
 
 if __name__ == "__main__":
