@@ -4,23 +4,7 @@ from datetime import datetime
 
 SAFE_EXTENSIONS = {".py"}
 
-BLOCKED_FILES = {
-    "actor_executor.py",
-    "repo_analyzer.py",
-    "run.sh",
-    "run_loop.sh",
-    "status.py",
-    "v_bridge.py",
-    "runtime_experimental/pr_actor.py",
-    "runtime_experimental/os_sync.py",
-    "runtime_experimental/object_store.py",
-    "runtime_experimental/github_bridge.py",
-}
-
-SAFE_PREFIXES = (
-    "examples/",
-    "tests/",
-)
+SAFE_PREFIXES = ("examples/", "tests/")
 
 
 def run(cmd: str):
@@ -57,56 +41,55 @@ def normalize_path(path: str) -> str:
     return str(path or "").replace("\\", "/").strip()
 
 
-def is_safe_target(path: str) -> tuple[bool, str]:
+def is_safe_target(path: str):
     path = normalize_path(path)
 
-    if not path:
-        return False, "missing_path"
+    if not path or not os.path.exists(path):
+        return False, "invalid_path"
 
-    if not os.path.exists(path):
-        return False, "path_not_found"
-
-    _, ext = os.path.splitext(path)
-    if ext not in SAFE_EXTENSIONS:
-        return False, f"unsupported_extension:{ext}"
-
-    if path in BLOCKED_FILES:
-        return False, "blocked_file"
-
-    if path.startswith("runtime_experimental/"):
-        return False, "blocked_runtime_experimental"
-
-    if path.startswith("core/") or path.startswith("runtime/") or path.startswith("app/"):
-        return False, "blocked_core_runtime_app"
+    if not path.endswith(".py"):
+        return False, "not_python"
 
     if not path.startswith(SAFE_PREFIXES):
-        return False, "outside_safe_prefix"
+        return False, "unsafe_path"
 
     return True, "safe"
 
 
-def should_run_pr(task):
-    title = str(task.get("title", "")).lower()
-    return "debug prints" in title
-
-
-def extract_target_path(task):
-    payload = task.get("payload", {}) or {}
-    path = payload.get("path")
-    return normalize_path(path)
-
-
-def force_remove_prints(path: str):
+# 🔥 УНІВЕРСАЛЬНИЙ FIX ENGINE
+def apply_fixes(path: str):
     changed = False
 
     with open(path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     new_lines = []
+
     for line in lines:
-        if "print(" in line:
+        stripped = line.strip()
+
+        # ❌ remove debug prints
+        if "print(" in stripped:
             changed = True
             continue
+
+        # ❌ remove TODO
+        if "TODO" in stripped or "todo" in stripped:
+            changed = True
+            continue
+
+        # ❌ replace pass
+        if stripped == "pass":
+            new_lines.append("    raise NotImplementedError()\n")
+            changed = True
+            continue
+
+        # ❌ fix bare except
+        if stripped == "except:":
+            new_lines.append("except Exception as e:\n")
+            changed = True
+            continue
+
         new_lines.append(line)
 
     if changed:
@@ -117,40 +100,39 @@ def force_remove_prints(path: str):
 
 
 def run_pr_task(task):
-    if not should_run_pr(task):
-        return False, "not_supported_task"
+    payload = task.get("payload", {}) or {}
+    path = normalize_path(payload.get("path"))
 
-    target_path = extract_target_path(task)
-    safe_ok, safe_reason = is_safe_target(target_path)
+    safe_ok, reason = is_safe_target(path)
     if not safe_ok:
-        return False, safe_reason
+        return False, reason
 
     name = branch_name(task)
 
     out, err, code = create_branch(name)
     if code != 0:
-        return False, f"branch_create_failed:{err or out}"
+        return False, f"branch_fail:{err or out}"
 
     try:
-        changed = force_remove_prints(target_path)
+        changed = apply_fixes(path)
     except Exception as e:
         run("git checkout main")
-        return False, f"edit_failed:{e}"
+        return False, f"edit_fail:{e}"
 
     if not changed:
         run("git checkout main")
         return False, "no_changes"
 
-    out, err, code = commit_all(task.get("title", "GitCube PR"))
+    out, err, code = commit_all(task.get("title", "GitCube fix"))
     if code != 0:
-        return False, f"commit_failed:{err or out}"
+        return False, f"commit_fail:{err or out}"
 
     out, err, code = push_branch(name)
     if code != 0:
-        return False, f"push_failed:{err or out}"
+        return False, f"push_fail:{err or out}"
 
-    out, err, code = create_pr(name, task.get("title", "GitCube PR"))
+    out, err, code = create_pr(name, task.get("title", "GitCube fix"))
     if code != 0:
-        return False, f"pr_create_failed:{err or out}"
+        return False, f"pr_fail:{err or out}"
 
-    return True, f"file_changed:{target_path}"
+    return True, f"fixed:{path}"
