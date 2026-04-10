@@ -1,4 +1,5 @@
 from runtime_experimental.pr_actor import run_pr_task
+from runtime_experimental.assassin_actor import run_assassin_task
 import os
 from datetime import datetime, UTC
 from typing import Optional, Dict, Any
@@ -19,7 +20,7 @@ from runtime_experimental.github_bridge import (
     build_issue_from_task,
 )
 from v_bridge import VBridge
-from router import select_agent
+from router import select_pair
 
 OUTPUT_DIR = "reports"
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
@@ -81,6 +82,16 @@ def select_task(open_tasks, latest_task_id):
     return None
 
 
+def run_primary_agent(primary_agent: str, task: Dict[str, Any]):
+    if primary_agent == "ARCHER":
+        return run_pr_task(task)
+
+    if primary_agent == "ASSASSIN":
+        return run_assassin_task(task)
+
+    return False, "not_supported_task"
+
+
 def main():
     bridge = VBridge(BUS_PATH)
     state = bridge.read_state()
@@ -114,11 +125,12 @@ def main():
         print("SKIP:", reason)
         return
 
-    selected_agent, scores, route_reason = select_agent(task)
+    primary_agent, support_agent, scores, pair_reason = select_pair(task)
 
-    print("ROUTED_AGENT:", selected_agent)
-    print("ROUTE_REASON:", route_reason)
-    print("ROUTE_SCORES:", scores)
+    print("PRIMARY_AGENT:", primary_agent)
+    print("SUPPORT_AGENT:", support_agent)
+    print("PAIR_REASON:", pair_reason)
+    print("PAIR_SCORES:", scores)
 
     ensure_dir(OUTPUT_DIR)
 
@@ -128,44 +140,47 @@ def main():
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(f"TASK {task_id}\n")
         f.write(f"TITLE: {task.get('title')}\n")
-        f.write(f"ROUTED_AGENT: {selected_agent}\n")
-        f.write(f"ROUTE_REASON: {route_reason}\n")
-        f.write(f"ROUTE_SCORES: {scores}\n")
+        f.write(f"PRIMARY_AGENT: {primary_agent}\n")
+        f.write(f"SUPPORT_AGENT: {support_agent}\n")
+        f.write(f"PAIR_REASON: {pair_reason}\n")
+        f.write(f"PAIR_SCORES: {scores}\n")
 
     mark_task_in_progress(task_id, report_path)
     print("REPORT:", report_path)
 
-    if selected_agent == "ARCHER":
-        try:
-            success, pr_reason = run_pr_task(task)
-        except Exception as e:
-            mark_task_failed(task_id, report_path, f"archer_exception:{e}")
-            print("PR_ATTEMPT:", False, f"archer_exception:{e}")
-            return
+    try:
+        success, exec_reason = run_primary_agent(primary_agent, task)
+    except Exception as e:
+        mark_task_failed(task_id, report_path, f"primary={primary_agent};exception:{e}")
+        print("PRIMARY_ATTEMPT:", False, f"primary={primary_agent};exception:{e}")
+        return
 
-        print("PR_ATTEMPT:", success, pr_reason)
+    print("PRIMARY_ATTEMPT:", success, exec_reason)
 
-        if success:
-            mark_task_done(task_id, report_path, f"agent={selected_agent};{pr_reason}")
-            print("DONE")
-            return
+    if success:
+        final_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
+        mark_task_done(task_id, report_path, final_reason)
+        print("DONE")
+        return
 
-        skip_set = {
-            "no_changes",
-            "not_supported_task",
-            "missing_path",
-            "path_not_found",
-            "blocked_file",
-            "blocked_runtime_experimental",
-            "blocked_core_runtime_app",
-            "outside_safe_prefix",
-            "missing_payload_path",
-        }
+    skip_set = {
+        "no_changes",
+        "not_supported_task",
+        "missing_path",
+        "path_not_found",
+        "blocked_file",
+        "blocked_runtime_experimental",
+        "blocked_core_runtime_app",
+        "outside_safe_prefix",
+        "missing_payload_path",
+    }
 
-        if pr_reason in skip_set or str(pr_reason).startswith("unsupported_extension:") or str(pr_reason).startswith("validation_failed:"):
-            mark_task_skipped(task_id, report_path, f"agent={selected_agent};{pr_reason}")
-        else:
-            mark_task_failed(task_id, report_path, f"agent={selected_agent};{pr_reason}")
+    tagged_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
+
+    if exec_reason in skip_set or str(exec_reason).startswith("unsupported_extension:") or str(exec_reason).startswith("validation_failed:"):
+        mark_task_skipped(task_id, report_path, tagged_reason)
+    else:
+        mark_task_failed(task_id, report_path, tagged_reason)
 
     allow, publish_reason = should_publish_to_github(task)
     print("PUBLISH:", allow, publish_reason)
@@ -179,15 +194,29 @@ def main():
         return
 
     issue = build_issue_from_task(task, action, report_path)
-    issue["body"] += f"\n\nRouted agent: {selected_agent}\nRoute reason: {route_reason}\nScores: {scores}\n"
+    issue["body"] += (
+        f"\n\nPrimary agent: {primary_agent}"
+        f"\nSupport agent: {support_agent}"
+        f"\nPair reason: {pair_reason}"
+        f"\nScores: {scores}\n"
+    )
 
     result = create_issue(issue["title"], issue["body"])
 
     if result.get("ok"):
-        mark_task_published(task_id, result.get("url"), report_path, f"agent={selected_agent};issue")
+        mark_task_published(
+            task_id,
+            result.get("url"),
+            report_path,
+            f"primary={primary_agent};support={support_agent};issue",
+        )
         print("ISSUE:", result.get("url"))
     else:
-        mark_task_failed(task_id, report_path, f"agent={selected_agent};issue_fail")
+        mark_task_failed(
+            task_id,
+            report_path,
+            f"primary={primary_agent};support={support_agent};issue_fail",
+        )
         print("ERROR:", result.get("error", "unknown"))
 
 

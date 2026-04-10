@@ -1,7 +1,15 @@
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, List
 
 
 AGENTS = ("TANK", "MAGE", "ARCHER", "HEALER", "ASSASSIN")
+
+PAIR_COMPATIBILITY = {
+    "TANK": ["MAGE", "HEALER"],
+    "MAGE": ["TANK", "HEALER"],
+    "ARCHER": ["HEALER", "ASSASSIN"],
+    "HEALER": ["ASSASSIN", "ARCHER", "TANK", "MAGE"],
+    "ASSASSIN": ["HEALER", "ARCHER"],
+}
 
 
 def _f(x: Any, default: float = 0.0) -> float:
@@ -19,7 +27,6 @@ def _has_target_path(task: Dict[str, Any]) -> bool:
 
 def get_resonance_vector(task: Dict[str, Any]) -> Dict[str, float]:
     rv = task.get("resonance_vector", {}) or {}
-
     return {
         "pressure": _f(rv.get("pressure", 0.0)),
         "flow": _f(rv.get("flow", 0.0)),
@@ -115,32 +122,60 @@ def score_agents(task: Dict[str, Any]) -> Dict[str, float]:
     }
 
 
-def build_reason(task: Dict[str, Any], selected_agent: str, scores: Dict[str, float]) -> str:
+def select_primary(scores: Dict[str, float]) -> str:
+    return max(scores, key=scores.get)
+
+
+def select_support(primary: str, scores: Dict[str, float]) -> str:
+    compatible = PAIR_COMPATIBILITY.get(primary, [])
+    if not compatible:
+        return "NONE"
+
+    best_agent = None
+    best_score = -1.0
+
+    for agent in compatible:
+        s = float(scores.get(agent, 0.0))
+        if s > best_score:
+            best_score = s
+            best_agent = agent
+
+    return best_agent or "NONE"
+
+
+def build_reason(task: Dict[str, Any], primary: str, support: str) -> str:
     rv = get_resonance_vector(task)
     has_path = _has_target_path(task)
 
-    top_features = []
+    features: List[str] = []
 
     if rv["pressure"] >= 0.7:
-        top_features.append("high_pressure")
+        features.append("high_pressure")
     if rv["structure"] <= 0.35:
-        top_features.append("low_structure")
+        features.append("low_structure")
     if rv["law"] <= 0.35:
-        top_features.append("low_law")
+        features.append("low_law")
     if rv["balance"] <= 0.35:
-        top_features.append("low_balance")
+        features.append("low_balance")
     if rv["future"] >= 0.7:
-        top_features.append("high_future")
+        features.append("high_future")
     if has_path:
-        top_features.append("has_path")
+        features.append("has_path")
     else:
-        top_features.append("no_path")
+        features.append("no_path")
 
-    return f"{selected_agent.lower()}:" + ",".join(top_features[:4])
+    core = ",".join(features[:4])
+    return f"{primary.lower()}+{support.lower()}:{core}"
+
+
+def select_pair(task: Dict[str, Any]) -> Tuple[str, str, Dict[str, float], str]:
+    scores = score_agents(task)
+    primary = select_primary(scores)
+    support = select_support(primary, scores)
+    reason = build_reason(task, primary, support)
+    return primary, support, scores, reason
 
 
 def select_agent(task: Dict[str, Any]) -> Tuple[str, Dict[str, float], str]:
-    scores = score_agents(task)
-    selected = max(scores, key=scores.get)
-    reason = build_reason(task, selected, scores)
-    return selected, scores, reason
+    primary, support, scores, reason = select_pair(task)
+    return primary, scores, reason
