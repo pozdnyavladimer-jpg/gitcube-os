@@ -23,6 +23,7 @@ from runtime_experimental.object_store import (
     mark_task_published,
     mark_task_skipped,
     mark_task_failed,
+    mark_task_absorbed,
     load_objects,
 )
 from v_bridge import VBridge
@@ -84,45 +85,43 @@ def find_duplicate_task(task: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return None
 
 
+def is_absorbed_task(task: Dict[str, Any]) -> bool:
+    if not is_github_enabled():
+        return False
+
+    meta_key = str(task.get("meta_key", "")).strip()
+    if not meta_key:
+        return False
+
+    issue = find_open_issue_by_meta_key(meta_key)
+    return bool(issue)
+
+
 def select_task(open_tasks, latest_task_id):
     if latest_task_id:
         t = get_task_by_id(latest_task_id)
-        if t and t.get("status") == "open":
+        if t and t.get("status") == "open" and not is_absorbed_task(t):
             return t
 
-    if open_tasks:
-        return open_tasks[-1]
+    valid_tasks = [t for t in open_tasks if not is_absorbed_task(t)]
+    if not valid_tasks:
+        return None
 
-    return None
+    with_path = []
+    without_path = []
 
+    for t in valid_tasks:
+        payload = t.get("payload", {}) or {}
+        path = str(payload.get("path", "")).strip()
+        paths = payload.get("paths")
 
-def get_task_meta_key(task):
-    meta_key = str(task.get("meta_key", "")).strip()
-    if meta_key:
-        return meta_key
+        if path or (isinstance(paths, list) and len(paths) > 0):
+            with_path.append(t)
+        else:
+            without_path.append(t)
 
-    payload = task.get("payload", {}) or {}
-    problem = str(payload.get("problem", "generic_problem")).strip().lower()
-    path = str(payload.get("path", "")).strip()
-    priority = str(payload.get("priority", "")).strip().lower()
-    origin = str(task.get("origin", "")).strip().lower()
-    has_path = "path" if path else "no_path"
-    return f"{problem}|{has_path}|{priority}|{origin}"
-
-
-def is_absorbed_by_open_issue(task):
-    if not is_github_enabled():
-        return False, None
-
-    meta_key = get_task_meta_key(task)
-    if not meta_key:
-        return False, None
-
-    issue = find_open_issue_by_meta_key(meta_key)
-    if not issue:
-        return False, None
-
-    return True, issue
+    ordered = with_path + without_path
+    return ordered[-1] if ordered else None
 
 
 def run_primary_agent(primary_agent: str, task: Dict[str, Any], tank_policy=None):
@@ -177,7 +176,7 @@ def main():
 
     task = select_task(open_tasks, latest_task_id)
     if not task:
-        print("SKIP: no task")
+        print("SKIP: no executable open task")
         return
 
     task_id = str(task.get("id"))
@@ -190,27 +189,29 @@ def main():
         print("SKIP:", reason)
         return
 
-    absorbed, absorbed_issue = is_absorbed_by_open_issue(task)
-    if absorbed:
-        ensure_dir(OUTPUT_DIR)
-        ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-        report_path = os.path.join(OUTPUT_DIR, f"{task_id}_{ts}.md")
+    meta_key = str(task.get("meta_key", "")).strip()
+    if meta_key and is_github_enabled():
+        issue = find_open_issue_by_meta_key(meta_key)
+        if issue:
+            ensure_dir(OUTPUT_DIR)
+            ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+            report_path = os.path.join(OUTPUT_DIR, f"{task_id}_{ts}.md")
 
-        with open(report_path, "w", encoding="utf-8") as f:
-            f.write(f"TASK {task_id}\n")
-            f.write(f"TITLE: {task.get('title')}\n")
-            f.write("ABSORBED_BY_ISSUE: True\n")
-            f.write(f"ISSUE_URL: {absorbed_issue.get('url', '')}\n")
-            f.write(f"ISSUE_TITLE: {absorbed_issue.get('title', '')}\n")
+            with open(report_path, "w", encoding="utf-8") as f:
+                f.write(f"TASK {task_id}\n")
+                f.write(f"TITLE: {task.get('title')}\n")
+                f.write("ABSORBED_BY_ISSUE: True\n")
+                f.write(f"ISSUE_URL: {issue.get('url', '')}\n")
+                f.write(f"ISSUE_TITLE: {issue.get('title', '')}\n")
 
-        mark_task_done(
-            task_id,
-            report_path,
-            f"primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:{absorbed_issue.get('url', '')}",
-        )
-        print("ABSORBED_BY_ISSUE:", absorbed_issue.get("url", ""))
-        print("DONE")
-        return
+            mark_task_absorbed(
+                task_id,
+                report_path,
+                f"primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:{issue.get('url', '')}",
+            )
+            print("ABSORBED_BY_ISSUE:", issue.get("url", ""))
+            print("DONE")
+            return
 
     primary_agent, support_agent, scores, pair_reason, memory_bias = select_pair_with_memory(task)
 
@@ -228,7 +229,6 @@ def main():
     policy_owner = get_policy_owner(primary_agent, support_agent, tank_policy)
 
     ensure_dir(OUTPUT_DIR)
-
     ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     report_path = os.path.join(OUTPUT_DIR, f"{task_id}_{ts}.md")
 
@@ -279,49 +279,6 @@ def main():
             mark_task_done(task_id, report_path, final_reason)
             print("DONE")
             return
-
-        allow, publish_reason = should_publish_to_github(task, tank_policy=tank_policy)
-        print("PUBLISH:", allow, publish_reason)
-
-        if not allow or not is_github_enabled():
-            mark_task_failed(
-                task_id,
-                report_path,
-                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed={support_reason}",
-            )
-            return
-
-        issue = build_issue_from_task(task, action, report_path)
-        issue["body"] += (
-            f"\n\nPrimary agent: {primary_agent}"
-            f"\nSupport agent: {support_agent}"
-            f"\nPolicy owner: {policy_owner}"
-            f"\nPair reason: {pair_reason}"
-            f"\nScores: {scores}"
-            f"\nMemory bias: {memory_bias}"
-            f"\nSupport failure: {support_reason}"
-        )
-        if tank_policy:
-            issue["body"] += f"\nTank policy: {tank_policy}"
-
-        result = create_issue(issue["title"], issue["body"])
-
-        if result.get("ok"):
-            mark_task_published(
-                task_id,
-                result.get("url"),
-                report_path,
-                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed_issue",
-            )
-            print("ISSUE:", result.get("url"))
-        else:
-            mark_task_failed(
-                task_id,
-                report_path,
-                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed_issue_fail",
-            )
-            print("ERROR:", result.get("error", "unknown"))
-        return
 
     skip_set = {
         "no_changes",
