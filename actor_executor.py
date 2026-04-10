@@ -5,6 +5,12 @@ from runtime_experimental.healer_support import run_healer_support
 from runtime_experimental.mage_actor import run_mage_task
 from runtime_experimental.tank_policy import build_tank_policy
 from runtime_experimental.memory_router import select_pair_with_memory
+from runtime_experimental.github_bridge import (
+    is_github_enabled,
+    create_issue,
+    build_issue_from_task,
+    find_open_issue_by_meta_key,
+)
 import os
 from datetime import datetime, UTC
 from typing import Optional, Dict, Any
@@ -18,11 +24,6 @@ from runtime_experimental.object_store import (
     mark_task_skipped,
     mark_task_failed,
     load_objects,
-)
-from runtime_experimental.github_bridge import (
-    is_github_enabled,
-    create_issue,
-    build_issue_from_task,
 )
 from v_bridge import VBridge
 
@@ -89,6 +90,35 @@ def select_task(open_tasks, latest_task_id):
     return None
 
 
+def get_task_meta_key(task):
+    meta_key = str(task.get("meta_key", "")).strip()
+    if meta_key:
+        return meta_key
+
+    payload = task.get("payload", {}) or {}
+    problem = str(payload.get("problem", "generic_problem")).strip().lower()
+    path = str(payload.get("path", "")).strip()
+    priority = str(payload.get("priority", "")).strip().lower()
+    origin = str(task.get("origin", "")).strip().lower()
+    has_path = "path" if path else "no_path"
+    return f"{problem}|{has_path}|{priority}|{origin}"
+
+
+def is_absorbed_by_open_issue(task):
+    if not is_github_enabled():
+        return False, None
+
+    meta_key = get_task_meta_key(task)
+    if not meta_key:
+        return False, None
+
+    issue = find_open_issue_by_meta_key(meta_key)
+    if not issue:
+        return False, None
+
+    return True, issue
+
+
 def run_primary_agent(primary_agent: str, task: Dict[str, Any], tank_policy=None):
     if primary_agent == "TANK":
         return False, "tank_policy_mode"
@@ -152,6 +182,28 @@ def main():
     if not payload_ok:
         mark_task_skipped(task_id, reason=reason)
         print("SKIP:", reason)
+        return
+
+    absorbed, absorbed_issue = is_absorbed_by_open_issue(task)
+    if absorbed:
+        ensure_dir(OUTPUT_DIR)
+        ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+        report_path = os.path.join(OUTPUT_DIR, f"{task_id}_{ts}.md")
+
+        with open(report_path, "w", encoding="utf-8") as f:
+            f.write(f"TASK {task_id}\n")
+            f.write(f"TITLE: {task.get('title')}\n")
+            f.write("ABSORBED_BY_ISSUE: True\n")
+            f.write(f"ISSUE_URL: {absorbed_issue.get('url', '')}\n")
+            f.write(f"ISSUE_TITLE: {absorbed_issue.get('title', '')}\n")
+
+        mark_task_done(
+            task_id,
+            report_path,
+            f"absorbed_by_issue:{absorbed_issue.get('url', '')}",
+        )
+        print("ABSORBED_BY_ISSUE:", absorbed_issue.get("url", ""))
+        print("DONE")
         return
 
     primary_agent, support_agent, scores, pair_reason, memory_bias = select_pair_with_memory(task)
