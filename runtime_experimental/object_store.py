@@ -1,8 +1,13 @@
 import json
 import os
+from datetime import datetime, UTC
 from typing import Any, Dict, List, Optional
 
 PATH = "objects.json"
+
+
+def now_iso() -> str:
+    return datetime.now(UTC).isoformat()
 
 
 def load_objects() -> List[Dict[str, Any]]:
@@ -34,12 +39,19 @@ def _next_id(data: List[Dict[str, Any]]) -> str:
     return f"task_{max(nums) + 1 if nums else 1}"
 
 
+def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
+    for obj in load_objects():
+        if str(obj.get("id", "")) == str(task_id):
+            return obj
+    return None
+
+
 def get_latest_task() -> Optional[Dict[str, Any]]:
     tasks = [o for o in load_objects() if o.get("type") == "task"]
     if not tasks:
         return None
 
-    def sort_key(x: Dict[str, Any]) -> int:
+    def sort_key(x):
         obj_id = str(x.get("id", "task_0"))
         tail = obj_id.split("_")[-1]
         return int(tail) if tail.isdigit() else 0
@@ -49,11 +61,14 @@ def get_latest_task() -> Optional[Dict[str, Any]]:
 
 
 def get_latest_open_task() -> Optional[Dict[str, Any]]:
-    tasks = [o for o in load_objects() if o.get("type") == "task" and o.get("status") == "open"]
+    tasks = [
+        o for o in load_objects()
+        if o.get("type") == "task" and o.get("status") == "open"
+    ]
     if not tasks:
         return None
 
-    def sort_key(x: Dict[str, Any]) -> int:
+    def sort_key(x):
         obj_id = str(x.get("id", "task_0"))
         tail = obj_id.split("_")[-1]
         return int(tail) if tail.isdigit() else 0
@@ -70,102 +85,66 @@ def add_object(obj: Dict[str, Any]) -> Dict[str, Any]:
 
     obj.setdefault("type", "task")
     obj.setdefault("status", "open")
-    obj.setdefault("published_to_github", False)
-    obj.setdefault("github_url", "")
-    obj.setdefault("parent_id", None)
-    obj.setdefault("related_to", [])
-    obj.setdefault("graph_depth", 0)
+    obj.setdefault("created_at", now_iso())
+    obj.setdefault("updated_at", now_iso())
+    obj.setdefault("result_path", "")
+    obj.setdefault("execution_reason", "")
 
     data.append(obj)
     save_objects(data)
     return obj
 
 
-def create_task(
-    title: str,
-    origin: str,
-    kind: str = "task",
-    intensity: float = 0.0,
-    novelty: float = 0.0,
-    payload: Optional[Dict[str, Any]] = None,
-    parent_id: Optional[str] = None,
-    related_to: Optional[List[str]] = None,
-) -> Dict[str, Any]:
-    latest = get_latest_task()
-
-    if parent_id is None and latest is not None:
-        parent_id = str(latest.get("id"))
-
-    if related_to is None:
-        related_to = [parent_id] if parent_id else []
-
-    graph_depth = 0
-    if latest and parent_id:
-        try:
-            graph_depth = int(latest.get("graph_depth", 0)) + 1
-        except Exception:
-            graph_depth = 1
-
-    task = {
-        "type": "task",
-        "title": title,
-        "origin": origin,
-        "status": "open",
-        "kind": kind,
-        "intensity": float(intensity),
-        "novelty": float(novelty),
-        "payload": payload or {},
-        "parent_id": parent_id,
-        "related_to": related_to,
-        "graph_depth": graph_depth,
-    }
-    return add_object(task)
-
-
-def get_open_tasks() -> List[Dict[str, Any]]:
+def get_open_tasks():
     return [
         o for o in load_objects()
         if o.get("type") == "task" and o.get("status") == "open"
     ]
 
 
-def get_open() -> List[Dict[str, Any]]:
-    return get_open_tasks()
-
-
-def mark_task_done(task_id: str, path: str = "") -> Optional[Dict[str, Any]]:
+def update_task_status(task_id, status, result_path="", reason=""):
     data = load_objects()
-    updated = None
 
     for o in data:
-        if str(o.get("id")) == str(task_id):
-            o["status"] = "done"
-            o["result_path"] = path
-            updated = o
-            break
+        if str(o.get("id")) != str(task_id):
+            continue
+
+        o["status"] = status
+        o["updated_at"] = now_iso()
+        o["result_path"] = result_path
+        o["execution_reason"] = reason
 
     save_objects(data)
-    return updated
 
 
-def mark_done(task_id: str, path: str = "") -> Optional[Dict[str, Any]]:
-    return mark_task_done(task_id, path)
+def mark_task_in_progress(task_id, path=""):
+    update_task_status(task_id, "in_progress", path)
 
 
-def mark_task_published(task_id: str, url: str) -> Optional[Dict[str, Any]]:
+def mark_task_done(task_id, path="", reason=""):
+    update_task_status(task_id, "done", path, reason)
+
+
+def mark_task_skipped(task_id, path="", reason=""):
+    update_task_status(task_id, "skipped", path, reason)
+
+
+def mark_task_failed(task_id, path="", reason=""):
+    update_task_status(task_id, "failed", path, reason)
+
+
+def mark_task_published(task_id, url, path="", reason=""):
     data = load_objects()
-    updated = None
 
     for o in data:
-        if str(o.get("id")) == str(task_id):
-            o["published_to_github"] = True
-            o["github_url"] = url
-            updated = o
-            break
+        if str(o.get("id")) != str(task_id):
+            continue
+
+        o["status"] = "published"
+        o["github_url"] = url
+        o["published_to_github"] = True
+        o["updated_at"] = now_iso()
+        o["result_path"] = path
+        o["execution_reason"] = reason
 
     save_objects(data)
-    return updated
-
-
-def mark_published(task_id: str, url: str) -> Optional[Dict[str, Any]]:
-    return mark_task_published(task_id, url)
