@@ -5,6 +5,7 @@ from runtime_experimental.github_bridge import (
     find_open_issue_by_meta_key,
     normalize_meta_key,
 )
+from runtime_experimental.meta_guard import should_block_task
 
 IGNORE_DIRS = {
     ".git",
@@ -112,11 +113,11 @@ def build_meta_key(payload: dict, origin: str) -> str:
 
 
 def make_task(title: str, payload: dict, intensity: float, novelty: float, resonance_vector: dict):
-    meta_key = build_meta_key(payload, "repo_analyzer_v5")
+    meta_key = build_meta_key(payload, "repo_analyzer_v6")
     return {
         "type": "task",
         "title": title,
-        "origin": "repo_analyzer_v5",
+        "origin": "repo_analyzer_v6",
         "status": "open",
         "kind": "task",
         "intensity": intensity,
@@ -152,7 +153,7 @@ def add_task_if_new(
     meta_keys_cache: set[str],
 ):
     key = title.strip().lower()
-    meta_key = build_meta_key(payload, "repo_analyzer_v5")
+    meta_key = build_meta_key(payload, "repo_analyzer_v6")
     problem = str(payload.get("problem", "")).strip().lower()
 
     if key in titles_cache:
@@ -160,6 +161,10 @@ def add_task_if_new(
 
     if meta_key in meta_keys_cache:
         return False, "duplicate_meta_key_local"
+
+    blocked, block_reason = should_block_task(payload, meta_key)
+    if blocked:
+        return False, f"blocked:{block_reason}"
 
     if is_github_enabled():
         existing_issue = find_open_issue_by_meta_key(meta_key)
