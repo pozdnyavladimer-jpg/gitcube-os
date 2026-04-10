@@ -4,6 +4,7 @@ from runtime_experimental.healer_actor import run_healer_task
 from runtime_experimental.healer_support import run_healer_support
 from runtime_experimental.mage_actor import run_mage_task
 from runtime_experimental.tank_policy import build_tank_policy
+from runtime_experimental.memory_router import select_pair_with_memory
 import os
 from datetime import datetime, UTC
 from typing import Optional, Dict, Any
@@ -24,7 +25,6 @@ from runtime_experimental.github_bridge import (
     build_issue_from_task,
 )
 from v_bridge import VBridge
-from router import select_pair
 
 OUTPUT_DIR = "reports"
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
@@ -154,12 +154,13 @@ def main():
         print("SKIP:", reason)
         return
 
-    primary_agent, support_agent, scores, pair_reason = select_pair(task)
+    primary_agent, support_agent, scores, pair_reason, memory_bias = select_pair_with_memory(task)
 
     print("PRIMARY_AGENT:", primary_agent)
     print("SUPPORT_AGENT:", support_agent)
     print("PAIR_REASON:", pair_reason)
     print("PAIR_SCORES:", scores)
+    print("MEMORY_BIAS:", memory_bias)
 
     tank_policy = None
     if primary_agent == "TANK" or support_agent == "TANK":
@@ -178,6 +179,7 @@ def main():
         f.write(f"SUPPORT_AGENT: {support_agent}\n")
         f.write(f"PAIR_REASON: {pair_reason}\n")
         f.write(f"PAIR_SCORES: {scores}\n")
+        f.write(f"MEMORY_BIAS: {memory_bias}\n")
         if tank_policy:
             f.write(f"TANK_POLICY: {tank_policy}\n")
 
@@ -230,6 +232,7 @@ def main():
             f"\nSupport agent: {support_agent}"
             f"\nPair reason: {pair_reason}"
             f"\nScores: {scores}"
+            f"\nMemory bias: {memory_bias}"
             f"\nSupport failure: {support_reason}"
         )
         if tank_policy:
@@ -292,7 +295,8 @@ def main():
         f"\n\nPrimary agent: {primary_agent}"
         f"\nSupport agent: {support_agent}"
         f"\nPair reason: {pair_reason}"
-        f"\nScores: {scores}\n"
+        f"\nScores: {scores}"
+        f"\nMemory bias: {memory_bias}\n"
     )
     if tank_policy:
         issue["body"] += f"\nTank policy: {tank_policy}\n"
