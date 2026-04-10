@@ -1,5 +1,10 @@
 import os
 from runtime_experimental.object_store import add_object, load_objects
+from runtime_experimental.github_bridge import (
+    is_github_enabled,
+    find_open_issue_by_meta_key,
+    normalize_meta_key,
+)
 
 IGNORE_DIRS = {
     ".git",
@@ -42,6 +47,24 @@ def existing_titles() -> set[str]:
     return titles
 
 
+def existing_meta_keys() -> set[str]:
+    keys = set()
+    for obj in load_objects():
+        payload = obj.get("payload", {}) or {}
+        problem = str(payload.get("problem", "")).strip().lower()
+        path = str(payload.get("path", "")).strip()
+        priority = str(payload.get("priority", "")).strip().lower()
+        origin = str(obj.get("origin", "")).strip().lower()
+
+        if not problem:
+            continue
+
+        has_path = "path" if path else "no_path"
+        raw = f"{problem}|{has_path}|{priority}|{origin}"
+        keys.add(normalize_meta_key(raw))
+    return keys
+
+
 def clamp01(x: float) -> float:
     return max(0.0, min(1.0, float(x)))
 
@@ -65,6 +88,15 @@ def build_resonance_vector(
     }
 
 
+def build_meta_key(payload: dict, origin: str) -> str:
+    problem = str(payload.get("problem", "generic_problem")).strip().lower()
+    path = str(payload.get("path", "")).strip()
+    priority = str(payload.get("priority", "")).strip().lower()
+    has_path = "path" if path else "no_path"
+    raw = f"{problem}|{has_path}|{priority}|{str(origin).strip().lower()}"
+    return normalize_meta_key(raw)
+
+
 def make_task(title: str, payload: dict, intensity: float, novelty: float, resonance_vector: dict):
     return {
         "type": "task",
@@ -76,6 +108,7 @@ def make_task(title: str, payload: dict, intensity: float, novelty: float, reson
         "novelty": novelty,
         "payload": payload,
         "resonance_vector": resonance_vector,
+        "meta_key": build_meta_key(payload, "repo_analyzer_v3"),
     }
 
 
@@ -86,14 +119,26 @@ def add_task_if_new(
     novelty: float,
     resonance_vector: dict,
     titles_cache: set[str],
+    meta_keys_cache: set[str],
 ):
     key = title.strip().lower()
+    meta_key = build_meta_key(payload, "repo_analyzer_v3")
+
     if key in titles_cache:
-        return False
+        return False, "duplicate_title"
+
+    if meta_key in meta_keys_cache:
+        return False, "duplicate_meta_key_local"
+
+    if is_github_enabled():
+        existing_issue = find_open_issue_by_meta_key(meta_key)
+        if existing_issue:
+            return False, f"duplicate_meta_key_issue:{existing_issue.get('url', '')}"
 
     add_object(make_task(title, payload, intensity, novelty, resonance_vector))
     titles_cache.add(key)
-    return True
+    meta_keys_cache.add(meta_key)
+    return True, "created"
 
 
 def has_debug_prints(content: str) -> bool:
@@ -115,7 +160,9 @@ def has_bare_except(content: str) -> bool:
 
 def analyze_repo(root: str = "."):
     titles_cache = existing_titles()
+    meta_keys_cache = existing_meta_keys()
     created = 0
+    suppressed = 0
 
     py_files = []
     md_files = []
@@ -188,37 +235,45 @@ def analyze_repo(root: str = "."):
             pressure=0.82, flow=0.20, structure=0.18,
             balance=0.35, law=0.45, future=0.88,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Add root README",
             {"problem": "missing_root_readme", "path": "README.md", "priority": "high"},
             0.92,
             0.80,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if not os.path.exists(os.path.join(root, "START_HERE.md")):
         rv = build_resonance_vector(
             pressure=0.76, flow=0.22, structure=0.24,
             balance=0.40, law=0.48, future=0.82,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Add START_HERE guide",
             {"problem": "missing_start_here", "path": "START_HERE.md", "priority": "high"},
             0.88,
             0.78,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if missing_init_dirs:
         rv = build_resonance_vector(
             pressure=0.71, flow=0.18, structure=0.22,
             balance=0.34, law=0.26, future=0.73,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Review Python package structure",
             {
                 "problem": "missing_init_group",
@@ -230,15 +285,19 @@ def analyze_repo(root: str = "."):
             0.74,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if big_files:
         rv = build_resonance_vector(
             pressure=0.63, flow=0.28, structure=0.42,
             balance=0.46, law=0.52, future=0.67,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Review large files across repo",
             {
                 "problem": "large_files_group",
@@ -250,15 +309,19 @@ def analyze_repo(root: str = "."):
             0.70,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if empty_dirs:
         rv = build_resonance_vector(
             pressure=0.35, flow=0.12, structure=0.30,
             balance=0.55, law=0.60, future=0.41,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Review empty directories",
             {
                 "problem": "empty_directories_group",
@@ -270,15 +333,19 @@ def analyze_repo(root: str = "."):
             0.60,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if len(py_files) > 0 and len(md_files) == 0:
         rv = build_resonance_vector(
             pressure=0.61, flow=0.18, structure=0.26,
             balance=0.43, law=0.47, future=0.77,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Add project documentation",
             {
                 "problem": "python_without_docs",
@@ -289,15 +356,19 @@ def analyze_repo(root: str = "."):
             0.72,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if todo_files:
         rv = build_resonance_vector(
             pressure=0.74, flow=0.36, structure=0.33,
             balance=0.38, law=0.42, future=0.71,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Resolve TODO markers across repo",
             {
                 "problem": "todo_group",
@@ -309,15 +380,19 @@ def analyze_repo(root: str = "."):
             0.73,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if debug_print_files:
         rv = build_resonance_vector(
             pressure=0.58, flow=0.72, structure=0.66,
             balance=0.60, law=0.63, future=0.54,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Refactor debug prints across repo",
             {
                 "problem": "debug_prints_group",
@@ -329,15 +404,19 @@ def analyze_repo(root: str = "."):
             0.67,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if pass_files:
         rv = build_resonance_vector(
             pressure=0.67, flow=0.30, structure=0.24,
             balance=0.36, law=0.28, future=0.76,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Review pass blocks across repo",
             {
                 "problem": "pass_blocks_group",
@@ -349,15 +428,19 @@ def analyze_repo(root: str = "."):
             0.71,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     if bare_except_files:
         rv = build_resonance_vector(
             pressure=0.72, flow=0.26, structure=0.31,
             balance=0.33, law=0.18, future=0.68,
         )
-        if add_task_if_new(
+        ok, reason = add_task_if_new(
             "Review bare except blocks across repo",
             {
                 "problem": "bare_except_group",
@@ -369,8 +452,12 @@ def analyze_repo(root: str = "."):
             0.75,
             rv,
             titles_cache,
-        ):
+            meta_keys_cache,
+        )
+        if ok:
             created += 1
+        else:
+            suppressed += 1
 
     print("ANALYZER_DONE")
     print("FILES_SCANNED:", scanned)
@@ -379,6 +466,7 @@ def analyze_repo(root: str = "."):
     print("PASS_BLOCK_FILES:", len(pass_files))
     print("BARE_EXCEPT_FILES:", len(bare_except_files))
     print("TASKS_CREATED:", created)
+    print("TASKS_SUPPRESSED:", suppressed)
 
 
 if __name__ == "__main__":
