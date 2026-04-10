@@ -23,6 +23,19 @@ SAFE_MAGE_DIRS = {
     "environments",
 }
 
+STRUCTURAL_PROBLEMS = {
+    "missing_init",
+    "missing_init_group",
+    "python_without_docs",
+    "package_structure",
+}
+
+META_PROBLEMS = {
+    "routing_failure",
+    "no_target_path",
+    "global_block",
+}
+
 
 def safe_read(path: str, max_chars: int = 4000) -> str:
     try:
@@ -83,21 +96,27 @@ def build_resonance_vector(
 def build_meta_key(payload: dict, origin: str) -> str:
     problem = str(payload.get("problem", "generic_problem")).strip().lower()
     path = str(payload.get("path", "")).strip()
-    paths = payload.get("paths", []) if isinstance(payload.get("paths", []), list) else []
+
+    paths = payload.get("paths", [])
+    if not isinstance(paths, list):
+        paths = []
+
     first_path = str(paths[0]).strip() if paths else ""
     effective_path = path or first_path
+
     priority = str(payload.get("priority", "")).strip().lower()
     has_path = "path" if effective_path else "no_path"
+
     raw = f"{problem}|{has_path}|{priority}|{str(origin).strip().lower()}|{effective_path}"
     return normalize_meta_key(raw)
 
 
 def make_task(title: str, payload: dict, intensity: float, novelty: float, resonance_vector: dict):
-    meta_key = build_meta_key(payload, "repo_analyzer_v4")
+    meta_key = build_meta_key(payload, "repo_analyzer_v5")
     return {
         "type": "task",
         "title": title,
-        "origin": "repo_analyzer_v4",
+        "origin": "repo_analyzer_v5",
         "status": "open",
         "kind": "task",
         "intensity": intensity,
@@ -106,6 +125,21 @@ def make_task(title: str, payload: dict, intensity: float, novelty: float, reson
         "resonance_vector": resonance_vector,
         "meta_key": meta_key,
     }
+
+
+def should_absorb(problem: str, payload: dict, issue_exists: bool) -> bool:
+    problem = str(problem or "").strip().lower()
+
+    if not issue_exists:
+        return False
+
+    if problem in META_PROBLEMS:
+        return True
+
+    if problem in STRUCTURAL_PROBLEMS:
+        return False
+
+    return False
 
 
 def add_task_if_new(
@@ -118,7 +152,8 @@ def add_task_if_new(
     meta_keys_cache: set[str],
 ):
     key = title.strip().lower()
-    meta_key = build_meta_key(payload, "repo_analyzer_v4")
+    meta_key = build_meta_key(payload, "repo_analyzer_v5")
+    problem = str(payload.get("problem", "")).strip().lower()
 
     if key in titles_cache:
         return False, "duplicate_title"
@@ -128,8 +163,10 @@ def add_task_if_new(
 
     if is_github_enabled():
         existing_issue = find_open_issue_by_meta_key(meta_key)
-        if existing_issue:
-            return False, f"duplicate_meta_key_issue:{existing_issue.get('url', '')}"
+        issue_exists = bool(existing_issue)
+
+        if should_absorb(problem, payload, issue_exists):
+            return False, f"absorbed_by_issue:{existing_issue.get('url', '')}"
 
     add_object(make_task(title, payload, intensity, novelty, resonance_vector))
     titles_cache.add(key)
@@ -291,12 +328,20 @@ def analyze_repo(root: str = "."):
 
     if not has_readme(root):
         rv = build_resonance_vector(
-            pressure=0.82, flow=0.20, structure=0.18,
-            balance=0.35, law=0.45, future=0.88,
+            pressure=0.82,
+            flow=0.20,
+            structure=0.18,
+            balance=0.35,
+            law=0.45,
+            future=0.88,
         )
         ok, reason = add_task_if_new(
             "Add root README",
-            {"problem": "missing_root_readme", "path": "README.md", "priority": "high"},
+            {
+                "problem": "missing_root_readme",
+                "path": "README.md",
+                "priority": "high",
+            },
             0.92,
             0.80,
             rv,
@@ -310,12 +355,20 @@ def analyze_repo(root: str = "."):
 
     if not os.path.exists(os.path.join(root, "START_HERE.md")):
         rv = build_resonance_vector(
-            pressure=0.76, flow=0.22, structure=0.24,
-            balance=0.40, law=0.48, future=0.82,
+            pressure=0.76,
+            flow=0.22,
+            structure=0.24,
+            balance=0.40,
+            law=0.48,
+            future=0.82,
         )
         ok, reason = add_task_if_new(
             "Add START_HERE guide",
-            {"problem": "missing_start_here", "path": "START_HERE.md", "priority": "high"},
+            {
+                "problem": "missing_start_here",
+                "path": "START_HERE.md",
+                "priority": "high",
+            },
             0.88,
             0.78,
             rv,
@@ -329,8 +382,12 @@ def analyze_repo(root: str = "."):
 
     if big_files:
         rv = build_resonance_vector(
-            pressure=0.63, flow=0.28, structure=0.42,
-            balance=0.46, law=0.52, future=0.67,
+            pressure=0.63,
+            flow=0.28,
+            structure=0.42,
+            balance=0.46,
+            law=0.52,
+            future=0.67,
         )
         ok, reason = add_task_if_new(
             "Review large files across repo",
@@ -353,8 +410,12 @@ def analyze_repo(root: str = "."):
 
     if empty_dirs:
         rv = build_resonance_vector(
-            pressure=0.35, flow=0.12, structure=0.30,
-            balance=0.55, law=0.60, future=0.41,
+            pressure=0.35,
+            flow=0.12,
+            structure=0.30,
+            balance=0.55,
+            law=0.60,
+            future=0.41,
         )
         ok, reason = add_task_if_new(
             "Review empty directories",
@@ -377,11 +438,15 @@ def analyze_repo(root: str = "."):
 
     if len(py_files) > 0 and len(md_files) == 0:
         rv = build_resonance_vector(
-            pressure=0.61, flow=0.18, structure=0.26,
-            balance=0.43, law=0.47, future=0.77,
+            pressure=0.61,
+            flow=0.18,
+            structure=0.26,
+            balance=0.43,
+            law=0.47,
+            future=0.77,
         )
         ok, reason = add_task_if_new(
-            "Add project documentation",
+            "MAGE: Add project documentation bootstrap",
             {
                 "problem": "python_without_docs",
                 "py_count": len(py_files),
@@ -401,8 +466,12 @@ def analyze_repo(root: str = "."):
 
     if todo_files:
         rv = build_resonance_vector(
-            pressure=0.74, flow=0.36, structure=0.33,
-            balance=0.38, law=0.42, future=0.71,
+            pressure=0.74,
+            flow=0.36,
+            structure=0.33,
+            balance=0.38,
+            law=0.42,
+            future=0.71,
         )
         ok, reason = add_task_if_new(
             "Resolve TODO markers across repo",
@@ -425,8 +494,12 @@ def analyze_repo(root: str = "."):
 
     if debug_print_files:
         rv = build_resonance_vector(
-            pressure=0.58, flow=0.72, structure=0.66,
-            balance=0.60, law=0.63, future=0.54,
+            pressure=0.58,
+            flow=0.72,
+            structure=0.66,
+            balance=0.60,
+            law=0.63,
+            future=0.54,
         )
         ok, reason = add_task_if_new(
             "Refactor debug prints across repo",
@@ -449,8 +522,12 @@ def analyze_repo(root: str = "."):
 
     if pass_files:
         rv = build_resonance_vector(
-            pressure=0.67, flow=0.30, structure=0.24,
-            balance=0.36, law=0.28, future=0.76,
+            pressure=0.67,
+            flow=0.30,
+            structure=0.24,
+            balance=0.36,
+            law=0.28,
+            future=0.76,
         )
         ok, reason = add_task_if_new(
             "Review pass blocks across repo",
@@ -473,8 +550,12 @@ def analyze_repo(root: str = "."):
 
     if bare_except_files:
         rv = build_resonance_vector(
-            pressure=0.72, flow=0.26, structure=0.31,
-            balance=0.33, law=0.18, future=0.68,
+            pressure=0.72,
+            flow=0.26,
+            structure=0.31,
+            balance=0.33,
+            law=0.18,
+            future=0.68,
         )
         ok, reason = add_task_if_new(
             "Review bare except blocks across repo",
