@@ -2,6 +2,7 @@ from runtime_experimental.pr_actor import run_pr_task
 from runtime_experimental.assassin_actor import run_assassin_task
 from runtime_experimental.healer_actor import run_healer_task
 from runtime_experimental.healer_support import run_healer_support
+from runtime_experimental.mage_actor import run_mage_task
 from runtime_experimental.tank_policy import build_tank_policy
 import os
 from datetime import datetime, UTC
@@ -103,6 +104,9 @@ def run_primary_agent(primary_agent: str, task: Dict[str, Any], tank_policy=None
 
     if primary_agent == "HEALER":
         return run_healer_task(task)
+
+    if primary_agent == "MAGE":
+        return run_mage_task(task)
 
     return False, "not_supported_task"
 
@@ -262,11 +266,12 @@ def main():
         "missing_payload_path",
         "tank_policy_mode",
         "tank_blocked_local_execution",
+        "root_not_supported",
     }
 
     tagged_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
 
-    if exec_reason in skip_set or str(exec_reason).startswith("unsupported_extension:") or str(exec_reason).startswith("validation_failed:"):
+    if exec_reason in skip_set or str(exec_reason).startswith("unsupported_extension:") or str(exec_reason).startswith("validation_failed:") or str(exec_reason).startswith("blocked_dir:"):
         mark_task_skipped(task_id, report_path, tagged_reason)
     else:
         mark_task_failed(task_id, report_path, tagged_reason)
