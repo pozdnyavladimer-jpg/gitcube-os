@@ -1,5 +1,6 @@
 from runtime_experimental.pr_actor import run_pr_task
 from runtime_experimental.assassin_actor import run_assassin_task
+from runtime_experimental.healer_actor import run_healer_task
 from runtime_experimental.healer_support import run_healer_support
 import os
 from datetime import datetime, UTC
@@ -89,6 +90,9 @@ def run_primary_agent(primary_agent: str, task: Dict[str, Any]):
 
     if primary_agent == "ASSASSIN":
         return run_assassin_task(task)
+
+    if primary_agent == "HEALER":
+        return run_healer_task(task)
 
     return False, "not_supported_task"
 
