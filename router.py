@@ -11,6 +11,9 @@ PAIR_COMPATIBILITY = {
     "ASSASSIN": ["HEALER", "ARCHER"],
 }
 
+DESTRUCTIVE_AGENTS = {"ASSASSIN", "ARCHER", "MAGE"}
+STABILIZING_AGENTS = {"HEALER", "TANK"}
+
 
 def _f(x: Any, default: float = 0.0) -> float:
     try:
@@ -126,24 +129,46 @@ def select_primary(scores: Dict[str, float]) -> str:
     return max(scores, key=scores.get)
 
 
-def select_support(primary: str, scores: Dict[str, float]) -> str:
+def pair_bonus(primary: str, support: str) -> float:
+    if support == "NONE":
+        return 0.0
+
+    if primary in DESTRUCTIVE_AGENTS and support in STABILIZING_AGENTS:
+        return 0.12
+
+    if primary in STABILIZING_AGENTS and support in DESTRUCTIVE_AGENTS:
+        return 0.08
+
+    if primary in DESTRUCTIVE_AGENTS and support in DESTRUCTIVE_AGENTS:
+        return -0.10
+
+    if primary in STABILIZING_AGENTS and support in STABILIZING_AGENTS:
+        return -0.04
+
+    return 0.0
+
+
+def select_support(primary: str, scores: Dict[str, float]) -> Tuple[str, float]:
     compatible = PAIR_COMPATIBILITY.get(primary, [])
     if not compatible:
-        return "NONE"
+        return "NONE", 0.0
 
-    best_agent = None
-    best_score = -1.0
+    best_agent = "NONE"
+    best_total = -999.0
 
     for agent in compatible:
-        s = float(scores.get(agent, 0.0))
-        if s > best_score:
-            best_score = s
+        base = float(scores.get(agent, 0.0))
+        bonus = pair_bonus(primary, agent)
+        total = base + bonus
+
+        if total > best_total:
+            best_total = total
             best_agent = agent
 
-    return best_agent or "NONE"
+    return best_agent, round(best_total, 6)
 
 
-def build_reason(task: Dict[str, Any], primary: str, support: str) -> str:
+def build_reason(task: Dict[str, Any], primary: str, support: str, bonus: float) -> str:
     rv = get_resonance_vector(task)
     has_path = _has_target_path(task)
 
@@ -164,16 +189,27 @@ def build_reason(task: Dict[str, Any], primary: str, support: str) -> str:
     else:
         features.append("no_path")
 
-    core = ",".join(features[:4])
+    if bonus > 0:
+        features.append("pair_bonus")
+    elif bonus < 0:
+        features.append("pair_penalty")
+
+    core = ",".join(features[:5])
     return f"{primary.lower()}+{support.lower()}:{core}"
 
 
 def select_pair(task: Dict[str, Any]) -> Tuple[str, str, Dict[str, float], str]:
     scores = score_agents(task)
     primary = select_primary(scores)
-    support = select_support(primary, scores)
-    reason = build_reason(task, primary, support)
-    return primary, support, scores, reason
+    support, support_total = select_support(primary, scores)
+    bonus = pair_bonus(primary, support)
+    reason = build_reason(task, primary, support, bonus)
+
+    scores_with_pair = dict(scores)
+    scores_with_pair["_pair_bonus"] = round(bonus, 6)
+    scores_with_pair["_support_total"] = round(support_total, 6)
+
+    return primary, support, scores_with_pair, reason
 
 
 def select_agent(task: Dict[str, Any]) -> Tuple[str, Dict[str, float], str]:
