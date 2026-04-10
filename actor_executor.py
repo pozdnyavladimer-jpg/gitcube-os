@@ -39,6 +39,12 @@ def ensure_dir(path: str):
         os.makedirs(path, exist_ok=True)
 
 
+def get_policy_owner(primary_agent: str, support_agent: str, tank_policy) -> str:
+    if tank_policy and (primary_agent == "TANK" or support_agent == "TANK"):
+        return "TANK"
+    return primary_agent
+
+
 def should_publish_to_github(task, tank_policy=None):
     if tank_policy and tank_policy.get("force_publish"):
         return True, "tank_force_publish"
@@ -200,7 +206,7 @@ def main():
         mark_task_done(
             task_id,
             report_path,
-            f"absorbed_by_issue:{absorbed_issue.get('url', '')}",
+            f"primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:{absorbed_issue.get('url', '')}",
         )
         print("ABSORBED_BY_ISSUE:", absorbed_issue.get("url", ""))
         print("DONE")
@@ -219,6 +225,8 @@ def main():
         tank_policy = build_tank_policy(task)
         print("TANK_POLICY:", tank_policy)
 
+    policy_owner = get_policy_owner(primary_agent, support_agent, tank_policy)
+
     ensure_dir(OUTPUT_DIR)
 
     ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -229,6 +237,7 @@ def main():
         f.write(f"TITLE: {task.get('title')}\n")
         f.write(f"PRIMARY_AGENT: {primary_agent}\n")
         f.write(f"SUPPORT_AGENT: {support_agent}\n")
+        f.write(f"POLICY_OWNER: {policy_owner}\n")
         f.write(f"PAIR_REASON: {pair_reason}\n")
         f.write(f"PAIR_SCORES: {scores}\n")
         f.write(f"MEMORY_BIAS: {memory_bias}\n")
@@ -241,7 +250,11 @@ def main():
     try:
         success, exec_reason = run_primary_agent(primary_agent, task, tank_policy=tank_policy)
     except Exception as e:
-        mark_task_failed(task_id, report_path, f"primary={primary_agent};exception:{e}")
+        mark_task_failed(
+            task_id,
+            report_path,
+            f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};exception:{e}",
+        )
         print("PRIMARY_ATTEMPT:", False, f"primary={primary_agent};exception:{e}")
         return
 
@@ -260,7 +273,7 @@ def main():
 
         if support_success:
             final_reason = (
-                f"primary={primary_agent};support={support_agent};"
+                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};"
                 f"primary_reason={exec_reason};support_reason={support_reason}"
             )
             mark_task_done(task_id, report_path, final_reason)
@@ -274,7 +287,7 @@ def main():
             mark_task_failed(
                 task_id,
                 report_path,
-                f"primary={primary_agent};support={support_agent};support_failed={support_reason}",
+                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed={support_reason}",
             )
             return
 
@@ -282,6 +295,7 @@ def main():
         issue["body"] += (
             f"\n\nPrimary agent: {primary_agent}"
             f"\nSupport agent: {support_agent}"
+            f"\nPolicy owner: {policy_owner}"
             f"\nPair reason: {pair_reason}"
             f"\nScores: {scores}"
             f"\nMemory bias: {memory_bias}"
@@ -297,14 +311,14 @@ def main():
                 task_id,
                 result.get("url"),
                 report_path,
-                f"primary={primary_agent};support={support_agent};support_failed_issue",
+                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed_issue",
             )
             print("ISSUE:", result.get("url"))
         else:
             mark_task_failed(
                 task_id,
                 report_path,
-                f"primary={primary_agent};support={support_agent};support_failed_issue_fail",
+                f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};support_failed_issue_fail",
             )
             print("ERROR:", result.get("error", "unknown"))
         return
@@ -324,7 +338,7 @@ def main():
         "root_not_supported",
     }
 
-    tagged_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
+    tagged_reason = f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};{exec_reason}"
 
     if exec_reason in skip_set or str(exec_reason).startswith("unsupported_extension:") or str(exec_reason).startswith("validation_failed:") or str(exec_reason).startswith("blocked_dir:"):
         mark_task_skipped(task_id, report_path, tagged_reason)
@@ -346,6 +360,7 @@ def main():
     issue["body"] += (
         f"\n\nPrimary agent: {primary_agent}"
         f"\nSupport agent: {support_agent}"
+        f"\nPolicy owner: {policy_owner}"
         f"\nPair reason: {pair_reason}"
         f"\nScores: {scores}"
         f"\nMemory bias: {memory_bias}\n"
@@ -360,14 +375,14 @@ def main():
             task_id,
             result.get("url"),
             report_path,
-            f"primary={primary_agent};support={support_agent};issue",
+            f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};issue",
         )
         print("ISSUE:", result.get("url"))
     else:
         mark_task_failed(
             task_id,
             report_path,
-            f"primary={primary_agent};support={support_agent};issue_fail",
+            f"primary={primary_agent};support={support_agent};policy_owner={policy_owner};issue_fail",
         )
         print("ERROR:", result.get("error", "unknown"))
 

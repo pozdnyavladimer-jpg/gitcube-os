@@ -21,6 +21,14 @@ def _extract_primary_agent(obj: Dict[str, Any]) -> str:
     return ""
 
 
+def _extract_policy_owner(obj: Dict[str, Any]) -> str:
+    text = str(obj.get("execution_reason", "") or "")
+    m = re.search(r"policy_owner=([A-Z]+)", text)
+    if m:
+        return m.group(1)
+    return ""
+
+
 def _task_problem(task: Dict[str, Any]) -> str:
     payload = task.get("payload", {}) or {}
     return str(payload.get("problem", "") or "").strip().lower()
@@ -41,9 +49,8 @@ def build_memory_bias(task: Dict[str, Any]) -> Dict[str, float]:
         if obj.get("type") != "task":
             continue
 
-        agent = _extract_primary_agent(obj)
-        if agent not in AGENTS:
-            continue
+        primary_agent = _extract_primary_agent(obj)
+        policy_owner = _extract_policy_owner(obj)
 
         status = str(obj.get("status", "") or "").strip().lower()
         obj_problem = _task_problem(obj)
@@ -52,19 +59,46 @@ def build_memory_bias(task: Dict[str, Any]) -> Dict[str, float]:
         same_problem = bool(current_problem) and obj_problem == current_problem
         same_path_mode = obj_has_path == current_has_path
 
-        if status in SUCCESS_STATUSES:
-            bias[agent] += 0.02
+        base_success = 0.02
+        same_problem_success = 0.08
+        same_path_success = 0.04
+
+        base_fail = -0.02
+        same_problem_fail = -0.08
+        same_path_fail = -0.04
+
+        def apply_success(agent: str, scale: float = 1.0):
+            if agent not in AGENTS:
+                return
+            bias[agent] += base_success * scale
             if same_problem:
-                bias[agent] += 0.08
+                bias[agent] += same_problem_success * scale
             if same_path_mode:
-                bias[agent] += 0.04
+                bias[agent] += same_path_success * scale
+
+        def apply_fail(agent: str, scale: float = 1.0):
+            if agent not in AGENTS:
+                return
+            bias[agent] += base_fail * scale
+            if same_problem:
+                bias[agent] += same_problem_fail * scale
+            if same_path_mode:
+                bias[agent] += same_path_fail * scale
+
+        if status in SUCCESS_STATUSES:
+            # primary agent gets normal success credit
+            apply_success(primary_agent, scale=1.0)
+
+            # policy owner gets separate success credit, slightly smaller by default
+            # but enough to matter for repeated macro-resolution patterns
+            if policy_owner and policy_owner != primary_agent:
+                apply_success(policy_owner, scale=0.85)
 
         elif status in FAIL_STATUSES:
-            bias[agent] -= 0.02
-            if same_problem:
-                bias[agent] -= 0.08
-            if same_path_mode:
-                bias[agent] -= 0.04
+            apply_fail(primary_agent, scale=1.0)
+
+            if policy_owner and policy_owner != primary_agent:
+                apply_fail(policy_owner, scale=0.60)
 
     for agent in AGENTS:
         bias[agent] = round(_clamp(bias[agent]), 6)
