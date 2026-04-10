@@ -56,6 +56,25 @@ def validate_task_payload(task):
     return True, "ok"
 
 
+def normalize_title(text: str) -> str:
+    return str(text or "").strip().lower()
+
+
+def find_duplicate_task(task: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    current_id = str(task.get("id", ""))
+    current_title = normalize_title(task.get("title", ""))
+
+    if not current_title:
+        return None
+
+    for obj in load_objects():
+        if str(obj.get("id", "")) == current_id:
+            continue
+        if normalize_title(obj.get("title", "")) == current_title:
+            return obj
+    return None
+
+
 def select_task(open_tasks, latest_task_id):
     if latest_task_id:
         t = get_task_by_id(latest_task_id)
@@ -80,15 +99,20 @@ def main():
 
     print("ACTION:", action)
     print("TASKS:", len(open_tasks))
+    print("GITHUB:", is_github_enabled())
 
     if action == "WAIT":
+        print("SKIP: WAIT")
         return
 
     task = select_task(open_tasks, latest_task_id)
     if not task:
+        print("SKIP: no task")
         return
 
     task_id = str(task.get("id"))
+    print("SELECTED TASK:", task.get("title"))
+    print("TARGET PATH:", task.get("payload", {}).get("path"))
 
     payload_ok, reason = validate_task_payload(task)
     if not payload_ok:
@@ -105,11 +129,13 @@ def main():
         f.write(f"TASK {task_id}\n")
 
     mark_task_in_progress(task_id, report_path)
+    print("REPORT:", report_path)
 
     try:
         success, pr_reason = run_pr_task(task)
     except Exception as e:
-        mark_task_failed(task_id, report_path, str(e))
+        mark_task_failed(task_id, report_path, f"executor_exception:{e}")
+        print("PR_ATTEMPT:", False, f"executor_exception:{e}")
         return
 
     print("PR_ATTEMPT:", success, pr_reason)
@@ -125,17 +151,26 @@ def main():
         "missing_path",
         "path_not_found",
         "blocked_file",
+        "blocked_runtime_experimental",
+        "blocked_core_runtime_app",
         "outside_safe_prefix",
+        "missing_payload_path",
     }
 
-    if pr_reason in skip_set:
+    if pr_reason in skip_set or str(pr_reason).startswith("unsupported_extension:") or str(pr_reason).startswith("validation_failed:"):
         mark_task_skipped(task_id, report_path, pr_reason)
     else:
         mark_task_failed(task_id, report_path, pr_reason)
 
-    allow, _ = should_publish_to_github(task)
+    allow, publish_reason = should_publish_to_github(task)
+    print("PUBLISH:", allow, publish_reason)
 
     if not allow or not is_github_enabled():
+        return
+
+    duplicate = find_duplicate_task(task)
+    if duplicate:
+        print("DUPLICATE -> SKIP")
         return
 
     issue = build_issue_from_task(task, action, report_path)
@@ -143,8 +178,10 @@ def main():
 
     if result.get("ok"):
         mark_task_published(task_id, result.get("url"), report_path, "issue")
+        print("ISSUE:", result.get("url"))
     else:
         mark_task_failed(task_id, report_path, "issue_fail")
+        print("ERROR:", result.get("error", "unknown"))
 
 
 if __name__ == "__main__":
