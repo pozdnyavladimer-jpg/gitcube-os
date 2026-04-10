@@ -2,6 +2,7 @@ from runtime_experimental.pr_actor import run_pr_task
 from runtime_experimental.assassin_actor import run_assassin_task
 from runtime_experimental.healer_actor import run_healer_task
 from runtime_experimental.healer_support import run_healer_support
+from runtime_experimental.tank_policy import build_tank_policy
 import os
 from datetime import datetime, UTC
 from typing import Optional, Dict, Any
@@ -36,7 +37,10 @@ def ensure_dir(path: str):
         os.makedirs(path, exist_ok=True)
 
 
-def should_publish_to_github(task):
+def should_publish_to_github(task, tank_policy=None):
+    if tank_policy and tank_policy.get("force_publish"):
+        return True, "tank_force_publish"
+
     intensity = float(task.get("intensity", 0.0))
     novelty = float(task.get("novelty", 0.0))
 
@@ -84,7 +88,13 @@ def select_task(open_tasks, latest_task_id):
     return None
 
 
-def run_primary_agent(primary_agent: str, task: Dict[str, Any]):
+def run_primary_agent(primary_agent: str, task: Dict[str, Any], tank_policy=None):
+    if primary_agent == "TANK":
+        return False, "tank_policy_mode"
+
+    if tank_policy and tank_policy.get("block_local_execution"):
+        return False, "tank_blocked_local_execution"
+
     if primary_agent == "ARCHER":
         return run_pr_task(task)
 
@@ -147,6 +157,11 @@ def main():
     print("PAIR_REASON:", pair_reason)
     print("PAIR_SCORES:", scores)
 
+    tank_policy = None
+    if primary_agent == "TANK" or support_agent == "TANK":
+        tank_policy = build_tank_policy(task)
+        print("TANK_POLICY:", tank_policy)
+
     ensure_dir(OUTPUT_DIR)
 
     ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -159,12 +174,14 @@ def main():
         f.write(f"SUPPORT_AGENT: {support_agent}\n")
         f.write(f"PAIR_REASON: {pair_reason}\n")
         f.write(f"PAIR_SCORES: {scores}\n")
+        if tank_policy:
+            f.write(f"TANK_POLICY: {tank_policy}\n")
 
     mark_task_in_progress(task_id, report_path)
     print("REPORT:", report_path)
 
     try:
-        success, exec_reason = run_primary_agent(primary_agent, task)
+        success, exec_reason = run_primary_agent(primary_agent, task, tank_policy=tank_policy)
     except Exception as e:
         mark_task_failed(task_id, report_path, f"primary={primary_agent};exception:{e}")
         print("PRIMARY_ATTEMPT:", False, f"primary={primary_agent};exception:{e}")
@@ -192,7 +209,7 @@ def main():
             print("DONE")
             return
 
-        allow, publish_reason = should_publish_to_github(task)
+        allow, publish_reason = should_publish_to_github(task, tank_policy=tank_policy)
         print("PUBLISH:", allow, publish_reason)
 
         if not allow or not is_github_enabled():
@@ -209,8 +226,10 @@ def main():
             f"\nSupport agent: {support_agent}"
             f"\nPair reason: {pair_reason}"
             f"\nScores: {scores}"
-            f"\nSupport failure: {support_reason}\n"
+            f"\nSupport failure: {support_reason}"
         )
+        if tank_policy:
+            issue["body"] += f"\nTank policy: {tank_policy}"
 
         result = create_issue(issue["title"], issue["body"])
 
@@ -241,6 +260,8 @@ def main():
         "blocked_core_runtime_app",
         "outside_safe_prefix",
         "missing_payload_path",
+        "tank_policy_mode",
+        "tank_blocked_local_execution",
     }
 
     tagged_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
@@ -250,7 +271,7 @@ def main():
     else:
         mark_task_failed(task_id, report_path, tagged_reason)
 
-    allow, publish_reason = should_publish_to_github(task)
+    allow, publish_reason = should_publish_to_github(task, tank_policy=tank_policy)
     print("PUBLISH:", allow, publish_reason)
 
     if not allow or not is_github_enabled():
@@ -268,6 +289,8 @@ def main():
         f"\nPair reason: {pair_reason}"
         f"\nScores: {scores}\n"
     )
+    if tank_policy:
+        issue["body"] += f"\nTank policy: {tank_policy}\n"
 
     result = create_issue(issue["title"], issue["body"])
 
