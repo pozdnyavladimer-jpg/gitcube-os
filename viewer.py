@@ -4,16 +4,15 @@ matplotlib.use("Agg")
 import json
 import math
 import os
-import textwrap
 from typing import Any, Dict, List, Tuple
 
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle
 
 OBJECTS_PATH = "objects.json"
 CLOCK_STATE_PATH = "v_clock_state.json"
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
+OUTPUT_PATH = "field.png"
 
 
 def load_json(path: str, default: Any):
@@ -103,30 +102,43 @@ def category_index(problem: str) -> int:
     return 3
 
 
-def status_color(task_id: str, active_ids: set, suppressed_ids: set, promoted_ids: set, state_row: Dict[str, Any]) -> str:
+def status_color(
+    task_id: str,
+    active_ids: set,
+    suppressed_ids: set,
+    promoted_ids: set,
+    state_row: Dict[str, Any],
+) -> str:
     deferred = float(state_row.get("deferred_energy", 0.0) or 0.0)
 
     if task_id in promoted_ids:
-        return "#ff5a36"  # red/orange
+        return "#ff5a36"
     if task_id in active_ids:
-        return "#36d66b"  # green
+        return "#36d66b"
     if deferred >= 1.0:
-        return "#ffd84d"  # yellow
+        return "#ffd84d"
     if task_id in suppressed_ids:
-        return "#7f8c8d"  # gray
-    return "#5dade2"      # blue fallback
+        return "#7f8c8d"
+    return "#5dade2"
 
 
-def compute_positions(tasks: List[Dict[str, Any]], clock_state: Dict[str, Dict[str, Any]]) -> Dict[str, Tuple[float, float]]:
-    # four sectors / rings
+def compute_positions(
+    tasks: List[Dict[str, Any]],
+    clock_state: Dict[str, Dict[str, Any]],
+) -> Dict[str, Tuple[float, float]]:
     sectors = {
-        0: math.radians(45),   # structural
-        1: math.radians(135),  # hygiene
-        2: math.radians(225),  # macro
-        3: math.radians(315),  # misc
+        0: math.radians(45),
+        1: math.radians(135),
+        2: math.radians(225),
+        3: math.radians(315),
     }
 
-    grouped: Dict[int, List[Tuple[Dict[str, Any], Dict[str, Any]]]] = {0: [], 1: [], 2: [], 3: []}
+    grouped: Dict[int, List[Tuple[Dict[str, Any], Dict[str, Any]]]] = {
+        0: [],
+        1: [],
+        2: [],
+        3: [],
+    }
 
     for task in tasks:
         tid = str(task.get("id"))
@@ -139,7 +151,6 @@ def compute_positions(tasks: List[Dict[str, Any]], clock_state: Dict[str, Dict[s
         if not items:
             continue
 
-        # strongest closer to center
         items.sort(
             key=lambda x: (
                 float(x[1].get("admission_score", 0.0) or 0.0),
@@ -151,8 +162,8 @@ def compute_positions(tasks: List[Dict[str, Any]], clock_state: Dict[str, Dict[s
 
         base_angle = sectors[cat]
         spread = math.radians(60)
-
         n = len(items)
+
         for i, (task, row) in enumerate(items):
             tid = str(task.get("id"))
             rank = i + 1
@@ -164,18 +175,23 @@ def compute_positions(tasks: List[Dict[str, Any]], clock_state: Dict[str, Dict[s
             align = float(row.get("alignment", 0.0) or 0.0)
             deferred = float(row.get("deferred_energy", 0.0) or 0.0)
 
-            # better aligned closer to center, more deferred slightly farther
             radius = 2.0 + (rank * 0.45) + (1.0 - align) * 1.5 + min(1.5, deferred * 0.25)
 
             x = radius * math.cos(angle)
             y = radius * math.sin(angle)
-
             positions[tid] = (x, y)
 
     return positions
 
 
-def draw_panel(ax, bus: Dict[str, Any], tasks: List[Dict[str, Any]], active_ids: set, suppressed_ids: set, promoted_ids: set):
+def draw_panel(
+    ax,
+    bus: Dict[str, Any],
+    tasks: List[Dict[str, Any]],
+    active_ids: set,
+    suppressed_ids: set,
+    promoted_ids: set,
+):
     ax.set_axis_off()
 
     meta = bus.get("meta", {}) if isinstance(bus.get("meta"), dict) else {}
@@ -210,117 +226,124 @@ def draw_panel(ax, bus: Dict[str, Any], tasks: List[Dict[str, Any]], active_ids:
 
     txt = "\n".join(lines)
     ax.text(
-        0.02, 0.98, txt,
-        va="top", ha="left",
+        0.02,
+        0.98,
+        txt,
+        va="top",
+        ha="left",
         fontsize=10,
         family="monospace",
         color="white",
-        bbox=dict(boxstyle="round,pad=0.6", facecolor="#111827", edgecolor="#334155")
+        bbox=dict(
+            boxstyle="round,pad=0.6",
+            facecolor="#111827",
+            edgecolor="#334155",
+        ),
     )
 
 
-def main():
+def render():
     fig = plt.figure(figsize=(16, 9))
     gs = fig.add_gridspec(1, 2, width_ratios=[3.6, 1.4])
     ax = fig.add_subplot(gs[0, 0])
     panel = fig.add_subplot(gs[0, 1])
 
     fig.patch.set_facecolor("#050816")
+    ax.set_facecolor("#07111f")
+    panel.set_facecolor("#050816")
 
-    def update(_frame):
-        ax.clear()
-        panel.clear()
+    tasks = get_open_tasks()
+    clock_state = load_clock_state()
+    bus = load_bus()
 
-        ax.set_facecolor("#07111f")
-        panel.set_facecolor("#050816")
+    meta = bus.get("meta", {}) if isinstance(bus.get("meta"), dict) else {}
+    vclock = meta.get("v_clock", {}) if isinstance(meta.get("v_clock"), dict) else {}
 
-        tasks = get_open_tasks()
-        clock_state = load_clock_state()
-        bus = load_bus()
+    active_ids = set(str(x) for x in vclock.get("active_task_ids", []) if x is not None)
+    suppressed_ids = set(str(x) for x in vclock.get("suppressed_task_ids", []) if x is not None)
+    promoted_ids = set(str(x) for x in vclock.get("promoted_task_ids", []) if x is not None)
 
-        meta = bus.get("meta", {}) if isinstance(bus.get("meta"), dict) else {}
-        vclock = meta.get("v_clock", {}) if isinstance(meta.get("v_clock"), dict) else {}
+    positions = compute_positions(tasks, clock_state)
 
-        active_ids = set(str(x) for x in vclock.get("active_task_ids", []) if x is not None)
-        suppressed_ids = set(str(x) for x in vclock.get("suppressed_task_ids", []) if x is not None)
-        promoted_ids = set(str(x) for x in vclock.get("promoted_task_ids", []) if x is not None)
+    ax.set_title("GitCube OS — State Field", fontsize=18, color="white", pad=16)
+    ax.set_xlim(-8.5, 8.5)
+    ax.set_ylim(-8.0, 8.0)
+    ax.set_aspect("equal")
+    ax.axis("off")
 
-        positions = compute_positions(tasks, clock_state)
+    for r, alpha in [(2.0, 0.15), (3.5, 0.12), (5.0, 0.10), (6.5, 0.08)]:
+        ax.add_patch(Circle((0, 0), r, fill=False, lw=1.0, ec="#60a5fa", alpha=alpha))
 
-        # base canvas
-        ax.set_title("GitCube OS — State Field", fontsize=18, color="white", pad=16)
-        ax.set_xlim(-8.5, 8.5)
-        ax.set_ylim(-8.0, 8.0)
-        ax.set_aspect("equal")
-        ax.axis("off")
+    ax.plot([-8, 8], [0, 0], color="#1e293b", lw=1, alpha=0.5)
+    ax.plot([0, 0], [-8, 8], color="#1e293b", lw=1, alpha=0.5)
 
-        # rings
-        for r, alpha in [(2.0, 0.15), (3.5, 0.12), (5.0, 0.10), (6.5, 0.08)]:
-            ax.add_patch(Circle((0, 0), r, fill=False, lw=1.0, ec="#60a5fa", alpha=alpha))
+    ax.scatter([0], [0], s=900, c="#38bdf8", alpha=0.95, edgecolors="white", linewidths=1.5, zorder=5)
+    ax.text(
+        0,
+        0,
+        "PRIME\nDIRECTIVE",
+        ha="center",
+        va="center",
+        color="white",
+        fontsize=11,
+        weight="bold",
+        zorder=6,
+    )
 
-        # axes
-        ax.plot([-8, 8], [0, 0], color="#1e293b", lw=1, alpha=0.5)
-        ax.plot([0, 0], [-8, 8], color="#1e293b", lw=1, alpha=0.5)
+    ax.text(4.9, 4.9, "STRUCTURE", color="#93c5fd", fontsize=11, alpha=0.8)
+    ax.text(-6.4, 4.9, "HYGIENE", color="#93c5fd", fontsize=11, alpha=0.8)
+    ax.text(-6.0, -5.6, "MACRO", color="#93c5fd", fontsize=11, alpha=0.8)
+    ax.text(5.4, -5.6, "MISC", color="#93c5fd", fontsize=11, alpha=0.8)
 
-        # center
-        ax.scatter([0], [0], s=900, c="#38bdf8", alpha=0.95, edgecolors="white", linewidths=1.5, zorder=5)
+    for task in tasks:
+        tid = str(task.get("id"))
+        x, y = positions.get(tid, (0, 0))
+
+        row = clock_state.get(tid, {}) if isinstance(clock_state.get(tid), dict) else {}
+        alignment = clamp01(row.get("alignment", 0.0))
+        deferred = float(row.get("deferred_energy", 0.0) or 0.0)
+        intensity = clamp01(task.get("intensity", 0.4))
+
+        color = status_color(tid, active_ids, suppressed_ids, promoted_ids, row)
+        size = 180 + 900 * intensity
+        alpha = 0.35 + 0.65 * alignment
+
+        ax.plot([0, x], [0, y], color=color, lw=1.0, alpha=0.15 + 0.20 * alignment, zorder=1)
+
+        if deferred > 0:
+            ring_r = 0.28 + min(0.65, deferred * 0.08)
+            ax.add_patch(Circle((x, y), ring_r, fill=False, lw=1.6, ec=color, alpha=0.55, zorder=2))
+
+        ax.scatter([x], [y], s=size, c=color, alpha=alpha, edgecolors="white", linewidths=1.0, zorder=3)
+
+        label = f"{tid}\n{short_title(task.get('title', ''))}"
         ax.text(
-            0, 0,
-            "PRIME\nDIRECTIVE",
-            ha="center", va="center",
-            color="white", fontsize=11, weight="bold", zorder=6
+            x,
+            y - 0.55,
+            label,
+            ha="center",
+            va="top",
+            fontsize=8.5,
+            color="white",
+            bbox=dict(
+                boxstyle="round,pad=0.25",
+                facecolor="#0f172a",
+                edgecolor="#1f2937",
+                alpha=0.85,
+            ),
+            zorder=4,
         )
 
-        # labels for sectors
-        ax.text(4.9, 4.9, "STRUCTURE", color="#93c5fd", fontsize=11, alpha=0.8)
-        ax.text(-6.4, 4.9, "HYGIENE", color="#93c5fd", fontsize=11, alpha=0.8)
-        ax.text(-6.0, -5.6, "MACRO", color="#93c5fd", fontsize=11, alpha=0.8)
-        ax.text(5.4, -5.6, "MISC", color="#93c5fd", fontsize=11, alpha=0.8)
+        mini = f"a={alignment:.2f} d={deferred:.2f}"
+        ax.text(x, y + 0.46, mini, ha="center", va="bottom", fontsize=7.5, color="#cbd5e1", zorder=4)
 
-        for task in tasks:
-            tid = str(task.get("id"))
-            x, y = positions.get(tid, (0, 0))
+    draw_panel(panel, bus, tasks, active_ids, suppressed_ids, promoted_ids)
 
-            row = clock_state.get(tid, {}) if isinstance(clock_state.get(tid), dict) else {}
-            alignment = clamp01(row.get("alignment", 0.0))
-            deferred = float(row.get("deferred_energy", 0.0) or 0.0)
-            intensity = clamp01(task.get("intensity", 0.4))
-
-            color = status_color(tid, active_ids, suppressed_ids, promoted_ids, row)
-            size = 180 + 900 * intensity
-            alpha = 0.35 + 0.65 * alignment
-
-            # link to center
-            ax.plot([0, x], [0, y], color=color, lw=1.0, alpha=0.15 + 0.20 * alignment, zorder=1)
-
-            # deferred ring
-            if deferred > 0:
-                ring_r = 0.28 + min(0.65, deferred * 0.08)
-                ax.add_patch(Circle((x, y), ring_r, fill=False, lw=1.6, ec=color, alpha=0.55, zorder=2))
-
-            # node
-            ax.scatter([x], [y], s=size, c=color, alpha=alpha, edgecolors="white", linewidths=1.0, zorder=3)
-
-            label = f"{tid}\n{short_title(task.get('title', ''))}"
-            ax.text(
-                x, y - 0.55,
-                label,
-                ha="center", va="top",
-                fontsize=8.5,
-                color="white",
-                bbox=dict(boxstyle="round,pad=0.25", facecolor="#0f172a", edgecolor="#1f2937", alpha=0.85),
-                zorder=4
-            )
-
-            mini = f"a={alignment:.2f} d={deferred:.2f}"
-            ax.text(x, y + 0.46, mini, ha="center", va="bottom", fontsize=7.5, color="#cbd5e1", zorder=4)
-
-        draw_panel(panel, bus, tasks, active_ids, suppressed_ids, promoted_ids)
-
-    ani = FuncAnimation(fig, update, interval=2000, cache_frame_data=False)
     plt.tight_layout()
-    plt.show()
+    plt.savefig(OUTPUT_PATH, dpi=160, facecolor=fig.get_facecolor(), bbox_inches="tight")
+    plt.close(fig)
+    print(f"Saved to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
-    main()
+    render()
