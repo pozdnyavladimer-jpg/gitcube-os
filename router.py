@@ -1,7 +1,7 @@
 import json
 import math
 import os
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
@@ -14,6 +14,12 @@ STRUCTURAL_PROBLEMS = {
     "package_structure",
     "missing_root_readme",
     "missing_start_here",
+}
+
+MACRO_PROBLEMS = {
+    "routing_failure",
+    "no_target_path",
+    "global_block",
 }
 
 PAIR_COMPATIBILITY = {
@@ -93,6 +99,10 @@ def is_structural(task: Dict[str, Any]) -> bool:
     return get_problem(task) in STRUCTURAL_PROBLEMS or hint == "MAGE"
 
 
+def is_macro(task: Dict[str, Any]) -> bool:
+    return get_problem(task) in MACRO_PROBLEMS
+
+
 def get_vector(task: Dict[str, Any]) -> Dict[str, float]:
     rv = task.get("resonance_vector", {}) if isinstance(task.get("resonance_vector"), dict) else {}
     return {
@@ -145,7 +155,7 @@ def score_agents(task: Dict[str, Any]) -> Dict[str, float]:
         "ASSASSIN": 0.0,
     }
 
-    # TANK: macro containment / high pressure / no-path risk
+    # TANK
     scores["TANK"] += 0.55 * pressure
     if not has_path:
         scores["TANK"] += 0.25
@@ -154,7 +164,7 @@ def score_agents(task: Dict[str, Any]) -> Dict[str, float]:
     if law <= 0.30:
         scores["TANK"] += 0.10
 
-    # MAGE: structural evolution / low structure / future demand
+    # MAGE
     scores["MAGE"] += 0.65 * future
     scores["MAGE"] += 0.55 * max(0.0, 1.0 - structure)
     scores["MAGE"] += 0.35 * max(0.0, 1.0 - law)
@@ -162,31 +172,29 @@ def score_agents(task: Dict[str, Any]) -> Dict[str, float]:
         scores["MAGE"] += 0.45
     scores["MAGE"] += structural_super_priority(task)
 
-    # ARCHER: path-driven precise action
+    # ARCHER
     if has_path:
         scores["ARCHER"] += 0.55
     scores["ARCHER"] += 0.45 * flow
     scores["ARCHER"] += 0.20 * balance
 
-    # HEALER: balance restoration / safe correction
+    # HEALER
     scores["HEALER"] += 0.55 * max(0.0, 1.0 - balance)
     scores["HEALER"] += 0.25 * max(0.0, 1.0 - law)
     scores["HEALER"] += 0.20 * pressure
 
-    # ASSASSIN: deletion / harsh cleanup / high pressure + low law
+    # ASSASSIN
     scores["ASSASSIN"] += 0.40 * pressure
     scores["ASSASSIN"] += 0.35 * max(0.0, 1.0 - law)
     scores["ASSASSIN"] += 0.20 * max(0.0, 1.0 - structure)
 
-    # memory-aware routing (soft influence)
-    # bounded effect: enough to guide, not enough to dominate
+    # memory-aware routing
     scores["TANK"] += 0.20 * memory_bias.get("TANK", 0.0)
     scores["MAGE"] += 0.25 * memory_bias.get("MAGE", 0.0)
     scores["ARCHER"] += 0.20 * memory_bias.get("ARCHER", 0.0)
     scores["HEALER"] += 0.20 * memory_bias.get("HEALER", 0.0)
     scores["ASSASSIN"] += 0.20 * memory_bias.get("ASSASSIN", 0.0)
 
-    # mild damping so negative bias can matter a bit
     for agent in scores:
         scores[agent] = round(max(0.0, scores[agent]), 6)
 
@@ -223,6 +231,84 @@ def pair_bonus(primary: str, support: str) -> float:
         - PAIR_PENALTY.get((primary, support), 0.0),
         6,
     )
+
+
+def should_use_party(task: Dict[str, Any]) -> bool:
+    v = get_vector(task)
+
+    flags = 0
+    if is_structural(task):
+        flags += 1
+    if is_macro(task):
+        flags += 1
+    if v["future"] >= 0.70:
+        flags += 1
+    if v["structure"] <= 0.30:
+        flags += 1
+    if v["law"] <= 0.35:
+        flags += 1
+    if not has_target_path(task):
+        flags += 1
+
+    return flags >= 2
+
+
+def select_party(task: Dict[str, Any]) -> Dict[str, Any]:
+    scores = score_agents(task)
+    v = get_vector(task)
+
+    leader = "MAGE" if is_structural(task) else select_primary(scores)
+
+    # Default party cell
+    builder = "ARCHER"
+    stabilizer = "HEALER"
+    guard = "TANK"
+    cleanup = None
+
+    # If destructive pressure is strong, allow assassin side-slot
+    if v["pressure"] >= 0.75 and v["law"] <= 0.30:
+        cleanup = "ASSASSIN"
+
+    party_scores = {
+        "leader": round(scores.get(leader, 0.0), 6),
+        "builder": round(scores.get(builder, 0.0), 6),
+        "stabilizer": round(scores.get(stabilizer, 0.0), 6),
+        "guard": round(scores.get(guard, 0.0), 6),
+        "cleanup": round(scores.get(cleanup, 0.0), 6) if cleanup else 0.0,
+    }
+
+    parts = []
+    if is_structural(task):
+        parts.append("structural_boss")
+    if is_macro(task):
+        parts.append("macro")
+    if v["future"] >= 0.70:
+        parts.append("high_future")
+    if v["pressure"] >= 0.70:
+        parts.append("high_pressure")
+    if v["structure"] <= 0.30:
+        parts.append("low_structure")
+    if v["law"] <= 0.35:
+        parts.append("low_law")
+    if not has_target_path(task):
+        parts.append("no_path")
+    if cleanup:
+        parts.append("cleanup_slot")
+    parts.append("party_mode")
+
+    reason = "party:" + ",".join(parts[:10])
+
+    return {
+        "mode": "party",
+        "leader": leader,
+        "builder": builder,
+        "stabilizer": stabilizer,
+        "guard": guard,
+        "cleanup": cleanup,
+        "scores": scores,
+        "party_scores": party_scores,
+        "reason": reason,
+    }
 
 
 def build_reason(task: Dict[str, Any], primary: str, support: str, pair_score: float) -> str:
