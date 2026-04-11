@@ -20,6 +20,10 @@ from runtime_experimental.explorer_sensor import (
 from runtime_experimental.object_store import add_object, get_open_tasks, load_objects
 from runtime_experimental.resonance_audit import audit_task
 from runtime_experimental.pressure_policy import apply_pressure
+from runtime_experimental.external_task_guard import (
+    build_external_meta_key,
+    should_create_external_task,
+)
 
 BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
 
@@ -251,6 +255,8 @@ def main():
         else:
             task_obj["title"] = f"Task step {step + 1}"
 
+        task_obj["meta_key"] = build_external_meta_key(task_obj)
+
         audit = audit_task(task_obj)
         task_obj["audit_status"] = audit["status"]
         task_obj["audit_reason"] = audit["reason"]
@@ -258,15 +264,20 @@ def main():
         task_obj, pressure_result = apply_pressure(task_obj)
 
         if pressure_result.get("applied"):
-            vitality_before = vitality
             vitality = max(0.0, vitality - 0.02)
 
         task_obj["parent_id"] = parent_id
         task_obj["related_to"] = related_to
         task_obj["graph_depth"] = graph_depth
 
-        created = add_object(task_obj)
-        latest_task_id = str(created.get("id", ""))
+        allow_create, create_reason = should_create_external_task(task_obj)
+
+        if allow_create:
+            created = add_object(task_obj)
+            latest_task_id = str(created.get("id", ""))
+        else:
+            latest_task_id = ""
+            meta["external_task_block_reason"] = create_reason
 
     open_task_count = len(get_open_tasks())
 
@@ -300,18 +311,13 @@ def main():
     if coordination.get("new_mode"):
         field["mode"] = coordination["new_mode"]
 
-    tank_build_applied = False
-    mage_repair_applied = False
-
     if coordination.get("role") == "TANK" and coordination.get("build_state"):
         current_state_vector = apply_tank_build(current_state_vector)
         state = SystemState.from_dict(current_state_vector)
-        tank_build_applied = True
 
     if coordination.get("role") == "MAGE" and coordination.get("repair_state"):
         current_state_vector = apply_mage_repair(current_state_vector)
         state = SystemState.from_dict(current_state_vector)
-        mage_repair_applied = True
 
     _, agent_results = choose_best_agent(
         state,
@@ -412,14 +418,6 @@ def main():
     bridge.update("flower", flower_patch, updated_by="CORE")
     bridge.update("meta", meta_patch, updated_by="CORE")
     bridge.update("signal", signal_patch, updated_by="CORE")
-
-    created_task = _find_latest_task()
-    created_parent = created_task.get("parent_id") if created_task else None
-    created_depth = created_task.get("graph_depth") if created_task else 0
-    created_title = created_task.get("title") if created_task else ""
-    created_audit_status = created_task.get("audit_status") if created_task else "none"
-    created_audit_reason = created_task.get("audit_reason") if created_task else "none"
-
 
 
 if __name__ == "__main__":
