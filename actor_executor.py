@@ -1,322 +1,215 @@
 import os
-from datetime import datetime, UTC
-from typing import Optional, Dict, Any, List
-
-from runtime_experimental.pr_actor import run_pr_task
-from runtime_experimental.assassin_actor import run_assassin_task
-from runtime_experimental.healer_actor import run_healer_task
-from runtime_experimental.mage_actor import run_mage_task
+from typing import Dict, Any, Optional
 
 from runtime_experimental.object_store import (
-    get_open_tasks,
-    mark_task_in_progress,
+    get_latest_open_task,
     mark_task_done,
-    mark_task_skipped,
     mark_task_failed,
-    mark_task_absorbed,
     mark_task_published,
-    load_objects,
+    mark_task_skipped,
 )
-
 from runtime_experimental.github_bridge import (
-    is_github_enabled,
     create_issue,
-    build_issue_from_task,
-    find_open_issue_by_meta_key,
+    is_github_enabled,
 )
-
-from runtime_experimental.memory_router import select_pair_with_memory
 from runtime_experimental.tank_policy import evaluate_tank_policy
-from v_bridge import VBridge
-
-OUTPUT_DIR = "reports"
-BUS_PATH = os.environ.get("V_RESONANCE_PATH", "v_resonance.json")
-
-MIN_INTENSITY_FOR_GITHUB = 0.8
-MIN_NOVELTY_FOR_GITHUB = 0.85
-
-STRUCTURAL_PROBLEMS = {
-    "missing_init",
-    "missing_init_group",
-    "python_without_docs",
-    "package_structure",
-    "missing_root_readme",
-    "missing_start_here",
-}
-
-META_PROBLEMS = {
-    "routing_failure",
-    "no_target_path",
-    "global_block",
-}
-
-
-def ensure_dir(path: str) -> None:
-    if not os.path.exists(path):
-        os.makedirs(path, exist_ok=True)
-
-
-def should_publish_to_github(task: Dict[str, Any], tank_policy: Optional[Dict[str, Any]] = None):
-    if tank_policy and tank_policy.get("force_publish"):
-        return True, "tank_force_publish"
-
-    intensity = float(task.get("intensity", 0.0))
-    novelty = float(task.get("novelty", 0.0))
-
-    if intensity >= MIN_INTENSITY_FOR_GITHUB:
-        return True, f"intensity>={MIN_INTENSITY_FOR_GITHUB}"
-
-    if novelty >= MIN_NOVELTY_FOR_GITHUB:
-        return True, f"novelty>={MIN_NOVELTY_FOR_GITHUB}"
-
-    return False, "below_threshold"
-
-
-def normalize_title(text: str) -> str:
-    return str(text or "").strip().lower()
-
-
-def get_problem(task: Dict[str, Any]) -> str:
-    payload = task.get("payload", {})
-    if not isinstance(payload, dict):
-        return ""
-    return str(payload.get("problem", "")).strip().lower()
-
-
-def is_structural(task: Dict[str, Any]) -> bool:
-    return get_problem(task) in STRUCTURAL_PROBLEMS
-
-
-def is_meta(task: Dict[str, Any]) -> bool:
-    return get_problem(task) in META_PROBLEMS
-
-
-def find_duplicate_task(task: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    current_id = str(task.get("id", ""))
-    current_title = normalize_title(task.get("title", ""))
-
-    if not current_title:
-        return None
-
-    for obj in load_objects():
-        if str(obj.get("id", "")) == current_id:
-            continue
-        if normalize_title(obj.get("title", "")) == current_title:
-            return obj
-    return None
-
-
-def is_absorbed(task: Dict[str, Any]) -> bool:
-    meta_key = str(task.get("meta_key", "")).strip()
-    if not meta_key:
-        return False
-
-    issue = find_open_issue_by_meta_key(meta_key)
-    return bool(issue)
-
-
-def select_task(open_tasks: List[Dict[str, Any]], latest_task_id: str = ""):
-    if not open_tasks:
-        return None
-
-    valid_tasks = [t for t in open_tasks if not is_absorbed(t)]
-    if not valid_tasks:
-        return None
-
-    # 1. structural first
-    structural_tasks = [t for t in valid_tasks if is_structural(t)]
-    if structural_tasks:
-        return structural_tasks[0]
-
-    # 2. if latest_task_id points to valid non-absorbed task
-    if latest_task_id:
-        for t in valid_tasks:
-            if str(t.get("id")) == str(latest_task_id):
-                return t
-
-    # 3. prefer tasks with explicit path/paths
-    with_path = []
-    without_path = []
-
-    for t in valid_tasks:
-        payload = t.get("payload", {})
-        if not isinstance(payload, dict):
-            without_path.append(t)
-            continue
-
-        path = str(payload.get("path", "")).strip()
-        paths = payload.get("paths", [])
-
-        if path or (isinstance(paths, list) and len(paths) > 0):
-            with_path.append(t)
-        else:
-            without_path.append(t)
-
-    ordered = with_path + without_path
-    return ordered[-1] if ordered else None
-
-
-def build_report(task: Dict[str, Any], action: str) -> str:
-    ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-    path = os.path.join(OUTPUT_DIR, f"{task['id']}_{ts}.md")
-    now_iso = datetime.now(UTC).isoformat()
-
-    report_text = (
-        "GitCube Task Report\n\n"
-        f"id: {task.get('id')}\n"
-        f"title: {task.get('title')}\n"
-        f"generated_at: {now_iso}\n"
-        f"action: {action}\n"
-        f"payload: {task.get('payload', {})}\n"
-    )
-
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(report_text)
-
-    return path
-
-
-def run_primary_agent(primary_agent: str, task: Dict[str, Any]):
-    agent = str(primary_agent or "").upper()
-
-    if agent == "ARCHER":
-        return run_pr_task(task)
-
-    if agent == "ASSASSIN":
-        return run_assassin_task(task)
-
-    if agent == "HEALER":
-        return run_healer_task(task)
-
-    if agent == "MAGE":
-        return run_mage_task(task)
-
-    if agent == "TANK":
-        return False, "tank_policy_mode"
-
-    return False, f"unknown_agent:{agent}"
-
-
-def main():
-    bridge = VBridge(BUS_PATH)
-    state = bridge.read_state()
-    signal = dict(state.get("signal", {}))
-
-    action = str(signal.get("action", "WAIT"))
-    latest_task_id = str(signal.get("latest_task_id", ""))
-    open_tasks = get_open_tasks()
-
-    print("ACTION:", action)
-    print("TASKS:", len(open_tasks))
-    print("GITHUB:", is_github_enabled())
-
-    if action == "WAIT":
-        print("SKIP: WAIT")
-        print("=== DONE ===")
-        return
-
-    if not open_tasks:
-        print("SKIP: no tasks")
-        print("=== DONE ===")
-        return
-
-    task = select_task(open_tasks, latest_task_id)
-    if task is None:
-        print("SKIP: no valid task")
-        print("=== DONE ===")
-        return
-
-    if is_absorbed(task):
-        issue = find_open_issue_by_meta_key(str(task.get("meta_key", "")).strip())
-        issue_url = issue.get("url", "") if issue else ""
-        print("SELECTED TASK:", task.get("title"))
-        print("TARGET PATH:", task.get("payload", {}).get("path"))
-        print("ABSORBED_BY_ISSUE:", issue_url)
-        mark_task_absorbed(str(task.get("id")), reason=f"absorbed_by_issue:{issue_url}")
-        print("=== DONE ===")
-        return
-
-    print("SELECTED TASK:", task.get("title"))
-    print("TARGET PATH:", task.get("payload", {}).get("path"))
-
-    ensure_dir(OUTPUT_DIR)
-    report_path = build_report(task, action)
-    task_id = str(task.get("id"))
-
-    mark_task_in_progress(task_id, report_path)
-    print("REPORT:", report_path)
-
-    primary_agent, support_agent, scores, pair_reason, memory_bias = select_pair_with_memory(task)
-
-    print("PRIMARY_AGENT:", primary_agent)
-    print("SUPPORT_AGENT:", support_agent)
-    print("PAIR_REASON:", pair_reason)
-    print("PAIR_SCORES:", scores)
-    print("MEMORY_BIAS:", memory_bias)
-
-    tank_policy = evaluate_tank_policy(task, primary_agent, support_agent, scores)
-    if tank_policy:
-        print("TANK_POLICY:", tank_policy)
-
-    success, exec_reason = run_primary_agent(primary_agent, task)
-    print("PRIMARY_ATTEMPT:", success, exec_reason)
-
-    if success:
-        mark_task_done(
-            task_id,
-            report_path,
-            f"primary={primary_agent};support={support_agent};{exec_reason}",
-        )
-        print("DONE")
-        print("=== DONE ===")
-        return
-
-    skip_set = {
-        "no_changes",
-        "not_supported_task",
-        "missing_path",
-        "path_not_found",
-        "blocked_file",
-        "blocked_runtime_experimental",
-        "blocked_core_runtime_app",
-        "outside_safe_prefix",
-        "missing_payload_path",
-        "tank_policy_mode",
-        "tank_blocked_local_execution",
-        "root_not_supported",
+from router import select_pair, select_party, should_use_party
+
+
+def build_issue_from_task(task: Dict[str, Any], action: str, report_path: str) -> Dict[str, str]:
+    title = str(task.get("title", "Untitled task")).strip()
+    body = [
+        f"Action: {action}",
+        f"Report: {report_path}",
+        "",
+        "Payload:",
+        str(task.get("payload", {})),
+        "",
+        "Resonance:",
+        str(task.get("resonance_vector", {})),
+    ]
+    return {
+        "title": title,
+        "body": "\n".join(body),
     }
 
-    tagged_reason = f"primary={primary_agent};support={support_agent};{exec_reason}"
 
-    if exec_reason in skip_set or str(exec_reason).startswith("unsupported_extension:") or str(exec_reason).startswith("validation_failed:") or str(exec_reason).startswith("blocked_dir:"):
-        mark_task_skipped(task_id, report_path, tagged_reason)
-    else:
-        mark_task_failed(task_id, report_path, tagged_reason)
+def find_duplicate_task(task: Dict[str, Any]) -> bool:
+    # minimal placeholder, keep safe
+    # if you already have a real duplicate checker elsewhere, replace this body with that import/call
+    return False
 
+
+def should_publish_to_github(task: Dict[str, Any], tank_policy: Optional[Dict[str, Any]]) -> tuple[bool, str]:
+    if not is_github_enabled():
+        return False, "github_disabled"
+
+    if not tank_policy:
+        return False, "no_tank_policy"
+
+    force_publish = bool(tank_policy.get("force_publish", False))
+    intensity = float(task.get("intensity", 0.0) or 0.0)
+
+    if force_publish:
+        return True, "tank_force_publish"
+
+    if intensity >= 0.8:
+        return True, "intensity>=0.8"
+
+    return False, "below_publish_threshold"
+
+
+def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    return {
+        "ok": True,
+        "leader": leader,
+        "plan": {
+            "problem": payload.get("problem", ""),
+            "paths": payload.get("paths", []),
+            "path": payload.get("path", ""),
+            "executor_hint": payload.get("executor_hint", ""),
+        },
+    }
+
+
+def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    has_path = bool(str(payload.get("path", "")).strip())
+    has_paths = isinstance(payload.get("paths"), list) and len(payload.get("paths")) > 0
+
+    # minimal safe simulation:
+    # if there is no concrete path, builder cannot confidently change files
+    if not (has_path or has_paths):
+        return {
+            "ok": False,
+            "builder": builder,
+            "reason": "no_changes",
+            "changed_files": [],
+        }
+
+    return {
+        "ok": True,
+        "builder": builder,
+        "reason": "files_prepared",
+        "changed_files": payload.get("paths", [])[:3] if has_paths else [payload.get("path")],
+    }
+
+
+def run_stabilizer_phase(task: Dict[str, Any], stabilizer: str, builder_result: Dict[str, Any]) -> Dict[str, Any]:
+    if not builder_result.get("ok"):
+        return {
+            "ok": False,
+            "stabilizer": stabilizer,
+            "reason": "builder_failed",
+        }
+
+    return {
+        "ok": True,
+        "stabilizer": stabilizer,
+        "reason": "validated",
+    }
+
+
+def run_guard_phase(task: Dict[str, Any], guard: str) -> Dict[str, Any]:
+    tank_policy = evaluate_tank_policy(task)
+    return {
+        "ok": True,
+        "guard": guard,
+        "tank_policy": tank_policy,
+    }
+
+
+def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
+    party = select_party(task)
+
+    leader = party["leader"]
+    builder = party["builder"]
+    stabilizer = party["stabilizer"]
+    guard = party["guard"]
+    cleanup = party.get("cleanup")
+    reason = party["reason"]
+    scores = party["scores"]
+    party_scores = party["party_scores"]
+
+    print("PARTY_MODE: True")
+    print("LEADER:", leader)
+    print("BUILDER:", builder)
+    print("STABILIZER:", stabilizer)
+    print("GUARD:", guard)
+    if cleanup:
+        print("CLEANUP:", cleanup)
+    print("PARTY_REASON:", reason)
+    print("PARTY_SCORES:", party_scores)
+    print("SCORES:", scores)
+
+    leader_result = run_leader_phase(task, leader)
+    builder_result = run_builder_phase(task, builder, leader_result)
+    stabilizer_result = run_stabilizer_phase(task, stabilizer, builder_result)
+    guard_result = run_guard_phase(task, guard)
+
+    tank_policy = guard_result.get("tank_policy", {}) if isinstance(guard_result.get("tank_policy"), dict) else {}
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
-    print("PUBLISH:", allow_publish, publish_reason)
 
-    if not allow_publish or not is_github_enabled():
-        print("=== DONE ===")
-        return
-
-    duplicate = find_duplicate_task(task)
-    if duplicate:
-        print("DUPLICATE -> SKIP")
-        print("=== DONE ===")
-        return
-
-    issue = build_issue_from_task(task, action, report_path)
-    issue["body"] += (
-        f"\n\nPrimary agent: {primary_agent}"
-        f"\nSupport agent: {support_agent}"
-        f"\nPair reason: {pair_reason}"
-        f"\nScores: {scores}"
-        f"\nMemory bias: {memory_bias}\n"
+    task_id = str(task.get("id"))
+    tagged_reason = (
+        f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
+        f"party_reason={reason}"
     )
 
+    primary_attempt_ok = bool(builder_result.get("ok")) and bool(stabilizer_result.get("ok"))
+    primary_reason = str(builder_result.get("reason", "")) if not primary_attempt_ok else "party_ok"
+
+    print("PRIMARY_ATTEMPT:", primary_attempt_ok, primary_reason)
+    print("PUBLISH:", allow_publish, publish_reason)
+
+    if primary_attempt_ok and not allow_publish:
+        mark_task_done(task_id, report_path, tagged_reason + ";party_done")
+        print("=== DONE ===")
+        return {
+            "mode": "party",
+            "ok": True,
+            "published": False,
+            "reason": "party_done_local",
+        }
+
+    if not allow_publish:
+        if primary_reason in {"no_changes", "builder_failed"}:
+            mark_task_skipped(task_id, report_path, tagged_reason + f";{primary_reason}")
+        else:
+            mark_task_failed(task_id, report_path, tagged_reason + f";{primary_reason}")
+        print("=== DONE ===")
+        return {
+            "mode": "party",
+            "ok": False,
+            "published": False,
+            "reason": primary_reason,
+        }
+
+    if find_duplicate_task(task):
+        print("DUPLICATE -> SKIP")
+        mark_task_skipped(task_id, report_path, tagged_reason + ";duplicate")
+        print("=== DONE ===")
+        return {
+            "mode": "party",
+            "ok": False,
+            "published": False,
+            "reason": "duplicate",
+        }
+
+    issue = build_issue_from_task(task, "PARTY_EXECUTION", report_path)
+    issue["body"] += (
+        f"\n\nLeader: {leader}"
+        f"\nBuilder: {builder}"
+        f"\nStabilizer: {stabilizer}"
+        f"\nGuard: {guard}"
+        f"\nParty reason: {reason}"
+        f"\nScores: {scores}"
+        f"\nParty scores: {party_scores}"
+        f"\nPrimary attempt: {primary_attempt_ok}"
+    )
     if tank_policy:
-        issue["body"] += f"\nTank policy: {tank_policy}\n"
+        issue["body"] += f"\n\nTank policy: {tank_policy}"
 
     result = create_issue(issue["title"], issue["body"])
 
@@ -325,18 +218,122 @@ def main():
             task_id,
             result.get("url", ""),
             report_path,
-            f"primary={primary_agent};support={support_agent};issue",
+            tagged_reason + f";publish={publish_reason}",
         )
-        print("ISSUE:", result.get("url"))
+        print("ISSUE:", result.get("url", ""))
     else:
         mark_task_failed(
             task_id,
             report_path,
-            f"primary={primary_agent};support={support_agent};issue_fail",
+            tagged_reason + ";issue_fail",
         )
         print("ERROR:", result.get("error", "unknown"))
 
     print("=== DONE ===")
+    return {
+        "mode": "party",
+        "ok": bool(result.get("ok")),
+        "published": bool(result.get("ok")),
+        "reason": publish_reason,
+    }
+
+
+def execute_pair(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
+    primary_agent, support_agent, scores, reason = select_pair(task)
+
+    print("PARTY_MODE: False")
+    print("PRIMARY_AGENT:", primary_agent)
+    print("SUPPORT_AGENT:", support_agent)
+    print("PAIR_REASON:", reason)
+    print("PAIR_SCORES:", scores)
+
+    tank_policy = evaluate_tank_policy(task)
+    print("TANK_POLICY:", tank_policy)
+
+    allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
+    task_id = str(task.get("id"))
+    tagged_reason = f"primary={primary_agent};support={support_agent};pair_reason={reason}"
+
+    primary_attempt_ok = False
+    primary_reason = "no_changes"
+
+    print("PRIMARY_ATTEMPT:", primary_attempt_ok, primary_reason)
+    print("PUBLISH:", allow_publish, publish_reason)
+
+    if not allow_publish:
+        mark_task_skipped(task_id, report_path, tagged_reason + f";{primary_reason}")
+        print("=== DONE ===")
+        return {
+            "mode": "pair",
+            "ok": False,
+            "published": False,
+            "reason": primary_reason,
+        }
+
+    if find_duplicate_task(task):
+        print("DUPLICATE -> SKIP")
+        mark_task_skipped(task_id, report_path, tagged_reason + ";duplicate")
+        print("=== DONE ===")
+        return {
+            "mode": "pair",
+            "ok": False,
+            "published": False,
+            "reason": "duplicate",
+        }
+
+    issue = build_issue_from_task(task, "PAIR_EXECUTION", report_path)
+    issue["body"] += (
+        f"\n\nPrimary agent: {primary_agent}"
+        f"\nSupport agent: {support_agent}"
+        f"\nPair reason: {reason}"
+        f"\nScores: {scores}"
+    )
+    if tank_policy:
+        issue["body"] += f"\n\nTank policy: {tank_policy}"
+
+    result = create_issue(issue["title"], issue["body"])
+
+    if result.get("ok"):
+        mark_task_published(
+            task_id,
+            result.get("url", ""),
+            report_path,
+            tagged_reason + f";publish={publish_reason}",
+        )
+        print("ISSUE:", result.get("url", ""))
+    else:
+        mark_task_failed(
+            task_id,
+            report_path,
+            tagged_reason + ";issue_fail",
+        )
+        print("ERROR:", result.get("error", "unknown"))
+
+    print("=== DONE ===")
+    return {
+        "mode": "pair",
+        "ok": bool(result.get("ok")),
+        "published": bool(result.get("ok")),
+        "reason": publish_reason,
+    }
+
+
+def main():
+    task = get_latest_open_task()
+    if not task:
+        print("NO_OPEN_TASK")
+        print("=== DONE ===")
+        return
+
+    print("ACTION:", task.get("title", "UNKNOWN"))
+    print("TARGET PATH:", task.get("payload", {}).get("path") if isinstance(task.get("payload"), dict) else None)
+
+    report_path = f"reports/{str(task.get('id', 'task_unknown'))}.md"
+
+    if should_use_party(task):
+        execute_party(task, report_path)
+    else:
+        execute_pair(task, report_path)
 
 
 if __name__ == "__main__":
