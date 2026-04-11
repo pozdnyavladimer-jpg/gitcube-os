@@ -327,7 +327,7 @@
     "type": "task",
     "title": "Review package structure in environments",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "skipped",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -340,7 +340,10 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_15_20260411_050736.md",
+    "updated_at": "2026-04-11T05:07:36.874064+00:00",
+    "execution_reason": "primary=MAGE;support=HEALER;no_changes"
   },
   {
     "type": "task",
@@ -366,7 +369,7 @@
     "type": "task",
     "title": "Review debug prints in run_loop.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -379,13 +382,14 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_17_20260408_115655.md"
   },
   {
     "type": "task",
     "title": "Review debug prints in repo_analyzer.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -398,13 +402,14 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_18_20260408_120409.md"
   },
   {
     "type": "task",
     "title": "Review debug prints in examples/experimental_loop.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -417,13 +422,14 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_19_20260409_051715.md"
   },
   {
     "type": "task",
     "title": "Review debug prints in examples/test_engine_with_vision.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -436,13 +442,14 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_20_20260409_052454.md"
   },
   {
     "type": "task",
     "title": "Review debug prints in examples/test_engine.py",
     "origin": "repo_analyzer",
-    "status": "open",
+    "status": "done",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.65,
@@ -455,7 +462,8 @@
     "github_url": "",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_21_20260409_055747.md"
   },
   {
     "type": "task",
@@ -768,5 +776,1239 @@
     "id": "task_34",
     "published_to_github": false,
     "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 295",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_34",
+    "related_to": [
+      "task_34"
+    ],
+    "graph_depth": 7,
+    "id": "task_35",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 296",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_35",
+    "related_to": [
+      "task_35"
+    ],
+    "graph_depth": 8,
+    "id": "task_36",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 297",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_36",
+    "related_to": [
+      "task_36"
+    ],
+    "graph_depth": 9,
+    "id": "task_37",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 298",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_37",
+    "related_to": [
+      "task_37"
+    ],
+    "graph_depth": 10,
+    "id": "task_38",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 299",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_38",
+    "related_to": [
+      "task_38"
+    ],
+    "graph_depth": 11,
+    "id": "task_39",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "Review pass blocks in examples/experimental_loop.py",
+    "origin": "repo_analyzer",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.71,
+    "novelty": 0.63,
+    "payload": {
+      "problem": "pass_blocks",
+      "path": "examples/experimental_loop.py"
+    },
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "id": "task_40",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 300",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_40",
+    "related_to": [
+      "task_40"
+    ],
+    "graph_depth": 1,
+    "id": "task_41",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 301",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_41",
+    "related_to": [
+      "task_41"
+    ],
+    "graph_depth": 2,
+    "id": "task_42",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/131",
+    "result_path": "reports/task_42_20260409_071855.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 302",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_42",
+    "related_to": [
+      "task_42"
+    ],
+    "graph_depth": 3,
+    "id": "task_43",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/132",
+    "result_path": "reports/task_43_20260409_103413.md"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 303",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_43",
+    "related_to": [
+      "task_43"
+    ],
+    "graph_depth": 4,
+    "id": "task_44",
+    "created_at": "2026-04-10T05:53:44.326037+00:00",
+    "updated_at": "2026-04-10T05:53:45.157278+00:00",
+    "result_path": "reports/task_44_20260410_055344.md",
+    "execution_reason": "issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/133",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "Review pass blocks across repo",
+    "origin": "repo_analyzer_v3",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.77,
+    "novelty": 0.71,
+    "payload": {
+      "problem": "pass_blocks_group",
+      "paths": [
+        "v_bridge.py",
+        "examples/experimental_loop.py",
+        "core/decision_kernel.py"
+      ],
+      "count": 3,
+      "priority": "medium"
+    },
+    "resonance_vector": {
+      "pressure": 0.67,
+      "flow": 0.3,
+      "structure": 0.24,
+      "balance": 0.36,
+      "law": 0.28,
+      "future": 0.76
+    },
+    "id": "task_45",
+    "created_at": "2026-04-10T11:03:09.596625+00:00",
+    "updated_at": "2026-04-10T11:03:09.596643+00:00",
+    "result_path": "",
+    "execution_reason": ""
+  },
+  {
+    "type": "task",
+    "title": "Review bare except blocks across repo",
+    "origin": "repo_analyzer_v3",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.81,
+    "novelty": 0.75,
+    "payload": {
+      "problem": "bare_except_group",
+      "paths": [
+        "repo_analyzer.py"
+      ],
+      "count": 1,
+      "priority": "medium"
+    },
+    "resonance_vector": {
+      "pressure": 0.72,
+      "flow": 0.26,
+      "structure": 0.31,
+      "balance": 0.33,
+      "law": 0.18,
+      "future": 0.68
+    },
+    "id": "task_46",
+    "created_at": "2026-04-10T11:03:09.599444+00:00",
+    "updated_at": "2026-04-10T11:03:09.599458+00:00",
+    "result_path": "",
+    "execution_reason": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 304",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_46",
+    "related_to": [
+      "task_46"
+    ],
+    "graph_depth": 1,
+    "id": "task_47",
+    "created_at": "2026-04-10T11:03:13.314077+00:00",
+    "updated_at": "2026-04-10T11:03:14.196298+00:00",
+    "result_path": "reports/task_47_20260410_110313.md",
+    "execution_reason": "agent=HEALER;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/134",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 305",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_47",
+    "related_to": [
+      "task_47"
+    ],
+    "graph_depth": 2,
+    "id": "task_48",
+    "created_at": "2026-04-10T11:30:51.580916+00:00",
+    "updated_at": "2026-04-10T11:30:52.396433+00:00",
+    "result_path": "reports/task_48_20260410_113051.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/135",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 306",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_48",
+    "related_to": [
+      "task_48"
+    ],
+    "graph_depth": 3,
+    "id": "task_49",
+    "created_at": "2026-04-10T11:36:22.150995+00:00",
+    "updated_at": "2026-04-10T11:36:22.973946+00:00",
+    "result_path": "reports/task_49_20260410_113622.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/136",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 307",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_49",
+    "related_to": [
+      "task_49"
+    ],
+    "graph_depth": 4,
+    "id": "task_50",
+    "created_at": "2026-04-10T12:00:52.780438+00:00",
+    "updated_at": "2026-04-10T12:00:53.543544+00:00",
+    "result_path": "reports/task_50_20260410_120053.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/137",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 308",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_50",
+    "related_to": [
+      "task_50"
+    ],
+    "graph_depth": 5,
+    "id": "task_51",
+    "created_at": "2026-04-10T12:07:03.600283+00:00",
+    "updated_at": "2026-04-10T12:07:04.440368+00:00",
+    "result_path": "reports/task_51_20260410_120703.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/138",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 309",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_51",
+    "related_to": [
+      "task_51"
+    ],
+    "graph_depth": 6,
+    "id": "task_52",
+    "created_at": "2026-04-10T12:15:16.792954+00:00",
+    "updated_at": "2026-04-10T12:15:17.578795+00:00",
+    "result_path": "reports/task_52_20260410_121517.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/139",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 310",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_52",
+    "related_to": [
+      "task_52"
+    ],
+    "graph_depth": 7,
+    "id": "task_53",
+    "created_at": "2026-04-10T12:15:17.895013+00:00",
+    "updated_at": "2026-04-10T12:15:18.553968+00:00",
+    "result_path": "reports/task_53_20260410_121518.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/140",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 311",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_53",
+    "related_to": [
+      "task_53"
+    ],
+    "graph_depth": 8,
+    "id": "task_54",
+    "created_at": "2026-04-10T12:15:18.738873+00:00",
+    "updated_at": "2026-04-10T12:15:19.377546+00:00",
+    "result_path": "reports/task_54_20260410_121518.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/141",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 312",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_54",
+    "related_to": [
+      "task_54"
+    ],
+    "graph_depth": 9,
+    "id": "task_55",
+    "created_at": "2026-04-10T12:41:15.222441+00:00",
+    "updated_at": "2026-04-10T12:41:15.981665+00:00",
+    "result_path": "reports/task_55_20260410_124115.md",
+    "execution_reason": "primary=HEALER;support=TANK;issue",
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142",
+    "published_to_github": true
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 313",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_55",
+    "related_to": [
+      "task_55"
+    ],
+    "graph_depth": 10,
+    "id": "task_56",
+    "created_at": "2026-04-10T12:47:57.274296+00:00",
+    "updated_at": "2026-04-10T12:47:58.444207+00:00",
+    "result_path": "reports/task_56_20260410_124758.md",
+    "execution_reason": "absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 314",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_56",
+    "related_to": [
+      "task_56"
+    ],
+    "graph_depth": 11,
+    "id": "task_57",
+    "created_at": "2026-04-10T12:48:00.270341+00:00",
+    "updated_at": "2026-04-10T12:48:01.382638+00:00",
+    "result_path": "reports/task_57_20260410_124801.md",
+    "execution_reason": "absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 315",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_57",
+    "related_to": [
+      "task_57"
+    ],
+    "graph_depth": 12,
+    "id": "task_58",
+    "created_at": "2026-04-10T15:46:51.469874+00:00",
+    "updated_at": "2026-04-10T15:46:52.899873+00:00",
+    "result_path": "reports/task_58_20260410_154652.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "MAGE: Repair safe package markers",
+    "origin": "repo_analyzer_v4",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.84,
+    "novelty": 0.76,
+    "payload": {
+      "problem": "missing_init_group",
+      "paths": [
+        "environments",
+        "tests"
+      ],
+      "count": 2,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.68,
+      "flow": 0.24,
+      "structure": 0.18,
+      "balance": 0.34,
+      "law": 0.22,
+      "future": 0.82
+    },
+    "meta_key": "missing_init_group|path|high|repo_analyzer_v4|environments",
+    "id": "task_59",
+    "created_at": "2026-04-10T15:52:46.308252+00:00",
+    "updated_at": "2026-04-10T15:52:46.308268+00:00",
+    "result_path": "",
+    "execution_reason": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 316",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_59",
+    "related_to": [
+      "task_59"
+    ],
+    "graph_depth": 1,
+    "id": "task_60",
+    "created_at": "2026-04-10T15:52:48.365541+00:00",
+    "updated_at": "2026-04-10T15:52:49.324782+00:00",
+    "result_path": "reports/task_60_20260410_155249.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 317",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_60",
+    "related_to": [
+      "task_60"
+    ],
+    "graph_depth": 2,
+    "id": "task_61",
+    "created_at": "2026-04-10T16:00:40.626059+00:00",
+    "updated_at": "2026-04-10T16:00:41.963494+00:00",
+    "result_path": "reports/task_61_20260410_160041.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 318",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_61",
+    "related_to": [
+      "task_61"
+    ],
+    "graph_depth": 3,
+    "id": "task_62",
+    "created_at": "2026-04-10T16:00:43.584503+00:00",
+    "updated_at": "2026-04-10T16:00:44.465444+00:00",
+    "result_path": "reports/task_62_20260410_160044.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 319",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_62",
+    "related_to": [
+      "task_62"
+    ],
+    "graph_depth": 4,
+    "id": "task_63",
+    "created_at": "2026-04-10T16:10:03.076019+00:00",
+    "updated_at": "2026-04-10T16:10:03.973577+00:00",
+    "result_path": "reports/task_63_20260410_161003.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 320",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_63",
+    "related_to": [
+      "task_63"
+    ],
+    "graph_depth": 5,
+    "id": "task_64",
+    "created_at": "2026-04-10T16:10:05.579527+00:00",
+    "updated_at": "2026-04-10T16:10:06.742186+00:00",
+    "result_path": "reports/task_64_20260410_161006.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "MAGE: Structural expansion seed",
+    "origin": "manual_seed",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.85,
+    "novelty": 0.9,
+    "payload": {
+      "problem": "missing_init_group",
+      "paths": [
+        "runtime_experimental",
+        "apps",
+        "core"
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.7,
+      "flow": 0.3,
+      "structure": 0.2,
+      "balance": 0.3,
+      "law": 0.25,
+      "future": 0.9
+    },
+    "meta_key": "manual_mage_seed",
+    "id": "task_65",
+    "created_at": "2026-04-10T16:21:02.171696+00:00",
+    "updated_at": "2026-04-10T16:21:02.171709+00:00",
+    "result_path": "",
+    "execution_reason": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 321",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_65",
+    "related_to": [
+      "task_65"
+    ],
+    "graph_depth": 1,
+    "id": "task_66",
+    "created_at": "2026-04-10T16:21:03.940924+00:00",
+    "updated_at": "2026-04-10T16:21:04.858343+00:00",
+    "result_path": "reports/task_66_20260410_162104.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "MAGE: Structural expansion seed",
+    "origin": "manual_seed",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.85,
+    "novelty": 0.9,
+    "payload": {
+      "problem": "missing_init_group",
+      "paths": [
+        "runtime_experimental",
+        "apps",
+        "core"
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.7,
+      "flow": 0.3,
+      "structure": 0.2,
+      "balance": 0.3,
+      "law": 0.25,
+      "future": 0.9
+    },
+    "meta_key": "manual_mage_seed",
+    "id": "task_67",
+    "created_at": "2026-04-10T16:24:14.635583+00:00",
+    "updated_at": "2026-04-10T16:24:14.635596+00:00",
+    "result_path": "",
+    "execution_reason": ""
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 322",
+    "origin": "manual_test_high",
+    "status": "done",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_67",
+    "related_to": [
+      "task_67"
+    ],
+    "graph_depth": 1,
+    "id": "task_68",
+    "created_at": "2026-04-10T16:24:16.796477+00:00",
+    "updated_at": "2026-04-10T16:24:17.753912+00:00",
+    "result_path": "reports/task_68_20260410_162417.md",
+    "execution_reason": "primary=TANK;support=NONE;policy_owner=TANK;absorbed_by_issue:https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/142"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 323",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_68",
+    "related_to": [
+      "task_68"
+    ],
+    "graph_depth": 2,
+    "id": "task_69",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/143",
+    "result_path": "reports/task_69_20260410_163458.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 324",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_69",
+    "related_to": [
+      "task_69"
+    ],
+    "graph_depth": 3,
+    "id": "task_70",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/144",
+    "result_path": "reports/task_70_20260410_163500.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 325",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_70",
+    "related_to": [
+      "task_70"
+    ],
+    "graph_depth": 4,
+    "id": "task_71",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/145",
+    "result_path": "reports/task_71_20260410_164943.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 326",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_71",
+    "related_to": [
+      "task_71"
+    ],
+    "graph_depth": 5,
+    "id": "task_72",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/146",
+    "result_path": "reports/task_72_20260410_164945.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 327",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_72",
+    "related_to": [
+      "task_72"
+    ],
+    "graph_depth": 6,
+    "id": "task_73",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/147",
+    "result_path": "reports/task_73_20260411_040819.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 328",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_73",
+    "related_to": [
+      "task_73"
+    ],
+    "graph_depth": 7,
+    "id": "task_74",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/148",
+    "result_path": "reports/task_74_20260411_040822.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 329",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_74",
+    "related_to": [
+      "task_74"
+    ],
+    "graph_depth": 8,
+    "id": "task_75",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/149",
+    "result_path": "reports/task_75_20260411_040826.md",
+    "execution_reason": "primary=TANK;support=HEALER;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "Review large files across repo",
+    "origin": "repo_analyzer_v6",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.78,
+    "novelty": 0.7,
+    "payload": {
+      "problem": "large_files_group",
+      "files": [
+        {
+          "path": "objects.json",
+          "size": 50267
+        }
+      ],
+      "count": 1,
+      "priority": "medium"
+    },
+    "resonance_vector": {
+      "pressure": 0.63,
+      "flow": 0.28,
+      "structure": 0.42,
+      "balance": 0.46,
+      "law": 0.52,
+      "future": 0.67
+    },
+    "meta_key": "large_files_group|no_path|medium|repo_analyzer_v6|",
+    "id": "task_76",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 330",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_76",
+    "related_to": [
+      "task_76"
+    ],
+    "graph_depth": 1,
+    "id": "task_77",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/150",
+    "result_path": "reports/task_77_20260411_042710.md",
+    "execution_reason": "primary=HEALER;support=TANK;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 333",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_77",
+    "related_to": [
+      "task_77"
+    ],
+    "graph_depth": 2,
+    "id": "task_78",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/151",
+    "result_path": "reports/task_78_20260411_043458.md",
+    "execution_reason": "primary=HEALER;support=TANK;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 334",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_78",
+    "related_to": [
+      "task_78"
+    ],
+    "graph_depth": 3,
+    "id": "task_79",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/152",
+    "result_path": "reports/task_79_20260411_043502.md",
+    "execution_reason": "primary=HEALER;support=TANK;policy_owner=TANK;issue"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 335",
+    "origin": "manual_test_high",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_79",
+    "related_to": [
+      "task_79"
+    ],
+    "graph_depth": 4,
+    "id": "task_80",
+    "published_to_github": false,
+    "github_url": ""
+  },
+  {
+    "type": "task",
+    "title": "MAGE: Repair package structure (forced)",
+    "origin": "manual_inject",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.8,
+    "meta_key": "force_structural_task",
+    "payload": {
+      "problem": "missing_init_group",
+      "paths": [
+        "runtime_experimental",
+        "core"
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.7,
+      "flow": 0.2,
+      "structure": 0.1,
+      "balance": 0.3,
+      "law": 0.2,
+      "future": 0.8
+    },
+    "id": "task_81",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0
   }
 ]
