@@ -35,8 +35,6 @@ def build_issue_from_task(task: Dict[str, Any], action: str, report_path: str) -
 
 
 def find_duplicate_task(task: Dict[str, Any]) -> bool:
-    # minimal placeholder, keep safe
-    # if you already have a real duplicate checker elsewhere, replace this body with that import/call
     return False
 
 
@@ -78,8 +76,6 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
     has_path = bool(str(payload.get("path", "")).strip())
     has_paths = isinstance(payload.get("paths"), list) and len(payload.get("paths")) > 0
 
-    # minimal safe simulation:
-    # if there is no concrete path, builder cannot confidently change files
     if not (has_path or has_paths):
         return {
             "ok": False,
@@ -111,8 +107,24 @@ def run_stabilizer_phase(task: Dict[str, Any], stabilizer: str, builder_result: 
     }
 
 
-def run_guard_phase(task: Dict[str, Any], guard: str) -> Dict[str, Any]:
-    tank_policy = evaluate_tank_policy(task)
+def run_guard_phase(
+    task: Dict[str, Any],
+    guard: str,
+    leader: str,
+    builder: str,
+    scores: Dict[str, float],
+) -> Dict[str, Any]:
+    # Adapter: party -> pair contract expected by tank_policy
+    primary_agent = builder
+    support_agent = leader
+
+    tank_policy = evaluate_tank_policy(
+        task,
+        primary_agent,
+        support_agent,
+        scores,
+    )
+
     return {
         "ok": True,
         "guard": guard,
@@ -146,7 +158,13 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     leader_result = run_leader_phase(task, leader)
     builder_result = run_builder_phase(task, builder, leader_result)
     stabilizer_result = run_stabilizer_phase(task, stabilizer, builder_result)
-    guard_result = run_guard_phase(task, guard)
+    guard_result = run_guard_phase(
+        task,
+        guard,
+        leader,
+        builder,
+        scores,
+    )
 
     tank_policy = guard_result.get("tank_policy", {}) if isinstance(guard_result.get("tank_policy"), dict) else {}
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
@@ -247,7 +265,7 @@ def execute_pair(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     print("PAIR_REASON:", reason)
     print("PAIR_SCORES:", scores)
 
-    tank_policy = evaluate_tank_policy(task)
+    tank_policy = evaluate_tank_policy(task, primary_agent, support_agent, scores)
     print("TANK_POLICY:", tank_policy)
 
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
