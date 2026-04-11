@@ -1,9 +1,10 @@
 import json
 import math
 import os
+import re
 import time
 from dataclasses import dataclass, asdict
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Optional
 
 from runtime_experimental.object_store import load_objects, update_object
 
@@ -28,9 +29,16 @@ DEFAULT_PRIME_DIRECTIVE = {
     "future": 0.85,
 }
 
+AGENTS = ("TANK", "MAGE", "ARCHER", "HEALER", "ASSASSIN")
+
 FOCUS_LIMIT = 3
 STRUCTURAL_TRIGGER_THRESHOLD = 3.0
 SLEEP_SECONDS = 60
+
+BIAS_ALPHA = 0.05
+BIAS_DECAY = 0.98
+BIAS_MIN = -1.5
+BIAS_MAX = 1.5
 
 
 def clamp01(x: Any) -> float:
@@ -38,6 +46,14 @@ def clamp01(x: Any) -> float:
         return max(0.0, min(1.0, float(x)))
     except Exception:
         return 0.0
+
+
+def clamp_bias(x: Any) -> float:
+    try:
+        v = float(x)
+    except Exception:
+        v = 0.0
+    return max(BIAS_MIN, min(BIAS_MAX, v))
 
 
 def load_json(path: str, default: Any):
@@ -56,11 +72,24 @@ def save_json(path: str, data: Any):
 
 
 def read_bus() -> Dict[str, Any]:
-    return load_json(BUS_PATH, {})
+    data = load_json(BUS_PATH, {})
+    return data if isinstance(data, dict) else {}
+
+
+def write_bus(bus: Dict[str, Any]):
+    save_json(BUS_PATH, bus)
+
+
+def get_meta(bus: Dict[str, Any]) -> Dict[str, Any]:
+    meta = bus.get("meta")
+    if not isinstance(meta, dict):
+        meta = {}
+        bus["meta"] = meta
+    return meta
 
 
 def get_prime_directive(bus: Dict[str, Any]) -> Dict[str, float]:
-    meta = bus.get("meta", {}) if isinstance(bus.get("meta"), dict) else {}
+    meta = get_meta(bus)
     directive = meta.get("prime_directive", DEFAULT_PRIME_DIRECTIVE)
     if not isinstance(directive, dict):
         directive = DEFAULT_PRIME_DIRECTIVE
@@ -73,6 +102,23 @@ def get_prime_directive(bus: Dict[str, Any]) -> Dict[str, float]:
         "law": clamp01(directive.get("law", DEFAULT_PRIME_DIRECTIVE["law"])),
         "future": clamp01(directive.get("future", DEFAULT_PRIME_DIRECTIVE["future"])),
     }
+
+
+def get_memory_bias(bus: Dict[str, Any]) -> Dict[str, float]:
+    meta = get_meta(bus)
+    raw = meta.get("memory_bias", {})
+    if not isinstance(raw, dict):
+        raw = {}
+
+    out: Dict[str, float] = {}
+    for agent in AGENTS:
+        out[agent] = clamp_bias(raw.get(agent, 0.0))
+    return out
+
+
+def set_memory_bias(bus: Dict[str, Any], bias: Dict[str, float]):
+    meta = get_meta(bus)
+    meta["memory_bias"] = {k: round(clamp_bias(v), 6) for k, v in bias.items()}
 
 
 def task_vector(task: Dict[str, Any]) -> Dict[str, float]:
@@ -97,15 +143,16 @@ def cosine_similarity(a: Dict[str, float], b: Dict[str, float]) -> float:
     return max(0.0, min(1.0, dot / (na * nb)))
 
 
-def get_open_tasks() -> List[Dict[str, Any]]:
+def get_all_tasks() -> List[Dict[str, Any]]:
     out = []
     for obj in load_objects():
-        if str(obj.get("type", "")).strip().lower() != "task":
-            continue
-        if str(obj.get("status", "")).strip().lower() != "open":
-            continue
-        out.append(obj)
+        if str(obj.get("type", "")).strip().lower() == "task":
+            out.append(obj)
     return out
+
+
+def get_open_tasks() -> List[Dict[str, Any]]:
+    return [t for t in get_all_tasks() if str(t.get("status", "")).strip().lower() == "open"]
 
 
 def get_problem(task: Dict[str, Any]) -> str:
@@ -142,18 +189,32 @@ class InhibitoryField:
     def __init__(self, focus_limit: int = 3):
         self.focus_limit = max(1, int(focus_limit))
 
-    def rank(self, tasks: List[Dict[str, Any]], directive: Dict[str, float], state_map: Dict[str, Dict[str, Any]]):
+    def rank(
+        self,
+        tasks: List[Dict[str, Any]],
+        directive: Dict[str, float],
+        state_map: Dict[str, Dict[str, Any]],
+        memory_bias: Dict[str, float],
+    ):
         rows = []
 
         for task in tasks:
             task_id = str(task.get("id"))
             vec = task_vector(task)
             alignment = cosine_similarity(vec, directive)
-            intensity = float(task.get("intensity", 0.0))
-            novelty = float(task.get("novelty", 0.0))
+            intensity = float(task.get("intensity", 0.0) or 0.0)
+            novelty = float(task.get("novelty", 0.0) or 0.0)
 
             structural_bonus = 0.20 if is_structural(task) else 0.0
-            admission_score = (0.55 * alignment) + (0.25 * intensity) + (0.10 * novelty) + structural_bonus
+            mage_bias = memory_bias.get("MAGE", 0.0) if is_structural(task) else 0.0
+
+            admission_score = (
+                (0.55 * alignment)
+                + (0.25 * intensity)
+                + (0.10 * novelty)
+                + structural_bonus
+                + (0.10 * mage_bias)
+            )
 
             prev = ClockTaskState(**state_map.get(task_id, {})) if isinstance(state_map.get(task_id, {}), dict) else ClockTaskState()
             prev.alignment = round(alignment, 6)
@@ -182,7 +243,9 @@ class InhibitoryField:
         return active, suppressed
 
 
-def structural_triggers(suppressed_rows: List[Tuple[Dict[str, Any], ClockTaskState]]) -> List[Tuple[Dict[str, Any], ClockTaskState]]:
+def structural_triggers(
+    suppressed_rows: List[Tuple[Dict[str, Any], ClockTaskState]]
+) -> List[Tuple[Dict[str, Any], ClockTaskState]]:
     out = []
 
     for task, st in suppressed_rows:
@@ -197,10 +260,8 @@ def structural_triggers(suppressed_rows: List[Tuple[Dict[str, Any], ClockTaskSta
 
 def write_back_state(all_rows: List[Tuple[Dict[str, Any], ClockTaskState]]):
     state_map: Dict[str, Dict[str, Any]] = {}
-
     for task, st in all_rows:
         state_map[str(task.get("id"))] = asdict(st)
-
     save_clock_state(state_map)
 
 
@@ -232,14 +293,190 @@ def promote_triggered_tasks(triggered: List[Tuple[Dict[str, Any], ClockTaskState
     return promoted
 
 
+def parse_agent_from_reason(reason: str, key: str) -> Optional[str]:
+    if not reason:
+        return None
+    m = re.search(rf"{key}=([A-Za-z_]+)", reason)
+    if not m:
+        return None
+    name = str(m.group(1)).strip().upper()
+    return name if name in AGENTS else None
+
+
+def infer_primary_agent(task: Dict[str, Any]) -> Optional[str]:
+    reason = str(task.get("execution_reason", "") or "")
+    direct = str(task.get("primary_agent", "") or "").strip().upper()
+    if direct in AGENTS:
+        return direct
+
+    parsed = parse_agent_from_reason(reason, "primary")
+    if parsed:
+        return parsed
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    hint = str(payload.get("executor_hint", "") or "").strip().upper()
+    if hint in AGENTS:
+        return hint
+
+    return None
+
+
+def infer_support_agent(task: Dict[str, Any]) -> Optional[str]:
+    reason = str(task.get("execution_reason", "") or "")
+    direct = str(task.get("support_agent", "") or "").strip().upper()
+    if direct in AGENTS:
+        return direct
+
+    parsed = parse_agent_from_reason(reason, "support")
+    if parsed:
+        return parsed
+
+    return None
+
+
+def task_alignment_for_feedback(task: Dict[str, Any], clock_state: Dict[str, Dict[str, Any]], directive: Dict[str, float]) -> float:
+    row = clock_state.get(str(task.get("id")), {})
+    if isinstance(row, dict) and "alignment" in row:
+        try:
+            return clamp01(row.get("alignment", 0.0))
+        except Exception:
+            pass
+    return cosine_similarity(task_vector(task), directive)
+
+
+def compute_reward(task: Dict[str, Any], alignment: float) -> float:
+    status = str(task.get("status", "")).strip().lower()
+    reason = str(task.get("execution_reason", "") or "")
+    structural = is_structural(task)
+
+    reward = 0.0
+
+    if status == "published":
+        reward += 1.0
+    elif status == "done":
+        reward += 0.7
+    elif status == "failed":
+        reward -= 0.6
+    elif status == "absorbed":
+        reward += 0.0
+    elif status == "skipped":
+        reward -= 0.1
+    else:
+        reward += 0.0
+
+    if structural:
+        reward += 0.35
+
+    if alignment >= 0.70:
+        reward += 0.25
+    elif alignment <= 0.25:
+        reward -= 0.10
+
+    if "no_changes" in reason:
+        reward -= 0.35
+
+    if "tank_force_publish" in reason:
+        reward = 0.0
+
+    return reward
+
+
+def apply_bias_update(
+    bias: Dict[str, float],
+    agent: str,
+    reward: float,
+    alignment: float,
+):
+    if agent not in AGENTS:
+        return
+    delta = BIAS_ALPHA * reward * max(0.0, alignment)
+    bias[agent] = clamp_bias(bias.get(agent, 0.0) + delta)
+
+
+def decay_bias(bias: Dict[str, float]):
+    for k in list(bias.keys()):
+        bias[k] = clamp_bias(float(bias.get(k, 0.0)) * BIAS_DECAY)
+
+
+def process_feedback(
+    bus: Dict[str, Any],
+    clock_state: Dict[str, Dict[str, Any]],
+    directive: Dict[str, float],
+) -> List[Dict[str, Any]]:
+    meta = get_meta(bus)
+    feedback_meta = meta.get("feedback", {})
+    if not isinstance(feedback_meta, dict):
+        feedback_meta = {}
+        meta["feedback"] = feedback_meta
+
+    processed_ids = feedback_meta.get("processed_task_ids", [])
+    if not isinstance(processed_ids, list):
+        processed_ids = []
+
+    processed_set = {str(x) for x in processed_ids}
+    bias = get_memory_bias(bus)
+
+    events: List[Dict[str, Any]] = []
+    tasks = get_all_tasks()
+
+    for task in tasks:
+        tid = str(task.get("id"))
+        status = str(task.get("status", "")).strip().lower()
+
+        if tid in processed_set:
+            continue
+        if status not in {"published", "done", "failed", "absorbed", "skipped"}:
+            continue
+
+        alignment = task_alignment_for_feedback(task, clock_state, directive)
+        reward = compute_reward(task, alignment)
+        primary = infer_primary_agent(task)
+        support = infer_support_agent(task)
+        reason = str(task.get("execution_reason", "") or "")
+
+        # tank-owned escalation should not reward non-tank as structural success
+        if "tank_force_publish" in reason:
+            if primary and primary != "TANK":
+                pass
+            apply_bias_update(bias, "TANK", 0.40, max(alignment, 0.50))
+        else:
+            if primary:
+                apply_bias_update(bias, primary, reward, alignment)
+            if support and support != primary:
+                apply_bias_update(bias, support, reward * 0.35, alignment)
+
+        event = {
+            "task_id": tid,
+            "status": status,
+            "primary": primary,
+            "support": support,
+            "alignment": round(alignment, 6),
+            "reward": round(reward, 6),
+            "structural": bool(is_structural(task)),
+            "title": str(task.get("title", "")),
+        }
+        events.append(event)
+        processed_set.add(tid)
+
+    decay_bias(bias)
+    set_memory_bias(bus, bias)
+
+    feedback_meta["processed_task_ids"] = sorted(processed_set)
+    feedback_meta["last_events"] = events[-20:]
+    feedback_meta["last_updated_at"] = int(time.time())
+    meta["feedback"] = feedback_meta
+
+    return events
+
+
 def write_clock_patch(
+    bus: Dict[str, Any],
     directive: Dict[str, float],
     active_rows: List[Tuple[Dict[str, Any], ClockTaskState]],
     suppressed_rows: List[Tuple[Dict[str, Any], ClockTaskState]],
     promoted_ids: List[str],
 ):
-    bus = read_bus()
-    meta = bus.get("meta", {}) if isinstance(bus.get("meta"), dict) else {}
+    meta = get_meta(bus)
     clock_patch = {
         "tick_at": int(time.time()),
         "focus_limit": FOCUS_LIMIT,
@@ -249,8 +486,6 @@ def write_clock_patch(
         "promoted_task_ids": promoted_ids,
     }
     meta["v_clock"] = clock_patch
-    bus["meta"] = meta
-    save_json(BUS_PATH, bus)
 
 
 def print_rows(label: str, rows: List[Tuple[Dict[str, Any], ClockTaskState]]):
@@ -258,6 +493,7 @@ def print_rows(label: str, rows: List[Tuple[Dict[str, Any], ClockTaskState]]):
     if not rows:
         print("  - none")
         return
+
     for task, st in rows:
         print(
             "  -",
@@ -275,30 +511,65 @@ def print_rows(label: str, rows: List[Tuple[Dict[str, Any], ClockTaskState]]):
         )
 
 
+def print_feedback(events: List[Dict[str, Any]], bias: Dict[str, float]):
+    print("FEEDBACK_EVENTS:")
+    if not events:
+        print("  - none")
+    else:
+        for e in events[-10:]:
+            print(
+                "  -",
+                e["task_id"],
+                "|",
+                e["status"],
+                "| primary=",
+                e.get("primary"),
+                "| support=",
+                e.get("support"),
+                "| reward=",
+                e.get("reward"),
+                "| align=",
+                e.get("alignment"),
+                "| structural=",
+                e.get("structural"),
+            )
+
+    print("MEMORY_BIAS:")
+    for agent in AGENTS:
+        print("  -", agent, "=", round(bias.get(agent, 0.0), 4))
+
+
 def tick():
     bus = read_bus()
     directive = get_prime_directive(bus)
     tasks = get_open_tasks()
-    state_map = load_clock_state()
+    clock_state = load_clock_state()
+
+    feedback_events = process_feedback(bus, clock_state, directive)
+    memory_bias = get_memory_bias(bus)
 
     print("=== V_CLOCK TICK ===")
     print("OPEN_TASKS:", len(tasks))
     print("PRIME_DIRECTIVE:", directive)
 
     if not tasks:
-        write_clock_patch(directive, [], [], [])
+        write_clock_patch(bus, directive, [], [], [])
         save_clock_state({})
+        write_bus(bus)
+        print_feedback(feedback_events, memory_bias)
         print("NO_OPEN_TASKS")
+        print("=== V_CLOCK DONE ===")
         return
 
     field = InhibitoryField(focus_limit=FOCUS_LIMIT)
-    active_rows, suppressed_rows = field.rank(tasks, directive, state_map)
+    active_rows, suppressed_rows = field.rank(tasks, directive, clock_state, memory_bias)
     triggered = structural_triggers(suppressed_rows)
     promoted_ids = promote_triggered_tasks(triggered)
 
     all_rows = active_rows + suppressed_rows
     write_back_state(all_rows)
-    write_clock_patch(directive, active_rows, suppressed_rows, promoted_ids)
+    write_clock_patch(bus, directive, active_rows, suppressed_rows, promoted_ids)
+    write_bus(bus)
 
     print_rows("ACTIVE_TASKS:", active_rows)
     print_rows("SUPPRESSED_TASKS:", suppressed_rows)
@@ -308,6 +579,7 @@ def tick():
     else:
         print("STRUCTURAL_TRIGGERED: []")
 
+    print_feedback(feedback_events, memory_bias)
     print("=== V_CLOCK DONE ===")
 
 
