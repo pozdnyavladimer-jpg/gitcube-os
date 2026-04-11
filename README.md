@@ -1,6 +1,6 @@
 🚀 GitCube OS — Autonomous Code Intelligence System
 
-«System that analyzes, understands, and restructures codebases automatically.»
+System that analyzes, understands, and restructures codebases automatically.
 
 ---
 
@@ -12,6 +12,7 @@ GitCube OS is an experimental autonomous system that:
 - detects structural and logical issues
 - groups problems into meaningful tasks
 - prioritizes them
+- routes them between agents
 - optionally publishes them to GitHub Issues
 
 👉 In short:
@@ -23,24 +24,25 @@ it turns messy code into actionable structure
 
 🔍 Repository Analysis
 
-- Detects:
-  - debug prints
-  - TODO markers
-  - missing "__init__.py"
-  - structural inconsistencies
+Detects:
+
+- debug prints
+- TODO markers
+- missing "init.py"
+- structural inconsistencies
 
 ---
 
 🧩 Task Generation
 
-Instead of noise like:
+Instead of:
 
-Fix debug print in file1.py
-Fix debug print in file2.py
+- Fix debug print in file1.py
+- Fix debug print in file2.py
 
 It creates:
 
-Refactor debug prints across repo
+👉 Refactor debug prints across repo
 
 ---
 
@@ -51,7 +53,7 @@ System uses internal agents:
 - Explorer → scans repo
 - Planner → builds tasks
 - Actor → executes decisions
-- Coordinator (ARCHER / TANK / MAGE) → balances system
+- Coordinator (ARCHER / TANK / MAGE / HEALER) → balances system
 
 ---
 
@@ -66,6 +68,71 @@ analyze → decide → act → repeat
 - Automatically creates Issues
 - Links tasks to GitHub
 - Stores reports in "/reports"
+
+---
+
+🧭 Architecture Model (Field-Based Control)
+
+GitCube OS evolves beyond simple prompt-response systems.
+
+Instead of:
+
+prompt → response
+
+GitCube uses:
+
+state → field → policy → routing → action → memory
+
+---
+
+🧠 Core Concept
+
+The system does not execute commands directly.
+
+It operates inside a dynamic field of constraints and priorities:
+
+- tasks compete for execution
+- agents are selected based on context
+- memory biases future decisions
+- policies reshape behavior globally
+
+---
+
+⚙️ State Representation
+
+Each task is represented as a vector:
+
+- pressure
+- flow
+- structure
+- balance
+- law
+- future
+
+This allows:
+
+- unified reasoning across domains
+- dynamic prioritization
+- adaptive routing
+
+---
+
+🔁 System Behavior
+
+GitCube is not rule-based.
+
+It is:
+
+- constraint-driven
+- context-aware
+- self-adjusting over time
+
+---
+
+🧬 Key Idea
+
+«We don’t tell the system what to do.
+We shape the environment where the correct action becomes inevitable.»
 
 ---
 
@@ -125,19 +192,6 @@ open_tasks: 14
 
 ---
 
-🔥 Philosophy
-
-GitCube is not just a tool.
-
-It’s:
-
-- a self-organizing system
-- a codebase observer
-- a task generator
-- a developer assistant without UI
-
----
-
 🚧 Current Status
 
 🟢 MVP READY
@@ -164,12 +218,6 @@ It’s:
 - Maintain large codebases
 - Assist solo developers
 - Continuous code hygiene
-
----
-
-⚡ Quick Demo Idea
-
-«Run GitCube on any repo → it generates a structured task system automatically.»
 
 ---
 
