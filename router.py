@@ -2,380 +2,306 @@ from typing import Dict, Any, Tuple
 
 AGENTS = ("TANK", "MAGE", "ARCHER", "HEALER", "ASSASSIN")
 
-PAIR_COMPATIBILITY = {
-    ("TANK", "HEALER"): 0.12,
-    ("HEALER", "TANK"): 0.12,
-    ("MAGE", "TANK"): 0.10,
-    ("TANK", "MAGE"): 0.10,
-    ("MAGE", "ARCHER"): 0.08,
-    ("ARCHER", "MAGE"): 0.08,
-    ("ASSASSIN", "HEALER"): 0.10,
-    ("HEALER", "ASSASSIN"): 0.10,
-    ("ARCHER", "HEALER"): 0.06,
-    ("HEALER", "ARCHER"): 0.06,
-    ("ASSASSIN", "TANK"): 0.04,
-    ("TANK", "ASSASSIN"): 0.04,
+STRUCTURAL_PROBLEMS = {
+    "missing_init",
+    "missing_init_group",
+    "python_without_docs",
+    "package_structure",
+    "missing_root_readme",
+    "missing_start_here",
+}
+
+SAFE_MAGE_HINTS = {
+    "MAGE",
+    "STRUCTURE",
+    "STRUCTURAL",
 }
 
 
 def clamp01(x: Any) -> float:
     try:
-        return max(0.0, min(1.0, float(x)))
+        x = float(x)
     except Exception:
         return 0.0
+    return max(0.0, min(1.0, x))
 
 
-def task_vector(task: Dict[str, Any]) -> Dict[str, float]:
-    rv = task.get("resonance_vector", {}) or {}
+def get_payload(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {})
+    return payload if isinstance(payload, dict) else {}
+
+
+def get_vector(task: Dict[str, Any]) -> Dict[str, float]:
+    rv = task.get("resonance_vector", {})
+    if not isinstance(rv, dict):
+        rv = {}
+
     return {
-        "pressure": clamp01(rv.get("pressure", 0.5)),
-        "flow": clamp01(rv.get("flow", 0.5)),
-        "structure": clamp01(rv.get("structure", 0.5)),
-        "balance": clamp01(rv.get("balance", 0.5)),
-        "law": clamp01(rv.get("law", 0.5)),
-        "future": clamp01(rv.get("future", 0.5)),
+        "pressure": clamp01(rv.get("pressure", 0.0)),
+        "flow": clamp01(rv.get("flow", 0.0)),
+        "structure": clamp01(rv.get("structure", 0.0)),
+        "balance": clamp01(rv.get("balance", 0.0)),
+        "law": clamp01(rv.get("law", 0.0)),
+        "future": clamp01(rv.get("future", 0.0)),
     }
 
 
-def payload_info(task: Dict[str, Any]) -> Dict[str, Any]:
-    payload = task.get("payload", {}) or {}
-    path = str(payload.get("path", "") or "").strip()
+def get_problem(task: Dict[str, Any]) -> str:
+    payload = get_payload(task)
+    return str(payload.get("problem", "")).strip().lower()
+
+
+def get_executor_hint(task: Dict[str, Any]) -> str:
+    payload = get_payload(task)
+    return str(payload.get("executor_hint", "")).strip().upper()
+
+
+def get_target_path(task: Dict[str, Any]) -> str:
+    payload = get_payload(task)
+    return str(payload.get("path", "")).strip()
+
+
+def get_target_paths(task: Dict[str, Any]):
+    payload = get_payload(task)
     paths = payload.get("paths", [])
-    if not isinstance(paths, list):
-        paths = []
-
-    count_paths = len([p for p in paths if str(p).strip()])
-    has_path = bool(path or count_paths > 0)
-    multi_path = count_paths > 1
-
-    problem = str(payload.get("problem", "") or "").strip().lower()
-    priority = str(payload.get("priority", "") or "").strip().lower()
-    executor_hint = str(payload.get("executor_hint", "") or "").strip().upper()
-
-    return {
-        "path": path,
-        "paths": paths,
-        "has_path": has_path,
-        "multi_path": multi_path,
-        "count_paths": count_paths,
-        "problem": problem,
-        "priority": priority,
-        "executor_hint": executor_hint,
-    }
+    return paths if isinstance(paths, list) else []
 
 
-def hint_bonus(agent: str, info: Dict[str, Any]) -> float:
-    hint = info.get("executor_hint", "")
-    if not hint:
-        return 0.0
-    if hint == agent:
-        return 0.18
-    return 0.0
+def has_any_target(task: Dict[str, Any]) -> bool:
+    if get_target_path(task):
+        return True
+    return len(get_target_paths(task)) > 0
 
 
-def score_tank(vec: Dict[str, float], info: Dict[str, Any]) -> Tuple[float, str]:
-    pressure = vec["pressure"]
-    structure = vec["structure"]
-    balance = vec["balance"]
-    law = vec["law"]
+def is_structural_task(task: Dict[str, Any]) -> bool:
+    problem = get_problem(task)
+    hint = get_executor_hint(task)
 
+    if problem in STRUCTURAL_PROBLEMS:
+        return True
+
+    if hint in SAFE_MAGE_HINTS:
+        return True
+
+    return False
+
+
+def is_macro_task(task: Dict[str, Any]) -> bool:
+    return not has_any_target(task)
+
+
+def score_tank(task: Dict[str, Any]) -> float:
+    v = get_vector(task)
     score = 0.0
-    reasons = []
 
-    score += 0.40 * pressure
-    if pressure >= 0.65:
-        reasons.append("high_pressure")
+    score += 0.50 * v["pressure"]
+    score += 0.20 * (1.0 - v["balance"])
+    score += 0.20 * (1.0 - v["law"])
+    score += 0.10 * (1.0 - v["structure"])
 
-    score += 0.22 * (1.0 - structure)
-    if structure <= 0.40:
-        reasons.append("low_structure")
-
-    score += 0.18 * (1.0 - balance)
-    if balance <= 0.45:
-        reasons.append("low_balance")
-
-    score += 0.12 * (1.0 - law)
-    if law <= 0.40:
-        reasons.append("low_law")
-
-    if not info["has_path"]:
-        score += 0.15
-        reasons.append("no_path")
-
-    score += hint_bonus("TANK", info)
-    if hint_bonus("TANK", info) > 0:
-        reasons.append("hint_tank")
-
-    return round(score, 6), ",".join(reasons) or "tank_baseline"
-
-
-def score_mage(vec: Dict[str, float], info: Dict[str, Any]) -> Tuple[float, str]:
-    structure = vec["structure"]
-    law = vec["law"]
-    future = vec["future"]
-    flow = vec["flow"]
-
-    score = 0.0
-    reasons = []
-
-    score += 0.34 * (1.0 - structure)
-    if structure <= 0.45:
-        reasons.append("low_structure")
-
-    score += 0.28 * (1.0 - law)
-    if law <= 0.45:
-        reasons.append("low_law")
-
-    score += 0.16 * future
-    if future >= 0.60:
-        reasons.append("future_pull")
-
-    score += 0.08 * flow
-    if flow >= 0.55:
-        reasons.append("enough_flow")
-
-    if info["problem"] in {"missing_init", "missing_init_group", "python_without_docs"}:
+    if is_macro_task(task):
         score += 0.18
-        reasons.append("structural_problem")
 
-    if info["multi_path"]:
-        score += 0.12
-        reasons.append("multi_path")
+    if is_structural_task(task):
+        score -= 0.12
 
-    if info["has_path"]:
-        score += 0.05
-
-    score += hint_bonus("MAGE", info)
-    if hint_bonus("MAGE", info) > 0:
-        reasons.append("hint_mage")
-
-    return round(score, 6), ",".join(reasons) or "mage_baseline"
+    return round(score, 6)
 
 
-def score_archer(vec: Dict[str, float], info: Dict[str, Any]) -> Tuple[float, str]:
-    structure = vec["structure"]
-    flow = vec["flow"]
-    law = vec["law"]
-    pressure = vec["pressure"]
-
+def score_mage(task: Dict[str, Any]) -> float:
+    v = get_vector(task)
     score = 0.0
-    reasons = []
 
-    if not info["has_path"]:
-        return 0.0, "no_path"
+    score += 0.34 * (1.0 - v["structure"])
+    score += 0.24 * (1.0 - v["law"])
+    score += 0.18 * v["future"]
+    score += 0.10 * (1.0 - v["balance"])
+    score += 0.08 * v["pressure"]
+    score += 0.06 * (1.0 - v["flow"])
 
-    score += 0.24 * structure
-    if structure >= 0.55:
-        reasons.append("enough_structure")
+    # SUPER PRIORITY FOR STRUCTURAL TASKS
+    if is_structural_task(task):
+        score += 1.50
 
-    score += 0.22 * flow
-    if flow >= 0.55:
-        reasons.append("high_flow")
+    # MAGE може працювати і без конкретного path, якщо це structural macro-task
+    if is_macro_task(task) and is_structural_task(task):
+        score += 0.20
 
-    score += 0.18 * law
-    if law >= 0.50:
-        reasons.append("enough_law")
-
-    score += 0.14
-    reasons.append("has_path")
-
-    if not info["multi_path"]:
-        score += 0.08
-        reasons.append("single_target")
-
-    score -= 0.08 * pressure
-    if pressure >= 0.70:
-        reasons.append("pressure_penalty")
-
-    if info["problem"] == "debug_prints_group":
-        score += 0.12
-        reasons.append("debug_prints_fit")
-
-    score += hint_bonus("ARCHER", info)
-    if hint_bonus("ARCHER", info) > 0:
-        reasons.append("hint_archer")
-
-    return round(max(0.0, score), 6), ",".join(reasons) or "archer_baseline"
+    return round(score, 6)
 
 
-def score_healer(vec: Dict[str, float], info: Dict[str, Any]) -> Tuple[float, str]:
-    pressure = vec["pressure"]
-    balance = vec["balance"]
-    law = vec["law"]
-    structure = vec["structure"]
-
+def score_archer(task: Dict[str, Any]) -> float:
+    v = get_vector(task)
     score = 0.0
-    reasons = []
 
-    score += 0.22 * pressure
-    if pressure >= 0.55:
-        reasons.append("pressure")
+    score += 0.28 * v["flow"]
+    score += 0.22 * v["structure"]
+    score += 0.16 * v["law"]
+    score += 0.14 * v["balance"]
+    score += 0.10 * (1.0 - v["pressure"])
+    score += 0.10 * (1.0 - v["future"])
 
-    score += 0.26 * (1.0 - balance)
-    if balance <= 0.45:
-        reasons.append("low_balance")
-
-    score += 0.24 * (1.0 - law)
-    if law <= 0.45:
-        reasons.append("low_law")
-
-    score += 0.10 * (1.0 - structure)
-    if structure <= 0.45:
-        reasons.append("low_structure")
-
-    if not info["has_path"]:
-        score += 0.10
-        reasons.append("no_path")
-
-    if info["problem"] in {"bare_except_group", "python_without_docs"}:
-        score += 0.08
-        reasons.append("repair_fit")
-
-    score += hint_bonus("HEALER", info)
-    if hint_bonus("HEALER", info) > 0:
-        reasons.append("hint_healer")
-
-    return round(score, 6), ",".join(reasons) or "healer_baseline"
-
-
-def score_assassin(vec: Dict[str, float], info: Dict[str, Any]) -> Tuple[float, str]:
-    pressure = vec["pressure"]
-    flow = vec["flow"]
-    structure = vec["structure"]
-
-    score = 0.0
-    reasons = []
-
-    if not info["has_path"]:
-        score -= 0.10
-        reasons.append("no_path_penalty")
+    if has_any_target(task):
+        score += 0.18
     else:
-        score += 0.08
-        reasons.append("has_path")
+        score = 0.0
 
-    score += 0.22 * pressure
-    if pressure >= 0.55:
-        reasons.append("pressure")
+    # ARCHER не повинен красти structural tasks у MAGE
+    if is_structural_task(task):
+        score = 0.0
 
-    score += 0.24 * flow
-    if flow >= 0.55:
-        reasons.append("high_flow")
+    return round(score, 6)
 
-    score += 0.12 * structure
-    if structure >= 0.50:
-        reasons.append("enough_structure")
 
-    if info["problem"] in {"todo_group", "debug_prints_group", "pass_blocks_group"}:
-        score += 0.14
-        reasons.append("cleanup_fit")
+def score_healer(task: Dict[str, Any]) -> float:
+    v = get_vector(task)
+    score = 0.0
 
-    score += hint_bonus("ASSASSIN", info)
-    if hint_bonus("ASSASSIN", info) > 0:
-        reasons.append("hint_assassin")
+    score += 0.28 * (1.0 - v["balance"])
+    score += 0.22 * (1.0 - v["law"])
+    score += 0.16 * (1.0 - v["structure"])
+    score += 0.14 * v["pressure"]
+    score += 0.12 * (1.0 - v["flow"])
+    score += 0.08 * v["future"]
 
-    return round(max(0.0, score), 6), ",".join(reasons) or "assassin_baseline"
+    if is_macro_task(task):
+        score += 0.10
+
+    return round(score, 6)
+
+
+def score_assassin(task: Dict[str, Any]) -> float:
+    v = get_vector(task)
+    score = 0.0
+
+    score += 0.30 * v["flow"]
+    score += 0.22 * v["pressure"]
+    score += 0.16 * (1.0 - v["law"])
+    score += 0.12 * (1.0 - v["structure"])
+    score += 0.10 * (1.0 - v["balance"])
+    score += 0.10 * (1.0 - v["future"])
+
+    if has_any_target(task):
+        score += 0.10
+    else:
+        score -= 0.08
+
+    # ASSASSIN теж не повинен красти structural tasks у MAGE
+    if is_structural_task(task):
+        score *= 0.20
+
+    return round(score, 6)
 
 
 def score_agents(task: Dict[str, Any]) -> Dict[str, float]:
-    vec = task_vector(task)
-    info = payload_info(task)
-
-    tank, _ = score_tank(vec, info)
-    mage, _ = score_mage(vec, info)
-    archer, _ = score_archer(vec, info)
-    healer, _ = score_healer(vec, info)
-    assassin, _ = score_assassin(vec, info)
-
     return {
-        "TANK": round(tank, 6),
-        "MAGE": round(mage, 6),
-        "ARCHER": round(archer, 6),
-        "HEALER": round(healer, 6),
-        "ASSASSIN": round(assassin, 6),
+        "TANK": score_tank(task),
+        "MAGE": score_mage(task),
+        "ARCHER": score_archer(task),
+        "HEALER": score_healer(task),
+        "ASSASSIN": score_assassin(task),
     }
 
 
-def pair_bonus(primary: str, support: str) -> float:
-    base = PAIR_COMPATIBILITY.get((primary, support), 0.0)
+def select_primary(scores: Dict[str, float]) -> str:
+    return max(scores, key=scores.get)
 
-    if primary == support:
-        return -0.08
 
-    if primary == "HEALER" and support == "TANK":
-        return base
+def support_bonus(primary: str, support: str) -> float:
+    pair = (primary, support)
 
-    if primary == "MAGE" and support in {"TANK", "ARCHER"}:
-        return base
+    bonuses = {
+        ("MAGE", "HEALER"): 0.18,
+        ("ARCHER", "HEALER"): 0.16,
+        ("ASSASSIN", "HEALER"): 0.15,
+        ("TANK", "HEALER"): 0.12,
+        ("MAGE", "TANK"): 0.08,
+        ("ARCHER", "TANK"): 0.06,
+        ("ASSASSIN", "TANK"): 0.04,
+    }
 
-    if primary == "ASSASSIN" and support == "HEALER":
-        return base
+    return round(bonuses.get(pair, 0.0), 6)
 
-    if primary == "ARCHER" and support in {"HEALER", "MAGE"}:
-        return base
 
-    return base
+def support_penalty(primary: str, support: str) -> float:
+    pair = (primary, support)
+
+    penalties = {
+        ("MAGE", "ASSASSIN"): 0.08,
+        ("ARCHER", "ASSASSIN"): 0.06,
+        ("ASSASSIN", "ARCHER"): 0.05,
+        ("TANK", "ASSASSIN"): 0.03,
+    }
+
+    return round(penalties.get(pair, 0.0), 6)
 
 
 def select_support(primary: str, scores: Dict[str, float]) -> Tuple[str, float]:
-    best_agent = "NONE"
-    best_total = -999.0
+    candidates = []
 
-    for agent in AGENTS:
+    for agent, score in scores.items():
         if agent == primary:
             continue
 
-        total = float(scores.get(agent, 0.0)) + pair_bonus(primary, agent)
+        total = score + support_bonus(primary, agent) - support_penalty(primary, agent)
+        candidates.append((agent, round(total, 6)))
 
-        if total > best_total:
-            best_total = total
-            best_agent = agent
+    if not candidates:
+        return "NONE", 0.0
 
-    return best_agent, round(best_total, 6)
+    candidates.sort(key=lambda x: x[1], reverse=True)
+    best_agent, best_total = candidates[0]
+
+    if best_total <= 0.0:
+        return "NONE", 0.0
+
+    return best_agent, best_total
 
 
-def build_reason(task: Dict[str, Any], primary: str, support: str, bonus: float) -> str:
-    vec = task_vector(task)
-    info = payload_info(task)
+def build_reason(task: Dict[str, Any], primary: str, support: str, pair_bonus: float) -> str:
+    v = get_vector(task)
+    parts = []
 
-    features = []
+    if is_structural_task(task):
+        parts.append("structural_super_priority")
 
-    if vec["pressure"] >= 0.65:
-        features.append("high_pressure")
-    if vec["structure"] <= 0.45:
-        features.append("low_structure")
-    if vec["law"] <= 0.45:
-        features.append("low_law")
-    if vec["balance"] <= 0.45:
-        features.append("low_balance")
-    if vec["future"] >= 0.60:
-        features.append("future_pull")
-    if not info["has_path"]:
-        features.append("no_path")
-    if info["multi_path"]:
-        features.append("multi_path")
-    if info["executor_hint"]:
-        features.append(f"hint_{info['executor_hint'].lower()}")
-    if bonus < 0:
-        features.append("pair_penalty")
-    elif bonus > 0:
-        features.append("pair_bonus")
+    if is_macro_task(task):
+        parts.append("no_path")
 
-    core = ",".join(features[:6]) if features else "baseline"
+    if v["pressure"] >= 0.70:
+        parts.append("high_pressure")
+
+    if v["future"] >= 0.70:
+        parts.append("high_future")
+
+    if v["structure"] <= 0.30:
+        parts.append("low_structure")
+
+    if v["law"] <= 0.30:
+        parts.append("low_law")
+
+    if v["balance"] <= 0.35:
+        parts.append("low_balance")
+
+    if pair_bonus > 0:
+        parts.append("pair_bonus")
+
+    core = ",".join(parts[:6]) if parts else "generic"
     return f"{primary.lower()}+{support.lower()}:{core}"
 
 
 def select_pair(task: Dict[str, Any]) -> Tuple[str, str, Dict[str, float], str]:
     scores = score_agents(task)
 
-    primary = max(scores, key=scores.get)
+    primary = select_primary(scores)
     support, support_total = select_support(primary, scores)
-    bonus = pair_bonus(primary, support)
-    reason = build_reason(task, primary, support, bonus)
+    pair_bonus = support_bonus(primary, support) - support_penalty(primary, support)
 
     scores_with_pair = dict(scores)
-    scores_with_pair["_pair_bonus"] = round(bonus, 6)
+    scores_with_pair["_pair_bonus"] = round(pair_bonus, 6)
     scores_with_pair["_support_total"] = round(support_total, 6)
 
+    reason = build_reason(task, primary, support, pair_bonus)
     return primary, support, scores_with_pair, reason
 
 
