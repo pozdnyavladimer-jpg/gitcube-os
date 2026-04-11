@@ -1,70 +1,57 @@
 from typing import Dict, Any
 
 
-def _f(x: Any, default: float = 0.0) -> float:
-    try:
-        return float(x)
-    except Exception:
-        return default
-
-
-def get_resonance_vector(task: Dict[str, Any]) -> Dict[str, float]:
-    rv = task.get("resonance_vector", {}) or {}
-    return {
-        "pressure": _f(rv.get("pressure", 0.0)),
-        "flow": _f(rv.get("flow", 0.0)),
-        "structure": _f(rv.get("structure", 0.0)),
-        "balance": _f(rv.get("balance", 0.0)),
-        "law": _f(rv.get("law", 0.0)),
-        "future": _f(rv.get("future", 0.0)),
-    }
-
-
-def has_target_path(task: Dict[str, Any]) -> bool:
+def evaluate_tank_policy(
+    task: Dict[str, Any],
+    primary_agent: str,
+    support_agent: str,
+    scores: Dict[str, float],
+) -> Dict[str, Any]:
     payload = task.get("payload", {}) or {}
-    path = str(payload.get("path", "")).strip()
-    return bool(path)
+    problem = str(payload.get("problem", "")).strip().lower()
+    has_path = bool(str(payload.get("path", "")).strip())
+    paths = payload.get("paths", [])
+    has_paths = isinstance(paths, list) and len(paths) > 0
 
+    resonance = task.get("resonance_vector", {}) or {}
+    pressure = float(resonance.get("pressure", 0.0))
+    structure = float(resonance.get("structure", 0.0))
+    law = float(resonance.get("law", 0.0))
+    balance = float(resonance.get("balance", 0.0))
 
-def build_tank_policy(task: Dict[str, Any]) -> Dict[str, Any]:
-    rv = get_resonance_vector(task)
-    path_exists = has_target_path(task)
+    # structural / builder tasks should not be force-published by TANK
+    if problem in {
+        "missing_init",
+        "missing_init_group",
+        "python_without_docs",
+        "package_structure",
+        "missing_root_readme",
+        "missing_start_here",
+    }:
+        return {
+            "mode": "builder_lane",
+            "severity": "normal",
+            "force_publish": False,
+            "block_local_execution": False,
+            "note": "tank_policy:structural_builder_task",
+        }
 
-    severity = "normal"
-    force_publish = False
-    block_local_execution = False
-    mode = "stabilize"
-
-    if rv["pressure"] >= 0.80:
-        severity = "high"
-        force_publish = True
-
-    if rv["balance"] <= 0.30 or rv["structure"] <= 0.30:
-        mode = "containment"
-
-    if not path_exists:
-        block_local_execution = True
-        force_publish = True
-
-    note_parts = []
-
-    if rv["pressure"] >= 0.70:
-        note_parts.append("high_pressure")
-    if rv["structure"] <= 0.35:
-        note_parts.append("low_structure")
-    if rv["balance"] <= 0.35:
-        note_parts.append("low_balance")
-    if rv["law"] <= 0.35:
-        note_parts.append("low_law")
-    if not path_exists:
-        note_parts.append("no_path")
-
-    note = "tank_policy:" + ",".join(note_parts[:5]) if note_parts else "tank_policy:stable"
+    # if task has no local target and looks macro / unstable -> TANK escalation
+    if (not has_path and not has_paths) and (
+        pressure >= 0.70 or structure <= 0.30 or law <= 0.30 or balance <= 0.35
+    ):
+        return {
+            "mode": "containment",
+            "severity": "normal",
+            "force_publish": True,
+            "block_local_execution": True,
+            "note": "tank_policy:no_path_macro_containment",
+        }
 
     return {
-        "mode": mode,
-        "severity": severity,
-        "force_publish": force_publish,
-        "block_local_execution": block_local_execution,
-        "note": note,
+        "mode": "pass",
+        "severity": "low",
+        "force_publish": False,
+        "block_local_execution": False,
+        "note": "tank_policy:pass",
     }
