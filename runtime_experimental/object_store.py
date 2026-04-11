@@ -1,95 +1,241 @@
 import json
 import os
-import time
-from typing import List, Dict, Any
+from datetime import datetime, UTC
+from typing import Any, Dict, List, Optional
 
-STORE_PATH = "objects.json"
+PATH = "objects.json"
+
+
+def _now_iso() -> str:
+    return datetime.now(UTC).isoformat()
 
 
 def load_objects() -> List[Dict[str, Any]]:
-    if not os.path.exists(STORE_PATH):
+    if not os.path.exists(PATH):
         return []
 
-    try:
-        with open(STORE_PATH, "r", encoding="utf-8") as f:
+    with open(PATH, "r", encoding="utf-8") as f:
+        try:
             data = json.load(f)
             if isinstance(data, list):
                 return data
             return []
-    except Exception:
-        return []
+        except Exception:
+            return []
 
 
-def save_objects(objects: List[Dict[str, Any]]):
-    with open(STORE_PATH, "w", encoding="utf-8") as f:
-        json.dump(objects, f, indent=2, ensure_ascii=False)
+def save_objects(data: List[Dict[str, Any]]) -> None:
+    with open(PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def _generate_id(objects: List[Dict[str, Any]]) -> str:
-    max_id = 0
-    for obj in objects:
-        obj_id = str(obj.get("id", "task_0"))
-        tail = obj_id.split("_")[-1]
-        if tail.isdigit():
-            max_id = max(max_id, int(tail))
-    return f"task_{max_id + 1}"
+def _next_id(data: List[Dict[str, Any]]) -> str:
+    nums = []
+
+    for o in data:
+        obj_id = str(o.get("id", ""))
+        if obj_id.startswith("task_"):
+            tail = obj_id.split("_")[-1]
+            if tail.isdigit():
+                nums.append(int(tail))
+
+    return f"task_{max(nums) + 1 if nums else 1}"
+
+
+def _task_num(obj: Dict[str, Any]) -> int:
+    obj_id = str(obj.get("id", "task_0"))
+    tail = obj_id.split("_")[-1]
+    return int(tail) if tail.isdigit() else 0
+
+
+def get_latest_task() -> Optional[Dict[str, Any]]:
+    tasks = [o for o in load_objects() if str(o.get("type", "")).strip().lower() == "task"]
+    if not tasks:
+        return None
+
+    tasks.sort(key=_task_num)
+    return tasks[-1]
+
+
+def get_latest_open_task() -> Optional[Dict[str, Any]]:
+    tasks = [
+        o for o in load_objects()
+        if str(o.get("type", "")).strip().lower() == "task"
+        and str(o.get("status", "")).strip().lower() == "open"
+    ]
+    if not tasks:
+        return None
+
+    tasks.sort(key=_task_num)
+    return tasks[-1]
+
+
+def get_task_by_id(task_id: str) -> Optional[Dict[str, Any]]:
+    for obj in load_objects():
+        if str(obj.get("id")) == str(task_id):
+            return obj
+    return None
+
+
+def update_object(obj_id: str, patch: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    data = load_objects()
+    updated = None
+
+    for obj in data:
+        if str(obj.get("id")) == str(obj_id):
+            obj.update(patch or {})
+            obj["updated_at"] = _now_iso()
+            updated = obj
+            break
+
+    save_objects(data)
+    return updated
 
 
 def add_object(obj: Dict[str, Any]) -> Dict[str, Any]:
-    objects = load_objects()
+    data = load_objects()
+    new_obj = dict(obj or {})
 
-    new_obj = dict(obj)
+    if not new_obj.get("id"):
+        new_obj["id"] = _next_id(data)
 
-    if "id" not in new_obj:
-        new_obj["id"] = _generate_id(objects)
+    new_obj.setdefault("type", "task")
+    new_obj.setdefault("status", "open")
+    new_obj.setdefault("kind", "task")
+    new_obj.setdefault("published_to_github", False)
+    new_obj.setdefault("github_url", "")
+    new_obj.setdefault("parent_id", None)
+    new_obj.setdefault("related_to", [])
+    new_obj.setdefault("graph_depth", 0)
+    new_obj.setdefault("created_at", _now_iso())
+    new_obj["updated_at"] = _now_iso()
 
-    if "created_at" not in new_obj:
-        new_obj["created_at"] = int(time.time())
-
-    if "status" not in new_obj:
-        new_obj["status"] = "open"
-
-    objects.append(new_obj)
-    save_objects(objects)
-
+    data.append(new_obj)
+    save_objects(data)
     return new_obj
 
 
-def get_open_tasks() -> List[Dict[str, Any]]:
-    """
-    🔥 FIX: максимально tolerant фільтр
-    бачить всі open задачі незалежно від формату
-    """
-    tasks = []
+def create_task(
+    title: str,
+    origin: str,
+    kind: str = "task",
+    intensity: float = 0.0,
+    novelty: float = 0.0,
+    payload: Optional[Dict[str, Any]] = None,
+    parent_id: Optional[str] = None,
+    related_to: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    latest = get_latest_task()
 
-    for obj in load_objects():
-        if str(obj.get("type", "")).strip().lower() != "task":
+    if parent_id is None and latest is not None:
+        parent_id = str(latest.get("id"))
+
+    if related_to is None:
+        related_to = [parent_id] if parent_id else []
+
+    graph_depth = 0
+    if latest and parent_id:
+        try:
+            graph_depth = int(latest.get("graph_depth", 0)) + 1
+        except Exception:
+            graph_depth = 1
+
+    task = {
+        "type": "task",
+        "title": title,
+        "origin": origin,
+        "status": "open",
+        "kind": kind,
+        "intensity": float(intensity),
+        "novelty": float(novelty),
+        "payload": payload or {},
+        "parent_id": parent_id,
+        "related_to": related_to,
+        "graph_depth": graph_depth,
+    }
+    return add_object(task)
+
+
+def get_open_tasks() -> List[Dict[str, Any]]:
+    tasks: List[Dict[str, Any]] = []
+
+    for o in load_objects():
+        obj_type = str(o.get("type", "")).strip().lower()
+        status = str(o.get("status", "")).strip().lower()
+
+        if obj_type != "task":
             continue
 
-        status = str(obj.get("status", "")).strip().lower()
+        if status == "open":
+            tasks.append(o)
 
-        # 🔥 tolerant:
-        if status in ("open", "new", "pending", ""):
-            tasks.append(obj)
-
+    tasks.sort(key=_task_num)
     return tasks
 
 
-def close_task(task_id: str):
-    objects = load_objects()
-
-    for obj in objects:
-        if str(obj.get("id")) == str(task_id):
-            obj["status"] = "closed"
-
-    save_objects(objects)
+def get_open() -> List[Dict[str, Any]]:
+    return get_open_tasks()
 
 
-def update_object(task_id: str, patch: Dict[str, Any]):
-    objects = load_objects()
+def mark_task_in_progress(task_id: str, path: str = "") -> Optional[Dict[str, Any]]:
+    patch = {"status": "in_progress"}
+    if path:
+        patch["result_path"] = path
+    return update_object(task_id, patch)
 
-    for obj in objects:
-        if str(obj.get("id")) == str(task_id):
-            obj.update(patch)
 
-    save_objects(objects)
+def mark_task_done(task_id: str, path: str = "", reason: str = "") -> Optional[Dict[str, Any]]:
+    patch = {"status": "done"}
+    if path:
+        patch["result_path"] = path
+    if reason:
+        patch["execution_reason"] = reason
+    return update_object(task_id, patch)
+
+
+def mark_done(task_id: str, path: str = "") -> Optional[Dict[str, Any]]:
+    return mark_task_done(task_id, path)
+
+
+def mark_task_skipped(task_id: str, path: str = "", reason: str = "") -> Optional[Dict[str, Any]]:
+    patch = {"status": "skipped"}
+    if path:
+        patch["result_path"] = path
+    if reason:
+        patch["execution_reason"] = reason
+    return update_object(task_id, patch)
+
+
+def mark_task_failed(task_id: str, path: str = "", reason: str = "") -> Optional[Dict[str, Any]]:
+    patch = {"status": "failed"}
+    if path:
+        patch["result_path"] = path
+    if reason:
+        patch["execution_reason"] = reason
+    return update_object(task_id, patch)
+
+
+def mark_task_absorbed(task_id: str, path: str = "", reason: str = "") -> Optional[Dict[str, Any]]:
+    patch = {"status": "absorbed"}
+    if path:
+        patch["result_path"] = path
+    if reason:
+        patch["execution_reason"] = reason
+    return update_object(task_id, patch)
+
+
+def mark_task_published(task_id: str, url: str, path: str = "", reason: str = "") -> Optional[Dict[str, Any]]:
+    patch = {
+        "status": "published",
+        "published_to_github": True,
+        "github_url": url,
+    }
+    if path:
+        patch["result_path"] = path
+    if reason:
+        patch["execution_reason"] = reason
+    return update_object(task_id, patch)
+
+
+def mark_published(task_id: str, url: str) -> Optional[Dict[str, Any]]:
+    return mark_task_published(task_id, url)
