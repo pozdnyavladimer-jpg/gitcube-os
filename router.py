@@ -119,11 +119,9 @@ def score_mage(task: Dict[str, Any]) -> float:
     score += 0.08 * v["pressure"]
     score += 0.06 * (1.0 - v["flow"])
 
-    # SUPER PRIORITY FOR STRUCTURAL TASKS
     if is_structural_task(task):
         score += 1.50
 
-    # MAGE може працювати і без конкретного path, якщо це structural macro-task
     if is_macro_task(task) and is_structural_task(task):
         score += 0.20
 
@@ -146,7 +144,6 @@ def score_archer(task: Dict[str, Any]) -> float:
     else:
         score = 0.0
 
-    # ARCHER не повинен красти structural tasks у MAGE
     if is_structural_task(task):
         score = 0.0
 
@@ -186,7 +183,6 @@ def score_assassin(task: Dict[str, Any]) -> float:
     else:
         score -= 0.08
 
-    # ASSASSIN теж не повинен красти structural tasks у MAGE
     if is_structural_task(task):
         score *= 0.20
 
@@ -236,6 +232,10 @@ def support_penalty(primary: str, support: str) -> float:
     return round(penalties.get(pair, 0.0), 6)
 
 
+def pair_bonus(primary: str, support: str) -> float:
+    return round(support_bonus(primary, support) - support_penalty(primary, support), 6)
+
+
 def select_support(primary: str, scores: Dict[str, float]) -> Tuple[str, float]:
     candidates = []
 
@@ -243,7 +243,7 @@ def select_support(primary: str, scores: Dict[str, float]) -> Tuple[str, float]:
         if agent == primary:
             continue
 
-        total = score + support_bonus(primary, agent) - support_penalty(primary, agent)
+        total = score + pair_bonus(primary, agent)
         candidates.append((agent, round(total, 6)))
 
     if not candidates:
@@ -258,7 +258,7 @@ def select_support(primary: str, scores: Dict[str, float]) -> Tuple[str, float]:
     return best_agent, best_total
 
 
-def build_reason(task: Dict[str, Any], primary: str, support: str, pair_bonus: float) -> str:
+def build_reason(task: Dict[str, Any], primary: str, support: str, pair_score: float) -> str:
     v = get_vector(task)
     parts = []
 
@@ -283,7 +283,7 @@ def build_reason(task: Dict[str, Any], primary: str, support: str, pair_bonus: f
     if v["balance"] <= 0.35:
         parts.append("low_balance")
 
-    if pair_bonus > 0:
+    if pair_score > 0:
         parts.append("pair_bonus")
 
     core = ",".join(parts[:6]) if parts else "generic"
@@ -295,13 +295,13 @@ def select_pair(task: Dict[str, Any]) -> Tuple[str, str, Dict[str, float], str]:
 
     primary = select_primary(scores)
     support, support_total = select_support(primary, scores)
-    pair_bonus = support_bonus(primary, support) - support_penalty(primary, support)
+    pair_score = pair_bonus(primary, support)
 
     scores_with_pair = dict(scores)
-    scores_with_pair["_pair_bonus"] = round(pair_bonus, 6)
+    scores_with_pair["_pair_bonus"] = round(pair_score, 6)
     scores_with_pair["_support_total"] = round(support_total, 6)
 
-    reason = build_reason(task, primary, support, pair_bonus)
+    reason = build_reason(task, primary, support, pair_score)
     return primary, support, scores_with_pair, reason
 
 
