@@ -1,4 +1,4 @@
-# START HERE
+START HERE
 
 This repo has two paths:
 
@@ -7,7 +7,7 @@ This repo has two paths:
 
 ---
 
-## 1. Stable Runtime
+1. Stable Runtime
 
 Run:
 
@@ -28,7 +28,7 @@ Key files:
 
 ---
 
-## 2. Experimental Runtime
+2. Experimental Runtime
 
 Run:
 
@@ -50,7 +50,38 @@ Key files:
 
 ---
 
-## Mental Model
+🧠 GitCube OS Runtime (Main System)
+
+Run:
+
+./run.sh
+
+This activates:
+
+- task graph (objects.json)
+- agent routing (ARCHER / MAGE / TANK / HEALER)
+- memory bias
+- GitHub integration
+
+---
+
+🔁 Behavior Loop
+
+analyze → generate tasks → route → execute → learn
+
+---
+
+👀 What to watch in logs
+
+- SELECTED TASK
+- PRIMARY_AGENT / SUPPORT_AGENT
+- PAIR_REASON
+- TANK_POLICY
+- PUBLISH
+
+---
+
+🧭 Mental Model
 
 Stable:
 
@@ -60,44 +91,13 @@ Experimental:
 
 state → field → class → decision → vitality → update
 
----
+GitCube OS:
 
-## Repo Structure
-
-app/
-core/
-runtime/
-runtime_experimental/
-examples/
-docs/
+state → field → policy → routing → action → memory
 
 ---
 
-## Which to use
-
-Stable → control, debugging  
-Experimental → behavior, evolution  
-
----
-
-## What to watch
-
-Stable:
-
-- decision
-- bindu
-- state change
-
-Experimental:
-
-- class
-- vitality
-- field mode
-- decisions
-
----
-
-## Important
+⚠️ Important
 
 Do not mix experimental into stable too early.
 
@@ -106,43 +106,33 @@ runtime_experimental/ = evolving
 
 ---
 
-## Entry Point
+🔑 Setup
 
-Best start:
+Create ".env" file:
 
-PYTHONPATH=. python examples/experimental_loop.py
+GITHUB_TOKEN=...
+GITHUB_REPO=...
 
 ---
 
-## One-line
+▶️ Run
+
+./run.sh
+
+---
+
+🔄 Auto loop
+
+./run_loop.sh
+
+---
+
+💡 One-line
 
 GitCube OS executes adaptive state logic.
 
 ---
 
-## One-line (Experimental)
+💡 One-line (Field)
 
-Experimental runtime turns the system into a living adaptive field.
-
----
-
-# 1. Встанови змінні:
-
-.env файл:
-
-GITHUB_TOKEN=...
-GITHUB_REPO=...
-
-2. Запусти:
-
-./run.sh
-
-3. Дивись результат:
-- reports/
-- GitHub issues
-
-4. Для автозапуску:
-
-./run_loop.sh
-
----
+GitCube OS turns code into a self-organizing system.
