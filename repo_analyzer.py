@@ -713,7 +713,7 @@ def analyze_repo(root: str = "."):
             {
                 "problem": "pass_blocks_group",
 "paths": sorted(pass_files)[:30],
-                "count": len(bare_except_files),
+                "count": len(pass_files),
                 "priority": "medium",
             },
             0.81,
@@ -736,7 +736,7 @@ def analyze_repo(root: str = "."):
     print("DEBUG_PRINT_FILES:", len(debug_print_files))
     print("TODO_FILES:", len(todo_files))
     print("PASS_BLOCK_FILES:", len(pass_files))
-    print("BARE_EXCEPT_FILES:", len(bare_except_files))
+    print("BARE_EXCEPT_FILES:", len(pass_files))
     print("TASKS_CREATED:", created)
     print("TASKS_SUPPRESSED:", suppressed)
 
