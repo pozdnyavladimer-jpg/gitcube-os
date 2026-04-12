@@ -170,6 +170,20 @@ def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optio
 
         return os.path.join(first, "__init__.py"), [], "mage_resolved_first_dir"
 
+    structural_dirs = [
+        "runtime_experimental",
+        "app",
+        "core",
+        "docs",
+        "examples",
+        "tests",
+        "environments",
+    ]
+
+    for d in structural_dirs:
+        if os.path.isdir(d):
+            return os.path.join(d, "__init__.py"), [], "mage_structural_default_dir"
+
     if os.path.exists("README.md"):
         return "README.md", [], "mage_fallback_existing_readme"
 
@@ -297,6 +311,18 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
 
         if resolved_path:
             if not os.path.exists(resolved_path):
+                if os.path.basename(resolved_path) == "__init__.py":
+                    ok = safe_write_file(
+                        resolved_path,
+                        '"""Auto-created package marker."""\n',
+                    )
+                else:
+                    ok = safe_write_file(
+                        resolved_path,
+                        "# Auto-created by GitCube builder\n\n"
+                        "def placeholder():\n"
+                        "    return True\n",
+                    )
                 ok = safe_write_file(
                     resolved_path,
                     "# Auto-created by GitCube builder\n\n"
