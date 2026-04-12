@@ -712,7 +712,7 @@ def analyze_repo(root: str = "."):
             "Review pass blocks across repo",
             {
                 "problem": "pass_blocks_group",
-"paths": sorted(bare_except_files)[:30],
+"paths": sorted(pass_files)[:30],
                 "count": len(bare_except_files),
                 "priority": "medium",
             },
