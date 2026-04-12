@@ -524,5 +524,400 @@
     "graph_depth": 0,
     "created_at": "2026-04-12T12:18:59.511152+00:00",
     "updated_at": "2026-04-12T12:18:59.511161+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Detect missing bridges across clusters",
+    "origin": "repo_analyzer_v7",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.8,
+    "novelty": 0.77,
+    "payload": {
+      "problem": "missing_bridge_group",
+      "paths": [
+        "app",
+        "core",
+        "core.decision_kernel",
+        "examples",
+        "examples.compare_modes",
+        "examples.demo_binary_cube",
+        "examples.demo_image_cube",
+        "examples.demo_story",
+        "examples.environment_run",
+        "examples.experimental_loop",
+        "examples.loop_run",
+        "examples.simple_loop",
+        "examples.test_eye_pairs",
+        "examples.test_eye_party",
+        "examples.test_guard",
+        "run_loop",
+        "runtime",
+        "runtime.bindu",
+        "runtime.class_interactions",
+        "runtime.ecology"
+      ],
+      "count": 32,
+      "examples": [
+        {
+          "module": "app",
+          "from_cluster": "app",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "core",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.state_engine",
+            "app.ui_streamlit",
+            "app.view_model"
+          ]
+        },
+        {
+          "module": "core.decision_kernel",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.state_engine",
+            "app.ui_streamlit",
+            "app.view_model"
+          ]
+        },
+        {
+          "module": "examples",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.compare_modes",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.demo_binary_cube",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.demo_image_cube",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.demo_story",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.environment_run",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        {
+          "module": "examples.experimental_loop",
+          "from_cluster": "examples",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "bridges",
+        "module_names": [
+          "app",
+          "core",
+          "core.decision_kernel",
+          "examples",
+          "examples.compare_modes",
+          "examples.demo_binary_cube",
+          "examples.demo_image_cube",
+          "examples.demo_story",
+          "examples.environment_run",
+          "examples.experimental_loop",
+          "examples.loop_run",
+          "examples.simple_loop",
+          "examples.test_eye_pairs",
+          "examples.test_eye_party",
+          "examples.test_guard",
+          "run_loop",
+          "runtime",
+          "runtime.bindu",
+          "runtime.class_interactions",
+          "runtime.ecology"
+        ],
+        "neighbors": {
+          "app": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "core": [
+            "app",
+            "app.live_agent",
+            "app.state_engine",
+            "app.ui_streamlit",
+            "app.view_model"
+          ],
+          "core.decision_kernel": [
+            "app",
+            "app.live_agent",
+            "app.state_engine",
+            "app.ui_streamlit",
+            "app.view_model"
+          ],
+          "examples": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.compare_modes": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.demo_binary_cube": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.demo_image_cube": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.demo_story": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.environment_run": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ],
+          "examples.experimental_loop": [
+            "core",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation",
+            "core.neuromodulator"
+          ]
+        },
+        "bridges": [
+          {
+            "module": "app",
+            "from_cluster": "app",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "core",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.state_engine",
+              "app.ui_streamlit",
+              "app.view_model"
+            ]
+          },
+          {
+            "module": "core.decision_kernel",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.state_engine",
+              "app.ui_streamlit",
+              "app.view_model"
+            ]
+          },
+          {
+            "module": "examples",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.compare_modes",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.demo_binary_cube",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.demo_image_cube",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.demo_story",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.environment_run",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          },
+          {
+            "module": "examples.experimental_loop",
+            "from_cluster": "examples",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation",
+              "core.neuromodulator"
+            ]
+          }
+        ]
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.64,
+      "flow": 0.22,
+      "structure": 0.31,
+      "balance": 0.39,
+      "law": 0.36,
+      "future": 0.74
+    },
+    "meta_key": "missing_bridge_group|path|high|repo_analyzer_v7|app",
+    "id": "task_10",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-12T12:27:03.844517+00:00",
+    "updated_at": "2026-04-12T12:27:03.844528+00:00"
   }
 ]

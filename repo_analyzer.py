@@ -833,6 +833,94 @@ def analyze_repo(root: str = "."):
         )
         created += int(ok)
         suppressed += int(not ok)
+
+    # =========================
+    # BRIDGE LAYER v2.2
+    # =========================
+
+    def module_cluster_name(module: str) -> str:
+        if module.startswith("core."):
+            return "core"
+        if module.startswith("app."):
+            return "app"
+        if module.startswith("runtime_experimental."):
+            return "runtime_experimental"
+        if module.startswith("examples."):
+            return "examples"
+        if module.startswith("tests."):
+            return "tests"
+        if module.startswith("environments."):
+            return "environments"
+        if module.startswith("docs."):
+            return "docs"
+        if "." not in module:
+            return module
+        return module.split(".", 1)[0]
+
+    cluster_members = {}
+    for m in sorted(module_names):
+        c = module_cluster_name(m)
+        cluster_members.setdefault(c, []).append(m)
+
+    missing_bridges = []
+
+    preferred_targets = ["core", "app", "runtime_experimental"]
+
+    for module in sorted(isolated_modules):
+        source_cluster = module_cluster_name(module)
+
+        target_cluster = None
+        for candidate in preferred_targets:
+            if candidate != source_cluster and candidate in cluster_members:
+                target_cluster = candidate
+                break
+
+        if not target_cluster:
+            continue
+
+        target_examples = cluster_members.get(target_cluster, [])[:5]
+
+        missing_bridges.append({
+            "module": module,
+            "from_cluster": source_cluster,
+            "to_cluster": target_cluster,
+            "suggested_neighbors": target_examples,
+        })
+
+    if missing_bridges:
+        rv = build_resonance_vector(
+            pressure=0.64,
+            flow=0.22,
+            structure=0.31,
+            balance=0.39,
+            law=0.36,
+            future=0.74,
+        )
+
+        ok, reason = add_task_if_new(
+            "Detect missing bridges across clusters",
+            {
+                "problem": "missing_bridge_group",
+                "paths": [x["module"] for x in missing_bridges[:20]],
+                "count": len(missing_bridges),
+                "examples": missing_bridges[:10],
+                "priority": "high",
+                "executor_hint": "MAGE",
+                "topology_context": {
+                    "cluster_id": "bridges",
+                    "module_names": [x["module"] for x in missing_bridges[:20]],
+                    "neighbors": {x["module"]: x["suggested_neighbors"] for x in missing_bridges[:10]},
+                    "bridges": missing_bridges[:10],
+                },
+            },
+            0.80,
+            0.77,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
     print("ANALYZER_DONE")
     print("FILES_SCANNED:", scanned)
     print("PY_FILES:", len(py_files))
