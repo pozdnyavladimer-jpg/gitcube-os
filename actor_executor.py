@@ -272,6 +272,15 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                     "changed_files": changed_files,
                 }
 
+            # 🔥 SUCCESS IF ALREADY EXISTS
+            if resolved_path or resolved_paths:
+                return {
+                    "ok": True,
+                    "builder": builder,
+                    "reason": "package_markers_already_exist",
+                    "changed_files": [],
+                }
+
             return {
                 "ok": False,
                 "builder": builder,
@@ -342,6 +351,14 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                 "builder": builder,
                 "reason": "files_written",
                 "changed_files": changed_files,
+            }
+
+        if resolved_path or resolved_paths:
+            return {
+                "ok": True,
+                "builder": builder,
+                "reason": "target_already_exists",
+                "changed_files": [],
             }
 
         return {
