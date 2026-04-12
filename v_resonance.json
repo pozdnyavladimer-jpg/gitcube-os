@@ -1,21 +1,20 @@
 {
   "flower": {
-    "pressure": 0.051,
-    "flow": 0.168,
-    "structure": 0.298,
-    "balance": 0.149,
-    "law": 0.098,
-    "future": 0.235
+    "pressure": 0.002,
+    "flow": 0.127,
+    "structure": 0.339,
+    "balance": 0.243,
+    "law": 0.111,
+    "future": 0.178
   },
   "meta": {
-    "step": 349,
-    "phase": "DAY",
-    "mode": "flow_boost",
-    "vitality": 1.0,
-    "updated_at": "2026-04-12T04:51:46.721355Z",
+    "step": 352,
+    "phase": "NIGHT",
+    "mode": "stability_boost",
+    "vitality": 0.995,
+    "updated_at": "2026-04-12T05:10:22.237821Z",
     "updated_by": "CORE",
     "class_history": [
-      "ARCHER",
       "MAGE",
       "TANK",
       "MAGE",
@@ -34,10 +33,10 @@
       "TANK",
       "MAGE",
       "TANK",
-      "MAGE"
+      "MAGE",
+      "TANK"
     ],
     "action_history": [
-      "FORCE_MODE_SHIFT",
       "INCREASE_FLOW",
       "REBALANCE",
       "INCREASE_FLOW",
@@ -46,10 +45,10 @@
       "REBALANCE",
       "INCREASE_FLOW",
       "REBALANCE",
-      "INCREASE_FLOW"
+      "INCREASE_FLOW",
+      "REBALANCE"
     ],
     "vitality_history": [
-      0.995,
       1.0,
       0.995,
       1.0,
@@ -58,14 +57,15 @@
       0.995,
       1.0,
       0.995,
-      1.0
+      1.0,
+      0.995
     ],
     "structure_floor": 0.343,
     "law_floor": 0.113,
     "external_signal_kind": "task",
-    "object_count": 82,
+    "object_count": 85,
     "v_clock": {
-      "tick_at": 1775969503,
+      "tick_at": 1775970619,
       "focus_limit": 3,
       "prime_directive": {
         "pressure": 0.35,
@@ -99,10 +99,10 @@
       "promoted_task_ids": []
     },
     "memory_bias": {
-      "TANK": 0.0098,
-      "MAGE": 0.120482,
+      "TANK": 0.009224,
+      "MAGE": 0.113397,
       "ARCHER": 0.0,
-      "HEALER": 0.022619,
+      "HEALER": 0.02129,
       "ASSASSIN": 0.0
     },
     "feedback": {
@@ -170,43 +170,46 @@
         "task_8",
         "task_80",
         "task_81",
+        "task_82",
+        "task_83",
+        "task_84",
         "task_9"
       ],
       "last_events": [
         {
-          "task_id": "task_80",
+          "task_id": "task_84",
           "status": "published",
           "primary": null,
           "support": null,
           "alignment": 0.0,
-          "reward": 0.0,
+          "reward": 0.9,
           "structural": false,
-          "title": "High priority routing failure / step 335"
+          "title": "High priority routing failure / step 351"
         }
       ],
-      "last_updated_at": 1775969503
+      "last_updated_at": 1775970619
     }
   },
   "signal": {
-    "action": "BUILD",
+    "action": "STABILIZE",
     "source": "CORE",
     "target": "ACTOR",
     "winner_agent": "planner",
-    "dominant_class": "MAGE",
-    "decision": "COMMIT",
-    "phase": "DAY",
-    "mode": "flow_boost",
+    "dominant_class": "TANK",
+    "decision": "SOFT_COMMIT",
+    "phase": "NIGHT",
+    "mode": "stability_boost",
     "bond": "NONE",
-    "reason": "mage_commit",
-    "vitality": 1.0,
+    "reason": "tank_soft_commit",
+    "vitality": 0.995,
     "navigator_action": "INCREASE_FLOW",
-    "coordination_role": "ARCHER",
-    "coordination_action": "INCREASE_FLOW",
-    "coordination_reason": "low_flow",
+    "coordination_role": "TANK",
+    "coordination_action": "REBALANCE",
+    "coordination_reason": "balance_too_low",
     "explorer_kind": "task",
     "explorer_pressure_delta": 0.045,
     "explorer_future_delta": 0.036,
     "open_task_count": 18,
-    "latest_task_id": "task_82"
+    "latest_task_id": "task_85"
   }
 }

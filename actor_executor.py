@@ -155,7 +155,11 @@ def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optio
             return first, [], "mage_resolved_first_path"
         return os.path.join(first, "__init__.py"), [], "mage_resolved_first_dir"
 
-    return None, [], "mage_no_coordinates"
+    # 🔥 FALLBACK (critical)
+    if os.path.exists("README.md"):
+        return "README.md", [], "mage_fallback_existing_readme"
+
+    return "README.md", [], "mage_fallback_create_readme"
 
 
 def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
