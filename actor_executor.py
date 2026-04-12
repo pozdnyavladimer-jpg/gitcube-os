@@ -69,6 +69,18 @@ def safe_write_file(path: str, content: str) -> bool:
         return False
 
 
+def safe_append_file(path: str, content: str) -> bool:
+    try:
+        parent = os.path.dirname(path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(content)
+        return True
+    except Exception:
+        return False
+
+
 def ensure_init_file_from_file_path(file_path: str) -> Optional[str]:
     try:
         parent = os.path.dirname(file_path) or "."
@@ -100,10 +112,6 @@ def normalize_paths(raw_paths: Any) -> List[str]:
 
 
 def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optional[str], List[str], str]:
-    """
-    Returns:
-      resolved_path, resolved_paths, resolution_note
-    """
     problem = str(problem or "").strip().lower()
     path = str(path or "").strip()
     paths = normalize_paths(paths)
@@ -118,7 +126,6 @@ def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optio
             if not p:
                 continue
 
-            # if path already looks like a file path, map to its parent package marker
             if p.endswith(".py"):
                 parent = os.path.dirname(p) or "."
                 resolved_paths.append(os.path.join(parent, "__init__.py"))
@@ -155,11 +162,22 @@ def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optio
             return first, [], "mage_resolved_first_path"
         return os.path.join(first, "__init__.py"), [], "mage_resolved_first_dir"
 
-    # 🔥 FALLBACK (critical)
     if os.path.exists("README.md"):
         return "README.md", [], "mage_fallback_existing_readme"
 
     return "README.md", [], "mage_fallback_create_readme"
+
+
+def build_runtime_note(task: Dict[str, Any]) -> str:
+    title = str(task.get("title", "Untitled task")).strip()
+    task_id = str(task.get("id", "task_unknown")).strip()
+    return (
+        "\n\n---\n"
+        f"Auto-updated by GitCube builder.\n"
+        f"- task_id: {task_id}\n"
+        f"- title: {title}\n"
+        "---\n"
+    )
 
 
 def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
@@ -202,6 +220,7 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
     resolved_path = str(leader_result.get("resolved_path", "") or "").strip()
     resolved_paths = normalize_paths(leader_result.get("resolved_paths", []))
     changed_files: List[str] = []
+    note = build_runtime_note(task)
 
     try:
         if problem in {"missing_init", "missing_init_group", "package_structure"}:
@@ -211,7 +230,6 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                 all_targets.append(resolved_path)
             all_targets.extend(resolved_paths)
 
-            # dedupe while preserving order
             seen = set()
             unique_targets = []
             for t in all_targets:
@@ -241,13 +259,18 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
 
         if problem in {"missing_root_readme", "missing_start_here", "python_without_docs"}:
             target = resolved_path
-            if target and not os.path.exists(target):
-                ok = safe_write_file(
-                    target,
-                    f"# {os.path.basename(target)}\n\nAuto-created by GitCube builder.\n",
-                )
-                if ok:
-                    changed_files.append(target)
+            if target:
+                if not os.path.exists(target):
+                    ok = safe_write_file(
+                        target,
+                        f"# {os.path.basename(target)}\n\nAuto-created by GitCube builder.\n",
+                    )
+                    if ok:
+                        changed_files.append(target)
+                else:
+                    ok = safe_append_file(target, note)
+                    if ok:
+                        changed_files.append(target)
 
             if changed_files:
                 return {
@@ -264,15 +287,20 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                 "changed_files": [],
             }
 
-        if resolved_path and not os.path.exists(resolved_path):
-            ok = safe_write_file(
-                resolved_path,
-                "# Auto-created by GitCube builder\n\n"
-                "def placeholder():\n"
-                "    return True\n",
-            )
-            if ok:
-                changed_files.append(resolved_path)
+        if resolved_path:
+            if not os.path.exists(resolved_path):
+                ok = safe_write_file(
+                    resolved_path,
+                    "# Auto-created by GitCube builder\n\n"
+                    "def placeholder():\n"
+                    "    return True\n",
+                )
+                if ok:
+                    changed_files.append(resolved_path)
+            elif os.path.basename(resolved_path).lower() in {"readme.md", "start_here.md"}:
+                ok = safe_append_file(resolved_path, note)
+                if ok:
+                    changed_files.append(resolved_path)
 
         if changed_files:
             return {
