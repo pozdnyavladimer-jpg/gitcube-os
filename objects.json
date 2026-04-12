@@ -267,5 +267,262 @@
     "graph_depth": 0,
     "created_at": "2026-04-12T12:04:35.817429+00:00",
     "updated_at": "2026-04-12T12:04:35.817438+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Detect isolated modules",
+    "origin": "repo_analyzer_v7",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.68,
+    "payload": {
+      "problem": "isolated_module_group",
+      "paths": [
+        "app",
+        "core",
+        "core.decision_kernel",
+        "examples",
+        "examples.compare_modes",
+        "examples.demo_binary_cube",
+        "examples.demo_image_cube",
+        "examples.demo_story",
+        "examples.environment_run",
+        "examples.experimental_loop",
+        "examples.loop_run",
+        "examples.simple_loop",
+        "examples.test_eye_pairs",
+        "examples.test_eye_party",
+        "examples.test_guard",
+        "run_loop",
+        "runtime",
+        "runtime.bindu",
+        "runtime.class_interactions",
+        "runtime.ecology"
+      ],
+      "count": 32,
+      "priority": "medium",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "isolated",
+        "module_names": [
+          "app",
+          "core",
+          "core.decision_kernel",
+          "examples",
+          "examples.compare_modes",
+          "examples.demo_binary_cube",
+          "examples.demo_image_cube",
+          "examples.demo_story",
+          "examples.environment_run",
+          "examples.experimental_loop",
+          "examples.loop_run",
+          "examples.simple_loop",
+          "examples.test_eye_pairs",
+          "examples.test_eye_party",
+          "examples.test_guard",
+          "run_loop",
+          "runtime",
+          "runtime.bindu",
+          "runtime.class_interactions",
+          "runtime.ecology"
+        ],
+        "neighbors": {},
+        "in_degree": {
+          "app": 0,
+          "core": 0,
+          "core.decision_kernel": 0,
+          "examples": 0,
+          "examples.compare_modes": 0,
+          "examples.demo_binary_cube": 0,
+          "examples.demo_image_cube": 0,
+          "examples.demo_story": 0,
+          "examples.environment_run": 0,
+          "examples.experimental_loop": 0,
+          "examples.loop_run": 0,
+          "examples.simple_loop": 0,
+          "examples.test_eye_pairs": 0,
+          "examples.test_eye_party": 0,
+          "examples.test_guard": 0,
+          "run_loop": 0,
+          "runtime": 0,
+          "runtime.bindu": 0,
+          "runtime.class_interactions": 0,
+          "runtime.ecology": 0
+        },
+        "out_degree": {
+          "app": 0,
+          "core": 0,
+          "core.decision_kernel": 0,
+          "examples": 0,
+          "examples.compare_modes": 0,
+          "examples.demo_binary_cube": 0,
+          "examples.demo_image_cube": 0,
+          "examples.demo_story": 0,
+          "examples.environment_run": 0,
+          "examples.experimental_loop": 0,
+          "examples.loop_run": 0,
+          "examples.simple_loop": 0,
+          "examples.test_eye_pairs": 0,
+          "examples.test_eye_party": 0,
+          "examples.test_guard": 0,
+          "run_loop": 0,
+          "runtime": 0,
+          "runtime.bindu": 0,
+          "runtime.class_interactions": 0,
+          "runtime.ecology": 0
+        }
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.55,
+      "flow": 0.12,
+      "structure": 0.22,
+      "balance": 0.4,
+      "law": 0.38,
+      "future": 0.7
+    },
+    "meta_key": "isolated_module_group|path|medium|repo_analyzer_v7|app",
+    "id": "task_8",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-12T12:18:59.509788+00:00",
+    "updated_at": "2026-04-12T12:18:59.509800+00:00"
+  },
+  {
+    "type": "task",
+    "title": "Detect overcoupled modules",
+    "origin": "repo_analyzer_v7",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.84,
+    "novelty": 0.76,
+    "payload": {
+      "problem": "overcoupled_module_group",
+      "paths": [
+        "app.state_engine",
+        "core.state",
+        "runtime_experimental.object_store",
+        "runtime_experimental.os_sync"
+      ],
+      "count": 4,
+      "examples": [
+        {
+          "module": "app.state_engine",
+          "in_degree": 5,
+          "out_degree": 9,
+          "neighbors": [
+            "core.state",
+            "runtime.adaptive_bindu",
+            "runtime.agent_loop",
+            "runtime.agent_modes",
+            "runtime.binary_cube",
+            "runtime.fractal_vision",
+            "runtime.perelman_guard",
+            "runtime.school_layer",
+            "runtime.transition_memory"
+          ]
+        },
+        {
+          "module": "core.state",
+          "in_degree": 10,
+          "out_degree": 0,
+          "neighbors": []
+        },
+        {
+          "module": "runtime_experimental.object_store",
+          "in_degree": 11,
+          "out_degree": 0,
+          "neighbors": []
+        },
+        {
+          "module": "runtime_experimental.os_sync",
+          "in_degree": 0,
+          "out_degree": 13,
+          "neighbors": [
+            "core.state",
+            "runtime_experimental.agent_loop",
+            "runtime_experimental.agents_logic",
+            "runtime_experimental.explorer_sensor",
+            "runtime_experimental.external_task_guard",
+            "runtime_experimental.field_engine",
+            "runtime_experimental.lab_bridge",
+            "runtime_experimental.navigator_bridge",
+            "runtime_experimental.object_store",
+            "runtime_experimental.pressure_policy"
+          ]
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "overcoupled",
+        "module_names": [
+          "app.state_engine",
+          "core.state",
+          "runtime_experimental.object_store",
+          "runtime_experimental.os_sync"
+        ],
+        "neighbors": {
+          "app.state_engine": [
+            "core.state",
+            "runtime.adaptive_bindu",
+            "runtime.agent_loop",
+            "runtime.agent_modes",
+            "runtime.binary_cube",
+            "runtime.fractal_vision",
+            "runtime.perelman_guard",
+            "runtime.school_layer",
+            "runtime.transition_memory"
+          ],
+          "core.state": [],
+          "runtime_experimental.object_store": [],
+          "runtime_experimental.os_sync": [
+            "core.state",
+            "runtime_experimental.agent_loop",
+            "runtime_experimental.agents_logic",
+            "runtime_experimental.explorer_sensor",
+            "runtime_experimental.external_task_guard",
+            "runtime_experimental.field_engine",
+            "runtime_experimental.lab_bridge",
+            "runtime_experimental.navigator_bridge",
+            "runtime_experimental.object_store",
+            "runtime_experimental.pressure_policy"
+          ]
+        },
+        "in_degree": {
+          "app.state_engine": 5,
+          "core.state": 10,
+          "runtime_experimental.object_store": 11,
+          "runtime_experimental.os_sync": 0
+        },
+        "out_degree": {
+          "app.state_engine": 9,
+          "core.state": 0,
+          "runtime_experimental.object_store": 0,
+          "runtime_experimental.os_sync": 13
+        }
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.78,
+      "flow": 0.32,
+      "structure": 0.41,
+      "balance": 0.35,
+      "law": 0.44,
+      "future": 0.66
+    },
+    "meta_key": "overcoupled_module_group|path|high|repo_analyzer_v7|app_state_engine",
+    "id": "task_9",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-12T12:18:59.511152+00:00",
+    "updated_at": "2026-04-12T12:18:59.511161+00:00"
   }
 ]

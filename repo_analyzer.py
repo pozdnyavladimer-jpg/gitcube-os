@@ -725,6 +725,114 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
+
+    # =========================
+    # TOPOLOGY LAYER v2.1
+    # =========================
+    from collections import defaultdict
+
+    graph_out = defaultdict(set)
+    graph_in = defaultdict(set)
+
+    for rel_path in py_files:
+        full_path = os.path.join(root, rel_path)
+        content = safe_read(full_path)
+        module = rel_module_name(root, full_path)
+        if not module:
+            continue
+
+        imports = parse_import_targets(content)
+        for target in imports:
+            if likely_local_import(target, module_names, known_top_levels):
+                if import_resolves_locally(target, module_names):
+                    graph_out[module].add(target)
+                    graph_in[target].add(module)
+
+    isolated_modules = []
+    for m in sorted(module_names):
+        if not graph_out[m] and not graph_in[m]:
+            isolated_modules.append(m)
+
+    if isolated_modules:
+        rv = build_resonance_vector(
+            pressure=0.55,
+            flow=0.12,
+            structure=0.22,
+            balance=0.40,
+            law=0.38,
+            future=0.70,
+        )
+        ok, reason = add_task_if_new(
+            "Detect isolated modules",
+            {
+                "problem": "isolated_module_group",
+                "paths": sorted(isolated_modules)[:20],
+                "count": len(isolated_modules),
+                "priority": "medium",
+                "executor_hint": "MAGE",
+                "topology_context": {
+                    "cluster_id": "isolated",
+                    "module_names": sorted(isolated_modules)[:20],
+                    "neighbors": {},
+                    "in_degree": {m: 0 for m in sorted(isolated_modules)[:20]},
+                    "out_degree": {m: 0 for m in sorted(isolated_modules)[:20]},
+                },
+            },
+            0.72,
+            0.68,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
+
+    overcoupled = []
+    for m in sorted(module_names):
+        in_deg = len(graph_in[m])
+        out_deg = len(graph_out[m])
+        if in_deg + out_deg >= 10:
+            overcoupled.append({
+                "module": m,
+                "in_degree": in_deg,
+                "out_degree": out_deg,
+                "neighbors": sorted(graph_out[m])[:10],
+            })
+
+    if overcoupled:
+        rv = build_resonance_vector(
+            pressure=0.78,
+            flow=0.32,
+            structure=0.41,
+            balance=0.35,
+            law=0.44,
+            future=0.66,
+        )
+        ok, reason = add_task_if_new(
+            "Detect overcoupled modules",
+            {
+                "problem": "overcoupled_module_group",
+                "paths": [x["module"] for x in overcoupled[:15]],
+                "count": len(overcoupled),
+                "examples": overcoupled[:10],
+                "priority": "high",
+                "executor_hint": "MAGE",
+                "topology_context": {
+                    "cluster_id": "overcoupled",
+                    "module_names": [x["module"] for x in overcoupled[:15]],
+                    "neighbors": {x["module"]: x["neighbors"] for x in overcoupled[:10]},
+                    "in_degree": {x["module"]: x["in_degree"] for x in overcoupled[:10]},
+                    "out_degree": {x["module"]: x["out_degree"] for x in overcoupled[:10]},
+                },
+            },
+            0.84,
+            0.76,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
     print("ANALYZER_DONE")
     print("FILES_SCANNED:", scanned)
     print("PY_FILES:", len(py_files))
