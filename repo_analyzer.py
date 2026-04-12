@@ -1,11 +1,13 @@
+import ast
 import os
+from typing import Dict, List, Set, Tuple
+
 from runtime_experimental.object_store import add_object, load_objects
 from runtime_experimental.github_bridge import (
     is_github_enabled,
     find_open_issue_by_meta_key,
     normalize_meta_key,
 )
-from runtime_experimental.meta_guard import should_block_task
 
 IGNORE_DIRS = {
     ".git",
@@ -22,6 +24,10 @@ SAFE_MAGE_DIRS = {
     "examples",
     "tests",
     "environments",
+    "runtime_experimental",
+    "app",
+    "core",
+    "docs",
 }
 
 STRUCTURAL_PROBLEMS = {
@@ -29,6 +35,11 @@ STRUCTURAL_PROBLEMS = {
     "missing_init_group",
     "python_without_docs",
     "package_structure",
+    "missing_root_readme",
+    "missing_start_here",
+    "broken_import_group",
+    "empty_directories_group",
+    "structural_orphans_group",
 }
 
 META_PROBLEMS = {
@@ -38,7 +49,7 @@ META_PROBLEMS = {
 }
 
 
-def safe_read(path: str, max_chars: int = 4000) -> str:
+def safe_read(path: str, max_chars: int = 200000) -> str:
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read(max_chars)
@@ -47,9 +58,12 @@ def safe_read(path: str, max_chars: int = 4000) -> str:
 
 
 def has_readme(root: str) -> bool:
-    for name in os.listdir(root):
-        if name.lower().startswith("readme"):
-            return True
+    try:
+        for name in os.listdir(root):
+            if name.lower().startswith("readme"):
+                return True
+    except Exception:
+        return False
     return False
 
 
@@ -113,11 +127,11 @@ def build_meta_key(payload: dict, origin: str) -> str:
 
 
 def make_task(title: str, payload: dict, intensity: float, novelty: float, resonance_vector: dict):
-    meta_key = build_meta_key(payload, "repo_analyzer_v6")
+    meta_key = build_meta_key(payload, "repo_analyzer_v7")
     return {
         "type": "task",
         "title": title,
-        "origin": "repo_analyzer_v6",
+        "origin": "repo_analyzer_v7",
         "status": "open",
         "kind": "task",
         "intensity": intensity,
@@ -153,7 +167,7 @@ def add_task_if_new(
     meta_keys_cache: set[str],
 ):
     key = title.strip().lower()
-    meta_key = build_meta_key(payload, "repo_analyzer_v6")
+    meta_key = build_meta_key(payload, "repo_analyzer_v7")
     problem = str(payload.get("problem", "")).strip().lower()
 
     if key in titles_cache:
@@ -161,10 +175,6 @@ def add_task_if_new(
 
     if meta_key in meta_keys_cache:
         return False, "duplicate_meta_key_local"
-
-    blocked, block_reason = should_block_task(payload, meta_key)
-    if blocked:
-        return False, f"blocked:{block_reason}"
 
     if is_github_enabled():
         existing_issue = find_open_issue_by_meta_key(meta_key)
@@ -196,6 +206,75 @@ def has_bare_except(content: str) -> bool:
     return "except:" in content
 
 
+def rel_module_name(root: str, file_path: str) -> str:
+    rel_path = os.path.relpath(file_path, root)
+    if rel_path.endswith(".py"):
+        rel_path = rel_path[:-3]
+    parts = [p for p in rel_path.split(os.sep) if p]
+    if parts and parts[-1] == "__init__":
+        parts = parts[:-1]
+    return ".".join(parts)
+
+
+def build_module_index(root: str, py_files: List[str]) -> tuple[Set[str], Dict[str, str]]:
+    module_names: Set[str] = set()
+    module_to_path: Dict[str, str] = {}
+
+    for rel_path in py_files:
+        full = os.path.join(root, rel_path)
+        mod = rel_module_name(root, full)
+        if mod:
+            module_names.add(mod)
+            module_to_path[mod] = rel_path
+
+    return module_names, module_to_path
+
+
+def top_level_package_of(rel_path: str) -> str:
+    parts = [p for p in rel_path.split("/") if p]
+    return parts[0] if parts else ""
+
+
+def parse_import_targets(content: str) -> List[str]:
+    targets: List[str] = []
+    try:
+        tree = ast.parse(content)
+    except Exception:
+        return targets
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                name = str(alias.name).strip()
+                if name:
+                    targets.append(name)
+        elif isinstance(node, ast.ImportFrom):
+            mod = str(node.module or "").strip()
+            if mod:
+                targets.append(mod)
+
+    return targets
+
+
+def likely_local_import(target: str, known_modules: Set[str], known_top_levels: Set[str]) -> bool:
+    if not target:
+        return False
+    head = target.split(".", 1)[0]
+    return target in known_modules or head in known_top_levels
+
+
+def import_resolves_locally(target: str, known_modules: Set[str]) -> bool:
+    if target in known_modules:
+        return True
+    parts = target.split(".")
+    while len(parts) > 1:
+        parts = parts[:-1]
+        candidate = ".".join(parts)
+        if candidate in known_modules:
+            return True
+    return False
+
+
 def analyze_repo(root: str = "."):
     titles_cache = existing_titles()
     meta_keys_cache = existing_meta_keys()
@@ -204,18 +283,21 @@ def analyze_repo(root: str = "."):
     suppressed = 0
     scanned = 0
 
-    py_files = []
-    md_files = []
-    big_files = []
-    empty_dirs = []
+    py_files: List[str] = []
+    md_files: List[str] = []
+    big_files: List[Tuple[str, int]] = []
+    empty_dirs: List[str] = []
 
-    mage_missing_init_dirs = []
-    general_missing_init_dirs = []
+    mage_missing_init_dirs: List[str] = []
+    general_missing_init_dirs: List[str] = []
 
-    debug_print_files = []
-    todo_files = []
-    pass_files = []
-    bare_except_files = []
+    debug_print_files: List[str] = []
+    todo_files: List[str] = []
+    pass_files: List[str] = []
+    bare_except_files: List[str] = []
+
+    visible_dirs_with_py: Dict[str, List[str]] = {}
+    root_level_py: List[str] = []
 
     for current_root, dirs, files in os.walk(root):
         dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
@@ -230,20 +312,24 @@ def analyze_repo(root: str = "."):
         if rel_root and not visible_files and not visible_dirs:
             empty_dirs.append(rel_root)
 
-        py_in_dir = [f for f in files if f.endswith(".py")]
-        if py_in_dir and "__init__.py" not in files:
-            top_dir = rel_root.split("/", 1)[0] if rel_root else ""
-            if top_dir in SAFE_MAGE_DIRS:
-                mage_missing_init_dirs.append(rel_root)
-            else:
-                general_missing_init_dirs.append(rel_root or ".")
+        py_in_dir = [f for f in files if f.endswith(".py") and not f.startswith(".")]
+        if py_in_dir:
+            visible_dirs_with_py[rel_root or "."] = py_in_dir
+            if rel_root == "":
+                root_level_py.extend([os.path.join(rel_root, f).lstrip("./") for f in py_in_dir])
+            if "__init__.py" not in files:
+                top_dir = rel_root.split("/", 1)[0] if rel_root else ""
+                if top_dir in SAFE_MAGE_DIRS:
+                    mage_missing_init_dirs.append(rel_root or ".")
+                else:
+                    general_missing_init_dirs.append(rel_root or ".")
 
         for file_name in files:
             if file_name.startswith("."):
                 continue
 
             full_path = os.path.join(current_root, file_name)
-            rel_path = os.path.relpath(full_path, root)
+            rel_path = os.path.relpath(full_path, root).replace("\\", "/")
 
             scanned += 1
 
@@ -274,62 +360,159 @@ def analyze_repo(root: str = "."):
             if file_name.lower().endswith(".md"):
                 md_files.append(rel_path)
 
+    module_names, module_to_path = build_module_index(root, py_files)
+    known_top_levels = {m.split(".", 1)[0] for m in module_names if m}
+
+    broken_imports: List[Dict[str, str]] = []
+    structural_orphans: List[str] = []
+
+    for rel_path in py_files:
+        full_path = os.path.join(root, rel_path)
+        content = safe_read(full_path)
+
+        top_dir = top_level_package_of(rel_path)
+        is_root_level = "/" not in rel_path
+
+        if is_root_level and rel_path not in {
+            "repo_analyzer.py",
+            "router.py",
+            "run.py",
+            "run_loop.py",
+            "status.py",
+            "v_bridge.py",
+            "v_clock.py",
+            "viewer.py",
+            "actor_executor.py",
+            "setup_vcore.sh",
+            "run.sh",
+            "run_loop.sh",
+        }:
+            structural_orphans.append(rel_path)
+
+        if top_dir and top_dir not in SAFE_MAGE_DIRS and rel_path.endswith(".py"):
+            dir_name = os.path.dirname(rel_path)
+            if dir_name and not os.path.exists(os.path.join(root, dir_name, "__init__.py")):
+                if rel_path not in structural_orphans:
+                    structural_orphans.append(rel_path)
+
+        imports = parse_import_targets(content)
+        for target in imports:
+            if likely_local_import(target, module_names, known_top_levels):
+                if not import_resolves_locally(target, module_names):
+                    broken_imports.append({
+                        "file": rel_path,
+                        "import": target,
+                    })
+
     if mage_missing_init_dirs:
         rv = build_resonance_vector(
             pressure=0.68,
             flow=0.24,
-            structure=0.18,
+            structure=0.12,
             balance=0.34,
-            law=0.22,
-            future=0.82,
+            law=0.20,
+            future=0.84,
         )
         ok, reason = add_task_if_new(
             "MAGE: Repair safe package markers",
             {
                 "problem": "missing_init_group",
-                "paths": mage_missing_init_dirs[:20],
+                "paths": mage_missing_init_dirs[:30],
                 "count": len(mage_missing_init_dirs),
                 "priority": "high",
                 "executor_hint": "MAGE",
             },
-            0.84,
+            0.86,
             0.76,
             rv,
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if general_missing_init_dirs:
         rv = build_resonance_vector(
-            pressure=0.71,
+            pressure=0.73,
             flow=0.18,
-            structure=0.22,
+            structure=0.14,
             balance=0.34,
-            law=0.26,
-            future=0.73,
+            law=0.22,
+            future=0.76,
         )
         ok, reason = add_task_if_new(
             "Review Python package structure",
             {
-                "problem": "missing_init_group",
-                "paths": general_missing_init_dirs[:20],
+                "problem": "package_structure",
+                "paths": general_missing_init_dirs[:30],
                 "count": len(general_missing_init_dirs),
                 "priority": "high",
+                "executor_hint": "MAGE",
             },
-            0.86,
+            0.88,
             0.74,
             rv,
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
+
+    if broken_imports:
+        broken_paths = sorted({x["file"] for x in broken_imports})
+        rv = build_resonance_vector(
+            pressure=0.82,
+            flow=0.22,
+            structure=0.16,
+            balance=0.31,
+            law=0.24,
+            future=0.71,
+        )
+        ok, reason = add_task_if_new(
+            "Repair broken imports across repo",
+            {
+                "problem": "broken_import_group",
+                "paths": broken_paths[:30],
+                "count": len(broken_imports),
+                "examples": broken_imports[:10],
+                "priority": "high",
+                "executor_hint": "MAGE",
+            },
+            0.90,
+            0.78,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
+
+    if structural_orphans:
+        rv = build_resonance_vector(
+            pressure=0.66,
+            flow=0.18,
+            structure=0.22,
+            balance=0.37,
+            law=0.26,
+            future=0.74,
+        )
+        ok, reason = add_task_if_new(
+            "Repair structural orphans across repo",
+            {
+                "problem": "structural_orphans_group",
+                "paths": sorted(structural_orphans)[:30],
+                "count": len(structural_orphans),
+                "priority": "high",
+                "executor_hint": "MAGE",
+            },
+            0.82,
+            0.73,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
 
     if not has_readme(root):
         rv = build_resonance_vector(
@@ -346,6 +529,7 @@ def analyze_repo(root: str = "."):
                 "problem": "missing_root_readme",
                 "path": "README.md",
                 "priority": "high",
+                "executor_hint": "MAGE",
             },
             0.92,
             0.80,
@@ -353,10 +537,8 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if not os.path.exists(os.path.join(root, "START_HERE.md")):
         rv = build_resonance_vector(
@@ -373,6 +555,7 @@ def analyze_repo(root: str = "."):
                 "problem": "missing_start_here",
                 "path": "START_HERE.md",
                 "priority": "high",
+                "executor_hint": "MAGE",
             },
             0.88,
             0.78,
@@ -380,10 +563,35 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
+
+    if empty_dirs:
+        rv = build_resonance_vector(
+            pressure=0.38,
+            flow=0.10,
+            structure=0.25,
+            balance=0.55,
+            law=0.56,
+            future=0.42,
+        )
+        ok, reason = add_task_if_new(
+            "Review empty directories",
+            {
+                "problem": "empty_directories_group",
+                "paths": sorted(empty_dirs)[:30],
+                "count": len(empty_dirs),
+                "priority": "medium",
+                "executor_hint": "MAGE",
+            },
+            0.64,
+            0.61,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
 
     if big_files:
         rv = build_resonance_vector(
@@ -399,6 +607,7 @@ def analyze_repo(root: str = "."):
             {
                 "problem": "large_files_group",
                 "files": [{"path": p, "size": s} for p, s in big_files[:20]],
+                "paths": [p for p, _ in big_files[:20]],
                 "count": len(big_files),
                 "priority": "medium",
             },
@@ -408,38 +617,8 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
-
-    if empty_dirs:
-        rv = build_resonance_vector(
-            pressure=0.35,
-            flow=0.12,
-            structure=0.30,
-            balance=0.55,
-            law=0.60,
-            future=0.41,
-        )
-        ok, reason = add_task_if_new(
-            "Review empty directories",
-            {
-                "problem": "empty_directories_group",
-                "paths": empty_dirs[:20],
-                "count": len(empty_dirs),
-                "priority": "low",
-            },
-            0.62,
-            0.60,
-            rv,
-            titles_cache,
-            meta_keys_cache,
-        )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if len(py_files) > 0 and len(md_files) == 0:
         rv = build_resonance_vector(
@@ -455,6 +634,7 @@ def analyze_repo(root: str = "."):
             {
                 "problem": "python_without_docs",
                 "py_count": len(py_files),
+                "path": "README.md",
                 "priority": "medium",
                 "executor_hint": "MAGE",
             },
@@ -464,10 +644,8 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if todo_files:
         rv = build_resonance_vector(
@@ -482,7 +660,7 @@ def analyze_repo(root: str = "."):
             "Resolve TODO markers across repo",
             {
                 "problem": "todo_group",
-                "paths": todo_files[:30],
+                "paths": sorted(todo_files)[:30],
                 "count": len(todo_files),
                 "priority": "medium",
             },
@@ -492,10 +670,8 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if debug_print_files:
         rv = build_resonance_vector(
@@ -510,7 +686,7 @@ def analyze_repo(root: str = "."):
             "Refactor debug prints across repo",
             {
                 "problem": "debug_prints_group",
-                "paths": debug_print_files[:30],
+                "paths": sorted(debug_print_files)[:30],
                 "count": len(debug_print_files),
                 "priority": "medium",
             },
@@ -520,10 +696,8 @@ def analyze_repo(root: str = "."):
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
+        suppressed += int(not ok)
 
     if pass_files:
         rv = build_resonance_vector(
@@ -538,58 +712,130 @@ def analyze_repo(root: str = "."):
             "Review pass blocks across repo",
             {
                 "problem": "pass_blocks_group",
-                "paths": pass_files[:30],
-                "count": len(pass_files),
-                "priority": "medium",
-            },
-            0.77,
-            0.71,
-            rv,
-            titles_cache,
-            meta_keys_cache,
-        )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+                "paths": sorted(pass_files)[:30
+# 🔥 NEW: BROKEN IMPORTS + ORPHANS + EMPTY DIRS
 
-    if bare_except_files:
-        rv = build_resonance_vector(
-            pressure=0.72,
-            flow=0.26,
-            structure=0.31,
-            balance=0.33,
-            law=0.18,
-            future=0.68,
-        )
-        ok, reason = add_task_if_new(
-            "Review bare except blocks across repo",
+    import ast
+
+    def parse_imports_safe(content):
+        try:
+            tree = ast.parse(content)
+        except Exception:
+            return []
+
+        targets = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    targets.append(alias.name)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    targets.append(node.module)
+        return targets
+
+    module_names = set()
+    for p in py_files:
+        mod = p.replace("/", ".").replace(".py", "")
+        module_names.add(mod)
+
+    broken_imports = []
+    structural_orphans = []
+
+    for p in py_files:
+        content = safe_read(os.path.join(root, p))
+
+        # ORPHANS (файл поза структурою)
+        if "/" not in p and p not in {
+            "repo_analyzer.py",
+            "router.py",
+            "run.py",
+            "run_loop.py",
+            "viewer.py",
+            "actor_executor.py",
+        }:
+            structural_orphans.append(p)
+
+        # IMPORTS
+        imports = parse_imports_safe(content)
+        for target in imports:
+            if target not in module_names:
+                broken_imports.append({
+                    "file": p,
+                    "import": target
+                })
+
+    if broken_imports:
+        ok, _ = add_task_if_new(
+            "Repair broken imports across repo",
             {
-                "problem": "bare_except_group",
-                "paths": bare_except_files[:30],
-                "count": len(bare_except_files),
-                "priority": "medium",
+                "problem": "broken_import_group",
+                "paths": list({x["file"] for x in broken_imports})[:30],
+                "count": len(broken_imports),
+                "priority": "high",
+                "executor_hint": "MAGE",
             },
-            0.81,
+            0.9,
             0.75,
-            rv,
+            build_resonance_vector(
+                pressure=0.8,
+                flow=0.2,
+                structure=0.2,
+                balance=0.3,
+                law=0.25,
+                future=0.7,
+            ),
             titles_cache,
             meta_keys_cache,
         )
-        if ok:
-            created += 1
-        else:
-            suppressed += 1
+        created += int(ok)
 
-    print("ANALYZER_DONE")
-    print("FILES_SCANNED:", scanned)
-    print("DEBUG_PRINT_FILES:", len(debug_print_files))
-    print("TODO_FILES:", len(todo_files))
-    print("PASS_BLOCK_FILES:", len(pass_files))
-    print("BARE_EXCEPT_FILES:", len(bare_except_files))
-    print("TASKS_CREATED:", created)
-    print("TASKS_SUPPRESSED:", suppressed)
+    if structural_orphans:
+        ok, _ = add_task_if_new(
+            "Repair structural orphans",
+            {
+                "problem": "structural_orphans_group",
+                "paths": structural_orphans[:30],
+                "count": len(structural_orphans),
+                "priority": "high",
+                "executor_hint": "MAGE",
+            },
+            0.8,
+            0.7,
+            build_resonance_vector(
+                pressure=0.6,
+                flow=0.2,
+                structure=0.2,
+                balance=0.35,
+                law=0.25,
+                future=0.7,
+            ),
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
 
+    if empty_dirs:
+        ok, _ = add_task_if_new(
+            "Review empty directories",
+            {
+                "problem": "empty_directories_group",
+                "paths": empty_dirs[:30],
+                "count": len(empty_dirs),
+                "priority": "medium",
+                "executor_hint": "MAGE",
+            },
+            0.6,
+            0.6,
+            build_resonance_vector(
+                pressure=0.4,
+                flow=0.1,
+                structure=0.3,
+                balance=0.5,
+                law=0.5,
+                future=0.4,
+            ),
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
 
-if __name__ == "__main__":
-    analyze_repo(".")
