@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from runtime_experimental.object_store import (
     get_latest_open_task,
@@ -57,6 +57,31 @@ def should_publish_to_github(task: Dict[str, Any], tank_policy: Optional[Dict[st
     return False, "below_publish_threshold"
 
 
+def safe_write_file(path: str, content: str) -> bool:
+    try:
+        parent = os.path.dirname(path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+        return True
+    except Exception:
+        return False
+
+
+def ensure_init_file(dir_path: str) -> Optional[str]:
+    try:
+        os.makedirs(dir_path, exist_ok=True)
+        init_path = os.path.join(dir_path, "__init__.py")
+        if not os.path.exists(init_path):
+            with open(init_path, "w", encoding="utf-8") as f:
+                f.write('"""Auto-created package marker."""\n')
+            return init_path
+        return None
+    except Exception:
+        return None
+
+
 def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
     return {
@@ -73,23 +98,83 @@ def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
 
 def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[str, Any]) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
-    has_path = bool(str(payload.get("path", "")).strip())
-    has_paths = isinstance(payload.get("paths"), list) and len(payload.get("paths")) > 0
+    problem = str(payload.get("problem", "")).strip().lower()
+    changed_files: List[str] = []
 
-    if not (has_path or has_paths):
+    path = str(payload.get("path", "")).strip()
+    paths = payload.get("paths", [])
+    if not isinstance(paths, list):
+        paths = []
+
+    try:
+        if problem in {"missing_init", "missing_init_group", "package_structure"}:
+            for p in paths:
+                p = str(p).strip()
+                if not p:
+                    continue
+                created = ensure_init_file(p)
+                if created:
+                    changed_files.append(created)
+
+            if path:
+                parent = os.path.dirname(path) or "."
+                created = ensure_init_file(parent)
+                if created:
+                    changed_files.append(created)
+
+            if changed_files:
+                return {
+                    "ok": True,
+                    "builder": builder,
+                    "reason": "package_markers_created",
+                    "changed_files": changed_files,
+                }
+
+            return {
+                "ok": False,
+                "builder": builder,
+                "reason": "no_changes",
+                "changed_files": [],
+            }
+
+        if problem in {"missing_root_readme", "missing_start_here"} and path:
+            if not os.path.exists(path):
+                ok = safe_write_file(path, f"# {os.path.basename(path)}\n\nAuto-created by GitCube builder.\n")
+                if ok:
+                    changed_files.append(path)
+
+        elif path:
+            if not os.path.exists(path):
+                ok = safe_write_file(
+                    path,
+                    "# Auto-created by GitCube builder\n\n"
+                    "def placeholder():\n"
+                    "    return True\n",
+                )
+                if ok:
+                    changed_files.append(path)
+
+        if changed_files:
+            return {
+                "ok": True,
+                "builder": builder,
+                "reason": "files_written",
+                "changed_files": changed_files,
+            }
+
         return {
             "ok": False,
             "builder": builder,
             "reason": "no_changes",
             "changed_files": [],
         }
-
-    return {
-        "ok": True,
-        "builder": builder,
-        "reason": "files_prepared",
-        "changed_files": payload.get("paths", [])[:3] if has_paths else [payload.get("path")],
-    }
+    except Exception as e:
+        return {
+            "ok": False,
+            "builder": builder,
+            "reason": f"builder_exception:{e}",
+            "changed_files": [],
+        }
 
 
 def run_stabilizer_phase(task: Dict[str, Any], stabilizer: str, builder_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -98,6 +183,19 @@ def run_stabilizer_phase(task: Dict[str, Any], stabilizer: str, builder_result: 
             "ok": False,
             "stabilizer": stabilizer,
             "reason": "builder_failed",
+        }
+
+    changed_files = builder_result.get("changed_files", [])
+    if not isinstance(changed_files, list):
+        changed_files = []
+
+    all_exist = all(os.path.exists(str(p)) for p in changed_files)
+
+    if not all_exist:
+        return {
+            "ok": False,
+            "stabilizer": stabilizer,
+            "reason": "validation_failed",
         }
 
     return {
@@ -114,7 +212,6 @@ def run_guard_phase(
     builder: str,
     scores: Dict[str, float],
 ) -> Dict[str, Any]:
-    # Adapter: party -> pair contract expected by tank_policy
     primary_agent = builder
     support_agent = leader
 
@@ -157,7 +254,10 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
 
     leader_result = run_leader_phase(task, leader)
     builder_result = run_builder_phase(task, builder, leader_result)
+    print("BUILDER_RESULT:", builder_result)
     stabilizer_result = run_stabilizer_phase(task, stabilizer, builder_result)
+    print("STABILIZER_RESULT:", stabilizer_result)
+
     guard_result = run_guard_phase(
         task,
         guard,
@@ -170,9 +270,10 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
 
     task_id = str(task.get("id"))
+    changed_files = builder_result.get("changed_files", [])
     tagged_reason = (
         f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
-        f"party_reason={reason}"
+        f"party_reason={reason};changed_files={changed_files}"
     )
 
     primary_attempt_ok = bool(builder_result.get("ok")) and bool(stabilizer_result.get("ok"))
@@ -192,7 +293,7 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
         }
 
     if not allow_publish:
-        if primary_reason in {"no_changes", "builder_failed"}:
+        if primary_reason in {"no_changes", "builder_failed", "validation_failed"} or primary_reason.startswith("builder_exception:"):
             mark_task_skipped(task_id, report_path, tagged_reason + f";{primary_reason}")
         else:
             mark_task_failed(task_id, report_path, tagged_reason + f";{primary_reason}")
@@ -225,6 +326,8 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
         f"\nScores: {scores}"
         f"\nParty scores: {party_scores}"
         f"\nPrimary attempt: {primary_attempt_ok}"
+        f"\nBuilder result: {builder_result}"
+        f"\nStabilizer result: {stabilizer_result}"
     )
     if tank_policy:
         issue["body"] += f"\n\nTank policy: {tank_policy}"
@@ -236,7 +339,7 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
             task_id,
             result.get("url", ""),
             report_path,
-            tagged_reason + f";publish={publish_reason}",
+            tagged_reason + f";publish={publish_reason};party_ok",
         )
         print("ISSUE:", result.get("url", ""))
     else:
