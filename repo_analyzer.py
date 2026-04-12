@@ -712,130 +712,34 @@ def analyze_repo(root: str = "."):
             "Review pass blocks across repo",
             {
                 "problem": "pass_blocks_group",
-                "paths": sorted(pass_files)[:30
-# 🔥 NEW: BROKEN IMPORTS + ORPHANS + EMPTY DIRS
-
-    import ast
-
-    def parse_imports_safe(content):
-        try:
-            tree = ast.parse(content)
-        except Exception:
-            return []
-
-        targets = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    targets.append(alias.name)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    targets.append(node.module)
-        return targets
-
-    module_names = set()
-    for p in py_files:
-        mod = p.replace("/", ".").replace(".py", "")
-        module_names.add(mod)
-
-    broken_imports = []
-    structural_orphans = []
-
-    for p in py_files:
-        content = safe_read(os.path.join(root, p))
-
-        # ORPHANS (файл поза структурою)
-        if "/" not in p and p not in {
-            "repo_analyzer.py",
-            "router.py",
-            "run.py",
-            "run_loop.py",
-            "viewer.py",
-            "actor_executor.py",
-        }:
-            structural_orphans.append(p)
-
-        # IMPORTS
-        imports = parse_imports_safe(content)
-        for target in imports:
-            if target not in module_names:
-                broken_imports.append({
-                    "file": p,
-                    "import": target
-                })
-
-    if broken_imports:
-        ok, _ = add_task_if_new(
-            "Repair broken imports across repo",
-            {
-                "problem": "broken_import_group",
-                "paths": list({x["file"] for x in broken_imports})[:30],
-                "count": len(broken_imports),
-                "priority": "high",
-                "executor_hint": "MAGE",
-            },
-            0.9,
-            0.75,
-            build_resonance_vector(
-                pressure=0.8,
-                flow=0.2,
-                structure=0.2,
-                balance=0.3,
-                law=0.25,
-                future=0.7,
-            ),
-            titles_cache,
-            meta_keys_cache,
-        )
-        created += int(ok)
-
-    if structural_orphans:
-        ok, _ = add_task_if_new(
-            "Repair structural orphans",
-            {
-                "problem": "structural_orphans_group",
-                "paths": structural_orphans[:30],
-                "count": len(structural_orphans),
-                "priority": "high",
-                "executor_hint": "MAGE",
-            },
-            0.8,
-            0.7,
-            build_resonance_vector(
-                pressure=0.6,
-                flow=0.2,
-                structure=0.2,
-                balance=0.35,
-                law=0.25,
-                future=0.7,
-            ),
-            titles_cache,
-            meta_keys_cache,
-        )
-        created += int(ok)
-
-    if empty_dirs:
-        ok, _ = add_task_if_new(
-            "Review empty directories",
-            {
-                "problem": "empty_directories_group",
-                "paths": empty_dirs[:30],
-                "count": len(empty_dirs),
+"paths": sorted(bare_except_files)[:30],
+                "count": len(bare_except_files),
                 "priority": "medium",
-                "executor_hint": "MAGE",
             },
-            0.6,
-            0.6,
-            build_resonance_vector(
-                pressure=0.4,
-                flow=0.1,
-                structure=0.3,
-                balance=0.5,
-                law=0.5,
-                future=0.4,
-            ),
+            0.81,
+            0.75,
+            rv,
             titles_cache,
             meta_keys_cache,
         )
         created += int(ok)
+        suppressed += int(not ok)
 
+    print("ANALYZER_DONE")
+    print("FILES_SCANNED:", scanned)
+    print("PY_FILES:", len(py_files))
+    print("BROKEN_IMPORTS:", len(broken_imports))
+    print("MISSING_INIT_DIRS_SAFE:", len(mage_missing_init_dirs))
+    print("MISSING_INIT_DIRS_GENERAL:", len(general_missing_init_dirs))
+    print("STRUCTURAL_ORPHANS:", len(structural_orphans))
+    print("EMPTY_DIRS:", len(empty_dirs))
+    print("DEBUG_PRINT_FILES:", len(debug_print_files))
+    print("TODO_FILES:", len(todo_files))
+    print("PASS_BLOCK_FILES:", len(pass_files))
+    print("BARE_EXCEPT_FILES:", len(bare_except_files))
+    print("TASKS_CREATED:", created)
+    print("TASKS_SUPPRESSED:", suppressed)
+
+
+if __name__ == "__main__":
+    analyze_repo(".")
