@@ -4,6 +4,16 @@ System that analyzes, understands, and restructures codebases automatically.
 
 ---
 
+🚀 Quick Start
+
+./run.sh
+
+Then check system state:
+
+python status.py
+
+---
+
 🧠 What is this?
 
 GitCube OS is an experimental autonomous system that:
@@ -28,7 +38,7 @@ Detects:
 
 - debug prints
 - TODO markers
-- missing "init.py"
+- missing "__init__.py"
 - structural inconsistencies
 
 ---
@@ -131,8 +141,8 @@ It is:
 
 🧬 Key Idea
 
-«We don’t tell the system what to do.
-We shape the environment where the correct action becomes inevitable.»
+«“We don’t tell the system what to do.
+We shape the environment where the correct action becomes inevitable.”»
 
 ---
 
@@ -142,7 +152,9 @@ gitcube-os/
 │
 ├── app/                  # Core application layer
 ├── core/                 # System logic
-├── runtime_experimental/ # Agents + engines
+├── runtime/              # Stable runtime
+├── runtime_experimental/ # Experimental agents + engines
+├── bridges/              # Auto-generated adapters
 ├── examples/             # Demo scenarios
 ├── reports/              # Generated reports
 │
@@ -157,19 +169,19 @@ gitcube-os/
 
 ▶️ How to Run
 
-1. Start system
+Start system
 
 ./run.sh
 
 ---
 
-2. Check system state
+Check system state
 
 python status.py
 
 ---
 
-3. Run analyzer manually
+Run analyzer manually
 
 python repo_analyzer.py
 
@@ -229,27 +241,6 @@ Volodymyr Pozdnyak
 
 🧬 Vision
 
-«Codebases should organize themselves.»
+«“Codebases should organize themselves.”»
 
 GitCube is a step toward autonomous development systems.
-
-
----
-Auto-updated by GitCube builder.
-- task_id: task_86
-- title: High priority routing failure / step 353
----
-
-
----
-Auto-updated by GitCube builder.
-- task_id: task_87
-- title: High priority routing failure / step 354
----
-
-
----
-Auto-updated by GitCube builder.
-- task_id: task_89
-- title: High priority routing failure / step 355
----
