@@ -69,56 +69,154 @@ def safe_write_file(path: str, content: str) -> bool:
         return False
 
 
-def ensure_init_file(dir_path: str) -> Optional[str]:
+def ensure_init_file_from_file_path(file_path: str) -> Optional[str]:
     try:
-        os.makedirs(dir_path, exist_ok=True)
-        init_path = os.path.join(dir_path, "__init__.py")
+        parent = os.path.dirname(file_path) or "."
+        os.makedirs(parent, exist_ok=True)
+        if os.path.basename(file_path) == "__init__.py":
+            init_path = file_path
+        else:
+            init_path = os.path.join(parent, "__init__.py")
+
         if not os.path.exists(init_path):
             with open(init_path, "w", encoding="utf-8") as f:
                 f.write('"""Auto-created package marker."""\n')
             return init_path
+
         return None
     except Exception:
         return None
 
 
+def normalize_paths(raw_paths: Any) -> List[str]:
+    if not isinstance(raw_paths, list):
+        return []
+    out = []
+    for p in raw_paths:
+        s = str(p).strip()
+        if s:
+            out.append(s)
+    return out
+
+
+def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optional[str], List[str], str]:
+    """
+    Returns:
+      resolved_path, resolved_paths, resolution_note
+    """
+    problem = str(problem or "").strip().lower()
+    path = str(path or "").strip()
+    paths = normalize_paths(paths)
+
+    if path:
+        return path, [], "existing_payload_path"
+
+    if problem in {"missing_init", "missing_init_group", "package_structure"}:
+        resolved_paths = []
+        for p in paths:
+            p = p.rstrip("/")
+            if not p:
+                continue
+
+            # if path already looks like a file path, map to its parent package marker
+            if p.endswith(".py"):
+                parent = os.path.dirname(p) or "."
+                resolved_paths.append(os.path.join(parent, "__init__.py"))
+            else:
+                resolved_paths.append(os.path.join(p, "__init__.py"))
+
+        if resolved_paths:
+            return None, resolved_paths, "mage_resolved_package_markers"
+
+        return None, [], "mage_no_package_target"
+
+    if problem == "missing_root_readme":
+        return "README.md", [], "mage_resolved_root_readme"
+
+    if problem == "missing_start_here":
+        return "START_HERE.md", [], "mage_resolved_start_here"
+
+    if problem == "python_without_docs":
+        if os.path.isdir("docs"):
+            return "docs/README.md", [], "mage_resolved_docs_readme"
+        return "README.md", [], "mage_resolved_fallback_readme"
+
+    if problem == "missing_init":
+        if paths:
+            p = paths[0]
+            if p.endswith(".py"):
+                parent = os.path.dirname(p) or "."
+                return os.path.join(parent, "__init__.py"), [], "mage_resolved_missing_init"
+            return os.path.join(p, "__init__.py"), [], "mage_resolved_missing_init"
+
+    if paths:
+        first = paths[0]
+        if first.endswith(".py"):
+            return first, [], "mage_resolved_first_path"
+        return os.path.join(first, "__init__.py"), [], "mage_resolved_first_dir"
+
+    return None, [], "mage_no_coordinates"
+
+
 def run_leader_phase(task: Dict[str, Any], leader: str) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
-    return {
+    problem = str(payload.get("problem", "")).strip().lower()
+    raw_path = str(payload.get("path", "")).strip()
+    raw_paths = payload.get("paths", [])
+
+    resolved_path, resolved_paths, resolution_note = infer_target_paths(
+        problem=problem,
+        path=raw_path,
+        paths=raw_paths,
+    )
+
+    result = {
         "ok": True,
         "leader": leader,
         "plan": {
-            "problem": payload.get("problem", ""),
-            "paths": payload.get("paths", []),
-            "path": payload.get("path", ""),
+            "problem": problem,
+            "path": raw_path,
+            "paths": normalize_paths(raw_paths),
             "executor_hint": payload.get("executor_hint", ""),
         },
+        "resolved_path": resolved_path,
+        "resolved_paths": resolved_paths,
+        "resolution_note": resolution_note,
     }
+
+    print("LEADER_RESULT:", result)
+    print("RESOLVED_PATH:", resolved_path)
+    print("RESOLVED_PATHS:", resolved_paths)
+
+    return result
 
 
 def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[str, Any]) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
     problem = str(payload.get("problem", "")).strip().lower()
-    changed_files: List[str] = []
 
-    path = str(payload.get("path", "")).strip()
-    paths = payload.get("paths", [])
-    if not isinstance(paths, list):
-        paths = []
+    resolved_path = str(leader_result.get("resolved_path", "") or "").strip()
+    resolved_paths = normalize_paths(leader_result.get("resolved_paths", []))
+    changed_files: List[str] = []
 
     try:
         if problem in {"missing_init", "missing_init_group", "package_structure"}:
-            for p in paths:
-                p = str(p).strip()
-                if not p:
-                    continue
-                created = ensure_init_file(p)
-                if created:
-                    changed_files.append(created)
+            all_targets = []
 
-            if path:
-                parent = os.path.dirname(path) or "."
-                created = ensure_init_file(parent)
+            if resolved_path:
+                all_targets.append(resolved_path)
+            all_targets.extend(resolved_paths)
+
+            # dedupe while preserving order
+            seen = set()
+            unique_targets = []
+            for t in all_targets:
+                if t not in seen:
+                    seen.add(t)
+                    unique_targets.append(t)
+
+            for target in unique_targets:
+                created = ensure_init_file_from_file_path(target)
                 if created:
                     changed_files.append(created)
 
@@ -137,22 +235,40 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                 "changed_files": [],
             }
 
-        if problem in {"missing_root_readme", "missing_start_here"} and path:
-            if not os.path.exists(path):
-                ok = safe_write_file(path, f"# {os.path.basename(path)}\n\nAuto-created by GitCube builder.\n")
-                if ok:
-                    changed_files.append(path)
-
-        elif path:
-            if not os.path.exists(path):
+        if problem in {"missing_root_readme", "missing_start_here", "python_without_docs"}:
+            target = resolved_path
+            if target and not os.path.exists(target):
                 ok = safe_write_file(
-                    path,
-                    "# Auto-created by GitCube builder\n\n"
-                    "def placeholder():\n"
-                    "    return True\n",
+                    target,
+                    f"# {os.path.basename(target)}\n\nAuto-created by GitCube builder.\n",
                 )
                 if ok:
-                    changed_files.append(path)
+                    changed_files.append(target)
+
+            if changed_files:
+                return {
+                    "ok": True,
+                    "builder": builder,
+                    "reason": "docs_written",
+                    "changed_files": changed_files,
+                }
+
+            return {
+                "ok": False,
+                "builder": builder,
+                "reason": "no_changes",
+                "changed_files": [],
+            }
+
+        if resolved_path and not os.path.exists(resolved_path):
+            ok = safe_write_file(
+                resolved_path,
+                "# Auto-created by GitCube builder\n\n"
+                "def placeholder():\n"
+                "    return True\n",
+            )
+            if ok:
+                changed_files.append(resolved_path)
 
         if changed_files:
             return {
@@ -168,6 +284,7 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
             "reason": "no_changes",
             "changed_files": [],
         }
+
     except Exception as e:
         return {
             "ok": False,
@@ -258,6 +375,7 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     leader_result = run_leader_phase(task, leader)
     builder_result = run_builder_phase(task, builder, leader_result)
     print("BUILDER_RESULT:", builder_result)
+
     stabilizer_result = run_stabilizer_phase(task, stabilizer, builder_result)
     print("STABILIZER_RESULT:", stabilizer_result)
 
@@ -272,13 +390,18 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     )
 
     tank_policy = guard_result.get("tank_policy", {}) if isinstance(guard_result.get("tank_policy"), dict) else {}
+    print("TANK_POLICY:", tank_policy)
+
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
 
     task_id = str(task.get("id"))
     changed_files = builder_result.get("changed_files", [])
     tagged_reason = (
         f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
-        f"party_reason={reason};changed_files={changed_files}"
+        f"party_reason={reason};leader_resolution={leader_result.get('resolution_note')};"
+        f"resolved_path={leader_result.get('resolved_path')};"
+        f"resolved_paths={leader_result.get('resolved_paths')};"
+        f"changed_files={changed_files}"
     )
 
     primary_attempt_ok = bool(builder_result.get("ok")) and bool(stabilizer_result.get("ok"))
@@ -330,9 +453,10 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
         f"\nParty reason: {reason}"
         f"\nScores: {scores}"
         f"\nParty scores: {party_scores}"
-        f"\nPrimary attempt: {primary_attempt_ok}"
+        f"\nLeader result: {leader_result}"
         f"\nBuilder result: {builder_result}"
         f"\nStabilizer result: {stabilizer_result}"
+        f"\nPrimary attempt: {primary_attempt_ok}"
     )
     if tank_policy:
         issue["body"] += f"\n\nTank policy: {tank_policy}"
