@@ -210,16 +210,19 @@ def run_guard_phase(
     guard: str,
     leader: str,
     builder: str,
+    stabilizer: str,
+    cleanup: Optional[str],
     scores: Dict[str, float],
 ) -> Dict[str, Any]:
-    primary_agent = builder
-    support_agent = leader
-
     tank_policy = evaluate_tank_policy(
         task,
-        primary_agent,
-        support_agent,
-        scores,
+        scores=scores,
+        leader=leader,
+        builder=builder,
+        stabilizer=stabilizer,
+        guard=guard,
+        cleanup=cleanup,
+        mode="party",
     )
 
     return {
@@ -263,6 +266,8 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
         guard,
         leader,
         builder,
+        stabilizer,
+        cleanup,
         scores,
     )
 

@@ -552,7 +552,7 @@
     "type": "task",
     "title": "Review Python package structure",
     "origin": "repo_analyzer_v2",
-    "status": "open",
+    "status": "published",
     "kind": "task",
     "intensity": 0.86,
     "novelty": 0.74,
@@ -567,11 +567,14 @@
       "priority": "high"
     },
     "id": "task_26",
-    "published_to_github": false,
-    "github_url": "",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/153",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_26_20260411_064631.md",
+    "updated_at": "2026-04-11T06:46:32.304944+00:00",
+    "execution_reason": "primary=MAGE;support=HEALER;issue"
   },
   {
     "type": "task",
@@ -1393,7 +1396,7 @@
     "type": "task",
     "title": "MAGE: Repair safe package markers",
     "origin": "repo_analyzer_v4",
-    "status": "open",
+    "status": "published",
     "kind": "task",
     "intensity": 0.84,
     "novelty": 0.76,
@@ -1418,9 +1421,11 @@
     "meta_key": "missing_init_group|path|high|repo_analyzer_v4|environments",
     "id": "task_59",
     "created_at": "2026-04-10T15:52:46.308252+00:00",
-    "updated_at": "2026-04-10T15:52:46.308268+00:00",
-    "result_path": "",
-    "execution_reason": ""
+    "updated_at": "2026-04-11T07:09:19.468713+00:00",
+    "result_path": "reports/task_59_20260411_070919.md",
+    "execution_reason": "primary=MAGE;support=HEALER;issue",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/154"
   },
   {
     "type": "task",
@@ -1551,7 +1556,7 @@
     "type": "task",
     "title": "MAGE: Structural expansion seed",
     "origin": "manual_seed",
-    "status": "open",
+    "status": "skipped",
     "kind": "task",
     "intensity": 0.85,
     "novelty": 0.9,
@@ -1576,9 +1581,9 @@
     "meta_key": "manual_mage_seed",
     "id": "task_65",
     "created_at": "2026-04-10T16:21:02.171696+00:00",
-    "updated_at": "2026-04-10T16:21:02.171709+00:00",
-    "result_path": "",
-    "execution_reason": ""
+    "updated_at": "2026-04-11T11:00:50.404942+00:00",
+    "result_path": "reports/task_65_20260411_110050.md",
+    "execution_reason": "primary=MAGE;support=HEALER;no_changes"
   },
   {
     "type": "task",
@@ -1609,7 +1614,7 @@
     "type": "task",
     "title": "MAGE: Structural expansion seed",
     "origin": "manual_seed",
-    "status": "open",
+    "status": "skipped",
     "kind": "task",
     "intensity": 0.85,
     "novelty": 0.9,
@@ -1634,9 +1639,9 @@
     "meta_key": "manual_mage_seed",
     "id": "task_67",
     "created_at": "2026-04-10T16:24:14.635583+00:00",
-    "updated_at": "2026-04-10T16:24:14.635596+00:00",
-    "result_path": "",
-    "execution_reason": ""
+    "updated_at": "2026-04-11T11:16:41.890350+00:00",
+    "result_path": "reports/task_67_20260411_111641.md",
+    "execution_reason": "primary=MAGE;support=HEALER;no_changes"
   },
   {
     "type": "task",
@@ -1958,7 +1963,7 @@
     "type": "task",
     "title": "High priority routing failure / step 335",
     "origin": "manual_test_high",
-    "status": "open",
+    "status": "published",
     "kind": "task",
     "intensity": 0.9,
     "novelty": 0.6,
@@ -1975,14 +1980,17 @@
     ],
     "graph_depth": 4,
     "id": "task_80",
-    "published_to_github": false,
-    "github_url": ""
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/156",
+    "result_path": "reports/task_80.md",
+    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:low_structure,low_law,no_path,party_mode;changed_files=[];publish=tank_force_publish;party_ok",
+    "updated_at": "2026-04-12T04:41:40.909704+00:00"
   },
   {
     "type": "task",
     "title": "MAGE: Repair package structure (forced)",
     "origin": "manual_inject",
-    "status": "open",
+    "status": "published",
     "kind": "task",
     "intensity": 0.9,
     "novelty": 0.8,
@@ -2005,10 +2013,41 @@
       "future": 0.8
     },
     "id": "task_81",
-    "published_to_github": false,
-    "github_url": "",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/155",
     "parent_id": null,
     "related_to": [],
-    "graph_depth": 0
+    "graph_depth": 0,
+    "result_path": "reports/task_81.md",
+    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,high_pressure,low_structure,low_law,party_mode;publish=intensity>=0.8",
+    "updated_at": "2026-04-11T11:26:12.304802+00:00"
+  },
+  {
+    "type": "task",
+    "title": "High priority routing failure / step 349",
+    "origin": "manual_test_high",
+    "status": "published",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.6,
+    "payload": {
+      "title": "High priority routing failure",
+      "origin": "manual_test_high"
+    },
+    "meta_key": "external|task|manual_test_high|manual_test_high|high_priority_routing_failure|no_path",
+    "audit_status": "OK",
+    "audit_reason": "clean",
+    "parent_id": "task_81",
+    "related_to": [
+      "task_81"
+    ],
+    "graph_depth": 1,
+    "id": "task_82",
+    "published_to_github": true,
+    "github_url": "https://github.com/pozdnyavladimer-jpg/gitcube-os/issues/157",
+    "created_at": "2026-04-12T04:51:46.557656+00:00",
+    "updated_at": "2026-04-12T04:51:47.200567+00:00",
+    "result_path": "reports/task_82.md",
+    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:low_structure,low_law,no_path,party_mode;changed_files=[];publish=intensity>=0.8;party_ok"
   }
 ]

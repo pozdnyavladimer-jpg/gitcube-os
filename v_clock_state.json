@@ -1,0 +1,138 @@
+{
+  "task_76": {
+    "alignment": 0.928164,
+    "admission_score": 0.77549,
+    "deferred_energy": 1.042246,
+    "blocked_steps": 0,
+    "active_steps": 5,
+    "structural_triggered": false
+  },
+  "task_46": {
+    "alignment": 0.79957,
+    "admission_score": 0.717264,
+    "deferred_energy": 1.4492475000000002,
+    "blocked_steps": 0,
+    "active_steps": 4,
+    "structural_triggered": false
+  },
+  "task_45": {
+    "alignment": 0.824529,
+    "admission_score": 0.716991,
+    "deferred_energy": 2.70519025,
+    "blocked_steps": 0,
+    "active_steps": 2,
+    "structural_triggered": false
+  },
+  "task_32": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_34": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_35": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_36": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_37": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_38": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_39": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_41": {
+    "alignment": 0.0,
+    "admission_score": 0.285,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_27": {
+    "alignment": 0.0,
+    "admission_score": 0.2705,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_28": {
+    "alignment": 0.0,
+    "admission_score": 0.252,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_22": {
+    "alignment": 0.0,
+    "admission_score": 0.245,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_23": {
+    "alignment": 0.0,
+    "admission_score": 0.245,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_24": {
+    "alignment": 0.0,
+    "admission_score": 0.245,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  },
+  "task_40": {
+    "alignment": 0.0,
+    "admission_score": 0.2405,
+    "deferred_energy": 1.6499999999999997,
+    "blocked_steps": 11,
+    "active_steps": 0,
+    "structural_triggered": false
+  }
+}
