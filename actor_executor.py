@@ -157,9 +157,17 @@ def infer_target_paths(problem: str, path: str, paths: List[str]) -> tuple[Optio
             return os.path.join(p, "__init__.py"), [], "mage_resolved_missing_init"
 
     if paths:
-        first = paths[0]
+        first = str(paths[0]).strip().rstrip("/")
         if first.endswith(".py"):
             return first, [], "mage_resolved_first_path"
+
+        if problem in {"missing_init_group", "missing_init", "package_structure", "empty_directories_group"}:
+            return os.path.join(first, "__init__.py"), [], "mage_resolved_structural_dir"
+
+        if problem in {"structural_orphans_group", "broken_import_group"}:
+            py_candidate = os.path.join(first, "__init__.py")
+            return py_candidate, [], "mage_resolved_topology_target"
+
         return os.path.join(first, "__init__.py"), [], "mage_resolved_first_dir"
 
     if os.path.exists("README.md"):
