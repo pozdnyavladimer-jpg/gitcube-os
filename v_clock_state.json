@@ -2,136 +2,136 @@
   "task_76": {
     "alignment": 0.928164,
     "admission_score": 0.77549,
-    "deferred_energy": 0.292246,
+    "deferred_energy": 0.042246000000000006,
     "blocked_steps": 0,
-    "active_steps": 8,
+    "active_steps": 9,
     "structural_triggered": false
   },
   "task_46": {
     "alignment": 0.79957,
     "admission_score": 0.717264,
-    "deferred_energy": 0.6992475000000002,
+    "deferred_energy": 0.44924750000000024,
     "blocked_steps": 0,
-    "active_steps": 7,
+    "active_steps": 8,
     "structural_triggered": false
   },
   "task_45": {
     "alignment": 0.824529,
     "admission_score": 0.716991,
-    "deferred_energy": 1.9551902499999998,
+    "deferred_energy": 1.7051902499999998,
     "blocked_steps": 0,
-    "active_steps": 5,
+    "active_steps": 6,
     "structural_triggered": false
   },
   "task_32": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_34": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_35": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_36": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_37": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_38": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_39": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_41": {
     "alignment": 0.0,
     "admission_score": 0.285,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_27": {
     "alignment": 0.0,
     "admission_score": 0.2705,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_28": {
     "alignment": 0.0,
     "admission_score": 0.252,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_22": {
     "alignment": 0.0,
     "admission_score": 0.245,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_23": {
     "alignment": 0.0,
     "admission_score": 0.245,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_24": {
     "alignment": 0.0,
     "admission_score": 0.245,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   },
   "task_40": {
     "alignment": 0.0,
     "admission_score": 0.2405,
-    "deferred_energy": 2.0999999999999996,
-    "blocked_steps": 14,
+    "deferred_energy": 2.2499999999999996,
+    "blocked_steps": 15,
     "active_steps": 0,
     "structural_triggered": false
   }
