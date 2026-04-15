@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import os
 import shutil
-from typing import Dict, Any, List
+from pathlib import Path
+from typing import Dict, Any, List, Optional
+
+
+REPO_ROOT = Path(".")
 
 
 def build_prompt(task: Dict[str, Any], original_content: str, path: str) -> str:
@@ -12,9 +16,9 @@ Target file: {path}
 
 Allowed actions:
 - fix obviously broken imports
-- comment out clearly invalid imports
-- keep relative imports intact
 - preserve unrelated code
+- prefer valid in-repo module paths
+- keep relative imports intact
 
 Forbidden actions:
 - delete unrelated logic
@@ -25,6 +29,111 @@ Return only corrected file content.
 """
 
 
+def module_to_py_path(module: str) -> Path:
+    return REPO_ROOT / Path(module.replace(".", "/")).with_suffix(".py")
+
+
+def module_to_package_init(module: str) -> Path:
+    return REPO_ROOT / Path(module.replace(".", "/")) / "__init__.py"
+
+
+def find_repo_module(module: str) -> Optional[str]:
+    module = str(module).strip()
+    if not module:
+        return None
+
+    py_candidate = module_to_py_path(module)
+    if py_candidate.exists():
+        return module
+
+    init_candidate = module_to_package_init(module)
+    if init_candidate.exists():
+        return module
+
+    tail = module.split(".")[-1]
+    matches = []
+
+    for path in REPO_ROOT.rglob("*.py"):
+        if ".venv" in path.parts or "__pycache__" in path.parts:
+            continue
+
+        if path.name == f"{tail}.py":
+            rel = path.relative_to(REPO_ROOT).with_suffix("")
+            matches.append(".".join(rel.parts))
+
+        elif path.name == "__init__.py" and path.parent.name == tail:
+            rel = path.parent.relative_to(REPO_ROOT)
+            matches.append(".".join(rel.parts))
+
+    if len(matches) == 1:
+        return matches[0]
+
+    return None
+
+
+def try_fix_from_import(line: str) -> str:
+    stripped = line.strip()
+
+    if not (stripped.startswith("from ") and " import " in stripped):
+        return line
+
+    parts = stripped.split()
+    if len(parts) < 4:
+        return line
+
+    module = parts[1]
+
+    if module.startswith("."):
+        return line
+
+    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime"}:
+        return line
+
+    if (module.startswith(("app.", "core.", "runtime_experimental.", "bridges."))
+            and (module_to_py_path(module).exists() or module_to_package_init(module).exists())):
+        return line
+
+    repaired = find_repo_module(module)
+    if repaired and repaired != module:
+        return line.replace(f"from {module} import", f"from {repaired} import", 1)
+
+    if repaired == module:
+        return line
+
+    return f"# FIXME broken import: {line}"
+
+
+def try_fix_plain_import(line: str) -> str:
+    stripped = line.strip()
+
+    if not stripped.startswith("import "):
+        return line
+
+    if "," in stripped:
+        return line
+
+    module = stripped.replace("import ", "", 1).strip()
+
+    if not module or module.startswith("."):
+        return line
+
+    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime"}:
+        return line
+
+    if (module.startswith(("app.", "core.", "runtime_experimental.", "bridges."))
+            and (module_to_py_path(module).exists() or module_to_package_init(module).exists())):
+        return line
+
+    repaired = find_repo_module(module)
+    if repaired and repaired != module:
+        return line.replace(f"import {module}", f"import {repaired}", 1)
+
+    if repaired == module:
+        return line
+
+    return f"# FIXME broken import: {line}"
+
+
 def request_fix(prompt: str, original_content: str) -> str:
     lines = original_content.splitlines()
     fixed = []
@@ -32,28 +141,13 @@ def request_fix(prompt: str, original_content: str) -> str:
     for line in lines:
         stripped = line.strip()
 
-        if stripped.startswith("import "):
-            if "." not in stripped and any(
-                bad in stripped for bad in ["app.", "core.", "runtime_experimental.", "bridges."]
-            ):
-                fixed.append(f"# FIXME broken import: {line}")
-                continue
-
         if stripped.startswith("from ") and " import " in stripped:
-            parts = stripped.split()
-            if len(parts) >= 4:
-                module = parts[1]
+            fixed.append(try_fix_from_import(line))
+            continue
 
-                if module.startswith(("app.", "core.", "runtime_experimental.", "bridges.")):
-                    fixed.append(line)
-                    continue
-
-                if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess"}:
-                    fixed.append(line)
-                    continue
-
-                fixed.append(f"# FIXME broken import: {line}")
-                continue
+        if stripped.startswith("import "):
+            fixed.append(try_fix_plain_import(line))
+            continue
 
         fixed.append(line)
 
