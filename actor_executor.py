@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Any, Optional, List
+# FIXME broken import: from typing import Dict, Any, Optional, List
 
 from runtime_experimental.object_store import (
     get_latest_open_task,
@@ -13,7 +13,7 @@ from runtime_experimental.github_bridge import (
     is_github_enabled,
 )
 from runtime_experimental.tank_policy import evaluate_tank_policy
-from router import select_pair, select_party, should_use_party
+# FIXME broken import: from router import select_pair, select_party, should_use_party
 from app.orchestration.task_dispatcher import dispatch_task
 
 
@@ -484,11 +484,12 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
     problem = str(payload.get("problem", "")).strip().lower()
 
-    if problem == "missing_init_group":
+    if problem in {"missing_init_group", "broken_import_group"}:
         dispatch_result = dispatch_task({
             "problem": problem,
             "paths": payload.get("paths", []),
             "priority": payload.get("priority", "high"),
+            "payload": payload,
         })
         print("DISPATCH_RESULT:", dispatch_result)
 
@@ -498,7 +499,8 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
 
         if mesh_ok and exec_ok and valid_ok:
             dispatch_changed = dispatch_result.get("execution", {}).get("changed_files", [])
-            tagged_reason += f";dispatch_changed_files={dispatch_changed};dispatch_mode=structural_mesh"
+            dispatch_route = str(dispatch_result.get("route", "")).strip().lower()
+            tagged_reason += f";dispatch_changed_files={dispatch_changed};dispatch_mode={dispatch_route}"
             mark_task_done(task_id, report_path, tagged_reason + ";party_done_via_dispatch")
             print("=== DONE ===")
             return {
