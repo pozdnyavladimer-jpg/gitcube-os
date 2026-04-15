@@ -9,7 +9,11 @@ import sys
 from runtime_experimental.object_store import get_latest_open_task
 from actor_executor import execute_party, execute_pair
 from router import should_use_party
-from core.memory.task_cooldown import is_task_on_cooldown, touch_task
+from core.memory.task_cooldown import (
+    is_task_on_cooldown,
+    touch_task,
+    set_task_cooldown_from_result,
+)
 
 
 REPORTS_DIR = Path("reports")
@@ -39,10 +43,7 @@ def write_report_header(report_path: str, task: Dict[str, Any]) -> None:
 
 
 def append_report_result(report_path: str, result: Dict[str, Any]) -> None:
-    text = (
-        f"\n## Result\n\n"
-        f"```python\n{result}\n```\n"
-    )
+    text = f"\n## Result\n\n```python\n{result}\n```\n"
     with open(report_path, "a", encoding="utf-8") as f:
         f.write(text)
 
@@ -50,10 +51,7 @@ def append_report_result(report_path: str, result: Dict[str, Any]) -> None:
 def refresh_tasks_from_analyzer() -> Dict[str, Any]:
     analyzer_path = Path("repo_analyzer.py")
     if not analyzer_path.exists():
-        return {
-            "ok": False,
-            "reason": "repo_analyzer_missing",
-        }
+        return {"ok": False, "reason": "repo_analyzer_missing"}
 
     try:
         proc = subprocess.run(
@@ -70,24 +68,19 @@ def refresh_tasks_from_analyzer() -> Dict[str, Any]:
             "stderr_tail": proc.stderr[-2000:],
         }
     except Exception as e:
-        return {
-            "ok": False,
-            "reason": f"analyzer_exception:{e}",
-        }
+        return {"ok": False, "reason": f"analyzer_exception:{e}"}
 
 
-def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
+def run_single_cycle() -> Dict[str, Any]:
     task: Optional[Dict[str, Any]] = get_latest_open_task()
 
     if not task:
-        return {
-            "ok": True,
-            "reason": "no_open_tasks",
-        }
+        return {"ok": True, "reason": "no_open_tasks"}
 
     task_id = str(task.get("id", "task_unknown")).strip()
+    title = str(task.get("title", "")).strip()
 
-    cooldown = is_task_on_cooldown(task_id, cooldown_seconds=cooldown_seconds)
+    cooldown = is_task_on_cooldown(task_id)
     if cooldown.get("on_cooldown", False):
         return {
             "ok": True,
@@ -96,7 +89,10 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
             "cooldown": cooldown,
         }
 
-    touch_task(task_id, meta={"title": task.get("title", "")})
+    touch_task(
+        task_id,
+        meta={"title": title, "state": "started"},
+    )
 
     report_path = make_report_path(task)
     write_report_header(report_path, task)
@@ -108,6 +104,12 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
 
     append_report_result(report_path, result)
 
+    set_task_cooldown_from_result(
+        task_id,
+        result,
+        meta={"title": title, "state": "finished", "report_path": report_path},
+    )
+
     return {
         "ok": True,
         "task_id": task_id,
@@ -116,7 +118,7 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
     }
 
 
-def run_loop(max_cycles: int = 10, refresh_first: bool = True, cooldown_seconds: int = 900) -> Dict[str, Any]:
+def run_loop(max_cycles: int = 10, refresh_first: bool = True) -> Dict[str, Any]:
     completed = []
     analyzer_result: Dict[str, Any] = {"ok": True, "reason": "refresh_skipped"}
 
@@ -124,8 +126,8 @@ def run_loop(max_cycles: int = 10, refresh_first: bool = True, cooldown_seconds:
         analyzer_result = refresh_tasks_from_analyzer()
         print("ANALYZER:", analyzer_result)
 
-    for step in range(max_cycles):
-        result = run_single_cycle(cooldown_seconds=cooldown_seconds)
+    for _ in range(max_cycles):
+        result = run_single_cycle()
         completed.append(result)
 
         if result.get("reason") in {"no_open_tasks", "task_on_cooldown"}:
@@ -140,4 +142,4 @@ def run_loop(max_cycles: int = 10, refresh_first: bool = True, cooldown_seconds:
 
 
 if __name__ == "__main__":
-    print(run_loop(max_cycles=5, refresh_first=True, cooldown_seconds=900))
+    print(run_loop(max_cycles=5, refresh_first=True))
