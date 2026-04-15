@@ -509,6 +509,9 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
                 "published": False,
                 "reason": "party_done_via_dispatch",
             }
+
+        # 🔥 FALLBACK → старий builder
+        print("DISPATCH FAILED → FALLBACK TO BUILDER")
     tagged_reason = (
         f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
         f"party_reason={reason};leader_resolution={leader_result.get('resolution_note')};"
