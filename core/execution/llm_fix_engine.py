@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from difflib import SequenceMatcher
+from typing import Dict, Any, List, Optional, Tuple
 
 
 REPO_ROOT = Path(".")
@@ -37,41 +39,190 @@ def module_to_package_init(module: str) -> Path:
     return REPO_ROOT / Path(module.replace(".", "/")) / "__init__.py"
 
 
-def find_repo_module(module: str) -> Optional[str]:
+def module_exists(module: str) -> bool:
+    return module_to_py_path(module).exists() or module_to_package_init(module).exists()
+
+
+def normalize_token(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", value.lower())
+
+
+def similarity(a: str, b: str) -> float:
+    return SequenceMatcher(None, normalize_token(a), normalize_token(b)).ratio()
+
+
+def path_to_module(path: Path) -> str:
+    if path.name == "__init__.py":
+        rel = path.parent.relative_to(REPO_ROOT)
+    else:
+        rel = path.relative_to(REPO_ROOT).with_suffix("")
+    return ".".join(rel.parts)
+
+
+def list_repo_modules() -> List[str]:
+    modules: List[str] = []
+    for path in REPO_ROOT.rglob("*.py"):
+        if ".venv" in path.parts or "__pycache__" in path.parts or ".git" in path.parts:
+            continue
+        try:
+            modules.append(path_to_module(path))
+        except Exception:
+            continue
+    return sorted(set(modules))
+
+
+def get_file_namespace(path: str) -> List[str]:
+    p = Path(path)
+    parent = p.parent
+    parts = [x for x in parent.parts if x not in {".", ""}]
+    namespaces: List[str] = []
+
+    if parts:
+        for i in range(len(parts), 0, -1):
+            namespaces.append(".".join(parts[:i]))
+
+    return namespaces
+
+
+def extract_neighbor_modules(file_content: str) -> List[str]:
+    found: List[str] = []
+
+    for raw in file_content.splitlines():
+        line = raw.strip()
+        if line.startswith("from ") and " import " in line:
+            parts = line.split()
+            if len(parts) >= 4:
+                mod = parts[1].strip()
+                if mod and not mod.startswith("."):
+                    found.append(mod)
+        elif line.startswith("import "):
+            payload = line.replace("import ", "", 1).strip()
+            if payload and "," not in payload and not payload.startswith("."):
+                found.append(payload)
+
+    return list(dict.fromkeys(found))
+
+
+def exact_or_package_match(module: str) -> Optional[str]:
     module = str(module).strip()
     if not module:
         return None
-
-    py_candidate = module_to_py_path(module)
-    if py_candidate.exists():
+    if module_exists(module):
         return module
+    return None
 
-    init_candidate = module_to_package_init(module)
-    if init_candidate.exists():
-        return module
 
+def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -> List[str]:
     tail = module.split(".")[-1]
-    matches = []
+    candidates: List[str] = []
 
-    for path in REPO_ROOT.rglob("*.py"):
-        if ".venv" in path.parts or "__pycache__" in path.parts:
+    for ns in get_file_namespace(file_path):
+        candidates.append(f"{ns}.{module}")
+        candidates.append(f"{ns}.{tail}")
+
+    for neighbor in neighbor_modules:
+        base = neighbor.rsplit(".", 1)[0] if "." in neighbor else neighbor
+        candidates.append(f"{base}.{tail}")
+        if "." in module:
+            candidates.append(f"{base}.{module}")
+
+    common_roots = [
+        "core",
+        "core.execution",
+        "core.analysis",
+        "core.validation",
+        "core.memory",
+        "core.policy",
+        "core.field",
+        "app",
+        "app.orchestration",
+        "runtime_experimental",
+        "bridges",
+    ]
+
+    for root in common_roots:
+        candidates.append(f"{root}.{tail}")
+        candidates.append(f"{root}.{module}")
+
+    unique: List[str] = []
+    seen = set()
+    for c in candidates:
+        c = c.strip(".")
+        if not c or c in seen:
             continue
+        seen.add(c)
+        unique.append(c)
 
-        if path.name == f"{tail}.py":
-            rel = path.relative_to(REPO_ROOT).with_suffix("")
-            matches.append(".".join(rel.parts))
+    return unique
 
-        elif path.name == "__init__.py" and path.parent.name == tail:
-            rel = path.parent.relative_to(REPO_ROOT)
-            matches.append(".".join(rel.parts))
 
-    if len(matches) == 1:
-        return matches[0]
+def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neighbor_modules: List[str]) -> Optional[str]:
+    tail = module.split(".")[-1]
+    exact_tail_matches = [m for m in repo_modules if m.split(".")[-1] == tail]
+    if len(exact_tail_matches) == 1:
+        return exact_tail_matches[0]
+
+    weighted: List[Tuple[float, str]] = []
+
+    preferred_prefixes = get_file_namespace(file_path)
+    neighbor_prefixes = []
+    for nm in neighbor_modules:
+        if "." in nm:
+            neighbor_prefixes.append(nm.rsplit(".", 1)[0])
+
+    for candidate in repo_modules:
+        score = similarity(module, candidate)
+
+        cand_tail = candidate.split(".")[-1]
+        if cand_tail == tail:
+            score += 0.20
+
+        for pref in preferred_prefixes:
+            if candidate.startswith(pref + "."):
+                score += 0.10
+                break
+
+        for pref in neighbor_prefixes:
+            if candidate.startswith(pref + "."):
+                score += 0.07
+                break
+
+        if candidate.startswith(("core.", "app.", "runtime_experimental.", "bridges.")):
+            score += 0.03
+
+        weighted.append((score, candidate))
+
+    weighted.sort(reverse=True, key=lambda x: x[0])
+    if not weighted:
+        return None
+
+    best_score, best = weighted[0]
+    if best_score >= 0.72:
+        return best
 
     return None
 
 
-def try_fix_from_import(line: str) -> str:
+def find_repo_module(module: str, current_file_path: str = "", file_content: str = "") -> Optional[str]:
+    module = str(module).strip()
+    if not module:
+        return None
+
+    exact = exact_or_package_match(module)
+    if exact:
+        return exact
+
+    neighbor_modules = extract_neighbor_modules(file_content) if file_content else []
+
+    for candidate in orbit_candidates(module, current_file_path, neighbor_modules):
+        if module_exists(candidate):
+            return candidate
+
+    repo_modules = list_repo_modules()
+    return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
+
+
+def try_fix_from_import(line: str, current_file_path: str, file_content: str) -> str:
     stripped = line.strip()
 
     if not (stripped.startswith("from ") and " import " in stripped):
@@ -86,14 +237,13 @@ def try_fix_from_import(line: str) -> str:
     if module.startswith("."):
         return line
 
-    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime"}:
+    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
         return line
 
-    if (module.startswith(("app.", "core.", "runtime_experimental.", "bridges."))
-            and (module_to_py_path(module).exists() or module_to_package_init(module).exists())):
+    if module_exists(module):
         return line
 
-    repaired = find_repo_module(module)
+    repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
         return line.replace(f"from {module} import", f"from {repaired} import", 1)
 
@@ -103,7 +253,7 @@ def try_fix_from_import(line: str) -> str:
     return f"# FIXME broken import: {line}"
 
 
-def try_fix_plain_import(line: str) -> str:
+def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -> str:
     stripped = line.strip()
 
     if not stripped.startswith("import "):
@@ -117,14 +267,13 @@ def try_fix_plain_import(line: str) -> str:
     if not module or module.startswith("."):
         return line
 
-    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime"}:
+    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
         return line
 
-    if (module.startswith(("app.", "core.", "runtime_experimental.", "bridges."))
-            and (module_to_py_path(module).exists() or module_to_package_init(module).exists())):
+    if module_exists(module):
         return line
 
-    repaired = find_repo_module(module)
+    repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
         return line.replace(f"import {module}", f"import {repaired}", 1)
 
@@ -134,7 +283,7 @@ def try_fix_plain_import(line: str) -> str:
     return f"# FIXME broken import: {line}"
 
 
-def request_fix(prompt: str, original_content: str) -> str:
+def request_fix(prompt: str, original_content: str, current_file_path: str) -> str:
     lines = original_content.splitlines()
     fixed = []
 
@@ -142,11 +291,11 @@ def request_fix(prompt: str, original_content: str) -> str:
         stripped = line.strip()
 
         if stripped.startswith("from ") and " import " in stripped:
-            fixed.append(try_fix_from_import(line))
+            fixed.append(try_fix_from_import(line, current_file_path, original_content))
             continue
 
         if stripped.startswith("import "):
-            fixed.append(try_fix_plain_import(line))
+            fixed.append(try_fix_plain_import(line, current_file_path, original_content))
             continue
 
         fixed.append(line)
@@ -203,7 +352,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
         }
 
     prompt = build_prompt(task, original, path)
-    fixed = request_fix(prompt, original)
+    fixed = request_fix(prompt, original, path)
 
     if not isinstance(fixed, str) or not fixed.strip():
         return {
