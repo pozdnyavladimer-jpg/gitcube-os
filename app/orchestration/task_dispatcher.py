@@ -5,7 +5,11 @@ from typing import Dict, Any, List
 from app.orchestration.router_engine import route_task
 from core.field.v_core_self_stabilizing_mesh import stabilize_task_mesh
 from core.execution.structural_fix_engine import execute_structural_fix
-from core.execution.llm_fix_engine import apply_llm_fix_multi
+from core.execution.llm_fix_engine import (
+    apply_llm_fix_multi,
+    rollback_changed_files,
+    finalize_backups,
+)
 from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
 
@@ -29,10 +33,8 @@ def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> 
                 if sp:
                     targets.append(sp)
 
-    # тільки Python файли
     py_targets = [p for p in targets if p.endswith(".py")]
 
-    # dedupe + limit
     out: List[str] = []
     seen = set()
     for p in py_targets:
@@ -103,6 +105,21 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         changed = execution_result.get("changed_files", [])
         validate_targets = changed if changed else target_files
         validation_result = validate_import_targets(validate_targets)
+
+        if execution_result.get("ok", False) and not validation_result.get("ok", False) and changed:
+            rollback_result = rollback_changed_files(changed)
+            return {
+                "route": route,
+                "mesh": mesh_result,
+                "targets": target_files,
+                "execution": execution_result,
+                "validation": validation_result,
+                "rollback": rollback_result,
+                "ok": False,
+            }
+
+        if changed and validation_result.get("ok", False):
+            finalize_backups(changed)
 
         return {
             "route": route,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 from typing import Dict, Any, List
 
 
@@ -62,6 +63,30 @@ def request_fix(prompt: str, original_content: str) -> str:
     return result
 
 
+def make_backup(path: str) -> str:
+    backup_path = f"{path}.bak"
+    shutil.copy2(path, backup_path)
+    return backup_path
+
+
+def restore_backup(path: str, backup_path: str) -> bool:
+    try:
+        if os.path.exists(backup_path):
+            shutil.copy2(backup_path, path)
+            return True
+        return False
+    except Exception:
+        return False
+
+
+def cleanup_backup(backup_path: str) -> None:
+    try:
+        if os.path.exists(backup_path):
+            os.remove(backup_path)
+    except Exception:
+        pass
+
+
 def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
     path = str(path).strip()
     if not path or not os.path.exists(path):
@@ -69,6 +94,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "ok": False,
             "reason": "target_file_missing",
             "changed_files": [],
+            "backup_files": [],
         }
 
     try:
@@ -79,6 +105,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "ok": False,
             "reason": f"read_failed:{e}",
             "changed_files": [],
+            "backup_files": [],
         }
 
     prompt = build_prompt(task, original, path)
@@ -89,6 +116,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "ok": False,
             "reason": "llm_empty_result",
             "changed_files": [],
+            "backup_files": [],
         }
 
     if fixed == original:
@@ -96,9 +124,11 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "ok": True,
             "reason": "llm_no_change",
             "changed_files": [],
+            "backup_files": [],
         }
 
     try:
+        backup_path = make_backup(path)
         with open(path, "w", encoding="utf-8") as f:
             f.write(fixed)
     except Exception as e:
@@ -106,12 +136,14 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "ok": False,
             "reason": f"write_failed:{e}",
             "changed_files": [],
+            "backup_files": [],
         }
 
     return {
         "ok": True,
         "reason": "llm_fix_applied",
         "changed_files": [path],
+        "backup_files": [backup_path],
     }
 
 
@@ -131,10 +163,12 @@ def apply_llm_fix_multi(task: Dict[str, Any], paths: List[str]) -> Dict[str, Any
             "ok": False,
             "reason": "no_targets",
             "changed_files": [],
+            "backup_files": [],
             "results": [],
         }
 
     changed_files: List[str] = []
+    backup_files: List[str] = []
     results: List[Dict[str, Any]] = []
     any_ok = False
 
@@ -149,9 +183,38 @@ def apply_llm_fix_multi(task: Dict[str, Any], paths: List[str]) -> Dict[str, Any
             if changed not in changed_files:
                 changed_files.append(changed)
 
+        for backup in result.get("backup_files", []):
+            if backup not in backup_files:
+                backup_files.append(backup)
+
     return {
         "ok": any_ok,
         "reason": "llm_multi_fix_applied" if any_ok else "llm_multi_fix_failed",
         "changed_files": changed_files,
+        "backup_files": backup_files,
         "results": results,
     }
+
+
+def rollback_changed_files(changed_files: List[str]) -> Dict[str, Any]:
+    restored = []
+    failed = []
+
+    for path in changed_files:
+        backup_path = f"{path}.bak"
+        ok = restore_backup(path, backup_path)
+        if ok:
+            restored.append(path)
+        else:
+            failed.append(path)
+
+    return {
+        "ok": len(failed) == 0,
+        "restored": restored,
+        "failed": failed,
+    }
+
+
+def finalize_backups(changed_files: List[str]) -> None:
+    for path in changed_files:
+        cleanup_backup(f"{path}.bak")
