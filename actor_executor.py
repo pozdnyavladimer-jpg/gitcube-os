@@ -1,5 +1,5 @@
 import os
-# FIXME broken import: from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Optional, List
 
 from runtime_experimental.object_store import (
     get_latest_open_task,
@@ -13,7 +13,8 @@ from runtime_experimental.github_bridge import (
     is_github_enabled,
 )
 from runtime_experimental.tank_policy import evaluate_tank_policy
-# FIXME broken import: from router import select_pair, select_party, should_use_party
+from router import select_pair, select_party, should_use_party
+
 from app.orchestration.task_dispatcher import dispatch_task
 
 
