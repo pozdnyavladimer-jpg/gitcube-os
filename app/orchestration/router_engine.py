@@ -4,15 +4,38 @@ from typing import Dict, Any
 
 
 def route_task(task: Dict[str, Any]) -> str:
-    problem = str(task.get("problem", "")).strip().lower()
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
 
-    if problem in {"missing_init_group"}:
+    structural_mesh_problems = {
+        "missing_init_group",
+        "missing_init",
+        "package_structure",
+        "structural_orphans_group",
+        "missing_module_group",
+        "broken_module_group",
+    }
+
+    import_llm_mesh_problems = {
+        "broken_import_group",
+    }
+
+    if problem in structural_mesh_problems:
         return "STRUCTURAL_MESH"
 
-    if problem in {"broken_import_group"}:
+    if problem in import_llm_mesh_problems:
         return "IMPORT_LLM_MESH"
 
-    if problem in {"structural_orphans_group"}:
-        return "LLM_OR_COMPLEX"
+    return "ROUTE_NOT_IMPLEMENTED"
 
-    return "DEFAULT"
+
+if __name__ == "__main__":
+    demos = [
+        {"problem": "missing_init_group"},
+        {"problem": "structural_orphans_group"},
+        {"problem": "broken_import_group"},
+        {"problem": "unknown_problem"},
+    ]
+
+    for item in demos:
+        print(item["problem"], "->", route_task(item))
