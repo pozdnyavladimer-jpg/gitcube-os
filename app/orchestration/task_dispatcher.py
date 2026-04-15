@@ -52,15 +52,8 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
-            "execution": {
-                "ok": False,
-                "reason": "blocked_low_stabilization_score",
-                "changed_files": [],
-            },
-            "validation": {
-                "ok": False,
-                "errors": [f"blocked_low_stabilization_score:{score}"],
-            },
+            "execution": {"ok": False, "reason": "blocked_low_stabilization_score"},
+            "validation": {"ok": False},
             "ok": False,
         }
 
@@ -69,15 +62,8 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
-            "execution": {
-                "ok": False,
-                "reason": "no_python_targets",
-                "changed_files": [],
-            },
-            "validation": {
-                "ok": False,
-                "errors": ["no_python_targets"],
-            },
+            "execution": {"ok": False, "reason": "no_python_targets"},
+            "validation": {"ok": False},
             "ok": False,
         }
 
@@ -131,9 +117,16 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
             and validation_result.get("ok", False),
         }
 
+        # 🔥 ВАЖЛИВИЙ ФІКС
         changed_files = execution_result.get("changed_files", [])
         py_files = [p for p in changed_files if str(p).endswith(".py")]
 
+        if not py_files:
+            recommended = mesh_result.get("recommended_targets", [])
+            if isinstance(recommended, list):
+                py_files = [p for p in recommended if str(p).endswith(".py")]
+
+        # 🔗 chaining
         if result["ok"] and py_files:
             import_task = {
                 **task,
