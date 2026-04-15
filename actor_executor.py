@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Any, Optional, List, Optional, List
+from typing import Dict, Any, Optional, List
 
 from runtime_experimental.object_store import (
     get_latest_open_task,
@@ -14,7 +14,6 @@ from runtime_experimental.github_bridge import (
 )
 from runtime_experimental.tank_policy import evaluate_tank_policy
 from router import select_pair, select_party, should_use_party
-
 from app.orchestration.task_dispatcher import dispatch_task
 
 
@@ -249,7 +248,6 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
     try:
         if problem in {"missing_init", "missing_init_group", "package_structure"}:
             all_targets = []
-
             if resolved_path:
                 all_targets.append(resolved_path)
             all_targets.extend(resolved_paths)
@@ -274,7 +272,6 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                     "changed_files": changed_files,
                 }
 
-            # 🔥 SUCCESS IF ALREADY EXISTS
             if resolved_path or resolved_paths:
                 return {
                     "ok": True,
@@ -334,12 +331,6 @@ def run_builder_phase(task: Dict[str, Any], builder: str, leader_result: Dict[st
                         "def placeholder():\n"
                         "    return True\n",
                     )
-                ok = safe_write_file(
-                    resolved_path,
-                    "# Auto-created by GitCube builder\n\n"
-                    "def placeholder():\n"
-                    "    return True\n",
-                )
                 if ok:
                     changed_files.append(resolved_path)
             elif os.path.basename(resolved_path).lower() in {"readme.md", "start_here.md"}:
@@ -485,6 +476,14 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
     problem = str(payload.get("problem", "")).strip().lower()
 
+    tagged_reason = (
+        f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
+        f"party_reason={reason};leader_resolution={leader_result.get('resolution_note')};"
+        f"resolved_path={leader_result.get('resolved_path')};"
+        f"resolved_paths={leader_result.get('resolved_paths')};"
+        f"changed_files={changed_files}"
+    )
+
     if problem in {"missing_init_group", "broken_import_group"}:
         dispatch_result = dispatch_task({
             "problem": problem,
@@ -511,15 +510,7 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
                 "reason": "party_done_via_dispatch",
             }
 
-        # 🔥 FALLBACK → старий builder
-        print("DISPATCH FAILED → FALLBACK TO BUILDER")
-    tagged_reason = (
-        f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
-        f"party_reason={reason};leader_resolution={leader_result.get('resolution_note')};"
-        f"resolved_path={leader_result.get('resolved_path')};"
-        f"resolved_paths={leader_result.get('resolved_paths')};"
-        f"changed_files={changed_files}"
-    )
+        print("DISPATCH FAILED -> FALLBACK TO BUILDER")
 
     primary_attempt_ok = bool(builder_result.get("ok")) and bool(stabilizer_result.get("ok"))
     primary_reason = str(builder_result.get("reason", "")) if not primary_attempt_ok else "party_ok"
@@ -618,6 +609,7 @@ def execute_pair(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
     print("TANK_POLICY:", tank_policy)
 
     allow_publish, publish_reason = should_publish_to_github(task, tank_policy)
+
     task_id = str(task.get("id"))
     tagged_reason = f"primary={primary_agent};support={support_agent};pair_reason={reason}"
 
@@ -649,15 +641,6 @@ def execute_pair(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
         }
 
     issue = build_issue_from_task(task, "PAIR_EXECUTION", report_path)
-    issue["body"] += (
-        f"\n\nPrimary agent: {primary_agent}"
-        f"\nSupport agent: {support_agent}"
-        f"\nPair reason: {reason}"
-        f"\nScores: {scores}"
-    )
-    if tank_policy:
-        issue["body"] += f"\n\nTank policy: {tank_policy}"
-
     result = create_issue(issue["title"], issue["body"])
 
     if result.get("ok"):
@@ -693,7 +676,9 @@ def main():
         return
 
     print("ACTION:", task.get("title", "UNKNOWN"))
-    print("TARGET PATH:", task.get("payload", {}).get("path") if isinstance(task.get("payload"), dict) else None)
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    print("TARGET_PATH:", payload.get("path", ""))
 
     report_path = f"reports/{str(task.get('id', 'task_unknown'))}.md"
 
