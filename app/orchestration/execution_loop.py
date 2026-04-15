@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Dict, Optional
+import subprocess
+import sys
 
 from runtime_experimental.object_store import get_latest_open_task
 from actor_executor import execute_party, execute_pair
@@ -15,7 +17,7 @@ REPORTS_DIR.mkdir(exist_ok=True)
 
 def make_report_path(task: Dict[str, Any]) -> str:
     task_id = str(task.get("id", "task_unknown")).strip()
-    ts = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     return str(REPORTS_DIR / f"{task_id}_{ts}.md")
 
 
@@ -28,7 +30,7 @@ def write_report_header(report_path: str, task: Dict[str, Any]) -> None:
         f"# GitCube Execution Report\n\n"
         f"- task_id: {task_id}\n"
         f"- title: {title}\n"
-        f"- generated_at_utc: {datetime.utcnow().isoformat()}Z\n\n"
+        f"- generated_at_utc: {datetime.now(UTC).isoformat()}Z\n\n"
         f"## Payload\n\n"
         f"```python\n{payload}\n```\n"
     )
@@ -42,6 +44,35 @@ def append_report_result(report_path: str, result: Dict[str, Any]) -> None:
     )
     with open(report_path, "a", encoding="utf-8") as f:
         f.write(text)
+
+
+def refresh_tasks_from_analyzer() -> Dict[str, Any]:
+    analyzer_path = Path("repo_analyzer.py")
+    if not analyzer_path.exists():
+        return {
+            "ok": False,
+            "reason": "repo_analyzer_missing",
+        }
+
+    try:
+        proc = subprocess.run(
+            [sys.executable, "repo_analyzer.py"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        return {
+            "ok": proc.returncode == 0,
+            "reason": "analyzer_run_complete" if proc.returncode == 0 else "analyzer_run_failed",
+            "returncode": proc.returncode,
+            "stdout_tail": proc.stdout[-2000:],
+            "stderr_tail": proc.stderr[-2000:],
+        }
+    except Exception as e:
+        return {
+            "ok": False,
+            "reason": f"analyzer_exception:{e}",
+        }
 
 
 def run_single_cycle() -> Dict[str, Any]:
@@ -71,8 +102,13 @@ def run_single_cycle() -> Dict[str, Any]:
     }
 
 
-def run_loop(max_cycles: int = 10) -> Dict[str, Any]:
+def run_loop(max_cycles: int = 10, refresh_first: bool = True) -> Dict[str, Any]:
     completed = []
+    analyzer_result: Dict[str, Any] = {"ok": True, "reason": "refresh_skipped"}
+
+    if refresh_first:
+        analyzer_result = refresh_tasks_from_analyzer()
+        print("ANALYZER_REFRESH:", analyzer_result)
 
     for step in range(max_cycles):
         result = run_single_cycle()
@@ -83,10 +119,11 @@ def run_loop(max_cycles: int = 10) -> Dict[str, Any]:
 
     return {
         "ok": True,
+        "analyzer": analyzer_result,
         "cycles": len(completed),
         "results": completed,
     }
 
 
 if __name__ == "__main__":
-    print(run_loop(max_cycles=5))
+    print(run_loop(max_cycles=5, refresh_first=True))
