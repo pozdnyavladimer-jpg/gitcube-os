@@ -1,18 +1,18 @@
 {
   "flower": {
-    "pressure": 0.042,
-    "flow": 0.143,
-    "structure": 0.295,
-    "balance": 0.155,
-    "law": 0.097,
-    "future": 0.268
+    "pressure": 0.059,
+    "flow": 0.142,
+    "structure": 0.299,
+    "balance": 0.149,
+    "law": 0.099,
+    "future": 0.252
   },
   "meta": {
-    "step": 355,
+    "step": 369,
     "phase": "DAY",
     "mode": "flow_boost",
     "vitality": 1.0,
-    "updated_at": "2026-04-12T05:50:22.050307Z",
+    "updated_at": "2026-04-12T11:14:22.702153Z",
     "updated_by": "CORE",
     "class_history": [
       "TANK",
@@ -63,7 +63,7 @@
     "structure_floor": 0.343,
     "law_floor": 0.113,
     "external_signal_kind": "task",
-    "object_count": 89,
+    "object_count": 101,
     "v_clock": {
       "tick_at": 1775971022,
       "focus_limit": 3,
@@ -211,6 +211,6 @@
     "explorer_pressure_delta": 0.045,
     "explorer_future_delta": 0.036,
     "open_task_count": 19,
-    "latest_task_id": "task_89"
+    "latest_task_id": "task_101"
   }
 }
