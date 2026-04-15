@@ -124,7 +124,16 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         if not py_files:
             recommended = mesh_result.get("recommended_targets", [])
             if isinstance(recommended, list):
-                py_files = [p for p in recommended if str(p).endswith(".py")]
+                converted = []
+                for item in recommended:
+                    sp = str(item).strip()
+                    if not sp:
+                        continue
+                    if sp.endswith(".py"):
+                        converted.append(sp)
+                    else:
+                        converted.append(sp.replace(".", "/") + ".py")
+                py_files = converted
 
         # 🔗 chaining
         if result["ok"] and py_files:
