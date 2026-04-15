@@ -729,7 +729,7 @@ def analyze_repo(root: str = "."):
     # =========================
     # TOPOLOGY LAYER v2.1
     # =========================
-    from collections import defaultdict
+# FIXME broken import:     from collections import defaultdict
 
     graph_out = defaultdict(set)
     graph_in = defaultdict(set)

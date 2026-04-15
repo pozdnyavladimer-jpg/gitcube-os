@@ -13,7 +13,7 @@ from runtime_experimental.github_bridge import (
     is_github_enabled,
 )
 from runtime_experimental.tank_policy import evaluate_tank_policy
-from router import select_pair, select_party, should_use_party
+# FIXME broken import: from router import select_pair, select_party, should_use_party
 from app.orchestration.task_dispatcher import dispatch_task
 
 
