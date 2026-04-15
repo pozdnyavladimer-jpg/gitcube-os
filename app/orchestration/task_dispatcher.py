@@ -12,6 +12,10 @@ from core.execution.llm_fix_engine import (
 )
 from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
+from core.memory.target_memory import (
+    filter_targets_on_cooldown,
+    touch_targets,
+)
 
 
 def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> List[str]:
@@ -67,17 +71,34 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "ok": False,
         }
 
-    execution_result = apply_llm_fix_multi(task, target_files)
-    changed = execution_result.get("changed_files", [])
-    validate_targets = changed if changed else target_files
-    validation_result = validate_import_targets(validate_targets)
+    cooldown_filter = filter_targets_on_cooldown(target_files)
+    allowed_targets = cooldown_filter.get("allowed", [])
+    blocked_targets = cooldown_filter.get("blocked", [])
 
-    if execution_result.get("ok", False) and not validation_result.get("ok", False) and changed:
-        rollback_result = rollback_changed_files(changed)
+    if not allowed_targets:
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
             "targets": target_files,
+            "blocked_targets": blocked_targets,
+            "execution": {"ok": False, "reason": "all_targets_on_cooldown"},
+            "validation": {"ok": False},
+            "ok": False,
+        }
+
+    execution_result = apply_llm_fix_multi(task, allowed_targets)
+    changed = execution_result.get("changed_files", [])
+    validate_targets = changed if changed else allowed_targets
+    validation_result = validate_import_targets(validate_targets)
+
+    if execution_result.get("ok", False) and not validation_result.get("ok", False) and changed:
+        rollback_result = rollback_changed_files(changed)
+        touch_targets(allowed_targets, reason="import_validation_failed", cooldown_seconds=300)
+        return {
+            "route": "IMPORT_LLM_MESH",
+            "mesh": mesh_result,
+            "targets": allowed_targets,
+            "blocked_targets": blocked_targets,
             "execution": execution_result,
             "validation": validation_result,
             "rollback": rollback_result,
@@ -86,11 +107,15 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
     if changed and validation_result.get("ok", False):
         finalize_backups(changed)
+        touch_targets(allowed_targets, reason="import_fix_success", cooldown_seconds=1800)
+    else:
+        touch_targets(allowed_targets, reason="import_no_change", cooldown_seconds=600)
 
     return {
         "route": "IMPORT_LLM_MESH",
         "mesh": mesh_result,
-        "targets": target_files,
+        "targets": allowed_targets,
+        "blocked_targets": blocked_targets,
         "execution": execution_result,
         "validation": validation_result,
         "ok": mesh_result.get("ok", False)
@@ -117,7 +142,6 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
             and validation_result.get("ok", False),
         }
 
-        # 🔥 ВАЖЛИВИЙ ФІКС
         changed_files = execution_result.get("changed_files", [])
         py_files = [p for p in changed_files if str(p).endswith(".py")]
 
@@ -135,7 +159,6 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
                         converted.append(sp.replace(".", "/") + ".py")
                 py_files = converted
 
-        # 🔗 chaining
         if result["ok"] and py_files:
             import_task = {
                 **task,
