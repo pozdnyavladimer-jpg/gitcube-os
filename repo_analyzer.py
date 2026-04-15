@@ -1,3 +1,4 @@
+from collections import defaultdict
 import ast
 import os
 from typing import Dict, List, Set, Tuple
