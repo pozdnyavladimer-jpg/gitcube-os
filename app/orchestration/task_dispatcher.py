@@ -30,15 +30,16 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
     if route == "IMPORT_LLM_MESH":
         mesh_result = stabilize_task_mesh(task)
+        recommended = mesh_result.get("recommended_targets", [])
 
-        paths = task.get("paths", [])
         target_file = ""
-        if isinstance(paths, list):
-            for p in paths:
-                s = str(p).strip()
-                if s.endswith(".py"):
-                    target_file = s
-                    break
+        if recommended:
+            target_file = str(recommended[0]).strip()
+        else:
+            payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+            paths = payload.get("paths", [])
+            if isinstance(paths, list) and paths:
+                target_file = str(paths[0]).strip()
 
         if not target_file:
             return {
@@ -73,8 +74,12 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     demo_task = {
-        "problem": "missing_init_group",
-        "paths": ["core", "tests", "runtime_experimental"],
+        "problem": "broken_import_group",
+        "paths": ["actor_executor.py"],
         "priority": "high",
+        "payload": {
+            "problem": "broken_import_group",
+            "paths": ["actor_executor.py"],
+        },
     }
     print(dispatch_task(demo_task))

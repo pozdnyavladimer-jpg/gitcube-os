@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, Any, List
 import py_compile
+from typing import List, Dict, Any
 
 
 def validate_import_targets(paths: List[str]) -> Dict[str, Any]:
-    errors: List[str] = []
+    errors = []
 
     for path in paths:
-        path = str(path).strip()
-        if not path.endswith(".py"):
-            continue
         try:
             py_compile.compile(path, doraise=True)
         except Exception as e:
