@@ -14,6 +14,7 @@ from runtime_experimental.github_bridge import (
 )
 from runtime_experimental.tank_policy import evaluate_tank_policy
 from router import select_pair, select_party, should_use_party
+from app.orchestration.task_dispatcher import dispatch_task
 
 
 def build_issue_from_task(task: Dict[str, Any], action: str, report_path: str) -> Dict[str, str]:
@@ -479,6 +480,33 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
 
     task_id = str(task.get("id"))
     changed_files = builder_result.get("changed_files", [])
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", "")).strip().lower()
+
+    if problem == "missing_init_group":
+        dispatch_result = dispatch_task({
+            "problem": problem,
+            "paths": payload.get("paths", []),
+            "priority": payload.get("priority", "high"),
+        })
+        print("DISPATCH_RESULT:", dispatch_result)
+
+        mesh_ok = bool(dispatch_result.get("mesh", {}).get("ok", False))
+        exec_ok = bool(dispatch_result.get("execution", {}).get("ok", False))
+        valid_ok = bool(dispatch_result.get("validation", {}).get("ok", False))
+
+        if mesh_ok and exec_ok and valid_ok:
+            dispatch_changed = dispatch_result.get("execution", {}).get("changed_files", [])
+            tagged_reason += f";dispatch_changed_files={dispatch_changed};dispatch_mode=structural_mesh"
+            mark_task_done(task_id, report_path, tagged_reason + ";party_done_via_dispatch")
+            print("=== DONE ===")
+            return {
+                "mode": "party",
+                "ok": True,
+                "published": False,
+                "reason": "party_done_via_dispatch",
+            }
     tagged_reason = (
         f"leader={leader};builder={builder};stabilizer={stabilizer};guard={guard};"
         f"party_reason={reason};leader_resolution={leader_result.get('resolution_note')};"
