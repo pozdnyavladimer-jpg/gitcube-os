@@ -1,13 +1,47 @@
 from __future__ import annotations
 
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.orchestration.router_engine import route_task
 from core.field.v_core_self_stabilizing_mesh import stabilize_task_mesh
 from core.execution.structural_fix_engine import execute_structural_fix
-from core.execution.llm_fix_engine import apply_llm_fix
+from core.execution.llm_fix_engine import apply_llm_fix_multi
 from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
+
+
+def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> List[str]:
+    recommended = mesh_result.get("recommended_targets", [])
+    targets: List[str] = []
+
+    if isinstance(recommended, list):
+        for p in recommended:
+            sp = str(p).strip()
+            if sp:
+                targets.append(sp)
+
+    if not targets:
+        payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+        paths = payload.get("paths", [])
+        if isinstance(paths, list):
+            for p in paths:
+                sp = str(p).strip()
+                if sp:
+                    targets.append(sp)
+
+    # тільки Python файли
+    py_targets = [p for p in targets if p.endswith(".py")]
+
+    # dedupe + limit
+    out: List[str] = []
+    seen = set()
+    for p in py_targets:
+        if p in seen:
+            continue
+        seen.add(p)
+        out.append(p)
+
+    return out[:3]
 
 
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
@@ -30,34 +64,50 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
     if route == "IMPORT_LLM_MESH":
         mesh_result = stabilize_task_mesh(task)
-        recommended = mesh_result.get("recommended_targets", [])
 
-        target_file = ""
-        if recommended:
-            target_file = str(recommended[0]).strip()
-        else:
-            payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
-            paths = payload.get("paths", [])
-            if isinstance(paths, list) and paths:
-                target_file = str(paths[0]).strip()
-
-        if not target_file:
+        score = float(mesh_result.get("stabilization_score", 0.0) or 0.0)
+        if score < 0.6:
             return {
                 "route": route,
                 "mesh": mesh_result,
-                "execution": {"ok": False, "reason": "no_python_target", "changed_files": []},
-                "validation": {"ok": False, "errors": ["no_python_target"]},
+                "execution": {
+                    "ok": False,
+                    "reason": "blocked_low_stabilization_score",
+                    "changed_files": [],
+                },
+                "validation": {
+                    "ok": False,
+                    "errors": [f"blocked_low_stabilization_score:{score}"],
+                },
                 "ok": False,
             }
 
-        execution_result = apply_llm_fix(task, target_file)
+        target_files = _pick_cluster_targets(task, mesh_result)
+        if not target_files:
+            return {
+                "route": route,
+                "mesh": mesh_result,
+                "execution": {
+                    "ok": False,
+                    "reason": "no_python_targets",
+                    "changed_files": [],
+                },
+                "validation": {
+                    "ok": False,
+                    "errors": ["no_python_targets"],
+                },
+                "ok": False,
+            }
+
+        execution_result = apply_llm_fix_multi(task, target_files)
         changed = execution_result.get("changed_files", [])
-        validate_targets = changed if changed else [target_file]
+        validate_targets = changed if changed else target_files
         validation_result = validate_import_targets(validate_targets)
 
         return {
             "route": route,
             "mesh": mesh_result,
+            "targets": target_files,
             "execution": execution_result,
             "validation": validation_result,
             "ok": mesh_result.get("ok", False)

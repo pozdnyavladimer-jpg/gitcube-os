@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 
 def build_prompt(task: Dict[str, Any], original_content: str, path: str) -> str:
@@ -33,7 +33,7 @@ def request_fix(prompt: str, original_content: str) -> str:
 
         if stripped.startswith("import "):
             if "." not in stripped and any(
-                bad in stripped for bad in ["app.", "core.", "runtime_experimental."]
+                bad in stripped for bad in ["app.", "core.", "runtime_experimental.", "bridges."]
             ):
                 fixed.append(f"# FIXME broken import: {line}")
                 continue
@@ -112,4 +112,46 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
         "ok": True,
         "reason": "llm_fix_applied",
         "changed_files": [path],
+    }
+
+
+def apply_llm_fix_multi(task: Dict[str, Any], paths: List[str]) -> Dict[str, Any]:
+    unique_paths: List[str] = []
+    seen = set()
+
+    for p in paths:
+        sp = str(p).strip()
+        if not sp or sp in seen:
+            continue
+        seen.add(sp)
+        unique_paths.append(sp)
+
+    if not unique_paths:
+        return {
+            "ok": False,
+            "reason": "no_targets",
+            "changed_files": [],
+            "results": [],
+        }
+
+    changed_files: List[str] = []
+    results: List[Dict[str, Any]] = []
+    any_ok = False
+
+    for path in unique_paths[:3]:
+        result = apply_llm_fix(task, path)
+        results.append({"path": path, **result})
+
+        if result.get("ok"):
+            any_ok = True
+
+        for changed in result.get("changed_files", []):
+            if changed not in changed_files:
+                changed_files.append(changed)
+
+    return {
+        "ok": any_ok,
+        "reason": "llm_multi_fix_applied" if any_ok else "llm_multi_fix_failed",
+        "changed_files": changed_files,
+        "results": results,
     }
