@@ -1,5 +1,5 @@
 from collections import defaultdict
-# FIXME broken import: import ast
+import ast
 import os
 from typing import Dict, List, Set, Tuple
 
@@ -47,6 +47,20 @@ META_PROBLEMS = {
     "routing_failure",
     "no_target_path",
     "global_block",
+}
+
+LIVE_EMIT_PROBLEMS = {
+    "missing_init_group",
+    "package_structure",
+    "broken_import_group",
+    "structural_orphans_group",
+    "missing_root_readme",
+    "missing_start_here",
+    "empty_directories_group",
+    "todo_group",
+    "debug_prints_group",
+    "pass_blocks_group",
+    "bare_except_group",
 }
 
 
@@ -171,22 +185,32 @@ def add_task_if_new(
     meta_key = build_meta_key(payload, "repo_analyzer_v7")
     problem = str(payload.get("problem", "")).strip().lower()
 
-    if key in titles_cache:
-        return False, "duplicate_title"
+    force_emit = problem in LIVE_EMIT_PROBLEMS
+    emit_key = f"{key}::{meta_key}"
 
-    if meta_key in meta_keys_cache:
+    if (key in titles_cache or meta_key in meta_keys_cache) and not force_emit:
+        if key in titles_cache:
+            return False, "duplicate_title"
         return False, "duplicate_meta_key_local"
 
     if is_github_enabled():
         existing_issue = find_open_issue_by_meta_key(meta_key)
         issue_exists = bool(existing_issue)
 
-        if should_absorb(problem, payload, issue_exists):
+        if should_absorb(problem, payload, issue_exists) and not force_emit:
             return False, f"absorbed_by_issue:{existing_issue.get('url', '')}"
 
-    add_object(make_task(title, payload, intensity, novelty, resonance_vector))
+    task_obj = make_task(title, payload, intensity, novelty, resonance_vector)
+
+    if force_emit:
+        task_obj["origin"] = "repo_analyzer_live_field"
+        task_obj["meta_key"] = normalize_meta_key(f"{meta_key}|emit")
+        task_obj["live_emit"] = True
+
+    add_object(task_obj)
     titles_cache.add(key)
     meta_keys_cache.add(meta_key)
+    meta_keys_cache.add(emit_key)
     return True, "created"
 
 
