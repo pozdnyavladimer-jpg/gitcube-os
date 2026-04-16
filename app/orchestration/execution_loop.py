@@ -3,9 +3,7 @@ from __future__ import annotations
 from datetime import datetime, UTC
 from typing import Dict, Any, Optional
 
-from runtime_experimental.object_store import (
-    get_latest_open_task,
-)
+from runtime_experimental.object_store import get_latest_open_task
 from actor_executor import execute_party, execute_pair
 from router import should_use_party
 from repo_analyzer import refresh_tasks_from_analyzer
@@ -21,7 +19,7 @@ def make_report_path(task: Dict[str, Any]) -> str:
 
 def write_report_header(report_path: str, task: Dict[str, Any]) -> None:
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(f"# Task Report\n\n")
+        f.write("# Task Report\n\n")
         f.write(f"- task_id: {task.get('id', 'task_unknown')}\n")
         f.write(f"- title: {task.get('title', '')}\n")
         f.write(f"- payload: {task.get('payload', {})}\n")
@@ -45,13 +43,16 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
 
     task_id = str(task.get("id", "task_unknown"))
 
-    if is_task_on_cooldown(task_id):
+    cooldown_view = is_task_on_cooldown(task_id)
+    if cooldown_view.get("on_cooldown", False):
         return {
             "ok": True,
             "reason": "task_on_cooldown",
             "task_id": task_id,
+            "cooldown": cooldown_view,
         }
 
+    touch_task(task_id, meta={"title": task.get("title", "")}, cooldown_seconds=cooldown_seconds)
 
     report_path = make_report_path(task)
     write_report_header(report_path, task)
@@ -62,7 +63,6 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
         result = execute_pair(task, report_path)
 
     append_report_result(report_path, result)
-    touch_task(task_id, cooldown_seconds=cooldown_seconds)
 
     return {
         "ok": True,
@@ -84,7 +84,7 @@ def run_loop(max_cycles: int = 10, refresh_first: bool = True, cooldown_seconds:
         result = run_single_cycle(cooldown_seconds=cooldown_seconds)
         completed.append(result)
 
-        if result.get("reason") in {"no_open_tasks", "task_on_cooldown"}:
+        if result.get("reason") == "no_open_tasks":
             break
 
     decay_result = apply_decay()

@@ -1,10 +1,4 @@
-import os
-import time
+from app.orchestration.execution_loop import run_loop
 
-STEPS = 5
-
-for i in range(STEPS):
-    os.system("PYTHONPATH=. python runtime_experimental/os_sync.py")
-    os.system("python actor_executor.py")
-    time.sleep(2)
-
+if __name__ == "__main__":
+    print(run_loop(max_cycles=5, refresh_first=True, cooldown_seconds=900))
