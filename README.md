@@ -1,6 +1,6 @@
-🚀 GitCube OS — Autonomous Code Intelligence System
+🚀 GitCube OS — Autonomous Code Intelligence Core
 
-System that analyzes, understands, and restructures codebases automatically.
+Self-organizing system that analyzes, restructures, and evolves codebases.
 
 ---
 
@@ -8,7 +8,7 @@ System that analyzes, understands, and restructures codebases automatically.
 
 ./run.sh
 
-Then check system state:
+Check system state:
 
 python status.py
 
@@ -16,17 +16,17 @@ python status.py
 
 🧠 What is this?
 
-GitCube OS is an experimental autonomous system that:
+GitCube OS is an autonomous system that:
 
 - scans your repository
-- detects structural and logical issues
-- groups problems into meaningful tasks
-- prioritizes them
-- routes them between agents
-- optionally publishes them to GitHub Issues
+- detects structural and logical problems
+- groups them into high-level tasks
+- executes fixes via internal agents
+- learns from successful actions
+- forgets weak patterns over time (decay)
 
-👉 In short:
-it turns messy code into actionable structure
+👉 It is not a script.
+👉 It is a self-regulating system.
 
 ---
 
@@ -36,113 +36,144 @@ it turns messy code into actionable structure
 
 Detects:
 
-- debug prints
-- TODO markers
+- broken imports
 - missing "__init__.py"
+- debug prints / TODO
 - structural inconsistencies
+- orphan files
+- large files / entropy zones
 
 ---
 
-🧩 Task Generation
+🧩 Task Aggregation
 
-Instead of:
+Instead of micro-fixes:
 
-- Fix debug print in file1.py
-- Fix debug print in file2.py
+❌ fix file1
+❌ fix file2
 
-It creates:
+System creates:
 
-👉 Refactor debug prints across repo
+✅ Refactor debug prints across repo
 
 ---
 
-🧠 Intelligence Layer
+🧠 Adaptive Execution
 
-System uses internal agents:
+Each task contains:
 
-- Explorer → scans repo
-- Planner → builds tasks
-- Actor → executes decisions
-- Coordinator (ARCHER / TANK / MAGE / HEALER) → balances system
+- intensity
+- novelty
+- resonance vector
+- executor_hint (role)
+
+System dynamically decides:
+
+- what to execute
+- when to skip
+- what to delay (cooldown)
+
+---
+
+⚔️ Internal Agent Model
+
+Roles are implicit (field-driven):
+
+- MAGE → code transformation ("llm_fix_engine", structural fixes)
+- HEALER → stabilization ("cooldown", memory)
+- TANK → routing & protection ("router", dispatcher)
+- EXPLORER → repo analysis ("repo_analyzer")
+
+👉 Roles are not hardcoded
+👉 They emerge from task context
 
 ---
 
 🔁 Autonomous Loop
 
-analyze → decide → act → repeat
+analyze → create tasks → route → execute → cooldown → decay → repeat
+
+System behavior:
+
+- no infinite loops (cooldown)
+- no noise accumulation (decay)
+- no duplicate tasks (meta_key + GitHub sync)
+
+---
+
+🧠 Memory System
+
+1. Task Memory
+
+- stored in "objects.json"
+- tracks lifecycle of tasks
+
+2. Evolution Memory
+
+- stores successful fixes
+- builds reusable patterns
+
+3. Graph Memory (CRITICAL)
+
+- tracks relationships between modules
+- reinforces successful paths
+- weak links decay over time
+
+👉 This is how the system learns
+
+---
+
+❄️ Synaptic Pruning (Decay)
+
+System prevents entropy:
+
+- all graph weights decay over time
+- unused paths are removed
+- only strong patterns survive
+
+👉 Inspired by biological neural pruning
+
+---
+
+🔒 Cooldown System
+
+Prevents:
+
+- infinite retries
+- noisy loops
+- repeated failures
+
+Each task gets:
+
+- cooldown time
+- execution memory
 
 ---
 
 🔗 GitHub Integration
 
-- Automatically creates Issues
-- Links tasks to GitHub
-- Stores reports in "/reports"
+- syncs tasks with issues
+- avoids duplication via "meta_key"
+- supports absorption (task ↔ issue)
 
 ---
 
-🧭 Architecture Model (Field-Based Control)
+🧭 Architecture Model
 
-GitCube OS evolves beyond simple prompt-response systems.
-
-Instead of:
-
-prompt → response
-
-GitCube uses:
+GitCube operates as:
 
 state → field → policy → routing → action → memory
 
----
+Not:
 
-🧠 Core Concept
-
-The system does not execute commands directly.
-
-It operates inside a dynamic field of constraints and priorities:
-
-- tasks compete for execution
-- agents are selected based on context
-- memory biases future decisions
-- policies reshape behavior globally
+input → output
 
 ---
 
-⚙️ State Representation
+🧬 Core Principle
 
-Each task is represented as a vector:
-
-- pressure
-- flow
-- structure
-- balance
-- law
-- future
-
-This allows:
-
-- unified reasoning across domains
-- dynamic prioritization
-- adaptive routing
-
----
-
-🔁 System Behavior
-
-GitCube is not rule-based.
-
-It is:
-
-- constraint-driven
-- context-aware
-- self-adjusting over time
-
----
-
-🧬 Key Idea
-
-«“We don’t tell the system what to do.
-We shape the environment where the correct action becomes inevitable.”»
+«We don’t control the system directly.
+We shape the field where correct behavior emerges.»
 
 ---
 
@@ -150,90 +181,53 @@ We shape the environment where the correct action becomes inevitable.”»
 
 gitcube-os/
 │
-├── app/                  # Core application layer
-├── core/                 # System logic
-├── runtime/              # Stable runtime
-├── runtime_experimental/ # Experimental agents + engines
-├── bridges/              # Auto-generated adapters
-├── examples/             # Demo scenarios
-├── reports/              # Generated reports
+├── app/                  # orchestration layer
+├── core/                 # execution + memory
+├── runtime_experimental/ # agents + integrations
+├── bridges/              # adapters
+├── reports/              # outputs
 │
-├── repo_analyzer.py      # Main analyzer
-├── run_loop.py           # Continuous loop
-├── run.sh                # Entry point
-├── status.py             # System state viewer
+├── repo_analyzer.py
+├── run_loop.py
+├── run.sh
+├── status.py
 │
-└── objects.json          # Task graph storage
+└── objects.json
 
 ---
 
-▶️ How to Run
+📊 Current State
 
-Start system
+🟢 CORE STABLE (CRYSTAL)
 
-./run.sh
-
----
-
-Check system state
-
-python status.py
-
----
-
-Run analyzer manually
-
-python repo_analyzer.py
-
----
-
-📊 Example Output
-
-TASK_CREATED: Refactor debug prints across repo
-TASK_CREATED: Resolve TODO markers across repo
-TASK_CREATED: Review Python package structure
-
----
-
-🧠 System State Example
-
-phase: DAY
-decision: COMMIT
-signal_action: BUILD
-open_tasks: 14
-
----
-
-🚧 Current Status
-
-🟢 MVP READY
-
-- ✅ Analyzer works
-- ✅ Task aggregation works
-- ✅ GitHub integration works
-- ⚠️ PR automation — in progress
+- ✅ analyzer
+- ✅ task system
+- ✅ execution loop
+- ✅ cooldown
+- ✅ graph decay
+- ✅ GitHub sync
 
 ---
 
 🚀 Roadmap
 
-- [ ] Auto-close resolved tasks
-- [ ] Dependency graph between tasks
-- [ ] Auto-generated Pull Requests
-- [ ] UI dashboard
+- [ ] explicit role engine (separate agents)
+- [ ] auto PR generation
+- [ ] dependency graph between tasks
+- [ ] UI / visualization layer
 
 ---
 
 🧪 Use Cases
 
-- Clean legacy repositories
-- Maintain large codebases
-- Assist solo developers
-- Continuous code hygiene
+- clean legacy repos
+- maintain large codebases
+- autonomous code hygiene
+- AI-assisted refactoring
 
 ---
 
-📌 Author
+👤 Author
 
 Volodymyr Pozdnyak
 
@@ -241,6 +235,6 @@ Volodymyr Pozdnyak
 
 🧬 Vision
 
-«“Codebases should organize themselves.”»
+«Codebases should organize themselves.»
 
-GitCube is a step toward autonomous development systems.
+GitCube OS is a step toward autonomous software evolution.
