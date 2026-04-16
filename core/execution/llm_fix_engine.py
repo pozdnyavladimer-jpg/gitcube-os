@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 from typing import Dict, Any, List, Optional, Tuple
 
 from core.memory.evolution_memory import recall_import_fix, record_import_fix
+from core.memory.graph_weight_engine import reinforce_edge, get_heaviest_neighbors
 
 
 REPO_ROOT = Path(".")
@@ -59,6 +60,13 @@ def path_to_module(path: Path) -> str:
     else:
         rel = path.relative_to(REPO_ROOT).with_suffix("")
     return ".".join(rel.parts)
+
+
+def file_path_to_module(path: str) -> str:
+    p = Path(path)
+    if p.suffix == ".py":
+        return ".".join(p.with_suffix("").parts)
+    return ".".join(p.parts)
 
 
 def list_repo_modules() -> List[str]:
@@ -214,7 +222,7 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     if exact:
         return exact
 
-    # 1. СПОЧАТКУ РЕФЛЕКС
+    # 1. memory reflex
     remembered = recall_import_fix(
         problem_type="broken_import_group",
         source_module=module,
@@ -223,14 +231,26 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     if remembered and module_exists(remembered):
         return remembered
 
-    # 2. ПОТІМ ОРБІТА
+    # 2. graph weights
+    current_module = file_path_to_module(current_file_path) if current_file_path else ""
+    if current_module:
+        heavy_neighbors = get_heaviest_neighbors(current_module, limit=5)
+        tail = module.split(".")[-1]
+
+        for heavy in heavy_neighbors:
+            if heavy == module and module_exists(heavy):
+                return heavy
+            if heavy.split(".")[-1] == tail and module_exists(heavy):
+                return heavy
+
+    # 3. orbit search
     neighbor_modules = extract_neighbor_modules(file_content) if file_content else []
 
     for candidate in orbit_candidates(module, current_file_path, neighbor_modules):
         if module_exists(candidate):
             return candidate
 
-    # 3. ПОТІМ FUZZY
+    # 4. fuzzy
     repo_modules = list_repo_modules()
     return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
 
@@ -408,6 +428,8 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
         }
 
     recorded = []
+    current_module = file_path_to_module(path)
+
     for source_module, resolved_module in learned_pairs:
         info = record_import_fix(
             problem_type="broken_import_group",
@@ -416,6 +438,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             file_path=path,
         )
         recorded.append(info)
+        reinforce_edge(current_module, resolved_module, weight_delta=1)
 
     return {
         "ok": True,
