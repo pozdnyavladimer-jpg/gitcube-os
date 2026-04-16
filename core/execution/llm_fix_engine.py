@@ -214,6 +214,7 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     if exact:
         return exact
 
+    # 1. СПОЧАТКУ РЕФЛЕКС
     remembered = recall_import_fix(
         problem_type="broken_import_group",
         source_module=module,
@@ -222,12 +223,14 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     if remembered and module_exists(remembered):
         return remembered
 
+    # 2. ПОТІМ ОРБІТА
     neighbor_modules = extract_neighbor_modules(file_content) if file_content else []
 
     for candidate in orbit_candidates(module, current_file_path, neighbor_modules):
         if module_exists(candidate):
             return candidate
 
+    # 3. ПОТІМ FUZZY
     repo_modules = list_repo_modules()
     return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
 
