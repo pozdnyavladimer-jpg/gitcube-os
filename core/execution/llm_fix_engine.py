@@ -7,6 +7,8 @@ from pathlib import Path
 from difflib import SequenceMatcher
 from typing import Dict, Any, List, Optional, Tuple
 
+from core.memory.evolution_memory import recall_import_fix, record_import_fix
+
 
 REPO_ROOT = Path(".")
 
@@ -212,6 +214,14 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     if exact:
         return exact
 
+    remembered = recall_import_fix(
+        problem_type="broken_import_group",
+        source_module=module,
+        file_path=current_file_path,
+    )
+    if remembered and module_exists(remembered):
+        return remembered
+
     neighbor_modules = extract_neighbor_modules(file_content) if file_content else []
 
     for candidate in orbit_candidates(module, current_file_path, neighbor_modules):
@@ -222,80 +232,87 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
 
 
-def try_fix_from_import(line: str, current_file_path: str, file_content: str) -> str:
+def try_fix_from_import(line: str, current_file_path: str, file_content: str) -> Tuple[str, Optional[Tuple[str, str]]]:
     stripped = line.strip()
 
     if not (stripped.startswith("from ") and " import " in stripped):
-        return line
+        return line, None
 
     parts = stripped.split()
     if len(parts) < 4:
-        return line
+        return line, None
 
     module = parts[1]
 
     if module.startswith("."):
-        return line
+        return line, None
 
     if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
-        return line
+        return line, None
 
     if module_exists(module):
-        return line
+        return line, None
 
     repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
-        return line.replace(f"from {module} import", f"from {repaired} import", 1)
+        return line.replace(f"from {module} import", f"from {repaired} import", 1), (module, repaired)
 
     if repaired == module:
-        return line
+        return line, None
 
-    return f"# FIXME broken import: {line}"
+    return f"# FIXME broken import: {line}", None
 
 
-def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -> str:
+def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -> Tuple[str, Optional[Tuple[str, str]]]:
     stripped = line.strip()
 
     if not stripped.startswith("import "):
-        return line
+        return line, None
 
     if "," in stripped:
-        return line
+        return line, None
 
     module = stripped.replace("import ", "", 1).strip()
 
     if not module or module.startswith("."):
-        return line
+        return line, None
 
     if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
-        return line
+        return line, None
 
     if module_exists(module):
-        return line
+        return line, None
 
     repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
-        return line.replace(f"import {module}", f"import {repaired}", 1)
+        return line.replace(f"import {module}", f"import {repaired}", 1), (module, repaired)
 
     if repaired == module:
-        return line
+        return line, None
 
-    return f"# FIXME broken import: {line}"
+    return f"# FIXME broken import: {line}", None
 
 
-def request_fix(prompt: str, original_content: str, current_file_path: str) -> str:
+def request_fix(prompt: str, original_content: str, current_file_path: str) -> Tuple[str, List[Tuple[str, str]]]:
     lines = original_content.splitlines()
     fixed = []
+    learned_pairs: List[Tuple[str, str]] = []
 
     for line in lines:
         stripped = line.strip()
 
         if stripped.startswith("from ") and " import " in stripped:
-            fixed.append(try_fix_from_import(line, current_file_path, original_content))
+            new_line, pair = try_fix_from_import(line, current_file_path, original_content)
+            fixed.append(new_line)
+            if pair:
+                learned_pairs.append(pair)
             continue
 
         if stripped.startswith("import "):
-            fixed.append(try_fix_plain_import(line, current_file_path, original_content))
+            new_line, pair = try_fix_plain_import(line, current_file_path, original_content)
+            fixed.append(new_line)
+            if pair:
+                learned_pairs.append(pair)
             continue
 
         fixed.append(line)
@@ -303,7 +320,7 @@ def request_fix(prompt: str, original_content: str, current_file_path: str) -> s
     result = "\n".join(fixed)
     if original_content.endswith("\n"):
         result += "\n"
-    return result
+    return result, learned_pairs
 
 
 def make_backup(path: str) -> str:
@@ -338,6 +355,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "reason": "target_file_missing",
             "changed_files": [],
             "backup_files": [],
+            "learned_rules": [],
         }
 
     try:
@@ -349,10 +367,11 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "reason": f"read_failed:{e}",
             "changed_files": [],
             "backup_files": [],
+            "learned_rules": [],
         }
 
     prompt = build_prompt(task, original, path)
-    fixed = request_fix(prompt, original, path)
+    fixed, learned_pairs = request_fix(prompt, original, path)
 
     if not isinstance(fixed, str) or not fixed.strip():
         return {
@@ -360,6 +379,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "reason": "llm_empty_result",
             "changed_files": [],
             "backup_files": [],
+            "learned_rules": [],
         }
 
     if fixed == original:
@@ -368,6 +388,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "reason": "llm_no_change",
             "changed_files": [],
             "backup_files": [],
+            "learned_rules": [],
         }
 
     try:
@@ -380,13 +401,25 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             "reason": f"write_failed:{e}",
             "changed_files": [],
             "backup_files": [],
+            "learned_rules": [],
         }
+
+    recorded = []
+    for source_module, resolved_module in learned_pairs:
+        info = record_import_fix(
+            problem_type="broken_import_group",
+            source_module=source_module,
+            resolved_module=resolved_module,
+            file_path=path,
+        )
+        recorded.append(info)
 
     return {
         "ok": True,
         "reason": "llm_fix_applied",
         "changed_files": [path],
         "backup_files": [backup_path],
+        "learned_rules": recorded,
     }
 
 
