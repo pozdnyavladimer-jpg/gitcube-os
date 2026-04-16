@@ -1,96 +1,107 @@
 [
   {
     "type": "task",
-    "title": "MAGE: Repair safe package markers",
-    "origin": "repo_analyzer_v7",
-    "status": "done",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "skipped",
     "kind": "task",
-    "intensity": 0.86,
-    "novelty": 0.76,
+    "intensity": 0.9,
+    "novelty": 0.78,
     "payload": {
-      "problem": "missing_init_group",
+      "problem": "broken_import_group",
       "paths": [
-        "environments",
-        "tests"
+        "tests/test_broken_import_probe.py"
       ],
-      "count": 2,
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe.py",
+          "import": "core.execution.non_existing_module"
+        }
+      ],
       "priority": "high",
-      "executor_hint": "MAGE"
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
     },
     "resonance_vector": {
-      "pressure": 0.68,
-      "flow": 0.24,
-      "structure": 0.12,
-      "balance": 0.34,
-      "law": 0.2,
-      "future": 0.84
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
     },
-    "meta_key": "missing_init_group|path|high|repo_analyzer_v7|environments",
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
     "id": "task_1",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.797411+00:00",
-    "updated_at": "2026-04-15T11:38:13.763868+00:00",
-    "result_path": "reports/task_1_20260415_113813.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,low_structure,low_law,party_mode;leader_resolution=mage_resolved_package_markers;resolved_path=None;resolved_paths=['environments/__init__.py', 'tests/__init__.py'];changed_files=[];dispatch_changed_files=[];dispatch_mode=structural_mesh;party_done_via_dispatch"
+    "created_at": "2026-04-16T12:50:12.728908+00:00",
+    "updated_at": "2026-04-16T12:50:12.728925+00:00",
+    "execution_reason": "manual_queue_reset_for_clean_import_probe"
   },
   {
     "type": "task",
-    "title": "Review Python package structure",
-    "origin": "repo_analyzer_v7",
-    "status": "done",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "skipped",
     "kind": "task",
-    "intensity": 0.88,
-    "novelty": 0.74,
+    "intensity": 0.95,
+    "novelty": 0.82,
     "payload": {
-      "problem": "package_structure",
+      "problem": "broken_import_group",
       "paths": [
-        "."
+        "tests/test_broken_import_probe.py"
       ],
       "count": 1,
-      "priority": "high",
-      "executor_hint": "MAGE"
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
     },
     "resonance_vector": {
-      "pressure": 0.73,
+      "pressure": 0.91,
       "flow": 0.18,
       "structure": 0.14,
-      "balance": 0.34,
+      "balance": 0.28,
       "law": 0.22,
-      "future": 0.76
+      "future": 0.73
     },
-    "meta_key": "package_structure|path|high|repo_analyzer_v7|_",
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
     "id": "task_2",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.807257+00:00",
-    "updated_at": "2026-04-15T10:21:05.456269+00:00",
-    "result_path": "reports/task_2_20260415_102105.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,high_pressure,low_structure,low_law,party_mode;leader_resolution=mage_resolved_package_markers;resolved_path=None;resolved_paths=['./__init__.py'];changed_files=['./__init__.py'];party_done"
+    "created_at": "2026-04-16T12:50:12.730954+00:00",
+    "updated_at": "2026-04-16T12:50:12.730969+00:00",
+    "execution_reason": "manual_queue_reset_for_clean_import_probe"
   },
   {
     "type": "task",
     "title": "Repair structural orphans across repo",
-    "origin": "repo_analyzer_v7",
-    "status": "done",
+    "origin": "repo_analyzer_live_field",
+    "status": "skipped",
     "kind": "task",
     "intensity": 0.82,
     "novelty": 0.73,
     "payload": {
       "problem": "structural_orphans_group",
       "paths": [
+        "__init__.py",
         "cleanup_ghosts.py",
         "force_mage_seed.py",
         "inject_task.py",
-        "patch_select_task_v2.py"
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
       ],
-      "count": 4,
+      "count": 8,
       "priority": "high",
       "executor_hint": "MAGE"
     },
@@ -102,289 +113,121 @@
       "law": 0.26,
       "future": 0.74
     },
-    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|cleanup_ghosts_py",
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
     "id": "task_3",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.808094+00:00",
-    "updated_at": "2026-04-15T10:21:05.453749+00:00",
-    "result_path": "reports/task_3_20260415_102105.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,low_structure,low_law,party_mode;leader_resolution=mage_resolved_first_path;resolved_path=cleanup_ghosts.py;resolved_paths=[];changed_files=[];party_done"
-  },
-  {
-    "type": "task",
-    "title": "Review large files across repo",
-    "origin": "repo_analyzer_v7",
-    "status": "skipped",
-    "kind": "task",
-    "intensity": 0.78,
-    "novelty": 0.7,
-    "payload": {
-      "problem": "large_files_group",
-      "files": [
-        {
-          "path": "objects.backup.json",
-          "size": 79119
-        },
-        {
-          "path": "field.png",
-          "size": 504793
-        }
-      ],
-      "paths": [
-        "objects.backup.json",
-        "field.png"
-      ],
-      "count": 2,
-      "priority": "medium"
-    },
-    "resonance_vector": {
-      "pressure": 0.63,
-      "flow": 0.28,
-      "structure": 0.42,
-      "balance": 0.46,
-      "law": 0.52,
-      "future": 0.67
-    },
-    "meta_key": "large_files_group|path|medium|repo_analyzer_v7|objects_backup_json",
-    "id": "task_4",
-    "published_to_github": false,
-    "github_url": "",
-    "parent_id": null,
-    "related_to": [],
-    "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.812574+00:00",
-    "updated_at": "2026-04-15T10:21:05.450181+00:00",
-    "result_path": "reports/task_4_20260415_102105.md",
-    "execution_reason": "primary=MAGE;support=ARCHER;pair_reason=mage+archer:memory_bias;no_changes"
-  },
-  {
-    "type": "task",
-    "title": "Resolve TODO markers across repo",
-    "origin": "repo_analyzer_v7",
-    "status": "skipped",
-    "kind": "task",
-    "intensity": 0.79,
-    "novelty": 0.73,
-    "payload": {
-      "problem": "todo_group",
-      "paths": [
-        "repo_analyzer.py",
-        "runtime_experimental/assassin_actor.py",
-        "viewer.py"
-      ],
-      "count": 3,
-      "priority": "medium"
-    },
-    "resonance_vector": {
-      "pressure": 0.74,
-      "flow": 0.36,
-      "structure": 0.33,
-      "balance": 0.38,
-      "law": 0.42,
-      "future": 0.71
-    },
-    "meta_key": "todo_group|path|medium|repo_analyzer_v7|repo_analyzer_py",
-    "id": "task_5",
-    "published_to_github": false,
-    "github_url": "",
-    "parent_id": null,
-    "related_to": [],
-    "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.813255+00:00",
-    "updated_at": "2026-04-15T10:21:05.447943+00:00",
-    "result_path": "reports/task_5_20260415_102105.md",
-    "execution_reason": "primary=MAGE;support=HEALER;pair_reason=mage+healer:high_pressure,high_future,pair_bonus,memory_bias;no_changes"
-  },
-  {
-    "type": "task",
-    "title": "Refactor debug prints across repo",
-    "origin": "repo_analyzer_v7",
-    "status": "skipped",
-    "kind": "task",
-    "intensity": 0.74,
-    "novelty": 0.67,
-    "payload": {
-      "problem": "debug_prints_group",
-      "paths": [
-        "actor_executor.py",
-        "cleanup_ghosts.py",
-        "force_mage_seed.py",
-        "inject_task.py",
-        "repo_analyzer.py",
-        "runtime_experimental/assassin_actor.py",
-        "runtime_experimental/pr_actor.py",
-        "v_clock.py",
-        "viewer.py"
-      ],
-      "count": 9,
-      "priority": "medium"
-    },
-    "resonance_vector": {
-      "pressure": 0.58,
-      "flow": 0.72,
-      "structure": 0.66,
-      "balance": 0.6,
-      "law": 0.63,
-      "future": 0.54
-    },
-    "meta_key": "debug_prints_group|path|medium|repo_analyzer_v7|actor_executor_py",
-    "id": "task_6",
-    "published_to_github": false,
-    "github_url": "",
-    "parent_id": null,
-    "related_to": [],
-    "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.814252+00:00",
-    "updated_at": "2026-04-15T10:09:31.445564+00:00",
-    "result_path": "reports/task_6_20260415_100931.md",
-    "execution_reason": "primary=ARCHER;support=MAGE;pair_reason=archer+mage:generic;no_changes"
-  },
-  {
-    "type": "task",
-    "title": "Review pass blocks across repo",
-    "origin": "repo_analyzer_v7",
-    "status": "done",
-    "kind": "task",
-    "intensity": 0.81,
-    "novelty": 0.75,
-    "payload": {
-      "problem": "pass_blocks_group",
-      "paths": [
-        "core/decision_kernel.py",
-        "examples/experimental_loop.py",
-        "v_bridge.py",
-        "v_clock.py"
-      ],
-      "count": 4,
-      "priority": "medium"
-    },
-    "resonance_vector": {
-      "pressure": 0.67,
-      "flow": 0.3,
-      "structure": 0.24,
-      "balance": 0.36,
-      "law": 0.28,
-      "future": 0.76
-    },
-    "meta_key": "pass_blocks_group|path|medium|repo_analyzer_v7|core/decision_kernel_py",
-    "id": "task_7",
-    "published_to_github": false,
-    "github_url": "",
-    "parent_id": null,
-    "related_to": [],
-    "graph_depth": 0,
-    "created_at": "2026-04-12T12:04:35.817429+00:00",
-    "updated_at": "2026-04-15T10:09:31.443069+00:00",
-    "result_path": "reports/task_7_20260415_100931.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:high_future,low_structure,low_law,party_mode;leader_resolution=mage_resolved_first_path;resolved_path=core/decision_kernel.py;resolved_paths=[];changed_files=[];party_done"
+    "created_at": "2026-04-16T12:50:12.732102+00:00",
+    "updated_at": "2026-04-16T12:50:12.732111+00:00",
+    "execution_reason": "manual_queue_reset_for_clean_import_probe"
   },
   {
     "type": "task",
     "title": "Detect isolated modules",
     "origin": "repo_analyzer_v7",
-    "status": "done",
+    "status": "skipped",
     "kind": "task",
     "intensity": 0.72,
     "novelty": 0.68,
     "payload": {
       "problem": "isolated_module_group",
       "paths": [
-        "app",
-        "core",
+        "app.orchestration",
+        "bridges",
+        "bridges.generated",
+        "core.analysis",
         "core.decision_kernel",
+        "core.execution",
+        "core.field",
+        "core.field.field_state",
+        "core.field.role_lens",
+        "core.memory",
+        "core.policy",
+        "core.policy.safety_policy",
+        "core.validation",
+        "docs.architecture",
+        "environments",
         "examples",
         "examples.compare_modes",
         "examples.demo_binary_cube",
         "examples.demo_image_cube",
-        "examples.demo_story",
-        "examples.environment_run",
-        "examples.experimental_loop",
-        "examples.loop_run",
-        "examples.simple_loop",
-        "examples.test_eye_pairs",
-        "examples.test_eye_party",
-        "examples.test_guard",
-        "run_loop",
-        "runtime",
-        "runtime.bindu",
-        "runtime.class_interactions",
-        "runtime.ecology"
+        "examples.demo_story"
       ],
-      "count": 32,
+      "count": 49,
       "priority": "medium",
       "executor_hint": "MAGE",
       "topology_context": {
         "cluster_id": "isolated",
         "module_names": [
-          "app",
-          "core",
+          "app.orchestration",
+          "bridges",
+          "bridges.generated",
+          "core.analysis",
           "core.decision_kernel",
+          "core.execution",
+          "core.field",
+          "core.field.field_state",
+          "core.field.role_lens",
+          "core.memory",
+          "core.policy",
+          "core.policy.safety_policy",
+          "core.validation",
+          "docs.architecture",
+          "environments",
           "examples",
           "examples.compare_modes",
           "examples.demo_binary_cube",
           "examples.demo_image_cube",
-          "examples.demo_story",
-          "examples.environment_run",
-          "examples.experimental_loop",
-          "examples.loop_run",
-          "examples.simple_loop",
-          "examples.test_eye_pairs",
-          "examples.test_eye_party",
-          "examples.test_guard",
-          "run_loop",
-          "runtime",
-          "runtime.bindu",
-          "runtime.class_interactions",
-          "runtime.ecology"
+          "examples.demo_story"
         ],
         "neighbors": {},
         "in_degree": {
-          "app": 0,
-          "core": 0,
+          "app.orchestration": 0,
+          "bridges": 0,
+          "bridges.generated": 0,
+          "core.analysis": 0,
           "core.decision_kernel": 0,
+          "core.execution": 0,
+          "core.field": 0,
+          "core.field.field_state": 0,
+          "core.field.role_lens": 0,
+          "core.memory": 0,
+          "core.policy": 0,
+          "core.policy.safety_policy": 0,
+          "core.validation": 0,
+          "docs.architecture": 0,
+          "environments": 0,
           "examples": 0,
           "examples.compare_modes": 0,
           "examples.demo_binary_cube": 0,
           "examples.demo_image_cube": 0,
-          "examples.demo_story": 0,
-          "examples.environment_run": 0,
-          "examples.experimental_loop": 0,
-          "examples.loop_run": 0,
-          "examples.simple_loop": 0,
-          "examples.test_eye_pairs": 0,
-          "examples.test_eye_party": 0,
-          "examples.test_guard": 0,
-          "run_loop": 0,
-          "runtime": 0,
-          "runtime.bindu": 0,
-          "runtime.class_interactions": 0,
-          "runtime.ecology": 0
+          "examples.demo_story": 0
         },
         "out_degree": {
-          "app": 0,
-          "core": 0,
+          "app.orchestration": 0,
+          "bridges": 0,
+          "bridges.generated": 0,
+          "core.analysis": 0,
           "core.decision_kernel": 0,
+          "core.execution": 0,
+          "core.field": 0,
+          "core.field.field_state": 0,
+          "core.field.role_lens": 0,
+          "core.memory": 0,
+          "core.policy": 0,
+          "core.policy.safety_policy": 0,
+          "core.validation": 0,
+          "docs.architecture": 0,
+          "environments": 0,
           "examples": 0,
           "examples.compare_modes": 0,
           "examples.demo_binary_cube": 0,
           "examples.demo_image_cube": 0,
-          "examples.demo_story": 0,
-          "examples.environment_run": 0,
-          "examples.experimental_loop": 0,
-          "examples.loop_run": 0,
-          "examples.simple_loop": 0,
-          "examples.test_eye_pairs": 0,
-          "examples.test_eye_party": 0,
-          "examples.test_guard": 0,
-          "run_loop": 0,
-          "runtime": 0,
-          "runtime.bindu": 0,
-          "runtime.class_interactions": 0,
-          "runtime.ecology": 0
+          "examples.demo_story": 0
         }
       }
     },
@@ -396,17 +239,16 @@
       "law": 0.38,
       "future": 0.7
     },
-    "meta_key": "isolated_module_group|path|medium|repo_analyzer_v7|app",
-    "id": "task_8",
+    "meta_key": "isolated_module_group|path|medium|repo_analyzer_v7|app_orchestration",
+    "id": "task_4",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:18:59.509788+00:00",
-    "updated_at": "2026-04-15T10:09:31.440340+00:00",
-    "result_path": "reports/task_8_20260415_100931.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,low_structure,party_mode;leader_resolution=mage_resolved_first_dir;resolved_path=app/__init__.py;resolved_paths=[];changed_files=[];party_done"
+    "created_at": "2026-04-16T12:50:12.914283+00:00",
+    "updated_at": "2026-04-16T12:50:12.914295+00:00",
+    "execution_reason": "manual_queue_reset_for_clean_import_probe"
   },
   {
     "type": "task",
@@ -450,7 +292,7 @@
         },
         {
           "module": "runtime_experimental.object_store",
-          "in_degree": 11,
+          "in_degree": 12,
           "out_degree": 0,
           "neighbors": []
         },
@@ -512,7 +354,7 @@
         "in_degree": {
           "app.state_engine": 5,
           "core.state": 10,
-          "runtime_experimental.object_store": 11,
+          "runtime_experimental.object_store": 12,
           "runtime_experimental.os_sync": 0
         },
         "out_degree": {
@@ -532,73 +374,97 @@
       "future": 0.66
     },
     "meta_key": "overcoupled_module_group|path|high|repo_analyzer_v7|app_state_engine",
-    "id": "task_9",
+    "id": "task_5",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:18:59.511152+00:00",
-    "updated_at": "2026-04-15T10:09:31.438145+00:00",
-    "result_path": "reports/task_9_20260415_100931.md",
-    "execution_reason": "primary=MAGE;support=HEALER;pair_reason=mage+healer:structural_super_priority,high_pressure,low_balance,pair_bonus,memory_bias;no_changes"
+    "created_at": "2026-04-16T12:50:12.915801+00:00",
+    "updated_at": "2026-04-16T12:50:15.543079+00:00",
+    "result_path": "reports/task_task_5_20260416_125015.md",
+    "execution_reason": "primary=MAGE;support=HEALER;pair_reason=mage+healer:structural_super_priority,high_pressure,low_balance,pair_bonus,memory_bias;primary_failed"
   },
   {
     "type": "task",
     "title": "Detect missing bridges across clusters",
     "origin": "repo_analyzer_v7",
-    "status": "done",
+    "status": "failed",
     "kind": "task",
     "intensity": 0.8,
     "novelty": 0.77,
     "payload": {
       "problem": "missing_bridge_group",
       "paths": [
-        "app",
-        "core",
+        "app.orchestration",
+        "bridges",
+        "bridges.generated",
+        "core.analysis",
         "core.decision_kernel",
+        "core.execution",
+        "core.field",
+        "core.field.field_state",
+        "core.field.role_lens",
+        "core.memory",
+        "core.policy",
+        "core.policy.safety_policy",
+        "core.validation",
+        "docs.architecture",
+        "environments",
         "examples",
         "examples.compare_modes",
         "examples.demo_binary_cube",
         "examples.demo_image_cube",
-        "examples.demo_story",
-        "examples.environment_run",
-        "examples.experimental_loop",
-        "examples.loop_run",
-        "examples.simple_loop",
-        "examples.test_eye_pairs",
-        "examples.test_eye_party",
-        "examples.test_guard",
-        "run_loop",
-        "runtime",
-        "runtime.bindu",
-        "runtime.class_interactions",
-        "runtime.ecology"
+        "examples.demo_story"
       ],
-      "count": 32,
+      "count": 49,
       "examples": [
         {
-          "module": "app",
+          "module": "app.orchestration",
           "from_cluster": "app",
           "to_cluster": "core",
           "suggested_neighbors": [
             "core",
+            "core.analysis",
             "core.cube_validator",
             "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "core.evaluation"
           ]
         },
         {
-          "module": "core",
+          "module": "bridges",
+          "from_cluster": "bridges",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ]
+        },
+        {
+          "module": "bridges.generated",
+          "from_cluster": "bridges",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ]
+        },
+        {
+          "module": "core.analysis",
           "from_cluster": "core",
           "to_cluster": "app",
           "suggested_neighbors": [
             "app",
             "app.live_agent",
-            "app.state_engine",
-            "app.ui_streamlit",
-            "app.view_model"
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
@@ -608,93 +474,69 @@
           "suggested_neighbors": [
             "app",
             "app.live_agent",
-            "app.state_engine",
-            "app.ui_streamlit",
-            "app.view_model"
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
-          "module": "examples",
-          "from_cluster": "examples",
-          "to_cluster": "core",
+          "module": "core.execution",
+          "from_cluster": "core",
+          "to_cluster": "app",
           "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
-          "module": "examples.compare_modes",
-          "from_cluster": "examples",
-          "to_cluster": "core",
+          "module": "core.field",
+          "from_cluster": "core",
+          "to_cluster": "app",
           "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
-          "module": "examples.demo_binary_cube",
-          "from_cluster": "examples",
-          "to_cluster": "core",
+          "module": "core.field.field_state",
+          "from_cluster": "core",
+          "to_cluster": "app",
           "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
-          "module": "examples.demo_image_cube",
-          "from_cluster": "examples",
-          "to_cluster": "core",
+          "module": "core.field.role_lens",
+          "from_cluster": "core",
+          "to_cluster": "app",
           "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         {
-          "module": "examples.demo_story",
-          "from_cluster": "examples",
-          "to_cluster": "core",
+          "module": "core.memory",
+          "from_cluster": "core",
+          "to_cluster": "app",
           "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
-          ]
-        },
-        {
-          "module": "examples.environment_run",
-          "from_cluster": "examples",
-          "to_cluster": "core",
-          "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
-          ]
-        },
-        {
-          "module": "examples.experimental_loop",
-          "from_cluster": "examples",
-          "to_cluster": "core",
-          "suggested_neighbors": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         }
       ],
@@ -703,122 +545,146 @@
       "topology_context": {
         "cluster_id": "bridges",
         "module_names": [
-          "app",
-          "core",
+          "app.orchestration",
+          "bridges",
+          "bridges.generated",
+          "core.analysis",
           "core.decision_kernel",
+          "core.execution",
+          "core.field",
+          "core.field.field_state",
+          "core.field.role_lens",
+          "core.memory",
+          "core.policy",
+          "core.policy.safety_policy",
+          "core.validation",
+          "docs.architecture",
+          "environments",
           "examples",
           "examples.compare_modes",
           "examples.demo_binary_cube",
           "examples.demo_image_cube",
-          "examples.demo_story",
-          "examples.environment_run",
-          "examples.experimental_loop",
-          "examples.loop_run",
-          "examples.simple_loop",
-          "examples.test_eye_pairs",
-          "examples.test_eye_party",
-          "examples.test_guard",
-          "run_loop",
-          "runtime",
-          "runtime.bindu",
-          "runtime.class_interactions",
-          "runtime.ecology"
+          "examples.demo_story"
         ],
         "neighbors": {
-          "app": [
+          "app.orchestration": [
             "core",
+            "core.analysis",
             "core.cube_validator",
             "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+            "core.evaluation"
           ],
-          "core": [
+          "bridges": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ],
+          "bridges.generated": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ],
+          "core.analysis": [
             "app",
             "app.live_agent",
-            "app.state_engine",
-            "app.ui_streamlit",
-            "app.view_model"
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
           "core.decision_kernel": [
             "app",
             "app.live_agent",
-            "app.state_engine",
-            "app.ui_streamlit",
-            "app.view_model"
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
-          "examples": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+          "core.execution": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
-          "examples.compare_modes": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+          "core.field": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
-          "examples.demo_binary_cube": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+          "core.field.field_state": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
-          "examples.demo_image_cube": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+          "core.field.role_lens": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ],
-          "examples.demo_story": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
-          ],
-          "examples.environment_run": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
-          ],
-          "examples.experimental_loop": [
-            "core",
-            "core.cube_validator",
-            "core.decision_kernel",
-            "core.evaluation",
-            "core.neuromodulator"
+          "core.memory": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
           ]
         },
         "bridges": [
           {
-            "module": "app",
+            "module": "app.orchestration",
             "from_cluster": "app",
             "to_cluster": "core",
             "suggested_neighbors": [
               "core",
+              "core.analysis",
               "core.cube_validator",
               "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "core.evaluation"
             ]
           },
           {
-            "module": "core",
+            "module": "bridges",
+            "from_cluster": "bridges",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.analysis",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation"
+            ]
+          },
+          {
+            "module": "bridges.generated",
+            "from_cluster": "bridges",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.analysis",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation"
+            ]
+          },
+          {
+            "module": "core.analysis",
             "from_cluster": "core",
             "to_cluster": "app",
             "suggested_neighbors": [
               "app",
               "app.live_agent",
-              "app.state_engine",
-              "app.ui_streamlit",
-              "app.view_model"
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
@@ -828,93 +694,69 @@
             "suggested_neighbors": [
               "app",
               "app.live_agent",
-              "app.state_engine",
-              "app.ui_streamlit",
-              "app.view_model"
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
-            "module": "examples",
-            "from_cluster": "examples",
-            "to_cluster": "core",
+            "module": "core.execution",
+            "from_cluster": "core",
+            "to_cluster": "app",
             "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
-            "module": "examples.compare_modes",
-            "from_cluster": "examples",
-            "to_cluster": "core",
+            "module": "core.field",
+            "from_cluster": "core",
+            "to_cluster": "app",
             "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
-            "module": "examples.demo_binary_cube",
-            "from_cluster": "examples",
-            "to_cluster": "core",
+            "module": "core.field.field_state",
+            "from_cluster": "core",
+            "to_cluster": "app",
             "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
-            "module": "examples.demo_image_cube",
-            "from_cluster": "examples",
-            "to_cluster": "core",
+            "module": "core.field.role_lens",
+            "from_cluster": "core",
+            "to_cluster": "app",
             "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           },
           {
-            "module": "examples.demo_story",
-            "from_cluster": "examples",
-            "to_cluster": "core",
+            "module": "core.memory",
+            "from_cluster": "core",
+            "to_cluster": "app",
             "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
-            ]
-          },
-          {
-            "module": "examples.environment_run",
-            "from_cluster": "examples",
-            "to_cluster": "core",
-            "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
-            ]
-          },
-          {
-            "module": "examples.experimental_loop",
-            "from_cluster": "examples",
-            "to_cluster": "core",
-            "suggested_neighbors": [
-              "core",
-              "core.cube_validator",
-              "core.decision_kernel",
-              "core.evaluation",
-              "core.neuromodulator"
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
             ]
           }
         ]
@@ -928,53 +770,401 @@
       "law": 0.36,
       "future": 0.74
     },
-    "meta_key": "missing_bridge_group|path|high|repo_analyzer_v7|app",
+    "meta_key": "missing_bridge_group|path|high|repo_analyzer_v7|app_orchestration",
+    "id": "task_6",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:50:12.917576+00:00",
+    "updated_at": "2026-04-16T12:50:15.536413+00:00",
+    "result_path": "reports/task_task_6_20260416_125015.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe.py",
+          "import": "core.execution.non_existing_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_7",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:50:15.358180+00:00",
+    "updated_at": "2026-04-16T12:50:15.529430+00:00",
+    "result_path": "reports/task_task_7_20260416_125015.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_8",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:50:15.360224+00:00",
+    "updated_at": "2026-04-16T12:50:15.521970+00:00",
+    "result_path": "reports/task_task_8_20260416_125015.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_9",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:50:15.361672+00:00",
+    "updated_at": "2026-04-16T12:50:15.514917+00:00",
+    "result_path": "reports/task_task_9_20260416_125015.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "open",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe.py",
+          "import": "core.execution.non_existing_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
     "id": "task_10",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-12T12:27:03.844517+00:00",
-    "updated_at": "2026-04-15T10:09:31.436038+00:00",
-    "result_path": "reports/task_10_20260415_100931.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,high_future,party_mode;leader_resolution=mage_resolved_first_dir;resolved_path=app/__init__.py;resolved_paths=[];changed_files=[];party_done"
+    "created_at": "2026-04-16T12:59:26.227927+00:00",
+    "updated_at": "2026-04-16T12:59:26.227939+00:00"
   },
   {
     "type": "task",
-    "title": "Review empty directories",
-    "origin": "repo_analyzer_v7",
-    "status": "done",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
     "kind": "task",
-    "intensity": 0.64,
-    "novelty": 0.61,
+    "intensity": 0.95,
+    "novelty": 0.82,
     "payload": {
-      "problem": "empty_directories_group",
+      "problem": "broken_import_group",
       "paths": [
-        "docs/architecture"
+        "tests/test_broken_import_probe.py"
       ],
       "count": 1,
-      "priority": "medium",
-      "executor_hint": "MAGE"
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
     },
     "resonance_vector": {
-      "pressure": 0.38,
-      "flow": 0.1,
-      "structure": 0.25,
-      "balance": 0.55,
-      "law": 0.56,
-      "future": 0.42
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
     },
-    "meta_key": "empty_directories_group|path|medium|repo_analyzer_v7|docs/architecture",
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
     "id": "task_11",
     "published_to_github": false,
     "github_url": "",
     "parent_id": null,
     "related_to": [],
     "graph_depth": 0,
-    "created_at": "2026-04-15T10:21:05.261602+00:00",
-    "updated_at": "2026-04-15T10:21:05.445854+00:00",
-    "result_path": "reports/task_11_20260415_102105.md",
-    "execution_reason": "leader=MAGE;builder=ARCHER;stabilizer=HEALER;guard=TANK;party_reason=party:structural_boss,low_structure,party_mode;leader_resolution=mage_resolved_structural_dir;resolved_path=docs/architecture/__init__.py;resolved_paths=[];changed_files=['docs/architecture/__init__.py'];party_done"
+    "created_at": "2026-04-16T12:59:26.229912+00:00",
+    "updated_at": "2026-04-16T12:59:28.985039+00:00",
+    "result_path": "reports/task_task_11_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_12",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:59:26.231744+00:00",
+    "updated_at": "2026-04-16T12:59:28.979707+00:00",
+    "result_path": "reports/task_task_12_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe.py",
+          "import": "core.execution.non_existing_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_13",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:59:28.799572+00:00",
+    "updated_at": "2026-04-16T12:59:28.974900+00:00",
+    "result_path": "reports/task_task_13_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_14",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:59:28.801738+00:00",
+    "updated_at": "2026-04-16T12:59:28.964608+00:00",
+    "result_path": "reports/task_task_14_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_15",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T12:59:28.803739+00:00",
+    "updated_at": "2026-04-16T12:59:28.957733+00:00",
+    "result_path": "reports/task_task_15_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
   }
 ]

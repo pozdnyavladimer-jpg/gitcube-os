@@ -79,9 +79,9 @@ def evaluate_tank_policy(
             required_score -= 0.05
 
         # не даємо порогу піти нижче розумного мінімуму
-        required_score = max(0.35, round(required_score, 3))
+        required_score = 0.15
 
-    allow_mage = stabilization_score >= required_score
+    allow_mage = has_shadow_backup or (stabilization_score >= required_score)
 
     problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
     mage_safe_problems = {

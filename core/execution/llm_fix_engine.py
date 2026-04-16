@@ -15,7 +15,8 @@ REPO_ROOT = Path(".")
 
 
 def build_prompt(task: Dict[str, Any], original_content: str, path: str) -> str:
-    problem = str(task.get("problem", "")).strip()
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", task.get("problem", ""))).strip()
     return f"""Task type: {problem}
 Target file: {path}
 
@@ -24,6 +25,7 @@ Allowed actions:
 - preserve unrelated code
 - prefer valid in-repo module paths
 - keep relative imports intact
+- comment import only if no valid repo replacement exists
 
 Forbidden actions:
 - delete unrelated logic

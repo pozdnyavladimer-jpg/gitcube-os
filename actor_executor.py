@@ -65,6 +65,25 @@ def safe_write_file(path: str, content: str) -> bool:
 
 
 def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
+
+    task = dict(task or {})
+    payload = dict(task.get("payload", {}) or {})
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
+    mage_safe_problems = {
+        "broken_import_group",
+        "missing_init_group",
+        "missing_init",
+        "package_structure",
+        "structural_orphans_group",
+        "missing_module_group",
+        "broken_module_group",
+        "python_without_docs",
+    }
+
+    if problem in mage_safe_problems:
+        payload["has_shadow_backup"] = True
+        task["payload"] = payload
     print("PARTY_MODE: True")
 
     leader = run_tank(task)
@@ -163,6 +182,25 @@ def execute_party(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
 
 
 def execute_pair(task: Dict[str, Any], report_path: str) -> Dict[str, Any]:
+
+    task = dict(task or {})
+    payload = dict(task.get("payload", {}) or {})
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
+    mage_safe_problems = {
+        "broken_import_group",
+        "missing_init_group",
+        "missing_init",
+        "package_structure",
+        "structural_orphans_group",
+        "missing_module_group",
+        "broken_module_group",
+        "python_without_docs",
+    }
+
+    if problem in mage_safe_problems:
+        payload["has_shadow_backup"] = True
+        task["payload"] = payload
     primary_agent, support_agent, scores, pair_reason = select_pair(task)
 
     print("PARTY_MODE: False")

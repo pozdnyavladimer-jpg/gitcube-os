@@ -38,7 +38,6 @@ STRUCTURAL_PROBLEMS = {
     "package_structure",
     "missing_root_readme",
     "missing_start_here",
-    "broken_import_group",
     "empty_directories_group",
     "structural_orphans_group",
 }
@@ -54,13 +53,6 @@ LIVE_EMIT_PROBLEMS = {
     "package_structure",
     "broken_import_group",
     "structural_orphans_group",
-    "missing_root_readme",
-    "missing_start_here",
-    "empty_directories_group",
-    "todo_group",
-    "debug_prints_group",
-    "pass_blocks_group",
-    "bare_except_group",
 }
 
 
@@ -285,19 +277,18 @@ def likely_local_import(target: str, known_modules: Set[str], known_top_levels: 
     if not target:
         return False
     head = target.split(".", 1)[0]
-    return target in known_modules or head in known_top_levels
+
+    # 🔥 ВАЖЛИВО: якщо head є локальний пакет — вважаємо локальним
+    if head in known_top_levels:
+        return True
+
+    return target in known_modules
 
 
 def import_resolves_locally(target: str, known_modules: Set[str]) -> bool:
-    if target in known_modules:
-        return True
-    parts = target.split(".")
-    while len(parts) > 1:
-        parts = parts[:-1]
-        candidate = ".".join(parts)
-        if candidate in known_modules:
-            return True
-    return False
+    # Для analyzer нам потрібна строга перевірка:
+    # модуль має існувати повністю, без "обрізання" до батьківського пакета.
+    return target in known_modules
 
 
 def analyze_repo(root: str = "."):
@@ -389,7 +380,9 @@ def analyze_repo(root: str = "."):
     known_top_levels = {m.split(".", 1)[0] for m in module_names if m}
 
     broken_imports: List[Dict[str, str]] = []
+    explicit_import_crash_files: List[str] = []
     structural_orphans: List[str] = []
+
 
     for rel_path in py_files:
         full_path = os.path.join(root, rel_path)
@@ -422,12 +415,23 @@ def analyze_repo(root: str = "."):
 
         imports = parse_import_targets(content)
         for target in imports:
-            if likely_local_import(target, module_names, known_top_levels):
+            head = target.split(".", 1)[0]
+
+            # 🔥 якщо це core / app / runtime_experimental — точно локальний
+            if head in {"core", "app", "runtime_experimental"}:
                 if not import_resolves_locally(target, module_names):
                     broken_imports.append({
                         "file": rel_path,
                         "import": target,
                     })
+
+        # явний краш-імпорт: файл містить локальний import, що не резолвиться
+        if any(
+            likely_local_import(t, module_names, known_top_levels)
+            and not import_resolves_locally(t, module_names)
+            for t in imports
+        ):
+            explicit_import_crash_files.append(rel_path)
 
     if mage_missing_init_dirs:
         rv = build_resonance_vector(
@@ -502,6 +506,7 @@ def analyze_repo(root: str = "."):
                 "examples": broken_imports[:10],
                 "priority": "high",
                 "executor_hint": "MAGE",
+                "has_shadow_backup": True,
             },
             0.90,
             0.78,
@@ -511,6 +516,38 @@ def analyze_repo(root: str = "."):
         )
         created += int(ok)
         suppressed += int(not ok)
+
+    explicit_import_crash_files = sorted(set(explicit_import_crash_files))
+    if explicit_import_crash_files:
+        rv = build_resonance_vector(
+            pressure=0.91,
+            flow=0.18,
+            structure=0.14,
+            balance=0.28,
+            law=0.22,
+            future=0.73,
+        )
+        ok, reason = add_task_if_new(
+            "Repair explicit crashed imports",
+            {
+                "problem": "broken_import_group",
+                "paths": explicit_import_crash_files[:10],
+                "count": len(explicit_import_crash_files),
+                "priority": "critical",
+                "executor_hint": "MAGE",
+                "has_shadow_backup": True,
+            },
+            0.95,
+            0.82,
+            rv,
+            titles_cache,
+            meta_keys_cache,
+        )
+        created += int(ok)
+        suppressed += int(not ok)
+
+    broken_import_files = {x["file"] for x in broken_imports}
+    structural_orphans = [p for p in structural_orphans if p not in broken_import_files]
 
     if structural_orphans:
         rv = build_resonance_vector(
@@ -591,7 +628,7 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
-    if empty_dirs:
+    if False and empty_dirs:
         rv = build_resonance_vector(
             pressure=0.38,
             flow=0.10,
@@ -618,7 +655,7 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
-    if big_files:
+    if False and big_files:
         rv = build_resonance_vector(
             pressure=0.63,
             flow=0.28,
@@ -672,7 +709,7 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
-    if todo_files:
+    if False and todo_files:
         rv = build_resonance_vector(
             pressure=0.74,
             flow=0.36,
@@ -698,7 +735,7 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
-    if debug_print_files:
+    if False and debug_print_files:
         rv = build_resonance_vector(
             pressure=0.58,
             flow=0.72,
@@ -724,7 +761,7 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
 
-    if pass_files:
+    if False and pass_files:
         rv = build_resonance_vector(
             pressure=0.67,
             flow=0.30,

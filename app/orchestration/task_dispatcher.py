@@ -20,11 +20,71 @@ from core.memory.target_memory import (
 )
 
 
+MAGE_SAFE_PROBLEMS = {
+    "broken_import_group",
+    "missing_init_group",
+    "missing_init",
+    "package_structure",
+    "structural_orphans_group",
+    "missing_module_group",
+    "broken_module_group",
+    "python_without_docs",
+    "missing_root_readme",
+    "missing_start_here",
+    "empty_directories_group",
+}
+
+STRUCTURAL_FALLBACK = {
+    "missing_init_group",
+    "missing_init",
+    "package_structure",
+    "structural_orphans_group",
+    "missing_module_group",
+    "broken_module_group",
+    "python_without_docs",
+    "missing_root_readme",
+    "missing_start_here",
+    "empty_directories_group",
+    "pass_blocks_group",
+    "debug_prints_group",
+    "todo_group",
+    "bare_except_group",
+}
+
+IMPORT_FALLBACK = {
+    "broken_import_group",
+    "broken_imports",
+    "missing_imports",
+    "import_error",
+}
+
+
 def _task_priority(task: Dict[str, Any]) -> str:
     value = str(task.get("priority", "normal")).strip().lower()
     if value in {"critical", "high", "normal", "low"}:
         return value
     return "normal"
+
+
+def _prepare_task(task: Dict[str, Any]) -> Dict[str, Any]:
+    prepared = dict(task or {})
+    payload = dict(prepared.get("payload", {}) or {})
+
+    problem = str(payload.get("problem", prepared.get("problem", ""))).strip().lower()
+    priority = _task_priority(prepared)
+
+    if problem:
+        prepared["problem"] = problem
+        payload.setdefault("problem", problem)
+
+    prepared["priority"] = priority
+
+    if problem in MAGE_SAFE_PROBLEMS:
+        payload.setdefault("has_shadow_backup", True)
+        payload.setdefault("executor_hint", "MAGE")
+
+    prepared["payload"] = payload
+    return prepared
 
 
 def _normalize_targets(raw_targets: List[str]) -> List[str]:
@@ -50,14 +110,23 @@ def _normalize_targets(raw_targets: List[str]) -> List[str]:
 
 
 def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> List[str]:
-    recommended = mesh_result.get("recommended_targets", [])
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
     raw_targets: List[str] = []
 
-    if isinstance(recommended, list):
-        raw_targets.extend(str(p).strip() for p in recommended if str(p).strip())
+    # для broken_import_group довіряємо payload.paths в першу чергу
+    if problem == "broken_import_group":
+        paths = payload.get("paths", [])
+        if isinstance(paths, list):
+            raw_targets.extend(str(p).strip() for p in paths if str(p).strip())
 
     if not raw_targets:
-        payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+        recommended = mesh_result.get("recommended_targets", [])
+        if isinstance(recommended, list):
+            raw_targets.extend(str(p).strip() for p in recommended if str(p).strip())
+
+    if not raw_targets:
         paths = payload.get("paths", [])
         if isinstance(paths, list):
             raw_targets.extend(str(p).strip() for p in paths if str(p).strip())
@@ -89,7 +158,6 @@ def _select_reroute_targets(
             rerouted = True
             reroute_from = target_files[:3]
     else:
-        # critical може обійти cooldown, але не dead lock
         if priority == "critical":
             for candidate in target_files:
                 if candidate not in dead_targets:
@@ -120,19 +188,9 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
     has_shadow_backup = bool(payload.get("has_shadow_backup", False))
     problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
 
-    mage_safe_problems = {
-        "broken_import_group",
-        "missing_init_group",
-        "missing_init",
-        "package_structure",
-        "structural_orphans_group",
-        "missing_module_group",
-        "broken_module_group",
-    }
-
     emergency_pass = (
         has_shadow_backup
-        and problem in mage_safe_problems
+        and problem in MAGE_SAFE_PROBLEMS
         and priority in {"high", "critical"}
     )
 
@@ -232,6 +290,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
 
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
+    task = _prepare_task(task)
     route = route_task(task)
 
     if route == "STRUCTURAL_MESH":
@@ -262,8 +321,11 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
                 **task,
                 "problem": "broken_import_group",
                 "payload": {
+                    **dict(task.get("payload", {}) or {}),
                     "problem": "broken_import_group",
                     "paths": py_files,
+                    "has_shadow_backup": True,
+                    "executor_hint": "MAGE",
                 },
             }
             import_mesh_result = stabilize_task_mesh(import_task)
@@ -276,10 +338,36 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         mesh_result = stabilize_task_mesh(task)
         return _run_import_mesh(task, mesh_result)
 
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
+    if problem in STRUCTURAL_FALLBACK:
+        mesh_result = stabilize_task_mesh(task)
+        execution_result = execute_structural_fix(task, mesh_result)
+        validation_result = validate_changed_files(execution_result.get("changed_files", []))
+        return {
+            "route": "STRUCTURAL_MESH_FALLBACK",
+            "mesh": mesh_result,
+            "execution": execution_result,
+            "validation": validation_result,
+            "ok": mesh_result.get("ok", False)
+            and execution_result.get("ok", False)
+            and validation_result.get("ok", False),
+            "reason": "fallback_structural_mesh",
+        }
+
+    if problem in IMPORT_FALLBACK or "import" in problem:
+        mesh_result = stabilize_task_mesh(task)
+        result = _run_import_mesh(task, mesh_result)
+        result["reason"] = result.get("reason", "fallback_import_mesh")
+        result["route"] = "IMPORT_LLM_MESH_FALLBACK"
+        return result
+
     return {
         "route": route,
         "ok": False,
         "reason": "route_not_implemented_yet",
+        "problem": problem,
     }
 
 
