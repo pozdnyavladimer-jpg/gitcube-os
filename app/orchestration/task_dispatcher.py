@@ -27,36 +27,88 @@ def _task_priority(task: Dict[str, Any]) -> str:
     return "normal"
 
 
+def _normalize_targets(raw_targets: List[str]) -> List[str]:
+    out: List[str] = []
+    seen = set()
+
+    for item in raw_targets:
+        sp = str(item).strip()
+        if not sp:
+            continue
+
+        if sp.endswith(".py"):
+            target = sp
+        else:
+            target = sp.replace(".", "/") + ".py"
+
+        if target in seen:
+            continue
+        seen.add(target)
+        out.append(target)
+
+    return out
+
+
 def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> List[str]:
     recommended = mesh_result.get("recommended_targets", [])
-    targets: List[str] = []
+    raw_targets: List[str] = []
 
     if isinstance(recommended, list):
-        for p in recommended:
-            sp = str(p).strip()
-            if sp:
-                targets.append(sp)
+        raw_targets.extend(str(p).strip() for p in recommended if str(p).strip())
 
-    if not targets:
+    if not raw_targets:
         payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
         paths = payload.get("paths", [])
         if isinstance(paths, list):
-            for p in paths:
-                sp = str(p).strip()
-                if sp:
-                    targets.append(sp)
+            raw_targets.extend(str(p).strip() for p in paths if str(p).strip())
 
-    py_targets = [p for p in targets if p.endswith(".py")]
+    normalized = _normalize_targets(raw_targets)
+    py_targets = [p for p in normalized if p.endswith(".py")]
+    return py_targets[:5]
 
-    out: List[str] = []
-    seen = set()
-    for p in py_targets:
-        if p in seen:
-            continue
-        seen.add(p)
-        out.append(p)
 
-    return out[:3]
+def _select_reroute_targets(
+    target_files: List[str],
+    priority: str,
+) -> Dict[str, Any]:
+    cooldown_filter = filter_targets_on_cooldown(target_files, priority=priority)
+
+    allowed_targets = cooldown_filter.get("allowed", [])
+    blocked_targets = cooldown_filter.get("blocked", [])
+    dead_targets = cooldown_filter.get("dead", [])
+    blocked_meta = cooldown_filter.get("blocked_meta", {})
+    dead_meta = cooldown_filter.get("dead_meta", {})
+
+    chosen: List[str] = []
+    rerouted = False
+    reroute_from: List[str] = []
+
+    if allowed_targets:
+        chosen = allowed_targets[:3]
+        if chosen != target_files[:len(chosen)]:
+            rerouted = True
+            reroute_from = target_files[:3]
+    else:
+        # critical може обійти cooldown, але не dead lock
+        if priority == "critical":
+            for candidate in target_files:
+                if candidate not in dead_targets:
+                    chosen = [candidate]
+                    rerouted = True
+                    reroute_from = target_files[:3]
+                    blocked_targets = [t for t in blocked_targets if t != candidate]
+                    blocked_meta.pop(candidate, None)
+                    break
+
+    return {
+        "chosen": chosen,
+        "blocked_targets": blocked_targets,
+        "dead_targets": dead_targets,
+        "blocked_meta": blocked_meta,
+        "dead_meta": dead_meta,
+        "rerouted": rerouted,
+        "reroute_from": reroute_from,
+    }
 
 
 def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -82,21 +134,15 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "ok": False,
         }
 
-    cooldown_filter = filter_targets_on_cooldown(target_files, priority=priority)
-    allowed_targets = cooldown_filter.get("allowed", [])
-    blocked_targets = cooldown_filter.get("blocked", [])
-    dead_targets = cooldown_filter.get("dead", [])
-    blocked_meta = cooldown_filter.get("blocked_meta", {})
-    dead_meta = cooldown_filter.get("dead_meta", {})
+    selection = _select_reroute_targets(target_files, priority=priority)
 
-    # critical може обійти cooldown, але НЕ dead lock
-    if not allowed_targets and priority == "critical" and target_files:
-        for candidate in target_files:
-            if candidate not in dead_targets:
-                allowed_targets = [candidate]
-                blocked_targets = [t for t in blocked_targets if t != candidate]
-                blocked_meta.pop(candidate, None)
-                break
+    allowed_targets = selection["chosen"]
+    blocked_targets = selection["blocked_targets"]
+    dead_targets = selection["dead_targets"]
+    blocked_meta = selection["blocked_meta"]
+    dead_meta = selection["dead_meta"]
+    rerouted = selection["rerouted"]
+    reroute_from = selection["reroute_from"]
 
     if not allowed_targets:
         reason = "all_targets_dead_locked" if dead_targets else "all_targets_on_cooldown"
@@ -108,6 +154,8 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "dead_targets": dead_targets,
             "blocked_meta": blocked_meta,
             "dead_meta": dead_meta,
+            "rerouted": rerouted,
+            "reroute_from": reroute_from,
             "execution": {"ok": False, "reason": reason},
             "validation": {"ok": False},
             "ok": False,
@@ -129,6 +177,8 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "dead_targets": dead_targets,
             "blocked_meta": blocked_meta,
             "dead_meta": dead_meta,
+            "rerouted": rerouted,
+            "reroute_from": reroute_from,
             "execution": execution_result,
             "validation": validation_result,
             "rollback": rollback_result,
@@ -149,6 +199,8 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         "dead_targets": dead_targets,
         "blocked_meta": blocked_meta,
         "dead_meta": dead_meta,
+        "rerouted": rerouted,
+        "reroute_from": reroute_from,
         "priority": priority,
         "execution": execution_result,
         "validation": validation_result,
@@ -182,16 +234,7 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         if not py_files:
             recommended = mesh_result.get("recommended_targets", [])
             if isinstance(recommended, list):
-                converted = []
-                for item in recommended:
-                    sp = str(item).strip()
-                    if not sp:
-                        continue
-                    if sp.endswith(".py"):
-                        converted.append(sp)
-                    else:
-                        converted.append(sp.replace(".", "/") + ".py")
-                py_files = converted
+                py_files = _normalize_targets(recommended)
 
         if result["ok"] and py_files:
             import_task = {
@@ -222,11 +265,19 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 if __name__ == "__main__":
     demo_task = {
         "problem": "broken_import_group",
-        "paths": ["core/policy/safety_policy.py"],
+        "paths": [
+            "core/policy/safety_policy.py",
+            "repo_analyzer.py",
+            "router.py",
+        ],
         "priority": "high",
         "payload": {
             "problem": "broken_import_group",
-            "paths": ["core/policy/safety_policy.py"],
+            "paths": [
+                "core/policy/safety_policy.py",
+                "repo_analyzer.py",
+                "router.py",
+            ],
         },
     }
     print(dispatch_task(demo_task))
