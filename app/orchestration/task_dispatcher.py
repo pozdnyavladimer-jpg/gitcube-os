@@ -115,7 +115,28 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
     priority = _task_priority(task)
 
     score = float(mesh_result.get("stabilization_score", 0.0) or 0.0)
-    if score < 0.6 and priority not in {"critical"}:
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    has_shadow_backup = bool(payload.get("has_shadow_backup", False))
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
+    mage_safe_problems = {
+        "broken_import_group",
+        "missing_init_group",
+        "missing_init",
+        "package_structure",
+        "structural_orphans_group",
+        "missing_module_group",
+        "broken_module_group",
+    }
+
+    emergency_pass = (
+        has_shadow_backup
+        and problem in mage_safe_problems
+        and priority in {"high", "critical"}
+    )
+
+    if score < 0.6 and priority not in {"critical"} and not emergency_pass:
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
