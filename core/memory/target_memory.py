@@ -21,6 +21,10 @@ PRIORITY_BASE = {
     "low": 1800,
 }
 
+NO_CHANGE_DEAD_THRESHOLD = 3
+VALIDATION_FAIL_DEAD_THRESHOLD = 2
+DEAD_LOCK_SECONDS = 24 * 3600
+
 
 def _now() -> datetime:
     return datetime.now(UTC)
@@ -63,6 +67,19 @@ def resolve_retry_cooldown(reason: str, attempts: int, priority: str = "normal")
     return max(base, LONG_RETRY_COOLDOWN_SECONDS)
 
 
+def _should_dead_lock(item: Dict[str, Any]) -> bool:
+    no_change_count = int(item.get("no_change_count", 0))
+    validation_fail_count = int(item.get("validation_fail_count", 0))
+
+    if validation_fail_count >= VALIDATION_FAIL_DEAD_THRESHOLD:
+        return True
+
+    if no_change_count >= NO_CHANGE_DEAD_THRESHOLD:
+        return True
+
+    return False
+
+
 def touch_targets(
     targets: List[str],
     reason: str = "",
@@ -73,6 +90,8 @@ def touch_targets(
     bucket = state.setdefault("targets", {})
     count = 0
 
+    reason_norm = str(reason or "").strip().lower()
+
     for target in targets:
         st = str(target).strip()
         if not st:
@@ -80,18 +99,37 @@ def touch_targets(
 
         old = bucket.get(st, {})
         attempts = int(old.get("attempts", 0)) + 1
+        no_change_count = int(old.get("no_change_count", 0))
+        validation_fail_count = int(old.get("validation_fail_count", 0))
+
+        if reason_norm == "import_no_change":
+            no_change_count += 1
+        elif reason_norm == "import_validation_failed":
+            validation_fail_count += 1
+        elif reason_norm == "import_fix_success":
+            no_change_count = 0
+            validation_fail_count = 0
 
         cd = cooldown_seconds
         if cd is None:
-            cd = resolve_retry_cooldown(reason, attempts, priority=priority)
+            cd = resolve_retry_cooldown(reason_norm, attempts, priority=priority)
 
-        bucket[st] = {
+        item = {
             "last_seen": _now_iso(),
-            "reason": reason,
+            "reason": reason_norm,
             "cooldown_seconds": int(cd),
             "attempts": attempts,
             "priority": priority,
+            "no_change_count": no_change_count,
+            "validation_fail_count": validation_fail_count,
         }
+
+        if _should_dead_lock(item):
+            dead_until = (_now() + timedelta(seconds=DEAD_LOCK_SECONDS)).isoformat()
+            item["dead_until"] = dead_until
+            item["dead_reason"] = reason_norm
+
+        bucket[st] = item
         count += 1
 
     _save_state(state)
@@ -114,7 +152,10 @@ def filter_targets_on_cooldown(targets: List[str], priority: str = "normal") -> 
 
     allowed: List[str] = []
     blocked: List[str] = []
+    dead: List[str] = []
+
     blocked_meta: Dict[str, Any] = {}
+    dead_meta: Dict[str, Any] = {}
 
     now = _now()
 
@@ -127,6 +168,24 @@ def filter_targets_on_cooldown(targets: List[str], priority: str = "normal") -> 
         if not item:
             allowed.append(st)
             continue
+
+        dead_until_raw = item.get("dead_until")
+        if dead_until_raw:
+            try:
+                dead_until = datetime.fromisoformat(dead_until_raw)
+                if now < dead_until:
+                    dead.append(st)
+                    dead_meta[st] = {
+                        "dead_until": dead_until.isoformat(),
+                        "attempts": int(item.get("attempts", 0)),
+                        "reason": item.get("dead_reason", item.get("reason", "")),
+                        "priority": item.get("priority", "normal"),
+                        "no_change_count": int(item.get("no_change_count", 0)),
+                        "validation_fail_count": int(item.get("validation_fail_count", 0)),
+                    }
+                    continue
+            except Exception:
+                pass
 
         try:
             last_seen = datetime.fromisoformat(item["last_seen"])
@@ -145,18 +204,23 @@ def filter_targets_on_cooldown(targets: List[str], priority: str = "normal") -> 
                 "attempts": attempts,
                 "reason": item.get("reason", ""),
                 "priority": saved_priority,
+                "no_change_count": int(item.get("no_change_count", 0)),
+                "validation_fail_count": int(item.get("validation_fail_count", 0)),
             }
         else:
             allowed.append(st)
 
     allowed = sorted(allowed, key=lambda x: _priority_rank(priority))
     blocked = sorted(blocked, key=lambda x: _priority_rank(blocked_meta.get(x, {}).get("priority", "normal")))
+    dead = sorted(dead, key=lambda x: _priority_rank(dead_meta.get(x, {}).get("priority", "normal")))
 
     return {
         "ok": True,
         "allowed": allowed,
         "blocked": blocked,
+        "dead": dead,
         "blocked_meta": blocked_meta,
+        "dead_meta": dead_meta,
     }
 
 

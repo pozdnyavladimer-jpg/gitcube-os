@@ -85,22 +85,30 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
     cooldown_filter = filter_targets_on_cooldown(target_files, priority=priority)
     allowed_targets = cooldown_filter.get("allowed", [])
     blocked_targets = cooldown_filter.get("blocked", [])
+    dead_targets = cooldown_filter.get("dead", [])
     blocked_meta = cooldown_filter.get("blocked_meta", {})
+    dead_meta = cooldown_filter.get("dead_meta", {})
 
-    # critical може обійти cooldown для першого target
+    # critical може обійти cooldown, але НЕ dead lock
     if not allowed_targets and priority == "critical" and target_files:
-        allowed_targets = [target_files[0]]
-        blocked_targets = [t for t in blocked_targets if t != target_files[0]]
-        blocked_meta.pop(target_files[0], None)
+        for candidate in target_files:
+            if candidate not in dead_targets:
+                allowed_targets = [candidate]
+                blocked_targets = [t for t in blocked_targets if t != candidate]
+                blocked_meta.pop(candidate, None)
+                break
 
     if not allowed_targets:
+        reason = "all_targets_dead_locked" if dead_targets else "all_targets_on_cooldown"
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
             "targets": target_files,
             "blocked_targets": blocked_targets,
+            "dead_targets": dead_targets,
             "blocked_meta": blocked_meta,
-            "execution": {"ok": False, "reason": "all_targets_on_cooldown"},
+            "dead_meta": dead_meta,
+            "execution": {"ok": False, "reason": reason},
             "validation": {"ok": False},
             "ok": False,
         }
@@ -118,7 +126,9 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "mesh": mesh_result,
             "targets": allowed_targets,
             "blocked_targets": blocked_targets,
+            "dead_targets": dead_targets,
             "blocked_meta": blocked_meta,
+            "dead_meta": dead_meta,
             "execution": execution_result,
             "validation": validation_result,
             "rollback": rollback_result,
@@ -136,7 +146,9 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         "mesh": mesh_result,
         "targets": allowed_targets,
         "blocked_targets": blocked_targets,
+        "dead_targets": dead_targets,
         "blocked_meta": blocked_meta,
+        "dead_meta": dead_meta,
         "priority": priority,
         "execution": execution_result,
         "validation": validation_result,
