@@ -1,5 +1,5 @@
-# FIXME broken import: from collections import defaultdict
-# FIXME broken import: import ast
+from collections import defaultdict
+import ast
 import os
 from typing import Dict, List, Set, Tuple
 
@@ -940,3 +940,7 @@ def analyze_repo(root: str = "."):
 
 if __name__ == "__main__":
     analyze_repo(".")
+
+
+def refresh_tasks_from_analyzer(root: str = "."):
+    return analyze_repo(root)
