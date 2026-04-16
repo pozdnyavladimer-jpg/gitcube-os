@@ -947,6 +947,22 @@ def analyze_repo(root: str = "."):
         created += int(ok)
         suppressed += int(not ok)
     print("ANALYZER_DONE")
+    return {
+        "ok": True,
+        "files_scanned": scanned,
+        "py_files": len(py_files),
+        "broken_imports": len(broken_imports),
+        "missing_init_dirs_safe": len(mage_missing_init_dirs),
+        "missing_init_dirs_general": len(general_missing_init_dirs),
+        "structural_orphans": len(structural_orphans),
+        "empty_dirs": len(empty_dirs),
+        "debug_print_files": len(debug_print_files),
+        "todo_files": len(todo_files),
+        "pass_blocks_files": len(pass_files),
+        "bare_except_files": len(bare_except_files),
+        "tasks_created": created,
+        "tasks_suppressed": suppressed,
+    }
     print("FILES_SCANNED:", scanned)
     print("PY_FILES:", len(py_files))
     print("BROKEN_IMPORTS:", len(broken_imports))
