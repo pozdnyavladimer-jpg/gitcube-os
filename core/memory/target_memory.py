@@ -101,6 +101,7 @@ def touch_targets(
         attempts = int(old.get("attempts", 0)) + 1
         no_change_count = int(old.get("no_change_count", 0))
         validation_fail_count = int(old.get("validation_fail_count", 0))
+        success_count = int(old.get("success_count", 0))
 
         if reason_norm == "import_no_change":
             no_change_count += 1
@@ -109,6 +110,7 @@ def touch_targets(
         elif reason_norm == "import_fix_success":
             no_change_count = 0
             validation_fail_count = 0
+            success_count += 1
 
         cd = cooldown_seconds
         if cd is None:
@@ -122,9 +124,13 @@ def touch_targets(
             "priority": priority,
             "no_change_count": no_change_count,
             "validation_fail_count": validation_fail_count,
+            "success_count": success_count,
         }
 
-        if _should_dead_lock(item):
+        if reason_norm == "import_fix_success":
+            item.pop("dead_until", None)
+            item.pop("dead_reason", None)
+        elif _should_dead_lock(item):
             dead_until = (_now() + timedelta(seconds=DEAD_LOCK_SECONDS)).isoformat()
             item["dead_until"] = dead_until
             item["dead_reason"] = reason_norm

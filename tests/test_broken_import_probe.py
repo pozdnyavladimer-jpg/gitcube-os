@@ -1,1 +1,1 @@
-# FIXME broken import: from core.execution.non_existing_module import GhostFix
+from core.execution.non_existing_module import GhostFix

@@ -915,7 +915,7 @@
     "type": "task",
     "title": "Repair broken imports across repo",
     "origin": "repo_analyzer_live_field",
-    "status": "open",
+    "status": "failed",
     "kind": "task",
     "intensity": 0.9,
     "novelty": 0.78,
@@ -952,7 +952,9 @@
     "related_to": [],
     "graph_depth": 0,
     "created_at": "2026-04-16T12:59:26.227927+00:00",
-    "updated_at": "2026-04-16T12:59:26.227939+00:00"
+    "updated_at": "2026-04-16T13:49:11.285004+00:00",
+    "result_path": "reports/task_task_10_20260416_134911.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
   },
   {
     "type": "task",
@@ -1165,6 +1167,702 @@
     "created_at": "2026-04-16T12:59:28.803739+00:00",
     "updated_at": "2026-04-16T12:59:28.957733+00:00",
     "result_path": "reports/task_task_15_20260416_125928.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_16",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:49:11.120231+00:00",
+    "updated_at": "2026-04-16T13:49:11.278228+00:00",
+    "result_path": "reports/task_task_16_20260416_134911.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe_2.py",
+          "import": "core.execution.ghost_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_17",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:50:52.162808+00:00",
+    "updated_at": "2026-04-16T13:50:52.326865+00:00",
+    "result_path": "reports/task_task_17_20260416_135052.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_18",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:50:52.164654+00:00",
+    "updated_at": "2026-04-16T13:50:52.322210+00:00",
+    "result_path": "reports/task_task_18_20260416_135052.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_19",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:50:52.166342+00:00",
+    "updated_at": "2026-04-16T13:50:52.318454+00:00",
+    "result_path": "reports/task_task_19_20260416_135052.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe_2.py",
+          "import": "core.execution.ghost_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_20",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:55:08.386298+00:00",
+    "updated_at": "2026-04-16T13:55:08.541463+00:00",
+    "result_path": "reports/task_task_20_20260416_135508.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_21",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:55:08.388196+00:00",
+    "updated_at": "2026-04-16T13:55:08.536761+00:00",
+    "result_path": "reports/task_task_21_20260416_135508.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_22",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:55:08.390043+00:00",
+    "updated_at": "2026-04-16T13:55:08.533127+00:00",
+    "result_path": "reports/task_task_22_20260416_135508.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe_2.py",
+          "import": "core.execution.ghost_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_23",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:57:32.058016+00:00",
+    "updated_at": "2026-04-16T13:57:32.223265+00:00",
+    "result_path": "reports/task_task_23_20260416_135732.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_24",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:57:32.060158+00:00",
+    "updated_at": "2026-04-16T13:57:32.217663+00:00",
+    "result_path": "reports/task_task_24_20260416_135732.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_25",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T13:57:32.062176+00:00",
+    "updated_at": "2026-04-16T13:57:32.213556+00:00",
+    "result_path": "reports/task_task_25_20260416_135732.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe_2.py",
+          "import": "core.execution.ghost_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_26",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:01:24.224846+00:00",
+    "updated_at": "2026-04-16T14:01:24.422409+00:00",
+    "result_path": "reports/task_task_26_20260416_140124.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 1,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_2_py|emit",
+    "live_emit": true,
+    "id": "task_27",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:01:24.227243+00:00",
+    "updated_at": "2026-04-16T14:01:24.417703+00:00",
+    "result_path": "reports/task_task_27_20260416_140124.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_28",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:01:24.229516+00:00",
+    "updated_at": "2026-04-16T14:01:24.411963+00:00",
+    "result_path": "reports/task_task_28_20260416_140124.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair broken imports across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.9,
+    "novelty": 0.78,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py",
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 2,
+      "examples": [
+        {
+          "file": "tests/test_broken_import_probe_2.py",
+          "import": "core.execution.ghost_module"
+        },
+        {
+          "file": "tests/test_broken_import_probe.py",
+          "import": "core.execution.non_existing_module"
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.82,
+      "flow": 0.22,
+      "structure": 0.16,
+      "balance": 0.31,
+      "law": 0.24,
+      "future": 0.71
+    },
+    "meta_key": "broken_import_group|path|high|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_29",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:05:58.565966+00:00",
+    "updated_at": "2026-04-16T14:05:58.730671+00:00",
+    "result_path": "reports/task_task_29_20260416_140558.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair explicit crashed imports",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.95,
+    "novelty": 0.82,
+    "payload": {
+      "problem": "broken_import_group",
+      "paths": [
+        "tests/test_broken_import_probe.py",
+        "tests/test_broken_import_probe_2.py"
+      ],
+      "count": 2,
+      "priority": "critical",
+      "executor_hint": "MAGE",
+      "has_shadow_backup": true
+    },
+    "resonance_vector": {
+      "pressure": 0.91,
+      "flow": 0.18,
+      "structure": 0.14,
+      "balance": 0.28,
+      "law": 0.22,
+      "future": 0.73
+    },
+    "meta_key": "broken_import_group|path|critical|repo_analyzer_v7|tests/test_broken_import_probe_py|emit",
+    "live_emit": true,
+    "id": "task_30",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:05:58.568705+00:00",
+    "updated_at": "2026-04-16T14:05:58.725284+00:00",
+    "result_path": "reports/task_task_30_20260416_140558.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_31",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-16T14:05:58.571139+00:00",
+    "updated_at": "2026-04-16T14:05:58.720414+00:00",
+    "result_path": "reports/task_task_31_20260416_140558.md",
     "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
   }
 ]

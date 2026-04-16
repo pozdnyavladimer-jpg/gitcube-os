@@ -257,6 +257,55 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
 
 
+
+
+def create_stub_module(module: str, class_name: str | None = None) -> str | None:
+    try:
+        path = module_to_py_path(module)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        if not path.exists():
+            with open(path, "w", encoding="utf-8") as f:
+                if class_name:
+                    f.write(f"class {class_name}:\n    pass\n")
+                else:
+                    f.write("# auto-generated stub\n")
+
+        # ensure __init__.py
+        init_path = path.parent / "__init__.py"
+        if not init_path.exists():
+            init_path.write_text("", encoding="utf-8")
+
+        return module
+    except Exception:
+        return None
+
+
+
+
+# === FORCE_STUB_TRIGGER ===
+def force_stub_from_imports(file_content: str):
+    lines = file_content.splitlines()
+    new_lines = []
+    changes = []
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("from ") and " import " in stripped:
+            parts = stripped.split()
+            if len(parts) >= 4:
+                module = parts[1]
+                name = parts[3]
+
+                created = create_stub_module(module, class_name=name)
+                if created:
+                    changes.append(module)
+
+        new_lines.append(line)
+
+    return "\n".join(new_lines), changes
+
+
 def try_fix_from_import(line: str, current_file_path: str, file_content: str) -> Tuple[str, Optional[Tuple[str, str]]]:
     stripped = line.strip()
 
@@ -284,6 +333,13 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
 
     if repaired == module:
         return line, None
+
+    # 👉 STUB fallback
+    tail = module.split(".")[-1]
+    created = create_stub_module(module, class_name=tail.capitalize())
+
+    if created:
+        return line, (module, created)
 
     return f"# FIXME broken import: {line}", None
 
@@ -314,6 +370,13 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
 
     if repaired == module:
         return line, None
+
+    # 👉 STUB fallback
+    tail = module.split(".")[-1]
+    created = create_stub_module(module, class_name=tail.capitalize())
+
+    if created:
+        return line, (module, created)
 
     return f"# FIXME broken import: {line}", None
 
