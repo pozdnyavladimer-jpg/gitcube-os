@@ -20,6 +20,13 @@ from core.memory.target_memory import (
 )
 
 
+def _task_priority(task: Dict[str, Any]) -> str:
+    value = str(task.get("priority", "normal")).strip().lower()
+    if value in {"critical", "high", "normal", "low"}:
+        return value
+    return "normal"
+
+
 def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> List[str]:
     recommended = mesh_result.get("recommended_targets", [])
     targets: List[str] = []
@@ -53,8 +60,10 @@ def _pick_cluster_targets(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> 
 
 
 def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[str, Any]:
+    priority = _task_priority(task)
+
     score = float(mesh_result.get("stabilization_score", 0.0) or 0.0)
-    if score < 0.6:
+    if score < 0.6 and priority not in {"critical"}:
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
@@ -73,10 +82,16 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "ok": False,
         }
 
-    cooldown_filter = filter_targets_on_cooldown(target_files)
+    cooldown_filter = filter_targets_on_cooldown(target_files, priority=priority)
     allowed_targets = cooldown_filter.get("allowed", [])
     blocked_targets = cooldown_filter.get("blocked", [])
     blocked_meta = cooldown_filter.get("blocked_meta", {})
+
+    # critical може обійти cooldown для першого target
+    if not allowed_targets and priority == "critical" and target_files:
+        allowed_targets = [target_files[0]]
+        blocked_targets = [t for t in blocked_targets if t != target_files[0]]
+        blocked_meta.pop(target_files[0], None)
 
     if not allowed_targets:
         return {
@@ -97,7 +112,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
     if execution_result.get("ok", False) and not validation_result.get("ok", False) and changed:
         rollback_result = rollback_changed_files(changed)
-        mark_target_validation_failed(allowed_targets)
+        mark_target_validation_failed(allowed_targets, priority=priority)
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
@@ -112,9 +127,9 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
     if changed and validation_result.get("ok", False):
         finalize_backups(changed)
-        mark_target_success(allowed_targets)
+        mark_target_success(allowed_targets, priority=priority)
     else:
-        mark_target_no_change(allowed_targets)
+        mark_target_no_change(allowed_targets, priority=priority)
 
     return {
         "route": "IMPORT_LLM_MESH",
@@ -122,6 +137,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         "targets": allowed_targets,
         "blocked_targets": blocked_targets,
         "blocked_meta": blocked_meta,
+        "priority": priority,
         "execution": execution_result,
         "validation": validation_result,
         "ok": mesh_result.get("ok", False)
