@@ -9,7 +9,10 @@ from typing import Dict, Any, List
 MEMORY_FILE = Path("reports/target_memory.json")
 MEMORY_FILE.parent.mkdir(exist_ok=True)
 
-DEFAULT_TARGET_COOLDOWN_SECONDS = 1800  # 30 хв
+DEFAULT_TARGET_COOLDOWN_SECONDS = 1800
+SHORT_RETRY_COOLDOWN_SECONDS = 300
+MEDIUM_RETRY_COOLDOWN_SECONDS = 900
+LONG_RETRY_COOLDOWN_SECONDS = 3600
 
 
 def _now() -> datetime:
@@ -36,26 +39,52 @@ def _save_state(state: Dict[str, Any]) -> None:
     )
 
 
+def resolve_retry_cooldown(reason: str, attempts: int) -> int:
+    reason = str(reason or "").strip().lower()
+
+    if "success" in reason:
+        return DEFAULT_TARGET_COOLDOWN_SECONDS
+
+    if attempts <= 1:
+        return SHORT_RETRY_COOLDOWN_SECONDS
+
+    if attempts <= 3:
+        return MEDIUM_RETRY_COOLDOWN_SECONDS
+
+    return LONG_RETRY_COOLDOWN_SECONDS
+
+
 def touch_targets(
     targets: List[str],
     reason: str = "",
-    cooldown_seconds: int = DEFAULT_TARGET_COOLDOWN_SECONDS,
+    cooldown_seconds: int | None = None,
 ) -> Dict[str, Any]:
     state = _load_state()
     bucket = state.setdefault("targets", {})
+    count = 0
 
     for target in targets:
         st = str(target).strip()
         if not st:
             continue
+
+        old = bucket.get(st, {})
+        attempts = int(old.get("attempts", 0)) + 1
+
+        cd = cooldown_seconds
+        if cd is None:
+            cd = resolve_retry_cooldown(reason, attempts)
+
         bucket[st] = {
             "last_seen": _now_iso(),
             "reason": reason,
-            "cooldown_seconds": int(cooldown_seconds),
+            "cooldown_seconds": int(cd),
+            "attempts": attempts,
         }
+        count += 1
 
     _save_state(state)
-    return {"ok": True, "count": len(targets)}
+    return {"ok": True, "count": count}
 
 
 def filter_targets_on_cooldown(targets: List[str]) -> Dict[str, Any]:
@@ -64,6 +93,7 @@ def filter_targets_on_cooldown(targets: List[str]) -> Dict[str, Any]:
 
     allowed: List[str] = []
     blocked: List[str] = []
+    blocked_meta: Dict[str, Any] = {}
 
     now = _now()
 
@@ -80,6 +110,7 @@ def filter_targets_on_cooldown(targets: List[str]) -> Dict[str, Any]:
         try:
             last_seen = datetime.fromisoformat(item["last_seen"])
             cooldown_seconds = int(item.get("cooldown_seconds", DEFAULT_TARGET_COOLDOWN_SECONDS))
+            attempts = int(item.get("attempts", 0))
         except Exception:
             allowed.append(st)
             continue
@@ -87,6 +118,11 @@ def filter_targets_on_cooldown(targets: List[str]) -> Dict[str, Any]:
         until = last_seen + timedelta(seconds=cooldown_seconds)
         if now < until:
             blocked.append(st)
+            blocked_meta[st] = {
+                "cooldown_until": until.isoformat(),
+                "attempts": attempts,
+                "reason": item.get("reason", ""),
+            }
         else:
             allowed.append(st)
 
@@ -94,7 +130,20 @@ def filter_targets_on_cooldown(targets: List[str]) -> Dict[str, Any]:
         "ok": True,
         "allowed": allowed,
         "blocked": blocked,
+        "blocked_meta": blocked_meta,
     }
+
+
+def mark_target_success(targets: List[str]) -> Dict[str, Any]:
+    return touch_targets(targets, reason="import_fix_success", cooldown_seconds=DEFAULT_TARGET_COOLDOWN_SECONDS)
+
+
+def mark_target_no_change(targets: List[str]) -> Dict[str, Any]:
+    return touch_targets(targets, reason="import_no_change", cooldown_seconds=None)
+
+
+def mark_target_validation_failed(targets: List[str]) -> Dict[str, Any]:
+    return touch_targets(targets, reason="import_validation_failed", cooldown_seconds=None)
 
 
 def clear_target(target: str) -> Dict[str, Any]:

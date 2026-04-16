@@ -14,7 +14,9 @@ from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
 from core.memory.target_memory import (
     filter_targets_on_cooldown,
-    touch_targets,
+    mark_target_success,
+    mark_target_no_change,
+    mark_target_validation_failed,
 )
 
 
@@ -74,6 +76,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
     cooldown_filter = filter_targets_on_cooldown(target_files)
     allowed_targets = cooldown_filter.get("allowed", [])
     blocked_targets = cooldown_filter.get("blocked", [])
+    blocked_meta = cooldown_filter.get("blocked_meta", {})
 
     if not allowed_targets:
         return {
@@ -81,6 +84,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "mesh": mesh_result,
             "targets": target_files,
             "blocked_targets": blocked_targets,
+            "blocked_meta": blocked_meta,
             "execution": {"ok": False, "reason": "all_targets_on_cooldown"},
             "validation": {"ok": False},
             "ok": False,
@@ -93,12 +97,13 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
     if execution_result.get("ok", False) and not validation_result.get("ok", False) and changed:
         rollback_result = rollback_changed_files(changed)
-        touch_targets(allowed_targets, reason="import_validation_failed", cooldown_seconds=300)
+        mark_target_validation_failed(allowed_targets)
         return {
             "route": "IMPORT_LLM_MESH",
             "mesh": mesh_result,
             "targets": allowed_targets,
             "blocked_targets": blocked_targets,
+            "blocked_meta": blocked_meta,
             "execution": execution_result,
             "validation": validation_result,
             "rollback": rollback_result,
@@ -107,15 +112,16 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
 
     if changed and validation_result.get("ok", False):
         finalize_backups(changed)
-        touch_targets(allowed_targets, reason="import_fix_success", cooldown_seconds=1800)
+        mark_target_success(allowed_targets)
     else:
-        touch_targets(allowed_targets, reason="import_no_change", cooldown_seconds=600)
+        mark_target_no_change(allowed_targets)
 
     return {
         "route": "IMPORT_LLM_MESH",
         "mesh": mesh_result,
         "targets": allowed_targets,
         "blocked_targets": blocked_targets,
+        "blocked_meta": blocked_meta,
         "execution": execution_result,
         "validation": validation_result,
         "ok": mesh_result.get("ok", False)
@@ -187,12 +193,12 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     demo_task = {
-        "problem": "structural_orphans_group",
-        "paths": ["core.policy.safety_policy"],
+        "problem": "broken_import_group",
+        "paths": ["core/policy/safety_policy.py"],
         "priority": "high",
         "payload": {
-            "problem": "structural_orphans_group",
-            "paths": ["core.policy.safety_policy"],
+            "problem": "broken_import_group",
+            "paths": ["core/policy/safety_policy.py"],
         },
     }
     print(dispatch_task(demo_task))
