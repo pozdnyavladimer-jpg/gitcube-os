@@ -83,6 +83,27 @@ def evaluate_tank_policy(
 
     allow_mage = stabilization_score >= required_score
 
+    problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+    mage_safe_problems = {
+        "broken_import_group",
+        "missing_init_group",
+        "missing_init",
+        "package_structure",
+        "structural_orphans_group",
+        "missing_module_group",
+        "broken_module_group",
+    }
+
+    emergency_pass = (
+        has_shadow_backup
+        and problem in mage_safe_problems
+        and priority in {"high", "critical"}
+    )
+
+    if emergency_pass and stabilization_score <= 0.05:
+        allow_mage = True
+        required_score = 0.0
+
     # додатковий "шанс Мага":
     # якщо є тінь + score вже не катастрофічний, пропускаємо
     if (not allow_mage) and has_shadow_backup and priority in {"high", "critical"} and stabilization_score >= 0.40:
@@ -98,7 +119,12 @@ def evaluate_tank_policy(
         "stabilization_score": round(stabilization_score, 3),
         "avg_tension": round(avg_tension, 3),
         "required_score": round(required_score, 3),
-        "note": "mage_cleared" if allow_mage else "blocked_low_stabilization_score",
+        "note": (
+            "mage_emergency_pass"
+            if allow_mage and emergency_pass and stabilization_score <= 0.05
+            else "mage_cleared" if allow_mage
+            else "blocked_low_stabilization_score"
+        ),
         "policy_owner": "TANK",
         "policy_version": "adaptive_shadow_v2",
     }
