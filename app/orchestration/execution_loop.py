@@ -5,12 +5,11 @@ from typing import Dict, Any, Optional
 
 from runtime_experimental.object_store import (
     get_latest_open_task,
-    touch_task,
 )
 from actor_executor import execute_party, execute_pair
 from router import should_use_party
 from repo_analyzer import refresh_tasks_from_analyzer
-from core.memory.task_cooldown import task_is_on_cooldown, mark_task_cooldown
+from core.memory.task_cooldown import is_task_on_cooldown, touch_task
 from core.memory.graph_weight_engine import apply_decay
 
 
@@ -46,14 +45,13 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
 
     task_id = str(task.get("id", "task_unknown"))
 
-    if task_is_on_cooldown(task_id):
+    if is_task_on_cooldown(task_id):
         return {
             "ok": True,
             "reason": "task_on_cooldown",
             "task_id": task_id,
         }
 
-    touch_task(task_id, meta={"title": task.get("title", "")})
 
     report_path = make_report_path(task)
     write_report_header(report_path, task)
@@ -64,7 +62,7 @@ def run_single_cycle(cooldown_seconds: int = 900) -> Dict[str, Any]:
         result = execute_pair(task, report_path)
 
     append_report_result(report_path, result)
-    mark_task_cooldown(task_id, cooldown_seconds=cooldown_seconds)
+    touch_task(task_id, cooldown_seconds=cooldown_seconds)
 
     return {
         "ok": True,
