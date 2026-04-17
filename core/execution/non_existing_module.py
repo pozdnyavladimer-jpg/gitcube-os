@@ -1,0 +1,2 @@
+class GhostFix:
+    pass

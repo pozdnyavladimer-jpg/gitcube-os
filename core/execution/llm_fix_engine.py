@@ -336,7 +336,10 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
 
     # 👉 STUB fallback
     tail = module.split(".")[-1]
-    created = create_stub_module(module, class_name=tail.capitalize())
+    imported_name = parts[3].strip()
+    if imported_name == "*":
+        imported_name = None
+    created = create_stub_module(module, class_name=imported_name)
 
     if created:
         return line, (module, created)
@@ -373,7 +376,10 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
 
     # 👉 STUB fallback
     tail = module.split(".")[-1]
-    created = create_stub_module(module, class_name=tail.capitalize())
+    imported_name = parts[3].strip()
+    if imported_name == "*":
+        imported_name = None
+    created = create_stub_module(module, class_name=imported_name)
 
     if created:
         return line, (module, created)

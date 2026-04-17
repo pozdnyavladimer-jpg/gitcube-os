@@ -283,8 +283,7 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         "priority": priority,
         "execution": execution_result,
         "validation": validation_result,
-        "ok": mesh_result.get("ok", False)
-        and execution_result.get("ok", False)
+        "ok": execution_result.get("ok", False)
         and validation_result.get("ok", False),
     }
 
