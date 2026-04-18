@@ -230,8 +230,10 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
         source_module=module,
         file_path=current_file_path,
     )
-    if remembered and module_exists(remembered):
-        return remembered
+    if remembered:
+        resolved = remembered.get("resolved_module")
+        if resolved and module_exists(resolved):
+            return resolved
 
     # 2. graph weights
     current_module = file_path_to_module(current_file_path) if current_file_path else ""
@@ -342,7 +344,16 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
     created = create_stub_module(module, class_name=imported_name)
 
     if created:
-        return line, (module, created)
+        record_import_fix(
+            problem_type="broken_import_group",
+            source_module=module,
+            resolved_module=module,
+            file_path=current_file_path,
+            symbol=imported_name,
+            kind="stub_fallback",
+            success=True,
+        )
+        return line, (module, module, imported_name, "stub_fallback")
 
     return f"# FIXME broken import: {line}", None
 
@@ -382,7 +393,16 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
     created = create_stub_module(module, class_name=imported_name)
 
     if created:
-        return line, (module, created)
+        record_import_fix(
+            problem_type="broken_import_group",
+            source_module=module,
+            resolved_module=module,
+            file_path=current_file_path,
+            symbol=imported_name,
+            kind="stub_fallback",
+            success=True,
+        )
+        return line, (module, module, imported_name, "stub_fallback")
 
     return f"# FIXME broken import: {line}", None
 
@@ -501,12 +521,23 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
     recorded = []
     current_module = file_path_to_module(path)
 
-    for source_module, resolved_module in learned_pairs:
+    for pair in learned_pairs:
+        symbol = ""
+        kind = "unknown"
+
+        if len(pair) >= 4:
+            source_module, resolved_module, symbol, kind = pair[0], pair[1], pair[2], pair[3]
+        else:
+            source_module, resolved_module = pair[0], pair[1]
+
         info = record_import_fix(
             problem_type="broken_import_group",
             source_module=source_module,
             resolved_module=resolved_module,
             file_path=path,
+            symbol=symbol,
+            kind=kind,
+            success=True,
         )
         recorded.append(info)
         reinforce_edge(current_module, resolved_module, weight_delta=1)
