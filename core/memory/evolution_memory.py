@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 
-STATE_FILE = Path("objects.json")
+STATE_FILE = Path("reports/evolution_memory.json")
 
 
 def _load_state() -> Dict[str, Any]:
@@ -129,6 +129,8 @@ def recall_import_fix(
 
 def list_rules() -> Dict[str, Any]:
     state = _load_state()
+    if isinstance(state, list):
+        return {"ok": True, "rules": state}
     return {"ok": True, "rules": state.get("rules", [])}
 
 
