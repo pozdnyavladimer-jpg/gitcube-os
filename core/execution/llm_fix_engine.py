@@ -215,6 +215,51 @@ def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neig
     return None
 
 
+
+
+def find_memory_fix(module: str, symbol: str, current_file_path: str = "") -> Optional[Dict[str, Any]]:
+    module = str(module or "").strip().strip(".")
+    symbol = str(symbol or "").strip()
+
+    if not module:
+        return None
+
+    remembered = recall_import_fix(
+        problem_type="broken_import_group",
+        source_module=module,
+        file_path=current_file_path,
+    )
+
+    if not remembered:
+        remembered = recall_import_fix(
+            problem_type="broken_import_group",
+            source_module=module.split("core.")[-1],
+            file_path="",
+        )
+
+    if not remembered:
+        return None
+
+    resolved = str(remembered.get("resolved_module", "")).strip()
+    remembered_symbol = str(remembered.get("symbol", "")).strip()
+    remembered_source = str(remembered.get("source_module", "")).strip().strip(".")
+
+    if not resolved:
+        return None
+
+    module_ok = (
+        module == remembered_source
+        or module.endswith(remembered_source)
+        or remembered_source.endswith(module)
+    )
+    if not module_ok:
+        return None
+
+    if symbol and remembered_symbol and symbol != remembered_symbol:
+        return None
+
+    return remembered
+
 def find_repo_module(module: str, current_file_path: str = "", file_content: str = "") -> Optional[str]:
     module = str(module).strip()
     if not module:
@@ -319,6 +364,9 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
         return line, None
 
     module = parts[1]
+    imported_name = parts[3].strip()
+    if imported_name == "*":
+        imported_name = ""
 
     if module.startswith("."):
         return line, None
@@ -328,6 +376,18 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
 
     if module_exists(module):
         return line, None
+
+    memory_fix = find_memory_fix(module, imported_name, current_file_path=current_file_path)
+    if memory_fix:
+        resolved_module = str(memory_fix.get("resolved_module", "")).strip()
+        remembered_symbol = str(memory_fix.get("symbol", "")).strip()
+
+        class_name = imported_name or remembered_symbol or None
+
+        if resolved_module:
+            created = create_stub_module(resolved_module, class_name=class_name)
+            if created:
+                return line, (module, resolved_module, class_name, "memory_fast_path")
 
     repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
@@ -462,6 +522,46 @@ def cleanup_backup(backup_path: str) -> None:
 
 
 def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
+
+    # === FAST PATH: import fix BEFORE LLM ===
+    try:
+        from pathlib import Path as _Path
+
+        content = _Path(path).read_text(encoding="utf-8")
+
+        new_lines = []
+        changed = False
+
+        for line in content.splitlines():
+            if line.strip().startswith("from ") and " import " in line:
+                fixed_line, info = try_fix_from_import(
+                    line,
+                    current_file_path=path,
+                    file_content=content,
+                )
+                if info:
+                    changed = True
+                    new_lines.append(fixed_line)
+                else:
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+
+        if changed:
+            new_content = "\n".join(new_lines)
+            _Path(path).write_text(new_content, encoding="utf-8")
+
+            return {
+                "ok": True,
+                "reason": "memory_or_simple_fix_applied",
+                "changed_files": [path],
+            }
+
+    except Exception as e:
+        print("force_try_fix_error:", e)
+
+    # === END FAST PATH ===
+
     path = str(path).strip()
     if not path or not os.path.exists(path):
         return {
