@@ -1,14 +1,705 @@
-{
-  "rules": [
-    {
-      "problem_type": "broken_import_group",
-      "source_module": "core.execution.non_existing_module",
-      "resolved_module": "core.execution.non_existing_module",
-      "symbol": "GhostFix",
-      "kind": "stub_fallback",
-      "file_path": "tests/test_broken_import_probe.py",
-      "success_count": 1,
-      "fail_count": 0
-    }
-  ]
-}
+[
+  {
+    "type": "task",
+    "title": "Repair structural orphans across repo",
+    "origin": "repo_analyzer_live_field",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.82,
+    "novelty": 0.73,
+    "payload": {
+      "problem": "structural_orphans_group",
+      "paths": [
+        "__init__.py",
+        "cleanup_ghosts.py",
+        "force_mage_seed.py",
+        "inject_task.py",
+        "patch_select_task_v2.py",
+        "test_broken.py",
+        "v_core_field_engine.py",
+        "v_core_self_stabilizing_mesh.py"
+      ],
+      "count": 8,
+      "priority": "high",
+      "executor_hint": "MAGE"
+    },
+    "resonance_vector": {
+      "pressure": 0.66,
+      "flow": 0.18,
+      "structure": 0.22,
+      "balance": 0.37,
+      "law": 0.26,
+      "future": 0.74
+    },
+    "meta_key": "structural_orphans_group|path|high|repo_analyzer_v7|__init___py|emit",
+    "live_emit": true,
+    "id": "task_1",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-18T07:21:43.028304+00:00",
+    "updated_at": "2026-04-18T07:21:43.290558+00:00",
+    "result_path": "reports/task_task_1_20260418_072143.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Detect isolated modules",
+    "origin": "repo_analyzer_v7",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.72,
+    "novelty": 0.68,
+    "payload": {
+      "problem": "isolated_module_group",
+      "paths": [
+        "app.orchestration",
+        "bridges",
+        "bridges.generated",
+        "core.analysis",
+        "core.decision_kernel",
+        "core.execution",
+        "core.field",
+        "core.field.field_state",
+        "core.field.role_lens",
+        "core.memory",
+        "core.policy",
+        "core.policy.safety_policy",
+        "core.validation",
+        "docs.architecture",
+        "environments",
+        "examples",
+        "examples.compare_modes",
+        "examples.demo_binary_cube",
+        "examples.demo_image_cube",
+        "examples.demo_story"
+      ],
+      "count": 48,
+      "priority": "medium",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "isolated",
+        "module_names": [
+          "app.orchestration",
+          "bridges",
+          "bridges.generated",
+          "core.analysis",
+          "core.decision_kernel",
+          "core.execution",
+          "core.field",
+          "core.field.field_state",
+          "core.field.role_lens",
+          "core.memory",
+          "core.policy",
+          "core.policy.safety_policy",
+          "core.validation",
+          "docs.architecture",
+          "environments",
+          "examples",
+          "examples.compare_modes",
+          "examples.demo_binary_cube",
+          "examples.demo_image_cube",
+          "examples.demo_story"
+        ],
+        "neighbors": {},
+        "in_degree": {
+          "app.orchestration": 0,
+          "bridges": 0,
+          "bridges.generated": 0,
+          "core.analysis": 0,
+          "core.decision_kernel": 0,
+          "core.execution": 0,
+          "core.field": 0,
+          "core.field.field_state": 0,
+          "core.field.role_lens": 0,
+          "core.memory": 0,
+          "core.policy": 0,
+          "core.policy.safety_policy": 0,
+          "core.validation": 0,
+          "docs.architecture": 0,
+          "environments": 0,
+          "examples": 0,
+          "examples.compare_modes": 0,
+          "examples.demo_binary_cube": 0,
+          "examples.demo_image_cube": 0,
+          "examples.demo_story": 0
+        },
+        "out_degree": {
+          "app.orchestration": 0,
+          "bridges": 0,
+          "bridges.generated": 0,
+          "core.analysis": 0,
+          "core.decision_kernel": 0,
+          "core.execution": 0,
+          "core.field": 0,
+          "core.field.field_state": 0,
+          "core.field.role_lens": 0,
+          "core.memory": 0,
+          "core.policy": 0,
+          "core.policy.safety_policy": 0,
+          "core.validation": 0,
+          "docs.architecture": 0,
+          "environments": 0,
+          "examples": 0,
+          "examples.compare_modes": 0,
+          "examples.demo_binary_cube": 0,
+          "examples.demo_image_cube": 0,
+          "examples.demo_story": 0
+        }
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.55,
+      "flow": 0.12,
+      "structure": 0.22,
+      "balance": 0.4,
+      "law": 0.38,
+      "future": 0.7
+    },
+    "meta_key": "isolated_module_group|path|medium|repo_analyzer_v7|app_orchestration",
+    "id": "task_2",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-18T07:21:43.231494+00:00",
+    "updated_at": "2026-04-18T07:21:43.281972+00:00",
+    "result_path": "reports/task_task_2_20260418_072143.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  },
+  {
+    "type": "task",
+    "title": "Detect overcoupled modules",
+    "origin": "repo_analyzer_v7",
+    "status": "skipped",
+    "kind": "task",
+    "intensity": 0.84,
+    "novelty": 0.76,
+    "payload": {
+      "problem": "overcoupled_module_group",
+      "paths": [
+        "app.state_engine",
+        "core.state",
+        "runtime_experimental.object_store",
+        "runtime_experimental.os_sync"
+      ],
+      "count": 4,
+      "examples": [
+        {
+          "module": "app.state_engine",
+          "in_degree": 5,
+          "out_degree": 9,
+          "neighbors": [
+            "core.state",
+            "runtime.adaptive_bindu",
+            "runtime.agent_loop",
+            "runtime.agent_modes",
+            "runtime.binary_cube",
+            "runtime.fractal_vision",
+            "runtime.perelman_guard",
+            "runtime.school_layer",
+            "runtime.transition_memory"
+          ]
+        },
+        {
+          "module": "core.state",
+          "in_degree": 10,
+          "out_degree": 0,
+          "neighbors": []
+        },
+        {
+          "module": "runtime_experimental.object_store",
+          "in_degree": 12,
+          "out_degree": 0,
+          "neighbors": []
+        },
+        {
+          "module": "runtime_experimental.os_sync",
+          "in_degree": 0,
+          "out_degree": 13,
+          "neighbors": [
+            "core.state",
+            "runtime_experimental.agent_loop",
+            "runtime_experimental.agents_logic",
+            "runtime_experimental.explorer_sensor",
+            "runtime_experimental.external_task_guard",
+            "runtime_experimental.field_engine",
+            "runtime_experimental.lab_bridge",
+            "runtime_experimental.navigator_bridge",
+            "runtime_experimental.object_store",
+            "runtime_experimental.pressure_policy"
+          ]
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "overcoupled",
+        "module_names": [
+          "app.state_engine",
+          "core.state",
+          "runtime_experimental.object_store",
+          "runtime_experimental.os_sync"
+        ],
+        "neighbors": {
+          "app.state_engine": [
+            "core.state",
+            "runtime.adaptive_bindu",
+            "runtime.agent_loop",
+            "runtime.agent_modes",
+            "runtime.binary_cube",
+            "runtime.fractal_vision",
+            "runtime.perelman_guard",
+            "runtime.school_layer",
+            "runtime.transition_memory"
+          ],
+          "core.state": [],
+          "runtime_experimental.object_store": [],
+          "runtime_experimental.os_sync": [
+            "core.state",
+            "runtime_experimental.agent_loop",
+            "runtime_experimental.agents_logic",
+            "runtime_experimental.explorer_sensor",
+            "runtime_experimental.external_task_guard",
+            "runtime_experimental.field_engine",
+            "runtime_experimental.lab_bridge",
+            "runtime_experimental.navigator_bridge",
+            "runtime_experimental.object_store",
+            "runtime_experimental.pressure_policy"
+          ]
+        },
+        "in_degree": {
+          "app.state_engine": 5,
+          "core.state": 10,
+          "runtime_experimental.object_store": 12,
+          "runtime_experimental.os_sync": 0
+        },
+        "out_degree": {
+          "app.state_engine": 9,
+          "core.state": 0,
+          "runtime_experimental.object_store": 0,
+          "runtime_experimental.os_sync": 13
+        }
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.78,
+      "flow": 0.32,
+      "structure": 0.41,
+      "balance": 0.35,
+      "law": 0.44,
+      "future": 0.66
+    },
+    "meta_key": "overcoupled_module_group|path|high|repo_analyzer_v7|app_state_engine",
+    "id": "task_3",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-18T07:21:43.232964+00:00",
+    "updated_at": "2026-04-18T07:21:43.275320+00:00",
+    "result_path": "reports/task_task_3_20260418_072143.md",
+    "execution_reason": "primary=MAGE;support=HEALER;pair_reason=mage+healer:structural_super_priority,high_pressure,low_balance,pair_bonus,memory_bias;primary_failed"
+  },
+  {
+    "type": "task",
+    "title": "Detect missing bridges across clusters",
+    "origin": "repo_analyzer_v7",
+    "status": "failed",
+    "kind": "task",
+    "intensity": 0.8,
+    "novelty": 0.77,
+    "payload": {
+      "problem": "missing_bridge_group",
+      "paths": [
+        "app.orchestration",
+        "bridges",
+        "bridges.generated",
+        "core.analysis",
+        "core.decision_kernel",
+        "core.execution",
+        "core.field",
+        "core.field.field_state",
+        "core.field.role_lens",
+        "core.memory",
+        "core.policy",
+        "core.policy.safety_policy",
+        "core.validation",
+        "docs.architecture",
+        "environments",
+        "examples",
+        "examples.compare_modes",
+        "examples.demo_binary_cube",
+        "examples.demo_image_cube",
+        "examples.demo_story"
+      ],
+      "count": 48,
+      "examples": [
+        {
+          "module": "app.orchestration",
+          "from_cluster": "app",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ]
+        },
+        {
+          "module": "bridges",
+          "from_cluster": "bridges",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ]
+        },
+        {
+          "module": "bridges.generated",
+          "from_cluster": "bridges",
+          "to_cluster": "core",
+          "suggested_neighbors": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ]
+        },
+        {
+          "module": "core.analysis",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.decision_kernel",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.execution",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.field",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.field.field_state",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.field.role_lens",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        {
+          "module": "core.memory",
+          "from_cluster": "core",
+          "to_cluster": "app",
+          "suggested_neighbors": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        }
+      ],
+      "priority": "high",
+      "executor_hint": "MAGE",
+      "topology_context": {
+        "cluster_id": "bridges",
+        "module_names": [
+          "app.orchestration",
+          "bridges",
+          "bridges.generated",
+          "core.analysis",
+          "core.decision_kernel",
+          "core.execution",
+          "core.field",
+          "core.field.field_state",
+          "core.field.role_lens",
+          "core.memory",
+          "core.policy",
+          "core.policy.safety_policy",
+          "core.validation",
+          "docs.architecture",
+          "environments",
+          "examples",
+          "examples.compare_modes",
+          "examples.demo_binary_cube",
+          "examples.demo_image_cube",
+          "examples.demo_story"
+        ],
+        "neighbors": {
+          "app.orchestration": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ],
+          "bridges": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ],
+          "bridges.generated": [
+            "core",
+            "core.analysis",
+            "core.cube_validator",
+            "core.decision_kernel",
+            "core.evaluation"
+          ],
+          "core.analysis": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.decision_kernel": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.execution": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.field": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.field.field_state": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.field.role_lens": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ],
+          "core.memory": [
+            "app",
+            "app.live_agent",
+            "app.orchestration",
+            "app.orchestration.execution_loop",
+            "app.orchestration.router_engine"
+          ]
+        },
+        "bridges": [
+          {
+            "module": "app.orchestration",
+            "from_cluster": "app",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.analysis",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation"
+            ]
+          },
+          {
+            "module": "bridges",
+            "from_cluster": "bridges",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.analysis",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation"
+            ]
+          },
+          {
+            "module": "bridges.generated",
+            "from_cluster": "bridges",
+            "to_cluster": "core",
+            "suggested_neighbors": [
+              "core",
+              "core.analysis",
+              "core.cube_validator",
+              "core.decision_kernel",
+              "core.evaluation"
+            ]
+          },
+          {
+            "module": "core.analysis",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.decision_kernel",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.execution",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.field",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.field.field_state",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.field.role_lens",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          },
+          {
+            "module": "core.memory",
+            "from_cluster": "core",
+            "to_cluster": "app",
+            "suggested_neighbors": [
+              "app",
+              "app.live_agent",
+              "app.orchestration",
+              "app.orchestration.execution_loop",
+              "app.orchestration.router_engine"
+            ]
+          }
+        ]
+      }
+    },
+    "resonance_vector": {
+      "pressure": 0.64,
+      "flow": 0.22,
+      "structure": 0.31,
+      "balance": 0.39,
+      "law": 0.36,
+      "future": 0.74
+    },
+    "meta_key": "missing_bridge_group|path|high|repo_analyzer_v7|app_orchestration",
+    "id": "task_4",
+    "published_to_github": false,
+    "github_url": "",
+    "parent_id": null,
+    "related_to": [],
+    "graph_depth": 0,
+    "created_at": "2026-04-18T07:21:43.237044+00:00",
+    "updated_at": "2026-04-18T07:21:43.263093+00:00",
+    "result_path": "reports/task_task_4_20260418_072143.md",
+    "execution_reason": "leader=TANK;builder=MAGE;stabilizer=HEALER;guard=TANK;mage_failed"
+  }
+]
