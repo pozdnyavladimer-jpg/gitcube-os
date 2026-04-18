@@ -164,10 +164,15 @@ def filter_targets_on_cooldown(targets: List[str], priority: str = "normal") -> 
     dead_meta: Dict[str, Any] = {}
 
     now = _now()
+    force_allow = str(priority or "normal").strip().lower() == "critical"
 
     for target in targets:
         st = str(target).strip()
         if not st:
+            continue
+
+        if force_allow:
+            allowed.append(st)
             continue
 
         item = bucket.get(st)
