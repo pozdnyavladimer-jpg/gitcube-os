@@ -54,7 +54,7 @@ def normalize_token(value: str) -> str:
 
 
 def similarity(a: str, b: str) -> float:
-    return difflib.difflib.SequenceMatcher(None, normalize_token(a), normalize_token(b)).ratio()
+    return difflib.SequenceMatcher(None, normalize_token(a), normalize_token(b)).ratio()
 
 
 def path_to_module(path: Path) -> str:
