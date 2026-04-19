@@ -101,6 +101,17 @@ def record_import_fix(
     source_module = _normalize_module_name(source_module)
     resolved_module = _normalize_module_name(resolved_module)
 
+    if _should_skip_learning_module(source_module) or _should_skip_learning_module(resolved_module):
+        return {
+            "ok": False,
+            "reason": "skip_learning_for_stdlib_or_alias",
+            "source_module": source_module,
+            "resolved_module": resolved_module,
+        }
+
+    source_module = _normalize_module_name(source_module)
+    resolved_module = _normalize_module_name(resolved_module)
+
     for rule in rules:
         if (
             rule.get("problem_type") == problem_type
