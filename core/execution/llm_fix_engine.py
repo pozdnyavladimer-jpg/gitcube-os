@@ -9,6 +9,7 @@ from typing import Dict, Any, List, Optional, Tuple
 
 from core.memory.evolution_memory import recall_import_fix, record_import_fix
 from core.memory.graph_weight_engine import reinforce_edge, get_heaviest_neighbors
+import difflib
 
 
 REPO_ROOT = Path(".")
@@ -53,7 +54,7 @@ def normalize_token(value: str) -> str:
 
 
 def similarity(a: str, b: str) -> float:
-    return SequenceMatcher(None, normalize_token(a), normalize_token(b)).ratio()
+    return difflib.SequenceMatcher(None, normalize_token(a), normalize_token(b)).ratio()
 
 
 def path_to_module(path: Path) -> str:
