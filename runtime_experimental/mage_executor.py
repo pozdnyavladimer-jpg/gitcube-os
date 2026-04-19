@@ -57,8 +57,18 @@ def _merge_scope_paths(task: Dict[str, Any], max_scope_paths: int = 6) -> Dict[s
     if not isinstance(dependents_map, dict):
         dependents_map = {}
 
+    visited_paths = prepared.get("_visited_paths", [])
+    if not isinstance(visited_paths, list):
+        visited_paths = []
+
     merged: List[str] = []
     seen = set()
+    visited = set()
+
+    for vp in visited_paths:
+        sv = str(vp).strip()
+        if sv:
+            visited.add(sv)
 
     for item in original_paths:
         sp = str(item).strip()
@@ -70,6 +80,7 @@ def _merge_scope_paths(task: Dict[str, Any], max_scope_paths: int = 6) -> Dict[s
         payload["paths"] = merged
         prepared["payload"] = payload
         prepared["_scope_paths_added"] = 0
+        prepared["_visited_paths"] = sorted(visited.union(set(merged)))
         return prepared
 
     scope_modules: List[str] = []
@@ -94,7 +105,7 @@ def _merge_scope_paths(task: Dict[str, Any], max_scope_paths: int = 6) -> Dict[s
     added = 0
     for mod in scope_modules:
         path = _scope_module_to_path(mod)
-        if not path or path in seen or not _path_exists(path):
+        if not path or path in seen or path in visited or not _path_exists(path):
             continue
         if added >= max_scope_paths:
             break
@@ -110,6 +121,7 @@ def _merge_scope_paths(task: Dict[str, Any], max_scope_paths: int = 6) -> Dict[s
         "max_scope_paths": max_scope_paths,
         "mode": "direct_dependents_only" if priority != "critical" else "critical_bounded_wave",
     }
+    prepared["_visited_paths"] = sorted(visited.union(set(merged)))
     return prepared
 
 

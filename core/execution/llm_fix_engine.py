@@ -9,7 +9,7 @@ from typing import Dict, Any, List, Optional, Tuple
 from core.memory.evolution_memory import recall_import_fix, record_import_fix
 from core.memory.graph_weight_engine import reinforce_edge, get_heaviest_neighbors
 import repo_difflib as difflib
-import difflib
+import repo_difflib
 
 
 REPO_ROOT = Path(".")
@@ -126,6 +126,7 @@ def exact_or_package_match(module: str) -> Optional[str]:
 
 
 def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -> List[str]:
+    tail = module.split(".")[-1]
     candidates: List[str] = []
 
     for ns in get_file_namespace(file_path):
@@ -169,6 +170,7 @@ def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -
 
 
 def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neighbor_modules: List[str]) -> Optional[str]:
+    tail = module.split(".")[-1]
     exact_tail_matches = [m for m in repo_modules if m.split(".")[-1] == tail]
     if len(exact_tail_matches) == 1:
         return exact_tail_matches[0]
@@ -263,6 +265,8 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     module = str(module).strip()
     if not module:
         return None
+
+    tail = module.split(".")[-1]
 
     exact = exact_or_package_match(module)
     if exact:
