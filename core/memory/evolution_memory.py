@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Any, List, Optional
 import json
+import sys
 from pathlib import Path
 
 
@@ -25,6 +26,50 @@ def _normalize(value: str) -> str:
     return str(value or "").strip()
 
 
+def _normalize_module_name(value: str) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    if " as " in raw:
+        raw = raw.split(" as ", 1)[0].strip()
+    return raw.strip(".")
+
+
+def _should_skip_learning_module(value: str) -> bool:
+    module = _normalize_module_name(value)
+    if not module:
+        return True
+
+    root = module.split(".", 1)[0]
+
+    blocked = {
+        "os",
+        "sys",
+        "re",
+        "json",
+        "math",
+        "typing",
+        "pathlib",
+        "subprocess",
+        "datetime",
+        "collections",
+        "shutil",
+        "difflib",
+        "builtins",
+        "__future__",
+    }
+
+    stdlib_names = set(getattr(sys, "stdlib_module_names", set()))
+    builtin_names = set(getattr(sys, "builtin_module_names", tuple()))
+
+    return (
+        root in blocked
+        or root in stdlib_names
+        or root in builtin_names
+        or " as " in str(value or "")
+    )
+
+
 def record_import_fix(
     problem_type: str,
     source_module: str,
@@ -44,6 +89,17 @@ def record_import_fix(
 
     if not problem_type or not source_module or not resolved_module:
         return {"ok": False, "reason": "missing_required_fields"}
+
+    if _should_skip_learning_module(source_module) or _should_skip_learning_module(resolved_module):
+        return {
+            "ok": False,
+            "reason": "skip_learning_for_stdlib_or_alias",
+            "source_module": source_module,
+            "resolved_module": resolved_module,
+        }
+
+    source_module = _normalize_module_name(source_module)
+    resolved_module = _normalize_module_name(resolved_module)
 
     for rule in rules:
         if (
