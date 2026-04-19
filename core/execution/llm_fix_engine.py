@@ -4,11 +4,11 @@ import os
 import re
 import shutil
 from pathlib import Path
-from difflib import SequenceMatcher
 from typing import Dict, Any, List, Optional, Tuple
 
 from core.memory.evolution_memory import recall_import_fix, record_import_fix
 from core.memory.graph_weight_engine import reinforce_edge, get_heaviest_neighbors
+import repo_difflib as difflib
 import difflib
 
 
@@ -126,7 +126,6 @@ def exact_or_package_match(module: str) -> Optional[str]:
 
 
 def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -> List[str]:
-    tail = module.split(".")[-1]
     candidates: List[str] = []
 
     for ns in get_file_namespace(file_path):
@@ -170,7 +169,6 @@ def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -
 
 
 def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neighbor_modules: List[str]) -> Optional[str]:
-    tail = module.split(".")[-1]
     exact_tail_matches = [m for m in repo_modules if m.split(".")[-1] == tail]
     if len(exact_tail_matches) == 1:
         return exact_tail_matches[0]
@@ -285,8 +283,7 @@ def find_repo_module(module: str, current_file_path: str = "", file_content: str
     current_module = file_path_to_module(current_file_path) if current_file_path else ""
     if current_module:
         heavy_neighbors = get_heaviest_neighbors(current_module, limit=5)
-        tail = module.split(".")[-1]
-
+    
         for heavy in heavy_neighbors:
             if heavy == module and module_exists(heavy):
                 return heavy
@@ -398,11 +395,7 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
         return line, None
 
     # 👉 STUB fallback
-    tail = module.split(".")[-1]
-    imported_name = parts[3].strip()
-    if imported_name == "*":
-        imported_name = None
-    created = create_stub_module(module, class_name=imported_name)
+    created = create_stub_module(module, class_name=None)
 
     if created:
         record_import_fix(
@@ -410,11 +403,11 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
             source_module=module,
             resolved_module=module,
             file_path=current_file_path,
-            symbol=imported_name,
+            symbol="",
             kind="stub_fallback",
             success=True,
         )
-        return line, (module, module, imported_name, "stub_fallback")
+        return line, (module, module, "", "stub_fallback")
 
     return f"# FIXME broken import: {line}", None
 
@@ -447,11 +440,7 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
         return line, None
 
     # 👉 STUB fallback
-    tail = module.split(".")[-1]
-    imported_name = parts[3].strip()
-    if imported_name == "*":
-        imported_name = None
-    created = create_stub_module(module, class_name=imported_name)
+    created = create_stub_module(module, class_name=None)
 
     if created:
         record_import_fix(
@@ -459,11 +448,11 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
             source_module=module,
             resolved_module=module,
             file_path=current_file_path,
-            symbol=imported_name,
+            symbol="",
             kind="stub_fallback",
             success=True,
         )
-        return line, (module, module, imported_name, "stub_fallback")
+        return line, (module, module, "", "stub_fallback")
 
     return f"# FIXME broken import: {line}", None
 
