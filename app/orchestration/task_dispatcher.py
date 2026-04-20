@@ -288,6 +288,191 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
     }
 
 
+
+def _merge_priority(events: List[Dict[str, Any]]) -> str:
+    order = {
+        "critical": 0,
+        "high": 1,
+        "normal": 2,
+        "low": 3,
+    }
+
+    best = "normal"
+    best_rank = order[best]
+
+    for ev in events:
+        rank = order.get(_task_priority(ev), 2)
+        if rank < best_rank:
+            best_rank = rank
+            for name, value in order.items():
+                if value == rank:
+                    best = name
+                    break
+
+    return best
+
+
+def build_kernel_state() -> Dict[str, Any]:
+    return {
+        "mode": "idle",
+        "tick": 0,
+        "last_route": "",
+        "last_problem": "",
+        "last_result": None,
+        "pending_events": [],
+        "merged_task": None,
+        "hotspots": {},
+    }
+
+
+def ingest_event(kernel_state: Dict[str, Any], event: Dict[str, Any]) -> Dict[str, Any]:
+    state = dict(kernel_state or {})
+    pending = list(state.get("pending_events", []))
+    pending.append(dict(event or {}))
+    state["pending_events"] = pending
+    return state
+
+
+def merge_pending_events(kernel_state: Dict[str, Any]) -> Dict[str, Any]:
+    state = dict(kernel_state or {})
+    pending = list(state.get("pending_events", []))
+
+    raw_paths: List[str] = []
+    problems: List[str] = []
+    scope_payloads: List[Dict[str, Any]] = []
+
+    for ev in pending:
+        payload = dict(ev.get("payload", {}) or {})
+
+        ev_paths = payload.get("paths", [])
+        if isinstance(ev_paths, list):
+            raw_paths.extend(str(p).strip() for p in ev_paths if str(p).strip())
+
+        problem = str(payload.get("problem", ev.get("problem", ""))).strip().lower()
+        if problem:
+            problems.append(problem)
+
+        if isinstance(ev.get("_repair_scope"), dict):
+            scope_payloads.append(dict(ev["_repair_scope"]))
+
+    merged_problem = problems[0] if problems else "broken_import_group"
+    merged_priority = _merge_priority(pending)
+    merged_paths = _normalize_targets(raw_paths)[:8]
+
+    merged_scope: Dict[str, Any] = {
+        "targets": [],
+        "dependents": {},
+        "scope": [],
+    }
+
+    seen_targets = set()
+    seen_scope = set()
+
+    for scope_info in scope_payloads:
+        targets = scope_info.get("targets", [])
+        if isinstance(targets, list):
+            for t in targets:
+                st = str(t).strip()
+                if st and st not in seen_targets:
+                    seen_targets.add(st)
+                    merged_scope["targets"].append(st)
+
+        dependents = scope_info.get("dependents", {})
+        if isinstance(dependents, dict):
+            for k, v in dependents.items():
+                sk = str(k).strip()
+                if not sk:
+                    continue
+                merged_scope["dependents"].setdefault(sk, [])
+                if isinstance(v, list):
+                    for item in v:
+                        sv = str(item).strip()
+                        if sv and sv not in merged_scope["dependents"][sk]:
+                            merged_scope["dependents"][sk].append(sv)
+
+        scope = scope_info.get("scope", [])
+        if isinstance(scope, list):
+            for item in scope:
+                sv = str(item).strip()
+                if sv and sv not in seen_scope:
+                    seen_scope.add(sv)
+                    merged_scope["scope"].append(sv)
+
+    merged_task = {
+        "id": f"tick_{int(state.get('tick', 0)) + 1}",
+        "priority": merged_priority,
+        "payload": {
+            "problem": merged_problem,
+            "paths": merged_paths,
+            "has_shadow_backup": merged_problem in MAGE_SAFE_PROBLEMS,
+            "executor_hint": "MAGE" if merged_problem in MAGE_SAFE_PROBLEMS else "",
+        },
+    }
+
+    if merged_scope["targets"] or merged_scope["scope"]:
+        merged_task["_repair_scope"] = merged_scope
+
+    state["pending_events"] = []
+    state["merged_task"] = merged_task
+    return state
+
+
+def dispatch_tick(kernel_state: Dict[str, Any]) -> Dict[str, Any]:
+    state = dict(kernel_state or {})
+    state["tick"] = int(state.get("tick", 0)) + 1
+
+    pending = list(state.get("pending_events", []))
+    if not pending:
+        state["mode"] = "idle"
+        state["last_result"] = {
+            "ok": True,
+            "reason": "no_pending_events",
+            "tick": state["tick"],
+        }
+        return state
+
+    state["mode"] = "sense"
+    state = merge_pending_events(state)
+
+    task = dict(state.get("merged_task", {}) or {})
+    if not task:
+        state["mode"] = "idle"
+        state["last_result"] = {
+            "ok": False,
+            "reason": "merged_task_missing",
+            "tick": state["tick"],
+        }
+        return state
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    state["last_problem"] = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+
+    state["mode"] = "route"
+    result = dispatch_task(task)
+
+    state["last_route"] = str(result.get("route", "")).strip()
+    state["last_result"] = result
+
+    validation = result.get("validation", {}) if isinstance(result.get("validation"), dict) else {}
+    execution = result.get("execution", {}) if isinstance(result.get("execution"), dict) else {}
+
+    if result.get("ok", False):
+        state["mode"] = "cooldown"
+    elif execution.get("reason") in {"all_targets_on_cooldown", "all_targets_dead_locked"}:
+        state["mode"] = "cooldown"
+    elif validation.get("ok", True) is False:
+        state["mode"] = "repair"
+    else:
+        state["mode"] = "idle"
+
+    hotspots = dict(state.get("hotspots", {}) or {})
+    problem = state["last_problem"] or "unknown_problem"
+    hotspots[problem] = int(hotspots.get(problem, 0)) + 1
+    state["hotspots"] = hotspots
+
+    return state
+
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
