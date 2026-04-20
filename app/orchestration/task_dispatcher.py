@@ -12,6 +12,7 @@ from core.execution.llm_fix_engine import (
 )
 from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
+from core.utils.shadow_autofix import autofix_shadowed_stdlib
 from core.memory.target_memory import (
     filter_targets_on_cooldown,
     mark_target_success,
@@ -546,6 +547,18 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         result["reason"] = result.get("reason", "fallback_import_mesh")
         result["route"] = "IMPORT_LLM_MESH_FALLBACK"
         return result
+
+
+    if problem == "shadow_stdlib_group":
+        execution_result = autofix_shadowed_stdlib(".", apply=True)
+        validation_result = {"ok": execution_result.get("ok", False), "errors": []}
+        return {
+            "route": "SHADOW_STDLIB_AUTOFIX",
+            "execution": execution_result,
+            "validation": validation_result,
+            "ok": execution_result.get("ok", False),
+            "reason": execution_result.get("reason", "shadow_stdlib_autofix"),
+        }
 
     return {
         "route": route,
