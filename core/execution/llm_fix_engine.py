@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import re
-import repo_shutil
+import shutil
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 
@@ -14,26 +14,49 @@ from core.utils.repo_similarity_bridge import blended_similarity
 REPO_ROOT = Path(".")
 
 
-def build_prompt(task: Dict[str, Any], original_content: str, path: str) -> str:
-    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
-    problem = str(payload.get("problem", task.get("problem", ""))).strip()
-    return f"""Task type: {problem}
-Target file: {path}
+FORBIDDEN_MODULES = {
+    "os",
+    "sys",
+    "re",
+    "difflib",
+    "json",
+    "math",
+    "typing",
+    "pathlib",
+    "subprocess",
+    "datetime",
+    "collections",
+    "shutil",
+    "asyncio",
+    "functools",
+    "itertools",
+    "traceback",
+    "tokenize",
+    "linecache",
+    "urllib",
+    "argparse",
+}
 
-Allowed actions:
-- fix obviously broken imports
-- preserve unrelated code
-- prefer valid in-repo module paths
-- keep relative imports intact
-- comment import only if no valid repo replacement exists
 
-Forbidden actions:
-- delete unrelated logic
-- rename public APIs
-- rewrite the whole file without need
+def is_forbidden_module(module: str) -> bool:
+    module = str(module or "").strip()
+    if not module:
+        return True
+    if module in FORBIDDEN_MODULES:
+        return True
+    return any(module.startswith(name + ".") for name in FORBIDDEN_MODULES)
 
-Return only corrected file content.
-"""
+
+def is_alias_import(line: str) -> bool:
+    return " as " in str(line or "")
+
+
+def normalize_token(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
+
+
+def similarity(a: str, b: str) -> float:
+    return blended_similarity(normalize_token(a), normalize_token(b))
 
 
 def module_to_py_path(module: str) -> Path:
@@ -45,15 +68,9 @@ def module_to_package_init(module: str) -> Path:
 
 
 def module_exists(module: str) -> bool:
+    if is_forbidden_module(module):
+        return False
     return module_to_py_path(module).exists() or module_to_package_init(module).exists()
-
-
-def normalize_token(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "", value.lower())
-
-
-def similarity(a: str, b: str) -> float:
-    return blended_similarity(normalize_token(a), normalize_token(b))
 
 
 def path_to_module(path: Path) -> str:
@@ -74,50 +91,101 @@ def file_path_to_module(path: str) -> str:
 def list_repo_modules() -> List[str]:
     modules: List[str] = []
     for path in REPO_ROOT.rglob("*.py"):
-        if ".venv" in path.parts or "__pycache__" in path.parts or ".git" in path.parts:
+        if ".git" in path.parts or ".venv" in path.parts or "__pycache__" in path.parts:
             continue
         try:
-            modules.append(path_to_module(path))
+            mod = path_to_module(path)
+            if not is_forbidden_module(mod):
+                modules.append(mod)
         except Exception:
             continue
     return sorted(set(modules))
+
+
+def extract_neighbor_modules(file_content: str) -> List[str]:
+    found: List[str] = []
+
+    for raw in str(file_content or "").splitlines():
+        line = raw.strip()
+
+        if line.startswith("from ") and " import " in line:
+            parts = line.split()
+            if len(parts) >= 4:
+                mod = parts[1].strip()
+                if mod and not mod.startswith(".") and not is_forbidden_module(mod):
+                    found.append(mod)
+
+        elif line.startswith("import "):
+            payload = line.replace("import ", "", 1).strip()
+            if payload and "," not in payload and not payload.startswith(".") and not is_forbidden_module(payload):
+                found.append(payload)
+
+    return list(dict.fromkeys(found))
 
 
 def get_file_namespace(path: str) -> List[str]:
     p = Path(path)
     parent = p.parent
     parts = [x for x in parent.parts if x not in {".", ""}]
-    namespaces: List[str] = []
+    out: List[str] = []
 
     if parts:
         for i in range(len(parts), 0, -1):
-            namespaces.append(".".join(parts[:i]))
+            out.append(".".join(parts[:i]))
 
-    return namespaces
+    return out
 
 
-def extract_neighbor_modules(file_content: str) -> List[str]:
-    found: List[str] = []
+def find_memory_fix(module: str, symbol: str, current_file_path: str = "") -> Optional[Dict[str, Any]]:
+    module = str(module or "").strip().strip(".")
+    symbol = str(symbol or "").strip()
 
-    for raw in file_content.splitlines():
-        line = raw.strip()
-        if line.startswith("from ") and " import " in line:
-            parts = line.split()
-            if len(parts) >= 4:
-                mod = parts[1].strip()
-                if mod and not mod.startswith("."):
-                    found.append(mod)
-        elif line.startswith("import "):
-            payload = line.replace("import ", "", 1).strip()
-            if payload and "," not in payload and not payload.startswith("."):
-                found.append(payload)
+    if not module or is_forbidden_module(module):
+        return None
 
-    return list(dict.fromkeys(found))
+    remembered = recall_import_fix(
+        problem_type="broken_import_group",
+        source_module=module,
+        file_path=current_file_path,
+    )
+
+    if not remembered and module.startswith("core."):
+        remembered = recall_import_fix(
+            problem_type="broken_import_group",
+            source_module=module.split("core.", 1)[-1],
+            file_path="",
+        )
+
+    if not remembered:
+        return None
+
+    resolved = str(remembered.get("resolved_module", "")).strip()
+    remembered_symbol = str(remembered.get("symbol", "")).strip()
+    remembered_source = str(remembered.get("source_module", "")).strip().strip(".")
+
+    if not resolved or is_forbidden_module(resolved):
+        return None
+
+    module_ok = (
+        module == remembered_source
+        or module.endswith(remembered_source)
+        or remembered_source.endswith(module)
+    )
+    if not module_ok:
+        return None
+
+    if symbol and remembered_symbol and symbol != remembered_symbol:
+        return None
+
+    if module_exists(resolved):
+        return remembered
+
+    return None
 
 
 def exact_or_package_match(module: str) -> Optional[str]:
-    module = str(module).strip()
-    if not module:
+    module = str(module or "").strip()
+    if not module or is_forbidden_module(module):
         return None
     if module_exists(module):
         return module
@@ -125,6 +193,9 @@ def exact_or_package_match(module: str) -> Optional[str]:
 
 
 def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -> List[str]:
+    if is_forbidden_module(module):
+        return []
+
     tail = module.split(".")[-1]
     candidates: List[str] = []
 
@@ -156,37 +227,46 @@ def orbit_candidates(module: str, file_path: str, neighbor_modules: List[str]) -
         candidates.append(f"{root}.{tail}")
         candidates.append(f"{root}.{module}")
 
-    unique: List[str] = []
+    out: List[str] = []
     seen = set()
-    for c in candidates:
-        c = c.strip(".")
-        if not c or c in seen:
+
+    for item in candidates:
+        item = item.strip(".")
+        if not item or item in seen or is_forbidden_module(item):
             continue
-        seen.add(c)
-        unique.append(c)
+        seen.add(item)
+        out.append(item)
 
-    return unique
+    return out
 
 
-def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neighbor_modules: List[str]) -> Optional[str]:
+def fuzzy_find_module(
+    module: str,
+    repo_modules: List[str],
+    file_path: str,
+    neighbor_modules: List[str],
+) -> Optional[str]:
+    if is_forbidden_module(module):
+        return None
+
     tail = module.split(".")[-1]
     exact_tail_matches = [m for m in repo_modules if m.split(".")[-1] == tail]
     if len(exact_tail_matches) == 1:
         return exact_tail_matches[0]
 
-    weighted: List[Tuple[float, str]] = []
-
     preferred_prefixes = get_file_namespace(file_path)
-    neighbor_prefixes = []
+    neighbor_prefixes: List[str] = []
+
     for nm in neighbor_modules:
         if "." in nm:
             neighbor_prefixes.append(nm.rsplit(".", 1)[0])
 
+    weighted: List[Tuple[float, str]] = []
+
     for candidate in repo_modules:
         score = similarity(module, candidate)
 
-        cand_tail = candidate.split(".")[-1]
-        if cand_tail == tail:
+        if candidate.split(".")[-1] == tail:
             score += 0.20
 
         for pref in preferred_prefixes:
@@ -205,6 +285,7 @@ def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neig
         weighted.append((score, candidate))
 
     weighted.sort(reverse=True, key=lambda x: x[0])
+
     if not weighted:
         return None
 
@@ -215,147 +296,57 @@ def fuzzy_find_module(module: str, repo_modules: List[str], file_path: str, neig
     return None
 
 
-
-
-def find_memory_fix(module: str, symbol: str, current_file_path: str = "") -> Optional[Dict[str, Any]]:
-    module = str(module or "").strip().strip(".")
-    symbol = str(symbol or "").strip()
-
-    if not module:
-        return None
-
-    remembered = recall_import_fix(
-        problem_type="broken_import_group",
-        source_module=module,
-        file_path=current_file_path,
-    )
-
-    if not remembered:
-        remembered = recall_import_fix(
-            problem_type="broken_import_group",
-            source_module=module.split("core.")[-1],
-            file_path="",
-        )
-
-    if not remembered:
-        return None
-
-    resolved = str(remembered.get("resolved_module", "")).strip()
-    remembered_symbol = str(remembered.get("symbol", "")).strip()
-    remembered_source = str(remembered.get("source_module", "")).strip().strip(".")
-
-    if not resolved:
-        return None
-
-    module_ok = (
-        module == remembered_source
-        or module.endswith(remembered_source)
-        or remembered_source.endswith(module)
-    )
-    if not module_ok:
-        return None
-
-    if symbol and remembered_symbol and symbol != remembered_symbol:
-        return None
-
-    return remembered
-
 def find_repo_module(module: str, current_file_path: str = "", file_content: str = "") -> Optional[str]:
     module = str(module).strip()
-    if not module:
+    if not module or is_forbidden_module(module):
         return None
-
-    tail = module.split(".")[-1]
 
     exact = exact_or_package_match(module)
     if exact:
         return exact
 
-    # 1. memory reflex
     remembered = recall_import_fix(
         problem_type="broken_import_group",
         source_module=module,
         file_path=current_file_path,
     )
     if remembered:
-        resolved = remembered.get("resolved_module")
-        if resolved and module_exists(resolved):
+        resolved = str(remembered.get("resolved_module", "")).strip()
+        if resolved and not is_forbidden_module(resolved) and module_exists(resolved):
             return resolved
 
-    # 2. graph weights
     current_module = file_path_to_module(current_file_path) if current_file_path else ""
     if current_module:
         heavy_neighbors = get_heaviest_neighbors(current_module, limit=5)
-    
+        tail = module.split(".")[-1]
+
         for heavy in heavy_neighbors:
+            if is_forbidden_module(heavy):
+                continue
             if heavy == module and module_exists(heavy):
                 return heavy
             if heavy.split(".")[-1] == tail and module_exists(heavy):
                 return heavy
 
-    # 3. orbit search
     neighbor_modules = extract_neighbor_modules(file_content) if file_content else []
 
     for candidate in orbit_candidates(module, current_file_path, neighbor_modules):
         if module_exists(candidate):
             return candidate
 
-    # 4. fuzzy
     repo_modules = list_repo_modules()
     return fuzzy_find_module(module, repo_modules, current_file_path, neighbor_modules)
 
 
-
-
-def create_stub_module(module: str, class_name: str | None = None) -> str | None:
-    try:
-        path = module_to_py_path(module)
-        path.parent.mkdir(parents=True, exist_ok=True)
-
-        if not path.exists():
-            with open(path, "w", encoding="utf-8") as f:
-                if class_name:
-                    f.write(f"class {class_name}:\n    pass\n")
-                else:
-                    f.write("# auto-generated stub\n")
-
-        # ensure __init__.py
-        init_path = path.parent / "__init__.py"
-        if not init_path.exists():
-            init_path.write_text("", encoding="utf-8")
-
-        return module
-    except Exception:
-        return None
-
-
-
-
-# === FORCE_STUB_TRIGGER ===
-def force_stub_from_imports(file_content: str):
-    lines = file_content.splitlines()
-    new_lines = []
-    changes = []
-
-    for line in lines:
-        stripped = line.strip()
-        if stripped.startswith("from ") and " import " in stripped:
-            parts = stripped.split()
-            if len(parts) >= 4:
-                module = parts[1]
-                name = parts[3]
-
-                created = create_stub_module(module, class_name=name)
-                if created:
-                    changes.append(module)
-
-        new_lines.append(line)
-
-    return "\n".join(new_lines), changes
-
-
-def try_fix_from_import(line: str, current_file_path: str, file_content: str) -> Tuple[str, Optional[Tuple[str, str]]]:
+def try_fix_from_import(
+    line: str,
+    current_file_path: str,
+    file_content: str,
+) -> Tuple[str, Optional[Tuple[str, str, str, str]]]:
     stripped = line.strip()
+
+    if is_alias_import(line):
+        return line, None
 
     if not (stripped.startswith("from ") and " import " in stripped):
         return line, None
@@ -369,10 +360,7 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
     if imported_name == "*":
         imported_name = ""
 
-    if module.startswith("."):
-        return line, None
-
-    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
+    if module.startswith(".") or is_forbidden_module(module):
         return line, None
 
     if module_exists(module):
@@ -381,42 +369,31 @@ def try_fix_from_import(line: str, current_file_path: str, file_content: str) ->
     memory_fix = find_memory_fix(module, imported_name, current_file_path=current_file_path)
     if memory_fix:
         resolved_module = str(memory_fix.get("resolved_module", "")).strip()
-        remembered_symbol = str(memory_fix.get("symbol", "")).strip()
-
-        class_name = imported_name or remembered_symbol or None
-
-        if resolved_module:
-            created = create_stub_module(resolved_module, class_name=class_name)
-            if created:
-                return line, (module, resolved_module, class_name, "memory_fast_path")
+        if resolved_module and not is_forbidden_module(resolved_module):
+            return (
+                line.replace(f"from {module} import", f"from {resolved_module} import", 1),
+                (module, resolved_module, imported_name, "memory_fast_path"),
+            )
 
     repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
-        return line.replace(f"from {module} import", f"from {repaired} import", 1), (module, repaired)
-
-    if repaired == module:
-        return line, None
-
-    # 👉 STUB fallback
-    created = create_stub_module(module, class_name=None)
-
-    if created:
-        record_import_fix(
-            problem_type="broken_import_group",
-            source_module=module,
-            resolved_module=module,
-            file_path=current_file_path,
-            symbol="",
-            kind="stub_fallback",
-            success=True,
+        return (
+            line.replace(f"from {module} import", f"from {repaired} import", 1),
+            (module, repaired, imported_name, "fuzzy_or_graph_fix"),
         )
-        return line, (module, module, "", "stub_fallback")
 
-    return f"# FIXME broken import: {line}", None
+    return line, None
 
 
-def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -> Tuple[str, Optional[Tuple[str, str]]]:
+def try_fix_plain_import(
+    line: str,
+    current_file_path: str,
+    file_content: str,
+) -> Tuple[str, Optional[Tuple[str, str, str, str]]]:
     stripped = line.strip()
+
+    if is_alias_import(line):
+        return line, None
 
     if not stripped.startswith("import "):
         return line, None
@@ -426,10 +403,7 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
 
     module = stripped.replace("import ", "", 1).strip()
 
-    if not module or module.startswith("."):
-        return line, None
-
-    if module in {"os", "sys", "json", "math", "typing", "pathlib", "subprocess", "datetime", "collections"}:
+    if not module or module.startswith(".") or is_forbidden_module(module):
         return line, None
 
     if module_exists(module):
@@ -437,33 +411,43 @@ def try_fix_plain_import(line: str, current_file_path: str, file_content: str) -
 
     repaired = find_repo_module(module, current_file_path=current_file_path, file_content=file_content)
     if repaired and repaired != module:
-        return line.replace(f"import {module}", f"import {repaired}", 1), (module, repaired)
-
-    if repaired == module:
-        return line, None
-
-    # 👉 STUB fallback
-    created = create_stub_module(module, class_name=None)
-
-    if created:
-        record_import_fix(
-            problem_type="broken_import_group",
-            source_module=module,
-            resolved_module=module,
-            file_path=current_file_path,
-            symbol="",
-            kind="stub_fallback",
-            success=True,
+        return (
+            line.replace(f"import {module}", f"import {repaired}", 1),
+            (module, repaired, "", "fuzzy_or_graph_fix"),
         )
-        return line, (module, module, "", "stub_fallback")
 
-    return f"# FIXME broken import: {line}", None
+    return line, None
+
+def build_prompt(task: Dict[str, Any], original_content: str, path: str) -> str:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+    problem = str(payload.get("problem", task.get("problem", ""))).strip()
+    return f"""Task type: {problem}
+Target file: {path}
+
+Allowed actions:
+- fix obviously broken imports
+- preserve unrelated code
+- prefer valid in-repo module paths
+- keep relative imports intact
+
+Forbidden actions:
+- create stdlib shadow files
+- delete unrelated logic
+- rename public APIs
+- rewrite the whole file without need
+
+Return only corrected file content.
+"""
 
 
-def request_fix(prompt: str, original_content: str, current_file_path: str) -> Tuple[str, List[Tuple[str, str]]]:
+def request_fix(
+    prompt: str,
+    original_content: str,
+    current_file_path: str,
+) -> Tuple[str, List[Tuple[str, str, str, str]]]:
     lines = original_content.splitlines()
-    fixed = []
-    learned_pairs: List[Tuple[str, str]] = []
+    fixed: List[str] = []
+    learned_pairs: List[Tuple[str, str, str, str]] = []
 
     for line in lines:
         stripped = line.strip()
@@ -487,6 +471,7 @@ def request_fix(prompt: str, original_content: str, current_file_path: str) -> T
     result = "\n".join(fixed)
     if original_content.endswith("\n"):
         result += "\n"
+
     return result, learned_pairs
 
 
@@ -515,46 +500,6 @@ def cleanup_backup(backup_path: str) -> None:
 
 
 def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
-
-    # === FAST PATH: import fix BEFORE LLM ===
-    try:
-        from pathlib import Path as _Path
-
-        content = _Path(path).read_text(encoding="utf-8")
-
-        new_lines = []
-        changed = False
-
-        for line in content.splitlines():
-            if line.strip().startswith("from ") and " import " in line:
-                fixed_line, info = try_fix_from_import(
-                    line,
-                    current_file_path=path,
-                    file_content=content,
-                )
-                if info:
-                    changed = True
-                    new_lines.append(fixed_line)
-                else:
-                    new_lines.append(line)
-            else:
-                new_lines.append(line)
-
-        if changed:
-            new_content = "\n".join(new_lines)
-            _Path(path).write_text(new_content, encoding="utf-8")
-
-            return {
-                "ok": True,
-                "reason": "memory_or_simple_fix_applied",
-                "changed_files": [path],
-            }
-
-    except Exception as e:
-        print("force_try_fix_error:", e)
-
-    # === END FAST PATH ===
-
     path = str(path).strip()
     if not path or not os.path.exists(path):
         return {
@@ -566,8 +511,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
         }
 
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            original = f.read()
+        original = Path(path).read_text(encoding="utf-8")
     except Exception as e:
         return {
             "ok": False,
@@ -583,7 +527,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
     if not isinstance(fixed, str) or not fixed.strip():
         return {
             "ok": False,
-            "reason": "llm_empty_result",
+            "reason": "empty_result",
             "changed_files": [],
             "backup_files": [],
             "learned_rules": [],
@@ -592,7 +536,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
     if fixed == original:
         return {
             "ok": True,
-            "reason": "llm_no_change",
+            "reason": "no_change",
             "changed_files": [],
             "backup_files": [],
             "learned_rules": [],
@@ -600,8 +544,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
 
     try:
         backup_path = make_backup(path)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(fixed)
+        Path(path).write_text(fixed, encoding="utf-8")
     except Exception as e:
         return {
             "ok": False,
@@ -614,15 +557,7 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
     recorded = []
     current_module = file_path_to_module(path)
 
-    for pair in learned_pairs:
-        symbol = ""
-        kind = "unknown"
-
-        if len(pair) >= 4:
-            source_module, resolved_module, symbol, kind = pair[0], pair[1], pair[2], pair[3]
-        else:
-            source_module, resolved_module = pair[0], pair[1]
-
+    for source_module, resolved_module, symbol, kind in learned_pairs:
         info = record_import_fix(
             problem_type="broken_import_group",
             source_module=source_module,
@@ -633,7 +568,9 @@ def apply_llm_fix(task: Dict[str, Any], path: str) -> Dict[str, Any]:
             success=True,
         )
         recorded.append(info)
-        reinforce_edge(current_module, resolved_module, weight_delta=1)
+
+        if resolved_module and not is_forbidden_module(resolved_module):
+            reinforce_edge(current_module, resolved_module, weight_delta=1)
 
     return {
         "ok": True,
@@ -694,24 +631,59 @@ def apply_llm_fix_multi(task: Dict[str, Any], paths: List[str]) -> Dict[str, Any
 
 
 def rollback_changed_files(changed_files: List[str]) -> Dict[str, Any]:
-    restored = []
-    failed = []
+    restored: List[str] = []
+    missing_backups: List[str] = []
+    failed: List[Dict[str, str]] = []
 
     for path in changed_files:
-        backup_path = f"{path}.bak"
-        ok = restore_backup(path, backup_path)
-        if ok:
+        backup = f"{path}.bak"
+        if not os.path.exists(backup):
+            missing_backups.append(path)
+            continue
+
+        try:
+            shutil.copy2(backup, path)
             restored.append(path)
-        else:
-            failed.append(path)
+        except Exception as e:
+            failed.append({"path": path, "reason": str(e)})
 
     return {
         "ok": len(failed) == 0,
         "restored": restored,
+        "missing_backups": missing_backups,
         "failed": failed,
     }
 
 
-def finalize_backups(changed_files: List[str]) -> None:
+def finalize_backups(changed_files: List[str]) -> Dict[str, Any]:
+    removed: List[str] = []
+    failed: List[Dict[str, str]] = []
+
     for path in changed_files:
-        cleanup_backup(f"{path}.bak")
+        backup = f"{path}.bak"
+        if not os.path.exists(backup):
+            continue
+
+        try:
+            os.remove(backup)
+            removed.append(backup)
+        except Exception as e:
+            failed.append({"path": backup, "reason": str(e)})
+
+    return {
+        "ok": len(failed) == 0,
+        "removed": removed,
+        "failed": failed,
+    }
+
+
+if __name__ == "__main__":
+    demo_task = {
+        "priority": "high",
+        "payload": {
+            "problem": "broken_import_group",
+            "paths": ["core/execution/llm_fix_engine.py"],
+            "has_shadow_backup": True,
+        },
+    }
+    print(apply_llm_fix_multi(demo_task, ["core/execution/llm_fix_engine.py"]))
