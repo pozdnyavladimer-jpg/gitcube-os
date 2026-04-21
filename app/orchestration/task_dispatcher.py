@@ -577,13 +577,31 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     if problem == "shadow_stdlib_group":
         execution_result = autofix_shadowed_stdlib(".", apply=True)
         validation_result = {"ok": execution_result.get("ok", False), "errors": []}
-        return {
+
+        shadow_changed_files = []
+        actions = execution_result.get("actions", [])
+        if isinstance(actions, list):
+            for action in actions:
+                if isinstance(action, dict):
+                    to_path = str(action.get("to", "")).strip()
+                    if to_path:
+                        shadow_changed_files.append(to_path)
+
+        execution_payload = {
+            **execution_result,
+            "changed_files": shadow_changed_files,
+        }
+
+        result = {
             "route": "SHADOW_STDLIB_AUTOFIX",
-            "execution": execution_result,
+            "execution": execution_payload,
             "validation": validation_result,
             "ok": execution_result.get("ok", False),
             "reason": execution_result.get("reason", "shadow_stdlib_autofix"),
         }
+
+        result["auto_commit"] = _maybe_auto_commit(result, problem)
+        return result
 
     return {
         "route": route,
