@@ -238,3 +238,23 @@ Volodymyr Pozdnyak
 «Codebases should organize themselves.»
 
 GitCube OS is a step toward autonomous software evolution.
+
+## Runtime Safety
+
+GitCube OS protects itself against dangerous stdlib shadowing.
+
+It detects files like:
+
+- json.py
+- re.py
+- difflib.py
+
+and routes them into a dedicated repair path:
+
+detect → shadow_stdlib_group → SHADOW_STDLIB_AUTOFIX → validate
+
+- shadow stdlib detection (re.py, json.py, difflib.py, etc.)
+- automatic shadow autofix via safe rename
+- runtime event loop (v-kernel daemon)
+- validation + cooldown after repair
+- 
