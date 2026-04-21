@@ -13,6 +13,7 @@ from core.execution.llm_fix_engine import (
 from core.validation.healer_validator import validate_changed_files
 from core.validation.import_validator import validate_import_targets
 from core.utils.shadow_autofix import autofix_shadowed_stdlib
+from core.utils.auto_commit import auto_commit_changes
 from core.memory.target_memory import (
     filter_targets_on_cooldown,
     mark_target_success,
@@ -180,6 +181,24 @@ def _select_reroute_targets(
     }
 
 
+
+def _maybe_auto_commit(result: Dict[str, Any], problem: str) -> Dict[str, Any]:
+    execution = result.get("execution", {}) if isinstance(result.get("execution"), dict) else {}
+    changed_files = execution.get("changed_files", [])
+
+    if not result.get("ok", False):
+        return {"ok": False, "reason": "result_not_ok"}
+
+    if not changed_files:
+        return {"ok": False, "reason": "no_changed_files"}
+
+    if result.get("rollback"):
+        return {"ok": False, "reason": "rollback_present"}
+
+    message = f"auto-repair: {problem}"
+    return auto_commit_changes(changed_files, message)
+
+
 def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[str, Any]:
     priority = _task_priority(task)
 
@@ -265,13 +284,15 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
             "ok": False,
         }
 
+    auto_commit_result = {"ok": False, "reason": "not_attempted"}
+
     if changed and validation_result.get("ok", False):
         finalize_backups(changed)
         mark_target_success(allowed_targets, priority=priority)
     else:
         mark_target_no_change(allowed_targets, priority=priority)
 
-    return {
+    result = {
         "route": "IMPORT_LLM_MESH",
         "mesh": mesh_result,
         "targets": allowed_targets,
@@ -287,6 +308,10 @@ def _run_import_mesh(task: Dict[str, Any], mesh_result: Dict[str, Any]) -> Dict[
         "ok": execution_result.get("ok", False)
         and validation_result.get("ok", False),
     }
+
+    auto_commit_result = _maybe_auto_commit(result, problem)
+    result["auto_commit"] = auto_commit_result
+    return result
 
 
 
