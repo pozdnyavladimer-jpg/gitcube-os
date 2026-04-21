@@ -136,3 +136,13 @@ GitCube OS executes adaptive state logic.
 💡 One-line (Field)
 
 GitCube OS turns code into a self-organizing system.
+
+Run autonomous runtime:
+
+PYTHONPATH=. python runtime_experimental/v_kernel_daemon.py
+
+Inject test events:
+
+PYTHONPATH=. python runtime_experimental/inject_event.py import
+PYTHONPATH=. python runtime_experimental/inject_event.py shadow
+PYTHONPATH=. python runtime_experimental/inject_event.py init
