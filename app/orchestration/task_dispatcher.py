@@ -499,6 +499,79 @@ def dispatch_tick(kernel_state: Dict[str, Any]) -> Dict[str, Any]:
     return state
 
 
+
+FIELD_INTENT_PROBLEMS = {
+    "field_intent_phase_repair",
+    "field_intent_memory_retention",
+    "field_intent_clock_stabilization",
+    "field_intent_disambiguation",
+    "field_intent_synthesis",
+    "field_intent_bridge_task",
+}
+
+
+def _run_field_intent_bridge_ack(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    problem = (
+        task.get("problem")
+        or payload.get("problem")
+        or "field_intent_bridge_task"
+    )
+
+    intent = (
+        task.get("intent")
+        or payload.get("intent")
+        or payload.get("verdict")
+        or "UNKNOWN_INTENT"
+    )
+
+    bridge = (
+        task.get("bridge")
+        or payload.get("bridge")
+        or "D46_FIELD_INTENT_BRIDGE"
+    )
+
+    target_agent = (
+        task.get("target_agent")
+        or task.get("executor_hint")
+        or payload.get("target_agent")
+        or payload.get("executor_hint")
+        or "MAGE"
+    )
+
+    resonance_vector = payload.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    return {
+        "route": "FIELD_INTENT_BRIDGE_ACK",
+        "ok": True,
+        "reason": "field_intent_received",
+        "problem": problem,
+        "intent": intent,
+        "bridge": bridge,
+        "target_agent": target_agent,
+        "field_case": task.get("field_case") or payload.get("field_case") or payload.get("case"),
+        "meta_key": task.get("meta_key") or payload.get("meta_key"),
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [],
+            "actions": [],
+            "note": "ACK only. No code repair executed yet.",
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "D46 bridge event accepted by GitCube OS.",
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "ack_only_no_changed_files",
+        },
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -573,6 +646,10 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         result["route"] = "IMPORT_LLM_MESH_FALLBACK"
         return result
 
+
+
+    if problem in FIELD_INTENT_PROBLEMS:
+        return _run_field_intent_bridge_ack(task)
 
     if problem == "shadow_stdlib_group":
         execution_result = autofix_shadowed_stdlib(".", apply=True)
