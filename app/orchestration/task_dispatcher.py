@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from typing import Dict, Any, List
 
 from app.orchestration.router_engine import route_task
@@ -588,6 +591,130 @@ def _run_field_intent_bridge_ack(task: Dict[str, Any]) -> Dict[str, Any]:
         },
     }
 
+
+def _field_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def _run_field_intent_repair_plan(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    problem = str(payload.get("problem") or task.get("problem") or "field_intent_phase_repair")
+    intent = str(payload.get("intent") or task.get("intent") or "UNKNOWN_INTENT")
+    bridge = str(payload.get("bridge") or task.get("bridge") or "D46_FIELD_INTENT_BRIDGE")
+    field_case = str(payload.get("field_case") or payload.get("case") or task.get("field_case") or "UNKNOWN_CASE")
+    meta_key = str(payload.get("meta_key") or task.get("meta_key") or "")
+
+    target_agent = str(
+        payload.get("target_agent")
+        or payload.get("executor_hint")
+        or task.get("target_agent")
+        or task.get("executor_hint")
+        or "MAGE"
+    )
+
+    resonance_vector = payload.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    phase_error = _field_float(resonance_vector.get("phase_error"), _field_float(payload.get("phase_error"), 0.0))
+    jitter = _field_float(resonance_vector.get("jitter"), _field_float(payload.get("jitter"), 0.0))
+    ambiguity = _field_float(resonance_vector.get("ambiguity"), _field_float(payload.get("ambiguity"), 0.0))
+    decay = _field_float(resonance_vector.get("decay"), _field_float(payload.get("decay"), 0.0))
+    strength = _field_float(resonance_vector.get("strength"), _field_float(payload.get("strength"), 0.0))
+
+    causes = []
+    proposed = []
+
+    if phase_error >= 0.25:
+        causes.append("large_phase_drift")
+        proposed.append("add phase resync before memory write")
+        proposed.append("tighten phase lock validation for this spectral key")
+
+    if jitter >= 0.20:
+        causes.append("clock_jitter")
+        proposed.append("route follow-up to HEALER clock stabilization")
+
+    if ambiguity >= 0.25:
+        causes.append("ambiguous_intent")
+        proposed.append("route follow-up to TANK disambiguation gate")
+
+    if decay >= 0.35:
+        causes.append("memory_decay")
+        proposed.append("route follow-up to HEALER memory retention")
+
+    if not causes:
+        causes.append("field_intent_requires_review")
+        proposed.append("create diagnostic repair plan without code mutation")
+
+    risk_level = "critical" if phase_error >= 0.30 or strength >= 0.80 else "high" if phase_error >= 0.18 else "medium"
+
+    repair_plan = {
+        "state": "FIELD_INTENT_REPAIR_PLAN",
+        "result": "FIELD_INTENT_REPAIR_PLAN_CREATED",
+        "source_task_id": task.get("id"),
+        "problem": problem,
+        "bridge": bridge,
+        "intent": intent,
+        "field_case": field_case,
+        "meta_key": meta_key,
+        "target_agent": target_agent,
+        "resonance_vector": resonance_vector,
+        "detected_cause": causes,
+        "proposed_repair": proposed,
+        "risk_level": risk_level,
+        "validation_rule": {
+            "phase_error_after_max": 0.12,
+            "jitter_after_max": 0.08,
+            "intent_must_remain": intent,
+            "orbital_mode_must_remain": resonance_vector.get("orbital_mode"),
+            "no_unvalidated_code_mutation": True
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_REPAIR",
+            "plan_created": True,
+            "payload_preserved": True,
+            "next_step": "MAGE may generate concrete patch only after this plan is reviewed"
+        },
+        "raw_payload": payload
+    }
+
+    out_path = Path("reports/field_intent_repair_plan.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(repair_plan, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_REPAIR",
+        "ok": True,
+        "reason": "field_intent_repair_plan_created",
+        "repair_plan_path": str(out_path),
+        "problem": problem,
+        "intent": intent,
+        "bridge": bridge,
+        "field_case": field_case,
+        "meta_key": meta_key,
+        "target_agent": target_agent,
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(out_path)],
+            "actions": ["write_field_intent_repair_plan"],
+            "note": "Plan only. No code mutation executed yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "Repair plan created and full D46 payload preserved."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "plan_only_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -663,6 +790,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_repair":
+        return _run_field_intent_repair_plan(task)
 
     if problem in FIELD_INTENT_PROBLEMS:
         return _run_field_intent_bridge_ack(task)
