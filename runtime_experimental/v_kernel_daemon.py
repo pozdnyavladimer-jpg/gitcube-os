@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import time
+import json
 from pprint import pprint
+from pathlib import Path
 from typing import Dict, Any
 
 from app.orchestration.task_dispatcher import (
@@ -16,6 +18,28 @@ from core.utils.file_watch_snapshot import (
     build_change_event,
 )
 
+def read_external_events(path: str = "external_signal.json"):
+    signal_path = Path(path)
+    if not signal_path.exists():
+        return []
+
+    try:
+        data = json.loads(signal_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        print({"external_signal_error": str(e)})
+        return []
+
+    events = data.get("pending_events", [])
+    if not isinstance(events, list):
+        return []
+
+    # consume events so they do not repeat forever
+    try:
+        signal_path.write_text(json.dumps({"pending_events": []}, indent=2), encoding="utf-8")
+    except Exception as e:
+        print({"external_signal_clear_error": str(e)})
+
+    return [ev for ev in events if isinstance(ev, dict)]
 
 TICK_SECONDS = 4.0
 
@@ -28,6 +52,11 @@ def run_kernel_loop(repo_root: str = ".", max_ticks: int | None = None) -> Dict[
 
     while True:
         tick += 1
+
+        external_events = read_external_events()
+        for ev in external_events:
+            state = ingest_event(state, ev)
+
         shadow = build_shadow_event(repo_root)
         if not shadow.get("ok", True):
             event = {
@@ -43,7 +72,7 @@ def run_kernel_loop(repo_root: str = ".", max_ticks: int | None = None) -> Dict[
         current_snapshot = build_repo_snapshot(repo_root)
         diff = diff_repo_snapshot(previous_snapshot, current_snapshot)
 
-        print(f"\\n=== V_KERNEL TICK {tick} ===")
+        print(f"\n=== V_KERNEL TICK {tick} ===")
         print({
             "has_changes": diff["has_changes"],
             "created": len(diff["created"]),
@@ -81,5 +110,5 @@ def run_kernel_loop(repo_root: str = ".", max_ticks: int | None = None) -> Dict[
 
 if __name__ == "__main__":
     final_state = run_kernel_loop(".", max_ticks=5)
-    print("\\n=== FINAL STATE ===")
+    print("\n=== FINAL STATE ===")
     pprint(final_state)
