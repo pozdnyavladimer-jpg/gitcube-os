@@ -715,6 +715,166 @@ def _run_field_intent_repair_plan(task: Dict[str, Any]) -> Dict[str, Any]:
         }
     }
 
+
+def _run_field_intent_executor(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    plan_path = Path(str(payload.get("plan_path") or "reports/field_intent_repair_plan.json"))
+    if not plan_path.exists():
+        return {
+            "route": "FIELD_INTENT_EXECUTOR",
+            "ok": False,
+            "reason": "repair_plan_missing",
+            "plan_path": str(plan_path),
+            "execution": {
+                "ok": False,
+                "changed_files": [],
+                "actions": [],
+            },
+            "validation": {
+                "ok": False,
+                "errors": ["repair plan not found"],
+            },
+        }
+
+    try:
+        repair_plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_EXECUTOR",
+            "ok": False,
+            "reason": "repair_plan_read_error",
+            "error": str(exc),
+            "plan_path": str(plan_path),
+            "execution": {
+                "ok": False,
+                "changed_files": [],
+                "actions": [],
+            },
+            "validation": {
+                "ok": False,
+                "errors": [str(exc)],
+            },
+        }
+
+    intent = str(repair_plan.get("intent") or payload.get("intent") or "UNKNOWN_INTENT")
+    field_case = str(repair_plan.get("field_case") or payload.get("field_case") or "UNKNOWN_CASE")
+    bridge = str(repair_plan.get("bridge") or payload.get("bridge") or "D47_FIELD_INTENT_EXECUTOR")
+    problem = str(repair_plan.get("problem") or payload.get("problem") or "field_intent_execute_repair")
+    target_agent = str(repair_plan.get("target_agent") or payload.get("target_agent") or payload.get("executor_hint") or "MAGE")
+
+    resonance_vector = repair_plan.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    causes = repair_plan.get("detected_cause", [])
+    if not isinstance(causes, list):
+        causes = [str(causes)]
+
+    action = {
+        "agent": target_agent,
+        "mode": "PLAN_ONLY",
+        "safe_to_mutate_code": False,
+        "target_files": [],
+        "executor_problem": "field_intent_executor_review",
+        "reason": "generic_field_intent_review",
+    }
+
+    if "large_phase_drift" in causes:
+        action.update({
+            "agent": "MAGE",
+            "executor_problem": "field_intent_phase_resync_patch",
+            "reason": "phase_error_exceeds_threshold",
+            "target_files": [
+                "reports/field_intent_repair_plan.json"
+            ],
+            "recommended_next_file": "reports/d47_phase_resync_patch_request.json",
+        })
+
+    elif "clock_jitter" in causes:
+        action.update({
+            "agent": "HEALER",
+            "executor_problem": "field_intent_clock_stabilization",
+            "reason": "jitter_exceeds_threshold",
+            "recommended_next_file": "reports/d47_clock_stabilization_request.json",
+        })
+
+    elif "ambiguous_intent" in causes:
+        action.update({
+            "agent": "TANK",
+            "executor_problem": "field_intent_disambiguation_gate",
+            "reason": "ambiguity_exceeds_threshold",
+            "recommended_next_file": "reports/d47_disambiguation_request.json",
+        })
+
+    elif "memory_decay" in causes:
+        action.update({
+            "agent": "HEALER",
+            "executor_problem": "field_intent_memory_retention",
+            "reason": "decay_exceeds_threshold",
+            "recommended_next_file": "reports/d47_memory_retention_request.json",
+        })
+
+    executor_action = {
+        "state": "D47_FIELD_INTENT_EXECUTOR",
+        "result": "FIELD_INTENT_EXECUTOR_ACTION_CREATED",
+        "source_plan": str(plan_path),
+        "problem": problem,
+        "bridge": bridge,
+        "intent": intent,
+        "field_case": field_case,
+        "resonance_vector": resonance_vector,
+        "detected_cause": causes,
+        "selected_action": action,
+        "validation_rule": {
+            "must_preserve_payload": True,
+            "must_not_mutate_code_yet": True,
+            "must_write_agent_action_file": True,
+            "next_route_required": action.get("executor_problem"),
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_EXECUTOR",
+            "executor_action_created": True,
+            "agent_selected": action.get("agent"),
+            "next_step": "Generate concrete agent patch request in the recommended_next_file"
+        },
+        "raw_repair_plan": repair_plan,
+    }
+
+    out_path = Path("reports/field_intent_executor_action.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(executor_action, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_EXECUTOR",
+        "ok": True,
+        "reason": "field_intent_executor_action_created",
+        "executor_action_path": str(out_path),
+        "source_plan": str(plan_path),
+        "problem": problem,
+        "intent": intent,
+        "bridge": bridge,
+        "field_case": field_case,
+        "target_agent": action.get("agent"),
+        "executor_problem": action.get("executor_problem"),
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(out_path)],
+            "actions": ["write_field_intent_executor_action"],
+            "note": "D47 action selected. No code mutation executed yet.",
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "Executor action created from D46 repair plan.",
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "executor_plan_only_manual_commit",
+        },
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -790,6 +950,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_execute_repair":
+        return _run_field_intent_executor(task)
 
     if problem == "field_intent_phase_repair":
         return _run_field_intent_repair_plan(task)
