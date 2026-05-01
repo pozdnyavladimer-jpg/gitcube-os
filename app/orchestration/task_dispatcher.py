@@ -366,9 +366,20 @@ def merge_pending_events(kernel_state: Dict[str, Any]) -> Dict[str, Any]:
     raw_paths: List[str] = []
     problems: List[str] = []
     scope_payloads: List[Dict[str, Any]] = []
+    merged_payload: Dict[str, Any] = {}
 
     for ev in pending:
         payload = dict(ev.get("payload", {}) or {})
+
+        # Preserve full external/event payload.
+        # The kernel may normalize problem/paths later, but fields like
+        # intent, bridge, field_case, meta_key and resonance_vector must survive.
+        for key, value in payload.items():
+            if key == "paths":
+                continue
+            if value in (None, "", [], {}):
+                continue
+            merged_payload[key] = value
 
         ev_paths = payload.get("paths", [])
         if isinstance(ev_paths, list):
@@ -424,15 +435,20 @@ def merge_pending_events(kernel_state: Dict[str, Any]) -> Dict[str, Any]:
                     seen_scope.add(sv)
                     merged_scope["scope"].append(sv)
 
+    final_payload = dict(merged_payload)
+    final_payload["problem"] = merged_problem
+    final_payload["paths"] = merged_paths
+
+    if "has_shadow_backup" not in final_payload:
+        final_payload["has_shadow_backup"] = merged_problem in MAGE_SAFE_PROBLEMS
+
+    if not str(final_payload.get("executor_hint", "")).strip():
+        final_payload["executor_hint"] = "MAGE" if merged_problem in MAGE_SAFE_PROBLEMS else ""
+
     merged_task = {
         "id": f"tick_{int(state.get('tick', 0)) + 1}",
         "priority": merged_priority,
-        "payload": {
-            "problem": merged_problem,
-            "paths": merged_paths,
-            "has_shadow_backup": merged_problem in MAGE_SAFE_PROBLEMS,
-            "executor_hint": "MAGE" if merged_problem in MAGE_SAFE_PROBLEMS else "",
-        },
+        "payload": final_payload,
     }
 
     if merged_scope["targets"] or merged_scope["scope"]:
