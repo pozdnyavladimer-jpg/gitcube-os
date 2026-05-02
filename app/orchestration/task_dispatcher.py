@@ -3459,6 +3459,158 @@ def _run_field_intent_closed_loop_memory_policy(task: Dict[str, Any]) -> Dict[st
         }
     }
 
+
+def _run_field_intent_closed_loop_regression_test(task: Dict[str, Any]) -> Dict[str, Any]:
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    policy_path = Path(str(payload.get("policy_path") or "memory/field_intent_closed_loop_policy.json"))
+    bias_path = Path(str(payload.get("bias_path") or "memory/field_intent_priority_bias.json"))
+    memory_path = Path(str(payload.get("memory_path") or "memory/field_intent_memory.jsonl"))
+    d59_path = Path("reports/d59_memory_priority_bias_dispatch_probe.json")
+
+    test_path = Path("tests/test_d46_d60_closed_loop_policy.py")
+    report_path = Path("reports/d61_closed_loop_regression_test.json")
+
+    errors = []
+    for required in [policy_path, bias_path, memory_path, d59_path]:
+        if not required.exists():
+            errors.append(f"missing required file: {required}")
+
+    test_path.parent.mkdir(parents=True, exist_ok=True)
+    Path("tests/__init__.py").touch()
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+
+    test_code = """import json
+import unittest
+from pathlib import Path
+
+
+class TestD46D60ClosedLoopPolicy(unittest.TestCase):
+    def test_d60_closed_loop_policy_locked(self):
+        p = Path("memory/field_intent_closed_loop_policy.json")
+        self.assertTrue(p.exists(), "D60 closed-loop policy file missing")
+
+        data = json.loads(p.read_text(encoding="utf-8"))
+        self.assertEqual(data.get("state"), "D60_FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY")
+        self.assertEqual(data.get("result"), "CLOSED_LOOP_POLICY_LOCKED")
+        self.assertIs(data.get("locked"), True)
+
+        scope = data.get("scope", {})
+        self.assertEqual(scope.get("memory_key"), "D3_O6")
+        self.assertEqual(scope.get("orbital_mode"), "HEX")
+        self.assertEqual(scope.get("field_case"), "PHASE_DRIFT_HEX")
+
+        loop = data.get("closed_loop", {})
+        self.assertIs(loop.get("d56_memory_write"), True)
+        self.assertIs(loop.get("d57_memory_recall"), True)
+        self.assertIs(loop.get("d58_memory_bias_created"), True)
+        self.assertIs(loop.get("d59_dispatch_bias_applied"), True)
+
+    def test_d58_bias_store_contains_d3_o6_hex_phase_drift(self):
+        p = Path("memory/field_intent_priority_bias.json")
+        self.assertTrue(p.exists(), "D58 bias store missing")
+
+        data = json.loads(p.read_text(encoding="utf-8"))
+        biases = data.get("biases", {})
+        key = "field_intent:d3_o6:hex:phase_drift_hex"
+
+        self.assertIn(key, biases)
+        bias = biases[key]
+
+        self.assertEqual(bias.get("recommended_priority"), "critical")
+        self.assertGreaterEqual(bias.get("priority_boost_points", 0), 30)
+        self.assertEqual(bias.get("memory_key"), "D3_O6")
+        self.assertEqual(bias.get("orbital_mode"), "HEX")
+        self.assertEqual(bias.get("field_case"), "PHASE_DRIFT_HEX")
+
+    def test_d56_memory_contains_recalled_atom(self):
+        p = Path("memory/field_intent_memory.jsonl")
+        self.assertTrue(p.exists(), "field intent memory file missing")
+
+        lines = [line for line in p.read_text(encoding="utf-8").splitlines() if line.strip()]
+        self.assertTrue(lines, "field intent memory is empty")
+
+        atoms = [json.loads(line) for line in lines]
+        matches = [
+            atom for atom in atoms
+            if atom.get("memory_key") == "D3_O6"
+            and atom.get("orbital_mode") == "HEX"
+            and atom.get("field_case") == "PHASE_DRIFT_HEX"
+        ]
+
+        self.assertTrue(matches, "D3_O6 HEX PHASE_DRIFT_HEX memory atom not found")
+
+    def test_d59_dispatch_probe_applied_bias(self):
+        p = Path("reports/d59_memory_priority_bias_dispatch_probe.json")
+        self.assertTrue(p.exists(), "D59 dispatch probe report missing")
+
+        data = json.loads(p.read_text(encoding="utf-8"))
+        self.assertEqual(data.get("result"), "MEMORY_PRIORITY_BIAS_APPLIED")
+        self.assertIs(data.get("memory_bias_applied"), True)
+        self.assertIn(data.get("priority_before_memory_bias"), ["low", "normal"])
+        self.assertEqual(data.get("priority_after_memory_bias"), "critical")
+        self.assertEqual(data.get("task_priority_after_prepare"), "critical")
+
+
+if __name__ == "__main__":
+    unittest.main()
+"""
+
+    test_path.write_text(test_code, encoding="utf-8")
+
+    report = {
+        "state": "D61_FIELD_INTENT_CLOSED_LOOP_REGRESSION_TEST",
+        "result": "REGRESSION_TEST_CREATED" if not errors else "REGRESSION_TEST_CREATED_WITH_WARNINGS",
+        "route": "FIELD_INTENT_CLOSED_LOOP_REGRESSION_TEST",
+        "bridge": "D61_FIELD_INTENT_CLOSED_LOOP_REGRESSION_TEST",
+        "test_path": str(test_path),
+        "policy_path": str(policy_path),
+        "bias_path": str(bias_path),
+        "memory_path": str(memory_path),
+        "d59_path": str(d59_path),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "validation": {
+            "ok": not errors,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_CLOSED_LOOP_REGRESSION_TEST",
+            "test_file_created": True,
+            "unittest_discoverable": True,
+            "next_step": "Run python -m unittest discover -s tests -p test_d46_d60_closed_loop_policy.py -v",
+        },
+    }
+
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_CLOSED_LOOP_REGRESSION_TEST",
+        "ok": True,
+        "reason": "closed_loop_regression_test_created",
+        "test_path": str(test_path),
+        "report_path": str(report_path),
+        "problem": "field_intent_closed_loop_regression_test",
+        "execution": {
+            "ok": True,
+            "changed_files": [str(test_path), str(report_path)],
+            "actions": ["write_closed_loop_regression_test", "write_d61_report"],
+            "note": "D61 regression test created for D46-D60 closed-loop field memory policy."
+        },
+        "validation": {
+            "ok": not errors,
+            "errors": errors,
+            "note": "D61 regression test creation completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "closed_loop_regression_test_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -3510,6 +3662,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
     payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
     problem = str(payload.get("problem", task.get("problem", ""))).strip().lower()
+    if problem == "field_intent_closed_loop_regression_test":
+        return _run_field_intent_closed_loop_regression_test(task)
+
 
     if problem in STRUCTURAL_FALLBACK:
         mesh_result = stabilize_task_mesh(task)
