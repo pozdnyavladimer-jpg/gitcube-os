@@ -2275,6 +2275,264 @@ def _run_field_intent_guarded_memory_write_request(task: Dict[str, Any]) -> Dict
         }
     }
 
+
+def _run_field_intent_guarded_memory_write_apply(task: Dict[str, Any]) -> Dict[str, Any]:
+    from datetime import datetime, timezone
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    request_path = Path(str(payload.get("request_path") or "reports/d55_guarded_memory_write_request.json"))
+
+    if not request_path.exists():
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "ok": False,
+            "reason": "d55_memory_write_request_missing",
+            "request_path": str(request_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D55 guarded memory-write request not found"]},
+        }
+
+    try:
+        request = json.loads(request_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "ok": False,
+            "reason": "d55_memory_write_request_read_error",
+            "error": str(exc),
+            "request_path": str(request_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    validation = request.get("validation", {})
+    if not isinstance(validation, dict):
+        validation = {}
+
+    memory_atom = request.get("memory_atom", {})
+    if not isinstance(memory_atom, dict):
+        memory_atom = {}
+
+    errors = []
+
+    if request.get("result") != "GUARDED_MEMORY_WRITE_REQUEST_CREATED":
+        errors.append("D55 result is not GUARDED_MEMORY_WRITE_REQUEST_CREATED")
+
+    if request.get("allow_d56_memory_write_apply") is not True:
+        errors.append("D55 allow_d56_memory_write_apply is not true")
+
+    if validation.get("ok") is not True:
+        errors.append("D55 validation.ok is not true")
+
+    if request.get("memory_write_executed") is not False:
+        errors.append("D55 must not have already executed memory write")
+
+    if request.get("runtime_code_mutated") is not False:
+        errors.append("D55 must not have mutated runtime code")
+
+    memory_key = str(memory_atom.get("memory_key", "")).strip()
+    orbital_mode = str(memory_atom.get("orbital_mode", "")).strip()
+    field_case = str(memory_atom.get("field_case", "")).strip()
+    intent = str(memory_atom.get("intent", "")).strip()
+
+    if not memory_key:
+        errors.append("memory_atom.memory_key missing")
+
+    if not orbital_mode:
+        errors.append("memory_atom.orbital_mode missing")
+
+    if not field_case:
+        errors.append("memory_atom.field_case missing")
+
+    if not intent:
+        errors.append("memory_atom.intent missing")
+
+    target_path = Path(str(request.get("memory_target_path") or payload.get("memory_target_path") or "memory/field_intent_memory.jsonl"))
+    backup_path = Path(str(target_path) + ".bak")
+
+    write_key = f"field_intent:{memory_key}:{orbital_mode}:{intent}:{field_case}".lower()
+
+    if errors:
+        out_path = Path("reports/d56_guarded_memory_write_apply_result.json")
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        report = {
+            "state": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "result": "GUARDED_MEMORY_WRITE_BLOCKED",
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "bridge": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "source_request": str(request_path),
+            "memory_target_path": str(target_path),
+            "memory_write_executed": False,
+            "validation": {"ok": False, "errors": errors},
+            "raw_d55_request": request,
+        }
+        out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "ok": False,
+            "reason": "guarded_memory_write_blocked",
+            "report_path": str(out_path),
+            "execution": {"ok": False, "changed_files": [str(out_path)], "actions": ["write_block_report"]},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    existing_lines = []
+    existing_atoms = []
+    duplicate_found = False
+
+    if target_path.exists():
+        existing_text = target_path.read_text(encoding="utf-8").splitlines()
+        for line_no, line in enumerate(existing_text, start=1):
+            if not line.strip():
+                continue
+            existing_lines.append(line)
+            try:
+                obj = json.loads(line)
+                existing_atoms.append(obj)
+                if str(obj.get("memory_write_key", "")).lower() == write_key:
+                    duplicate_found = True
+            except Exception as exc:
+                errors.append(f"invalid existing JSONL at line {line_no}: {exc}")
+
+    if errors:
+        out_path = Path("reports/d56_guarded_memory_write_apply_result.json")
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        report = {
+            "state": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "result": "GUARDED_MEMORY_WRITE_BLOCKED_EXISTING_MEMORY_INVALID",
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "bridge": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "source_request": str(request_path),
+            "memory_target_path": str(target_path),
+            "memory_write_executed": False,
+            "validation": {"ok": False, "errors": errors},
+        }
+        out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "ok": False,
+            "reason": "existing_memory_invalid",
+            "report_path": str(out_path),
+            "execution": {"ok": False, "changed_files": [str(out_path)], "actions": ["write_invalid_memory_report"]},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    if target_path.exists():
+        backup_path.write_text(target_path.read_text(encoding="utf-8"), encoding="utf-8")
+    else:
+        backup_path.write_text("", encoding="utf-8")
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    atom_to_write = dict(memory_atom)
+    atom_to_write.update({
+        "memory_write_key": write_key,
+        "write_source": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+        "source_request": str(request_path),
+        "created_at": now,
+        "updated_at": now,
+    })
+
+    if duplicate_found:
+        write_status = "ALREADY_PRESENT"
+        memory_write_executed = False
+        changed_files = [str(backup_path)]
+        actions = ["read_d55_request", "validate_memory_atom", "detect_duplicate_memory_atom", "write_report"]
+    else:
+        with target_path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(atom_to_write, ensure_ascii=False, sort_keys=True) + "\n")
+        write_status = "APPENDED"
+        memory_write_executed = True
+        changed_files = [str(target_path), str(backup_path)]
+        actions = ["read_d55_request", "validate_memory_atom", "backup_memory", "append_memory_atom", "validate_jsonl", "write_report"]
+
+    # Validate final JSONL after append.
+    final_count = 0
+    final_errors = []
+    if target_path.exists():
+        for line_no, line in enumerate(target_path.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                json.loads(line)
+                final_count += 1
+            except Exception as exc:
+                final_errors.append(f"invalid final JSONL at line {line_no}: {exc}")
+
+    ok = not final_errors
+
+    out_path = Path("reports/d56_guarded_memory_write_apply_result.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    report = {
+        "state": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+        "result": "GUARDED_MEMORY_WRITE_APPLIED" if memory_write_executed and ok else "GUARDED_MEMORY_WRITE_ALREADY_PRESENT" if duplicate_found and ok else "GUARDED_MEMORY_WRITE_FAILED",
+        "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+        "bridge": "D56_FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+        "source_request": str(request_path),
+        "memory_target_path": str(target_path),
+        "backup_path": str(backup_path),
+        "memory_write_key": write_key,
+        "write_status": write_status,
+        "memory_write_executed": memory_write_executed,
+        "runtime_code_mutated": False,
+        "memory_atom": atom_to_write,
+        "final_memory_count": final_count,
+        "guards": {
+            "d55_allowed": True,
+            "d55_validation_ok": True,
+            "memory_key_present": True,
+            "orbital_mode_present": True,
+            "backup_created": True,
+            "jsonl_validated": ok,
+            "duplicate_protected": True,
+        },
+        "validation": {
+            "ok": ok,
+            "errors": final_errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+            "memory_atom_written_or_already_present": ok,
+            "jsonl_valid": ok,
+            "next_step": "D57 may validate memory recall/query from memory target",
+        },
+        "raw_d55_request": request,
+    }
+
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    changed_files.append(str(out_path))
+
+    return {
+        "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_APPLY",
+        "ok": ok,
+        "reason": "guarded_memory_write_applied" if memory_write_executed and ok else "guarded_memory_write_already_present" if duplicate_found and ok else "guarded_memory_write_failed",
+        "report_path": str(out_path),
+        "memory_target_path": str(target_path),
+        "backup_path": str(backup_path),
+        "memory_write_key": write_key,
+        "write_status": write_status,
+        "problem": "field_intent_guarded_memory_write_apply",
+        "execution": {
+            "ok": ok,
+            "changed_files": changed_files,
+            "actions": actions,
+            "note": "D56 performed guarded memory append with backup and JSONL validation."
+        },
+        "validation": {
+            "ok": ok,
+            "errors": final_errors,
+            "note": "Guarded memory-write apply completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "memory_write_apply_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -2350,6 +2608,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_guarded_memory_write_apply":
+        return _run_field_intent_guarded_memory_write_apply(task)
 
     if problem == "field_intent_guarded_memory_write_request":
         return _run_field_intent_guarded_memory_write_request(task)
