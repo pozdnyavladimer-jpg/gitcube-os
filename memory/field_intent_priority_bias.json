@@ -1,0 +1,54 @@
+{
+  "state": "FIELD_INTENT_PRIORITY_BIAS_STORE",
+  "version": 1,
+  "biases": {
+    "field_intent:d3_o6:hex:phase_drift_hex": {
+      "bias_key": "field_intent:d3_o6:hex:phase_drift_hex",
+      "source": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+      "source_recall": "reports/d57_memory_recall_validation.json",
+      "memory_key": "D3_O6",
+      "orbital_mode": "HEX",
+      "field_case": "PHASE_DRIFT_HEX",
+      "intent": "RUNTIME_PHASE_RESYNC_CHECK",
+      "priority_boost_points": 30,
+      "recommended_priority": "critical",
+      "preferred_next_problem": "field_intent_phase_resync_runtime_check",
+      "preferred_agents": [
+        "HEALER",
+        "TANK",
+        "MAGE"
+      ],
+      "routing_hint": {
+        "prefer_runtime_check_before_new_repair": true,
+        "prefer_memory_safe_path": true,
+        "prefer_no_code_mutation_first": true
+      },
+      "evidence": {
+        "phase_error_before": 0.34,
+        "phase_error_after": 0.119,
+        "jitter_before": 0.03,
+        "jitter_after": 0.020999999999999998,
+        "strength": 0.81,
+        "ambiguity": 0.06,
+        "decay": 0.12,
+        "reasons": [
+          "known_large_phase_drift",
+          "phase_resync_successful",
+          "strong_resonance_signal",
+          "low_ambiguity_signal",
+          "memory_decay_present"
+        ]
+      },
+      "guard": {
+        "bias_only": true,
+        "runtime_code_mutated": false,
+        "memory_payload_overwritten": false,
+        "requires_d59_to_apply_to_dispatch": true
+      },
+      "created_at": "2026-05-02T06:00:35.518509+00:00",
+      "updated_at": "2026-05-02T06:00:35.518509+00:00"
+    }
+  },
+  "created_at": "2026-05-02T06:00:35.518509+00:00",
+  "updated_at": "2026-05-02T06:00:35.518509+00:00"
+}

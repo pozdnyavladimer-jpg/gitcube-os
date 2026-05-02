@@ -2709,6 +2709,315 @@ def _run_field_intent_memory_recall_validation(task: Dict[str, Any]) -> Dict[str
         }
     }
 
+
+def _run_field_intent_memory_priority_bias(task: Dict[str, Any]) -> Dict[str, Any]:
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    def _as_float(value: Any, default: float = 0.0) -> float:
+        try:
+            return float(value)
+        except Exception:
+            return default
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    recall_path = Path(str(payload.get("recall_path") or "reports/d57_memory_recall_validation.json"))
+    bias_store_path = Path(str(payload.get("bias_store_path") or "memory/field_intent_priority_bias.json"))
+    backup_path = Path(str(bias_store_path) + ".bak")
+    out_path = Path("reports/d58_memory_priority_bias.json")
+
+    if not recall_path.exists():
+        return {
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "ok": False,
+            "reason": "d57_recall_report_missing",
+            "recall_path": str(recall_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D57 memory recall validation report not found"]},
+        }
+
+    try:
+        recall_report = json.loads(recall_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "ok": False,
+            "reason": "d57_recall_report_read_error",
+            "error": str(exc),
+            "recall_path": str(recall_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    validation = recall_report.get("validation", {})
+    if not isinstance(validation, dict):
+        validation = {}
+
+    recalled = recall_report.get("recalled", [])
+    if not isinstance(recalled, list):
+        recalled = []
+
+    errors = []
+
+    if recall_report.get("result") != "MEMORY_RECALL_VALIDATED":
+        errors.append("D57 result is not MEMORY_RECALL_VALIDATED")
+
+    if validation.get("ok") is not True:
+        errors.append("D57 validation.ok is not true")
+
+    if recall_report.get("memory_read_success") is not True:
+        errors.append("D57 memory_read_success is not true")
+
+    if int(recall_report.get("recall_count", 0) or 0) < 1:
+        errors.append("D57 recall_count is less than 1")
+
+    recalled_entry = recalled[0] if recalled else {}
+    if not isinstance(recalled_entry, dict):
+        recalled_entry = {}
+
+    atom = recalled_entry.get("atom", {})
+    if not isinstance(atom, dict):
+        atom = {}
+
+    resonance_vector = atom.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    memory_key = str(atom.get("memory_key") or resonance_vector.get("memory_key") or "").strip()
+    orbital_mode = str(atom.get("orbital_mode") or resonance_vector.get("orbital_mode") or "").strip()
+    field_case = str(atom.get("field_case") or payload.get("field_case") or "").strip()
+    intent = str(atom.get("intent") or payload.get("intent") or "").strip()
+
+    if not memory_key:
+        errors.append("recalled atom memory_key missing")
+
+    if not orbital_mode:
+        errors.append("recalled atom orbital_mode missing")
+
+    if not field_case:
+        errors.append("recalled atom field_case missing")
+
+    phase_error_before = _as_float(atom.get("phase_error_before", resonance_vector.get("phase_error", 0.0)))
+    phase_error_after = _as_float(atom.get("phase_error_after", 0.0))
+    jitter_before = _as_float(atom.get("jitter_before", resonance_vector.get("jitter", 0.0)))
+    jitter_after = _as_float(atom.get("jitter_after", 0.0))
+    strength = _as_float(atom.get("strength", resonance_vector.get("strength", 0.0)))
+    ambiguity = _as_float(atom.get("ambiguity", resonance_vector.get("ambiguity", 0.0)))
+    decay = _as_float(atom.get("decay", resonance_vector.get("decay", 0.0)))
+
+    phase_error_after_max = _as_float(payload.get("phase_error_after_max", 0.12))
+    jitter_after_max = _as_float(payload.get("jitter_after_max", 0.08))
+
+    if phase_error_after > phase_error_after_max:
+        errors.append("phase_error_after exceeds bias eligibility threshold")
+
+    if jitter_after > jitter_after_max:
+        errors.append("jitter_after exceeds bias eligibility threshold")
+
+    # Conservative bias scoring.
+    # This does not mutate routing code. It only creates a reusable memory-bias record.
+    boost_points = 0
+    reasons = []
+
+    if phase_error_before >= 0.30:
+        boost_points += 15
+        reasons.append("known_large_phase_drift")
+
+    if phase_error_after <= phase_error_after_max:
+        boost_points += 5
+        reasons.append("phase_resync_successful")
+
+    if strength >= 0.75:
+        boost_points += 5
+        reasons.append("strong_resonance_signal")
+
+    if ambiguity <= 0.10:
+        boost_points += 5
+        reasons.append("low_ambiguity_signal")
+
+    if decay >= 0.10:
+        boost_points += 3
+        reasons.append("memory_decay_present")
+
+    if ambiguity >= 0.25:
+        boost_points -= 5
+        reasons.append("ambiguity_penalty")
+
+    boost_points = max(0, min(30, boost_points))
+
+    if boost_points >= 25:
+        recommended_priority = "critical"
+    elif boost_points >= 15:
+        recommended_priority = "high"
+    elif boost_points >= 5:
+        recommended_priority = "medium"
+    else:
+        recommended_priority = "normal"
+
+    bias_key = f"field_intent:{memory_key}:{orbital_mode}:{field_case}".lower()
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    bias_record = {
+        "bias_key": bias_key,
+        "source": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+        "source_recall": str(recall_path),
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "field_case": field_case,
+        "intent": intent,
+        "priority_boost_points": boost_points,
+        "recommended_priority": recommended_priority,
+        "preferred_next_problem": "field_intent_phase_resync_runtime_check",
+        "preferred_agents": ["HEALER", "TANK", "MAGE"],
+        "routing_hint": {
+            "prefer_runtime_check_before_new_repair": True,
+            "prefer_memory_safe_path": True,
+            "prefer_no_code_mutation_first": True,
+        },
+        "evidence": {
+            "phase_error_before": phase_error_before,
+            "phase_error_after": phase_error_after,
+            "jitter_before": jitter_before,
+            "jitter_after": jitter_after,
+            "strength": strength,
+            "ambiguity": ambiguity,
+            "decay": decay,
+            "reasons": reasons,
+        },
+        "guard": {
+            "bias_only": True,
+            "runtime_code_mutated": False,
+            "memory_payload_overwritten": False,
+            "requires_d59_to_apply_to_dispatch": True,
+        },
+        "created_at": now,
+        "updated_at": now,
+    }
+
+    existing_store = {
+        "state": "FIELD_INTENT_PRIORITY_BIAS_STORE",
+        "version": 1,
+        "biases": {},
+        "created_at": now,
+        "updated_at": now,
+    }
+
+    if bias_store_path.exists():
+        try:
+            existing_store = json.loads(bias_store_path.read_text(encoding="utf-8"))
+            if not isinstance(existing_store, dict):
+                errors.append("existing bias store is not a JSON object")
+                existing_store = {"biases": {}}
+        except Exception as exc:
+            errors.append(f"existing bias store read error: {exc}")
+            existing_store = {"biases": {}}
+
+    biases = existing_store.get("biases", {})
+    if not isinstance(biases, dict):
+        errors.append("existing bias store .biases is not a JSON object")
+        biases = {}
+
+    ok = not errors
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if not ok:
+        report = {
+            "state": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "result": "MEMORY_PRIORITY_BIAS_BLOCKED",
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "bridge": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "source_recall": str(recall_path),
+            "bias_store_path": str(bias_store_path),
+            "runtime_code_mutated": False,
+            "bias_store_updated": False,
+            "validation": {"ok": False, "errors": errors},
+            "raw_d57_recall": recall_report,
+        }
+        out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        return {
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "ok": False,
+            "reason": "memory_priority_bias_blocked",
+            "report_path": str(out_path),
+            "execution": {"ok": False, "changed_files": [str(out_path)], "actions": ["write_blocked_bias_report"]},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    bias_store_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if bias_store_path.exists():
+        backup_path.write_text(bias_store_path.read_text(encoding="utf-8"), encoding="utf-8")
+    else:
+        backup_path.write_text("", encoding="utf-8")
+
+    biases[bias_key] = bias_record
+
+    existing_store["state"] = "FIELD_INTENT_PRIORITY_BIAS_STORE"
+    existing_store["version"] = int(existing_store.get("version", 1) or 1)
+    existing_store["biases"] = biases
+    existing_store["updated_at"] = now
+    existing_store.setdefault("created_at", now)
+
+    bias_store_path.write_text(json.dumps(existing_store, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    report = {
+        "state": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+        "result": "MEMORY_PRIORITY_BIAS_CREATED",
+        "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+        "bridge": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+        "source_recall": str(recall_path),
+        "bias_store_path": str(bias_store_path),
+        "backup_path": str(backup_path),
+        "bias_key": bias_key,
+        "bias_record": bias_record,
+        "bias_store_updated": True,
+        "runtime_code_mutated": False,
+        "memory_payload_overwritten": False,
+        "validation": {"ok": True, "errors": []},
+        "success_condition": {
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+            "bias_created": True,
+            "recommended_priority": recommended_priority,
+            "priority_boost_points": boost_points,
+            "next_step": "D59 may inject priority bias into future dispatch decisions",
+        },
+        "raw_d57_recall": recall_report,
+    }
+
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+        "ok": True,
+        "reason": "memory_priority_bias_created",
+        "report_path": str(out_path),
+        "bias_store_path": str(bias_store_path),
+        "backup_path": str(backup_path),
+        "bias_key": bias_key,
+        "recommended_priority": recommended_priority,
+        "priority_boost_points": boost_points,
+        "problem": "field_intent_memory_priority_bias",
+        "execution": {
+            "ok": True,
+            "changed_files": [str(bias_store_path), str(backup_path), str(out_path)],
+            "actions": ["read_d57_recall", "derive_priority_bias", "backup_bias_store", "write_bias_store", "write_d58_report"],
+            "note": "D58 created memory-derived priority bias. Dispatch behavior is not mutated yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "Memory priority bias created."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "memory_priority_bias_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -2784,6 +3093,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_memory_priority_bias":
+        return _run_field_intent_memory_priority_bias(task)
 
     if problem == "field_intent_memory_recall_validation":
         return _run_field_intent_memory_recall_validation(task)
