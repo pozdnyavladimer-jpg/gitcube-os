@@ -2533,6 +2533,182 @@ def _run_field_intent_guarded_memory_write_apply(task: Dict[str, Any]) -> Dict[s
         }
     }
 
+
+def _run_field_intent_memory_recall_validation(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    apply_result_path = Path(str(payload.get("apply_result_path") or "reports/d56_guarded_memory_write_apply_result.json"))
+
+    if not apply_result_path.exists():
+        return {
+            "route": "FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+            "ok": False,
+            "reason": "d56_apply_result_missing",
+            "apply_result_path": str(apply_result_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D56 apply result not found"]},
+        }
+
+    try:
+        apply_result = json.loads(apply_result_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+            "ok": False,
+            "reason": "d56_apply_result_read_error",
+            "error": str(exc),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    memory_path = Path(str(
+        payload.get("memory_target_path")
+        or apply_result.get("memory_target_path")
+        or "memory/field_intent_memory.jsonl"
+    ))
+
+    memory_write_key = str(
+        payload.get("memory_write_key")
+        or apply_result.get("memory_write_key")
+        or ""
+    ).strip().lower()
+
+    expected_atom = apply_result.get("memory_atom", {})
+    if not isinstance(expected_atom, dict):
+        expected_atom = {}
+
+    expected_memory_key = str(payload.get("memory_key") or expected_atom.get("memory_key") or "").strip()
+    expected_orbital_mode = str(payload.get("orbital_mode") or expected_atom.get("orbital_mode") or "").strip()
+    expected_intent = str(payload.get("intent") or expected_atom.get("intent") or "").strip()
+    expected_field_case = str(payload.get("field_case") or expected_atom.get("field_case") or "").strip()
+
+    errors = []
+
+    if not memory_path.exists():
+        errors.append("memory target file does not exist")
+
+    if apply_result.get("validation", {}).get("ok") is not True:
+        errors.append("D56 validation.ok is not true")
+
+    if apply_result.get("memory_write_executed") is not True and apply_result.get("result") != "GUARDED_MEMORY_WRITE_ALREADY_PRESENT":
+        errors.append("D56 did not write or confirm existing memory atom")
+
+    if not memory_write_key:
+        errors.append("memory_write_key missing")
+
+    if not expected_memory_key:
+        errors.append("expected memory_key missing")
+
+    if not expected_orbital_mode:
+        errors.append("expected orbital_mode missing")
+
+    recalled_atoms = []
+    parsed_count = 0
+
+    if memory_path.exists():
+        for line_no, line in enumerate(memory_path.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+
+            try:
+                atom = json.loads(line)
+                parsed_count += 1
+            except Exception as exc:
+                errors.append(f"invalid JSONL at line {line_no}: {exc}")
+                continue
+
+            atom_key = str(atom.get("memory_write_key", "")).strip().lower()
+            atom_memory_key = str(atom.get("memory_key", "")).strip()
+            atom_orbital_mode = str(atom.get("orbital_mode", "")).strip()
+            atom_intent = str(atom.get("intent", "")).strip()
+            atom_field_case = str(atom.get("field_case", "")).strip()
+
+            match_by_write_key = bool(memory_write_key and atom_key == memory_write_key)
+
+            match_by_fields = (
+                atom_memory_key == expected_memory_key
+                and atom_orbital_mode == expected_orbital_mode
+                and (not expected_intent or atom_intent == expected_intent)
+                and (not expected_field_case or atom_field_case == expected_field_case)
+            )
+
+            if match_by_write_key or match_by_fields:
+                recalled_atoms.append({
+                    "line": line_no,
+                    "match_by_write_key": match_by_write_key,
+                    "match_by_fields": match_by_fields,
+                    "atom": atom,
+                })
+
+    if not recalled_atoms:
+        errors.append("memory atom was not recalled from JSONL store")
+
+    ok = not errors
+
+    out_path = Path("reports/d57_memory_recall_validation.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    report = {
+        "state": "D57_FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+        "result": "MEMORY_RECALL_VALIDATED" if ok else "MEMORY_RECALL_FAILED",
+        "route": "FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+        "bridge": "D57_FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+        "source_apply_result": str(apply_result_path),
+        "memory_target_path": str(memory_path),
+        "memory_write_key": memory_write_key,
+        "expected": {
+            "memory_key": expected_memory_key,
+            "orbital_mode": expected_orbital_mode,
+            "intent": expected_intent,
+            "field_case": expected_field_case,
+        },
+        "parsed_memory_atoms": parsed_count,
+        "recall_count": len(recalled_atoms),
+        "recalled": recalled_atoms,
+        "memory_read_success": bool(recalled_atoms),
+        "runtime_code_mutated": False,
+        "memory_mutated": False,
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+            "memory_atom_recalled": bool(recalled_atoms),
+            "jsonl_valid": not any("invalid JSONL" in e for e in errors),
+            "next_step": "D58 may use recalled memory to bias future task priority",
+        },
+        "raw_d56_apply_result": apply_result,
+    }
+
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_MEMORY_RECALL_VALIDATION",
+        "ok": ok,
+        "reason": "memory_recall_validated" if ok else "memory_recall_failed",
+        "report_path": str(out_path),
+        "memory_target_path": str(memory_path),
+        "memory_write_key": memory_write_key,
+        "recall_count": len(recalled_atoms),
+        "problem": "field_intent_memory_recall_validation",
+        "execution": {
+            "ok": ok,
+            "changed_files": [str(out_path)],
+            "actions": ["read_d56_apply_result", "scan_memory_jsonl", "validate_recall", "write_d57_recall_report"],
+            "note": "D57 validated that the D56 memory atom can be recalled."
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+            "note": "Memory recall validation completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "memory_recall_validation_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -2608,6 +2784,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_memory_recall_validation":
+        return _run_field_intent_memory_recall_validation(task)
 
     if problem == "field_intent_guarded_memory_write_apply":
         return _run_field_intent_guarded_memory_write_apply(task)
