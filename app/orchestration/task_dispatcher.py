@@ -1172,6 +1172,188 @@ def _run_field_intent_phase_resync_patch_proposal(task: Dict[str, Any]) -> Dict[
         }
     }
 
+
+def _run_field_intent_phase_resync_guarded_apply(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    proposal_path = Path(str(payload.get("proposal_path") or "reports/d49_phase_resync_patch_proposal.json"))
+    if not proposal_path.exists():
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+            "ok": False,
+            "reason": "patch_proposal_missing",
+            "proposal_path": str(proposal_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["patch proposal file not found"]},
+        }
+
+    try:
+        proposal = json.loads(proposal_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+            "ok": False,
+            "reason": "patch_proposal_read_error",
+            "error": str(exc),
+            "proposal_path": str(proposal_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    resonance_vector = proposal.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    algorithm = proposal.get("proposed_algorithm", {})
+    if not isinstance(algorithm, dict):
+        algorithm = {}
+
+    formula = algorithm.get("formula", {})
+    if not isinstance(formula, dict):
+        formula = {}
+
+    validation_rule = proposal.get("validation_rule", {})
+    if not isinstance(validation_rule, dict):
+        validation_rule = {}
+
+    phase_error_after = float(formula.get("phase_error_after", 999.0) or 999.0)
+    jitter_after = float(formula.get("jitter_after", 999.0) or 999.0)
+    phase_error_max = float(validation_rule.get("phase_error_after_max", 0.12) or 0.12)
+    jitter_max = float(validation_rule.get("jitter_after_max", 0.08) or 0.08)
+
+    memory_key = str(validation_rule.get("must_preserve_memory_key") or resonance_vector.get("memory_key") or "UNKNOWN_MEMORY_KEY")
+    orbital_mode = str(validation_rule.get("must_preserve_orbital_mode") or resonance_vector.get("orbital_mode") or "UNKNOWN_ORBITAL")
+    intent = str(proposal.get("intent") or "NEEDS_PHASE_REPAIR")
+    field_case = str(proposal.get("field_case") or "PHASE_DRIFT_HEX")
+
+    errors = []
+
+    if proposal.get("mode") != "PATCH_PROPOSAL_ONLY":
+        errors.append("proposal mode must be PATCH_PROPOSAL_ONLY before guarded apply")
+
+    if proposal.get("do_not_apply_patch_yet") is not True:
+        errors.append("proposal must explicitly say do_not_apply_patch_yet=true")
+
+    if not isinstance(resonance_vector, dict) or not resonance_vector:
+        errors.append("resonance_vector missing")
+
+    if phase_error_after > phase_error_max:
+        errors.append(f"phase_error_after too high: {phase_error_after} > {phase_error_max}")
+
+    if jitter_after > jitter_max:
+        errors.append(f"jitter_after too high: {jitter_after} > {jitter_max}")
+
+    if str(resonance_vector.get("memory_key", "")) != memory_key:
+        errors.append("memory_key was not preserved")
+
+    if str(resonance_vector.get("orbital_mode", "")) != orbital_mode:
+        errors.append("orbital_mode was not preserved")
+
+    if errors:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+            "ok": False,
+            "reason": "guard_validation_failed",
+            "proposal_path": str(proposal_path),
+            "errors": errors,
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    policy = {
+        "state": "D50_FIELD_INTENT_PHASE_RESYNC_POLICY_LOCK",
+        "result": "PHASE_RESYNC_POLICY_LOCKED",
+        "source_proposal": str(proposal_path),
+        "bridge": "D50_FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+        "intent": intent,
+        "field_case": field_case,
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "resonance_vector": resonance_vector,
+        "locked_thresholds": {
+            "phase_error_after_max": phase_error_max,
+            "jitter_after_max": jitter_max,
+            "phase_error_after": phase_error_after,
+            "jitter_after": jitter_after,
+            "phase_lock_ok": True
+        },
+        "apply_mode": "POLICY_ONLY",
+        "runtime_code_mutated": False,
+        "safe_to_generate_guarded_patch_next": True,
+        "next_step": "D51 may use this locked policy to generate a guarded runtime patch"
+    }
+
+    result = {
+        "state": "D50_FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+        "result": "GUARDED_APPLY_ACCEPTED",
+        "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+        "source_proposal": str(proposal_path),
+        "policy_path": "reports/d50_phase_resync_policy_lock.json",
+        "problem": "field_intent_phase_resync_guarded_apply",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "resonance_vector": resonance_vector,
+        "validated": True,
+        "applied": {
+            "mode": "POLICY_ONLY",
+            "runtime_code_mutated": False,
+            "phase_error_after": phase_error_after,
+            "jitter_after": jitter_after,
+            "phase_lock_ok": True
+        },
+        "validation_rule": {
+            "payload_preserved": True,
+            "resonance_vector_preserved": True,
+            "memory_key_preserved": True,
+            "orbital_mode_preserved": True,
+            "phase_error_after_max": phase_error_max,
+            "jitter_after_max": jitter_max
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+            "policy_locked": True,
+            "next_step": "D51 may create a guarded runtime patch from this locked policy"
+        },
+        "raw_patch_proposal": proposal
+    }
+
+    policy_path = Path("reports/d50_phase_resync_policy_lock.json")
+    result_path = Path("reports/d50_phase_resync_guarded_apply_result.json")
+
+    policy_path.parent.mkdir(parents=True, exist_ok=True)
+    policy_path.write_text(json.dumps(policy, ensure_ascii=False, indent=2), encoding="utf-8")
+    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_PHASE_RESYNC_GUARDED_APPLY",
+        "ok": True,
+        "reason": "phase_resync_guarded_apply_accepted",
+        "proposal_path": str(proposal_path),
+        "policy_path": str(policy_path),
+        "result_path": str(result_path),
+        "problem": "field_intent_phase_resync_guarded_apply",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(policy_path), str(result_path)],
+            "actions": ["write_phase_resync_policy_lock", "write_guarded_apply_result"],
+            "note": "D50 guarded apply accepted as policy only. No runtime code mutation executed yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "D50 validated D49 proposal and locked safe phase-resync policy."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "guarded_apply_policy_only_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -1247,6 +1429,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_resync_guarded_apply":
+        return _run_field_intent_phase_resync_guarded_apply(task)
 
     if problem == "field_intent_phase_resync_patch_proposal":
         return _run_field_intent_phase_resync_patch_proposal(task)
