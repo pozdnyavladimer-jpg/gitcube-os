@@ -1354,6 +1354,232 @@ def _run_field_intent_phase_resync_guarded_apply(task: Dict[str, Any]) -> Dict[s
         }
     }
 
+
+def _run_field_intent_guarded_runtime_patch_generator(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    policy_path = Path(str(payload.get("policy_path") or "reports/d50_phase_resync_policy_lock.json"))
+    result_path = Path(str(payload.get("result_path") or "reports/d50_phase_resync_guarded_apply_result.json"))
+
+    if not policy_path.exists():
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+            "ok": False,
+            "reason": "policy_lock_missing",
+            "policy_path": str(policy_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D50 policy lock file not found"]},
+        }
+
+    try:
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+            "ok": False,
+            "reason": "policy_lock_read_error",
+            "error": str(exc),
+            "policy_path": str(policy_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    guarded_result = {}
+    if result_path.exists():
+        try:
+            guarded_result = json.loads(result_path.read_text(encoding="utf-8"))
+        except Exception:
+            guarded_result = {}
+
+    resonance_vector = policy.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    locked_thresholds = policy.get("locked_thresholds", {})
+    if not isinstance(locked_thresholds, dict):
+        locked_thresholds = {}
+
+    memory_key = str(policy.get("memory_key") or resonance_vector.get("memory_key") or "UNKNOWN_MEMORY_KEY")
+    orbital_mode = str(policy.get("orbital_mode") or resonance_vector.get("orbital_mode") or "UNKNOWN_ORBITAL")
+    intent = str(policy.get("intent") or "NEEDS_PHASE_REPAIR")
+    field_case = str(policy.get("field_case") or "PHASE_DRIFT_HEX")
+
+    errors = []
+
+    if policy.get("result") != "PHASE_RESYNC_POLICY_LOCKED":
+        errors.append("D50 policy result must be PHASE_RESYNC_POLICY_LOCKED")
+
+    if policy.get("apply_mode") != "POLICY_ONLY":
+        errors.append("D50 policy apply_mode must be POLICY_ONLY")
+
+    if policy.get("runtime_code_mutated") is not False:
+        errors.append("D50 policy must not have mutated runtime code")
+
+    if policy.get("safe_to_generate_guarded_patch_next") is not True:
+        errors.append("D50 policy does not allow guarded patch generation")
+
+    if locked_thresholds.get("phase_lock_ok") is not True:
+        errors.append("phase lock is not ok")
+
+    if str(resonance_vector.get("memory_key", "")) != memory_key:
+        errors.append("memory_key not preserved")
+
+    if str(resonance_vector.get("orbital_mode", "")) != orbital_mode:
+        errors.append("orbital_mode not preserved")
+
+    if errors:
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+            "ok": False,
+            "reason": "d51_guard_validation_failed",
+            "errors": errors,
+            "policy_path": str(policy_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    module_lines = [
+        "# -*- coding: utf-8 -*-",
+        '"""',
+        "runtime_experimental/phase_resync_policy.py",
+        "",
+        "Guarded phase-resync helper generated from D51.",
+        "",
+        "Purpose:",
+        "- reduce phase drift before memory/write/report stages",
+        "- preserve full D46 resonance payload",
+        "- never overwrite memory_key, orbital_mode, intent, or resonance_vector",
+        '"""',
+        "",
+        "from __future__ import annotations",
+        "",
+        "from typing import Any, Dict",
+        "",
+        "",
+        "def _num(value: Any, default: float = 0.0) -> float:",
+        "    try:",
+        "        return float(value) if value is not None else default",
+        "    except Exception:",
+        "        return default",
+        "",
+        "",
+        "def compute_phase_resync(",
+        "    resonance_vector: Dict[str, Any],",
+        "    *,",
+        "    phase_error_after_max: float = 0.12,",
+        "    jitter_after_max: float = 0.08,",
+        ") -> Dict[str, Any]:",
+        "    original = dict(resonance_vector or {})",
+        "",
+        '    phase_error_before = _num(original.get("phase_error"), 0.0)',
+        '    jitter_before = _num(original.get("jitter"), 0.0)',
+        "",
+        "    phase_error_after = min(phase_error_before, phase_error_before * 0.35)",
+        "    jitter_after = min(jitter_before, jitter_before * 0.70)",
+        "",
+        "    return {",
+        '        "ok": phase_error_after <= phase_error_after_max and jitter_after <= jitter_after_max,',
+        '        "memory_key": original.get("memory_key"),',
+        '        "orbital_mode": original.get("orbital_mode"),',
+        '        "phase_error_before": phase_error_before,',
+        '        "phase_error_after": phase_error_after,',
+        '        "jitter_before": jitter_before,',
+        '        "jitter_after": jitter_after,',
+        '        "phase_error_after_max": phase_error_after_max,',
+        '        "jitter_after_max": jitter_after_max,',
+        '        "preserved_resonance_vector": original,',
+        "    }",
+        "",
+    ]
+
+    module_content = "\n".join(module_lines)
+
+    patch_bundle = {
+        "state": "D51_FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+        "result": "GUARDED_RUNTIME_PATCH_BUNDLE_CREATED",
+        "source_policy": str(policy_path),
+        "source_guarded_apply_result": str(result_path),
+        "bridge": "D51_FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "mode": "PATCH_BUNDLE_ONLY",
+        "do_not_apply_patch_yet": True,
+        "runtime_code_mutated": False,
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "resonance_vector": resonance_vector,
+        "locked_thresholds": locked_thresholds,
+        "patch_bundle": {
+            "goal": "Create a guarded runtime helper for phase resync without applying it yet.",
+            "new_file_candidate": "runtime_experimental/phase_resync_policy.py",
+            "integration_candidates": [
+                "app/orchestration/task_dispatcher.py",
+                "runtime_experimental/v_kernel_daemon.py"
+            ],
+            "module_content": module_content,
+            "rollback_plan": [
+                "remove runtime_experimental/phase_resync_policy.py if validation fails",
+                "do not modify task_dispatcher.py until D52 guarded apply",
+                "do not modify v_kernel_daemon.py until D52 guarded apply"
+            ],
+            "validation_commands": [
+                "python -m py_compile runtime_experimental/phase_resync_policy.py",
+                "python -m py_compile app/orchestration/task_dispatcher.py",
+                "PYTHONPATH=. python runtime_experimental/v_kernel_daemon.py"
+            ]
+        },
+        "validation_rule": {
+            "must_preserve_payload": True,
+            "must_preserve_resonance_vector": True,
+            "must_preserve_memory_key": memory_key,
+            "must_preserve_orbital_mode": orbital_mode,
+            "runtime_code_mutated_now": False,
+            "next_apply_requires_backup": True,
+            "next_apply_requires_py_compile": True,
+            "next_apply_requires_daemon_test": True
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+            "patch_bundle_created": True,
+            "next_step": "D52 may write the helper file with backup and validation"
+        },
+        "raw_policy": policy,
+        "raw_guarded_apply_result": guarded_result
+    }
+
+    out_path = Path("reports/d51_guarded_runtime_patch_bundle.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(patch_bundle, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_GENERATOR",
+        "ok": True,
+        "reason": "guarded_runtime_patch_bundle_created",
+        "patch_bundle_path": str(out_path),
+        "policy_path": str(policy_path),
+        "problem": "field_intent_guarded_runtime_patch_generator",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(out_path)],
+            "actions": ["write_guarded_runtime_patch_bundle"],
+            "note": "D51 patch bundle created. No runtime code mutation executed yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "D51 generated guarded runtime patch bundle from D50 locked policy."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "patch_bundle_only_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -1429,6 +1655,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_guarded_runtime_patch_generator":
+        return _run_field_intent_guarded_runtime_patch_generator(task)
 
     if problem == "field_intent_phase_resync_guarded_apply":
         return _run_field_intent_phase_resync_guarded_apply(task)
