@@ -1948,6 +1948,168 @@ def _run_field_intent_phase_resync_runtime_check(task: Dict[str, Any]) -> Dict[s
         }
     }
 
+
+def _run_field_intent_phase_resync_downstream_decision(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    check_path = Path(str(payload.get("check_path") or "reports/d53_phase_resync_runtime_check.json"))
+
+    if not check_path.exists():
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+            "ok": False,
+            "reason": "d53_runtime_check_missing",
+            "check_path": str(check_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D53 runtime check report not found"]},
+        }
+
+    try:
+        check_report = json.loads(check_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+            "ok": False,
+            "reason": "d53_runtime_check_read_error",
+            "error": str(exc),
+            "check_path": str(check_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    runtime_check = check_report.get("runtime_check", {})
+    if not isinstance(runtime_check, dict):
+        runtime_check = {}
+
+    validation = check_report.get("validation", {})
+    if not isinstance(validation, dict):
+        validation = {}
+
+    preservation = check_report.get("preservation", {})
+    if not isinstance(preservation, dict):
+        preservation = {}
+
+    resonance_vector = check_report.get("resonance_vector_before", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    thresholds = check_report.get("thresholds", {})
+    if not isinstance(thresholds, dict):
+        thresholds = {}
+
+    phase_error_after_max = float(thresholds.get("phase_error_after_max", payload.get("phase_error_after_max", 0.12)))
+    jitter_after_max = float(thresholds.get("jitter_after_max", payload.get("jitter_after_max", 0.08)))
+
+    phase_error_after = float(runtime_check.get("phase_error_after", 999.0))
+    jitter_after = float(runtime_check.get("jitter_after", 999.0))
+
+    errors = []
+
+    if check_report.get("result") != "PHASE_RESYNC_RUNTIME_CHECK_PASSED":
+        errors.append("D53 result is not PHASE_RESYNC_RUNTIME_CHECK_PASSED")
+
+    if runtime_check.get("ok") is not True:
+        errors.append("runtime_check.ok is not true")
+
+    if validation.get("ok") is not True:
+        errors.append("D53 validation.ok is not true")
+
+    if preservation.get("memory_key_preserved") is not True:
+        errors.append("memory_key was not preserved")
+
+    if preservation.get("orbital_mode_preserved") is not True:
+        errors.append("orbital_mode was not preserved")
+
+    if preservation.get("resonance_vector_not_overwritten") is not True:
+        errors.append("resonance_vector was overwritten")
+
+    if phase_error_after > phase_error_after_max:
+        errors.append("phase_error_after still exceeds allowed threshold")
+
+    if jitter_after > jitter_after_max:
+        errors.append("jitter_after still exceeds allowed threshold")
+
+    allow_write = not errors
+
+    decision = "ALLOW_GUARDED_MEMORY_WRITE" if allow_write else "HOLD_FOR_REVIEW"
+
+    report = {
+        "state": "D54_FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+        "result": "DOWNSTREAM_DECISION_CREATED",
+        "route": "FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+        "bridge": "D54_FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+        "source_check": str(check_path),
+        "decision": decision,
+        "allow_guarded_memory_write": allow_write,
+        "must_not_mutate_code": True,
+        "runtime_code_mutated": False,
+        "memory_write_executed": False,
+        "intent": str(check_report.get("intent") or payload.get("intent") or "RUNTIME_PHASE_RESYNC_CHECK"),
+        "field_case": str(check_report.get("field_case") or payload.get("field_case") or "PHASE_DRIFT_HEX"),
+        "target_agent": str(check_report.get("target_agent") or payload.get("target_agent") or payload.get("executor_hint") or "MAGE"),
+        "resonance_vector": resonance_vector,
+        "runtime_check": runtime_check,
+        "thresholds": {
+            "phase_error_after_max": phase_error_after_max,
+            "jitter_after_max": jitter_after_max,
+            "phase_error_after": phase_error_after,
+            "jitter_after": jitter_after,
+        },
+        "decision_rules": {
+            "require_d53_passed": True,
+            "require_runtime_check_ok": True,
+            "require_memory_key_preserved": True,
+            "require_orbital_mode_preserved": True,
+            "require_resonance_vector_not_overwritten": True,
+            "require_phase_error_after_lte_max": True,
+            "require_jitter_after_lte_max": True,
+        },
+        "validation": {
+            "ok": allow_write,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+            "decision_created": True,
+            "allow_guarded_memory_write": allow_write,
+            "next_step": "D55 may create a guarded memory-write request if decision is ALLOW_GUARDED_MEMORY_WRITE",
+        },
+        "raw_d53_runtime_check": check_report,
+    }
+
+    out_path = Path("reports/d54_phase_resync_downstream_decision.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_PHASE_RESYNC_DOWNSTREAM_DECISION",
+        "ok": allow_write,
+        "reason": "guarded_memory_write_allowed" if allow_write else "hold_for_review",
+        "decision": decision,
+        "allow_guarded_memory_write": allow_write,
+        "report_path": str(out_path),
+        "problem": "field_intent_phase_resync_downstream_decision",
+        "intent": report["intent"],
+        "field_case": report["field_case"],
+        "target_agent": report["target_agent"],
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": allow_write,
+            "changed_files": [str(out_path)],
+            "actions": ["read_d53_runtime_check", "evaluate_downstream_decision", "write_d54_decision_report"],
+            "note": "D54 created downstream decision. No memory write executed yet."
+        },
+        "validation": {
+            "ok": allow_write,
+            "errors": errors,
+            "note": "Downstream decision completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "downstream_decision_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -2023,6 +2185,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_resync_downstream_decision":
+        return _run_field_intent_phase_resync_downstream_decision(task)
 
     if problem == "field_intent_phase_resync_runtime_check":
         return _run_field_intent_phase_resync_runtime_check(task)
