@@ -73,6 +73,240 @@ def _task_priority(task: Dict[str, Any]) -> str:
     return "normal"
 
 
+
+def _priority_rank(value: str) -> int:
+    value = str(value or "").strip().lower()
+    return {
+        "low": 0,
+        "normal": 1,
+        "medium": 2,
+        "high": 3,
+        "critical": 4,
+    }.get(value, 1)
+
+
+def _priority_from_rank(rank: int) -> str:
+    if rank >= 4:
+        return "critical"
+    if rank == 3:
+        return "high"
+    if rank == 2:
+        return "medium"
+    if rank <= 0:
+        return "low"
+    return "normal"
+
+
+def _field_intent_bias_key_from_payload(payload: Dict[str, Any]) -> str:
+    resonance_vector = payload.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    memory_key = str(
+        payload.get("memory_key")
+        or resonance_vector.get("memory_key")
+        or ""
+    ).strip()
+
+    orbital_mode = str(
+        payload.get("orbital_mode")
+        or resonance_vector.get("orbital_mode")
+        or ""
+    ).strip()
+
+    field_case = str(
+        payload.get("field_case")
+        or payload.get("case")
+        or ""
+    ).strip()
+
+    if not memory_key or not orbital_mode or not field_case:
+        return ""
+
+    return f"field_intent:{memory_key}:{orbital_mode}:{field_case}".lower()
+
+
+def _load_field_intent_priority_bias_store(path: str = "memory/field_intent_priority_bias.json") -> Dict[str, Any]:
+    import json
+    from pathlib import Path
+
+    bias_path = Path(path)
+    if not bias_path.exists():
+        return {
+            "ok": False,
+            "reason": "bias_store_missing",
+            "path": str(bias_path),
+            "biases": {},
+        }
+
+    try:
+        data = json.loads(bias_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "ok": False,
+            "reason": "bias_store_read_error",
+            "path": str(bias_path),
+            "error": str(exc),
+            "biases": {},
+        }
+
+    biases = data.get("biases", {})
+    if not isinstance(biases, dict):
+        return {
+            "ok": False,
+            "reason": "bias_store_biases_invalid",
+            "path": str(bias_path),
+            "biases": {},
+        }
+
+    return {
+        "ok": True,
+        "reason": "bias_store_loaded",
+        "path": str(bias_path),
+        "biases": biases,
+        "raw": data,
+    }
+
+
+def _apply_field_intent_memory_priority_bias(
+    prepared: Dict[str, Any],
+    payload: Dict[str, Any],
+) -> tuple[Dict[str, Any], Dict[str, Any]]:
+    if payload.get("memory_bias_disable") is True:
+        payload["memory_bias_applied"] = False
+        payload["memory_bias_reason"] = "disabled_by_payload"
+        return prepared, payload
+
+    bias_key = _field_intent_bias_key_from_payload(payload)
+    if not bias_key:
+        payload.setdefault("memory_bias_applied", False)
+        payload.setdefault("memory_bias_reason", "no_bias_key")
+        return prepared, payload
+
+    store = _load_field_intent_priority_bias_store()
+    if not store.get("ok"):
+        payload["memory_bias_applied"] = False
+        payload["memory_bias_reason"] = store.get("reason", "bias_store_unavailable")
+        payload["memory_bias_key"] = bias_key
+        return prepared, payload
+
+    bias = store.get("biases", {}).get(bias_key)
+    if not isinstance(bias, dict):
+        payload["memory_bias_applied"] = False
+        payload["memory_bias_reason"] = "bias_key_not_found"
+        payload["memory_bias_key"] = bias_key
+        return prepared, payload
+
+    before_priority = str(prepared.get("priority") or payload.get("priority") or "normal").strip().lower()
+    recommended_priority = str(bias.get("recommended_priority") or "normal").strip().lower()
+
+    before_rank = _priority_rank(before_priority)
+    recommended_rank = _priority_rank(recommended_priority)
+    after_rank = max(before_rank, recommended_rank)
+    after_priority = _priority_from_rank(after_rank)
+
+    prepared["priority"] = after_priority
+    payload["priority"] = after_priority
+
+    payload["memory_bias_applied"] = True
+    payload["memory_bias_reason"] = "bias_key_matched"
+    payload["memory_bias_key"] = bias_key
+    payload["memory_bias_store_path"] = store.get("path")
+    payload["priority_before_memory_bias"] = before_priority
+    payload["priority_after_memory_bias"] = after_priority
+    payload["memory_bias_recommended_priority"] = recommended_priority
+    payload["memory_bias_boost_points"] = bias.get("priority_boost_points")
+    payload["memory_bias_preferred_next_problem"] = bias.get("preferred_next_problem")
+    payload["memory_bias_routing_hint"] = bias.get("routing_hint", {})
+    payload["memory_bias_evidence"] = bias.get("evidence", {})
+
+    prepared["memory_priority_bias"] = {
+        "applied": True,
+        "bias_key": bias_key,
+        "priority_before": before_priority,
+        "priority_after": after_priority,
+        "recommended_priority": recommended_priority,
+        "boost_points": bias.get("priority_boost_points"),
+        "store_path": store.get("path"),
+    }
+
+    return prepared, payload
+
+
+def _run_field_intent_memory_priority_bias_probe(task: Dict[str, Any]) -> Dict[str, Any]:
+    import json
+    from pathlib import Path
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    out_path = Path("reports/d59_memory_priority_bias_dispatch_probe.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    applied = payload.get("memory_bias_applied") is True
+
+    report = {
+        "state": "D59_FIELD_INTENT_MEMORY_PRIORITY_BIAS_DISPATCH",
+        "result": "MEMORY_PRIORITY_BIAS_APPLIED" if applied else "MEMORY_PRIORITY_BIAS_NOT_APPLIED",
+        "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS_PROBE",
+        "bridge": "D59_FIELD_INTENT_MEMORY_PRIORITY_BIAS_DISPATCH",
+        "problem": payload.get("problem"),
+        "bias_key": payload.get("memory_bias_key"),
+        "memory_bias_applied": applied,
+        "memory_bias_reason": payload.get("memory_bias_reason"),
+        "priority_before_memory_bias": payload.get("priority_before_memory_bias"),
+        "priority_after_memory_bias": payload.get("priority_after_memory_bias"),
+        "task_priority_after_prepare": task.get("priority"),
+        "recommended_priority": payload.get("memory_bias_recommended_priority"),
+        "boost_points": payload.get("memory_bias_boost_points"),
+        "routing_hint": payload.get("memory_bias_routing_hint"),
+        "evidence": payload.get("memory_bias_evidence"),
+        "runtime_code_mutated": False,
+        "bias_store_mutated": False,
+        "validation": {
+            "ok": applied,
+            "errors": [] if applied else ["memory bias was not applied"],
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS_PROBE",
+            "dispatcher_read_bias_store": True,
+            "bias_applied": applied,
+            "priority_after_memory_bias": payload.get("priority_after_memory_bias"),
+            "next_step": "D60 may convert this into a stable closed-loop field memory policy",
+        },
+        "prepared_payload": payload,
+    }
+
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_MEMORY_PRIORITY_BIAS_PROBE",
+        "ok": applied,
+        "reason": "memory_priority_bias_applied" if applied else "memory_priority_bias_not_applied",
+        "report_path": str(out_path),
+        "bias_key": payload.get("memory_bias_key"),
+        "memory_bias_applied": applied,
+        "priority_before_memory_bias": payload.get("priority_before_memory_bias"),
+        "priority_after_memory_bias": payload.get("priority_after_memory_bias"),
+        "recommended_priority": payload.get("memory_bias_recommended_priority"),
+        "boost_points": payload.get("memory_bias_boost_points"),
+        "problem": "field_intent_memory_priority_bias_probe",
+        "execution": {
+            "ok": applied,
+            "changed_files": [str(out_path)],
+            "actions": ["prepare_task", "read_bias_store", "apply_priority_bias", "write_d59_probe_report"],
+            "note": "D59 confirmed dispatcher can apply memory priority bias."
+        },
+        "validation": {
+            "ok": applied,
+            "errors": [] if applied else ["memory bias was not applied"],
+            "note": "Memory priority bias dispatch probe completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "memory_priority_bias_probe_manual_commit"
+        }
+    }
+
 def _prepare_task(task: Dict[str, Any]) -> Dict[str, Any]:
     prepared = dict(task or {})
     payload = dict(prepared.get("payload", {}) or {})
@@ -90,6 +324,7 @@ def _prepare_task(task: Dict[str, Any]) -> Dict[str, Any]:
         payload.setdefault("has_shadow_backup", True)
         payload.setdefault("executor_hint", "MAGE")
 
+    prepared, payload = _apply_field_intent_memory_priority_bias(prepared, payload)
     prepared["payload"] = payload
     return prepared
 
@@ -3093,6 +3328,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_memory_priority_bias_probe":
+        return _run_field_intent_memory_priority_bias_probe(task)
 
     if problem == "field_intent_memory_priority_bias":
         return _run_field_intent_memory_priority_bias(task)
