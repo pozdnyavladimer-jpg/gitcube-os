@@ -2110,6 +2110,171 @@ def _run_field_intent_phase_resync_downstream_decision(task: Dict[str, Any]) -> 
         }
     }
 
+
+def _run_field_intent_guarded_memory_write_request(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    decision_path = Path(str(payload.get("decision_path") or "reports/d54_phase_resync_downstream_decision.json"))
+
+    if not decision_path.exists():
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+            "ok": False,
+            "reason": "d54_decision_missing",
+            "decision_path": str(decision_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D54 downstream decision report not found"]},
+        }
+
+    try:
+        decision_report = json.loads(decision_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+            "ok": False,
+            "reason": "d54_decision_read_error",
+            "error": str(exc),
+            "decision_path": str(decision_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    validation = decision_report.get("validation", {})
+    if not isinstance(validation, dict):
+        validation = {}
+
+    runtime_check = decision_report.get("runtime_check", {})
+    if not isinstance(runtime_check, dict):
+        runtime_check = {}
+
+    resonance_vector = decision_report.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    errors = []
+
+    if decision_report.get("decision") != "ALLOW_GUARDED_MEMORY_WRITE":
+        errors.append("D54 decision is not ALLOW_GUARDED_MEMORY_WRITE")
+
+    if decision_report.get("allow_guarded_memory_write") is not True:
+        errors.append("D54 allow_guarded_memory_write is not true")
+
+    if validation.get("ok") is not True:
+        errors.append("D54 validation.ok is not true")
+
+    if decision_report.get("memory_write_executed") is not False:
+        errors.append("D54 must not have executed memory write")
+
+    if decision_report.get("runtime_code_mutated") is not False:
+        errors.append("D54 must not have mutated runtime code")
+
+    if runtime_check.get("ok") is not True:
+        errors.append("D53 runtime_check.ok is not true")
+
+    memory_key = str(resonance_vector.get("memory_key", "")).strip()
+    orbital_mode = str(resonance_vector.get("orbital_mode", "")).strip()
+
+    if not memory_key:
+        errors.append("missing resonance_vector.memory_key")
+
+    if not orbital_mode:
+        errors.append("missing resonance_vector.orbital_mode")
+
+    ok = not errors
+
+    memory_target_path = str(payload.get("memory_target_path") or "memory/field_intent_memory.jsonl")
+
+    memory_atom = {
+        "kind": "FIELD_INTENT_MEMORY_ATOM",
+        "source": "gitcube_os",
+        "bridge": "D55_FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+        "intent": str(decision_report.get("intent") or "DECIDE_GUARDED_MEMORY_WRITE"),
+        "field_case": str(decision_report.get("field_case") or "PHASE_DRIFT_HEX"),
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "target_agent": str(decision_report.get("target_agent") or "TANK"),
+        "phase_error_before": runtime_check.get("phase_error_before"),
+        "phase_error_after": runtime_check.get("phase_error_after"),
+        "jitter_before": runtime_check.get("jitter_before"),
+        "jitter_after": runtime_check.get("jitter_after"),
+        "strength": resonance_vector.get("strength"),
+        "ambiguity": resonance_vector.get("ambiguity"),
+        "decay": resonance_vector.get("decay"),
+        "resonance_vector": resonance_vector,
+        "runtime_check": runtime_check,
+        "source_decision": str(decision_path),
+    }
+
+    request = {
+        "state": "D55_FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+        "result": "GUARDED_MEMORY_WRITE_REQUEST_CREATED" if ok else "GUARDED_MEMORY_WRITE_REQUEST_BLOCKED",
+        "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+        "bridge": "D55_FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+        "source_decision": str(decision_path),
+        "request_status": "READY_FOR_D56_APPLY" if ok else "BLOCKED",
+        "allow_d56_memory_write_apply": ok,
+        "memory_write_executed": False,
+        "runtime_code_mutated": False,
+        "memory_target_path": memory_target_path,
+        "intent": memory_atom["intent"],
+        "field_case": memory_atom["field_case"],
+        "target_agent": memory_atom["target_agent"],
+        "memory_atom": memory_atom,
+        "guards": {
+            "require_d54_allow_guarded_memory_write": True,
+            "require_d54_validation_ok": True,
+            "require_runtime_check_ok": True,
+            "require_memory_key": True,
+            "require_orbital_mode": True,
+            "require_no_prior_memory_write": True,
+            "require_no_runtime_code_mutation": True,
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+            "memory_write_request_created": ok,
+            "memory_write_executed": False,
+            "next_step": "D56 may append memory_atom to memory target with backup and validation" if ok else "Review blocked request before D56",
+        },
+        "raw_d54_decision": decision_report,
+    }
+
+    out_path = Path("reports/d55_guarded_memory_write_request.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_GUARDED_MEMORY_WRITE_REQUEST",
+        "ok": ok,
+        "reason": "guarded_memory_write_request_created" if ok else "guarded_memory_write_request_blocked",
+        "report_path": str(out_path),
+        "decision_path": str(decision_path),
+        "memory_target_path": memory_target_path,
+        "problem": "field_intent_guarded_memory_write_request",
+        "intent": memory_atom["intent"],
+        "field_case": memory_atom["field_case"],
+        "target_agent": memory_atom["target_agent"],
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": ok,
+            "changed_files": [str(out_path)],
+            "actions": ["read_d54_decision", "build_memory_atom", "write_d55_memory_write_request"],
+            "note": "D55 created guarded memory-write request. No memory write executed yet."
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+            "note": "Guarded memory-write request completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "memory_write_request_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -2185,6 +2350,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_guarded_memory_write_request":
+        return _run_field_intent_guarded_memory_write_request(task)
 
     if problem == "field_intent_phase_resync_downstream_decision":
         return _run_field_intent_phase_resync_downstream_decision(task)
