@@ -1031,6 +1031,147 @@ def _run_field_intent_phase_resync_patch_request(task: Dict[str, Any]) -> Dict[s
         }
     }
 
+
+def _run_field_intent_phase_resync_patch_proposal(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    request_path = Path(str(payload.get("request_path") or "reports/d47_phase_resync_patch_request.json"))
+    if not request_path.exists():
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+            "ok": False,
+            "reason": "patch_request_missing",
+            "request_path": str(request_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["patch request file not found"]},
+        }
+
+    try:
+        patch_request = json.loads(request_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+            "ok": False,
+            "reason": "patch_request_read_error",
+            "error": str(exc),
+            "request_path": str(request_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    resonance_vector = patch_request.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    diagnosis = patch_request.get("diagnosis", {})
+    if not isinstance(diagnosis, dict):
+        diagnosis = {}
+
+    memory_key = str(resonance_vector.get("memory_key") or diagnosis.get("memory_key") or "UNKNOWN_MEMORY_KEY")
+    orbital_mode = str(resonance_vector.get("orbital_mode") or diagnosis.get("orbital_mode") or "UNKNOWN_ORBITAL")
+    intent = str(patch_request.get("intent") or "NEEDS_PHASE_REPAIR")
+    field_case = str(patch_request.get("field_case") or "PHASE_DRIFT_HEX")
+
+    phase_error = float(resonance_vector.get("phase_error", diagnosis.get("phase_error", 0.0)) or 0.0)
+    jitter = float(resonance_vector.get("jitter", diagnosis.get("jitter", 0.0)) or 0.0)
+
+    phase_error_after = min(phase_error, phase_error * 0.35)
+    jitter_after = min(jitter, jitter * 0.70)
+
+    proposal = {
+        "state": "D49_FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+        "result": "PHASE_RESYNC_PATCH_PROPOSAL_CREATED",
+        "source_request": str(request_path),
+        "problem": "field_intent_phase_resync_patch_proposal",
+        "bridge": "D49_FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "mode": "PATCH_PROPOSAL_ONLY",
+        "do_not_apply_patch_yet": True,
+        "resonance_vector": resonance_vector,
+        "proposal_summary": {
+            "goal": "Reduce phase drift before memory write while preserving D46 resonance payload.",
+            "memory_key": memory_key,
+            "orbital_mode": orbital_mode,
+            "cause": diagnosis.get("cause", "phase_error_exceeds_threshold"),
+        },
+        "proposed_algorithm": {
+            "name": "phase_resync_before_memory_write",
+            "steps": [
+                "read incoming resonance_vector",
+                "detect phase_error before memory write",
+                "if phase_error exceeds threshold, compute corrected phase_error",
+                "preserve memory_key, orbital_mode, intent and original payload",
+                "write resync diagnostics into report before any runtime mutation"
+            ],
+            "formula": {
+                "phase_error_before": phase_error,
+                "phase_error_after": phase_error_after,
+                "jitter_before": jitter,
+                "jitter_after": jitter_after,
+                "phase_lock_ok": phase_error_after <= 0.12 and jitter_after <= 0.08
+            }
+        },
+        "candidate_patch": {
+            "safe_target": True,
+            "code_mutation_required_now": False,
+            "proposal_file": "reports/d49_phase_resync_patch_proposal.json",
+            "next_real_code_target_candidates": [
+                "app/orchestration/task_dispatcher.py",
+                "runtime_experimental/v_kernel_daemon.py"
+            ]
+        },
+        "validation_rule": {
+            "must_preserve_payload": True,
+            "must_preserve_resonance_vector": True,
+            "must_preserve_memory_key": memory_key,
+            "must_preserve_orbital_mode": orbital_mode,
+            "phase_error_after_max": 0.12,
+            "jitter_after_max": 0.08,
+            "no_runtime_code_mutation_yet": True
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+            "patch_proposal_created": True,
+            "target_agent": "MAGE",
+            "next_step": "D50 may convert this proposal into a guarded apply route"
+        },
+        "raw_patch_request": patch_request
+    }
+
+    out_path = Path("reports/d49_phase_resync_patch_proposal.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(proposal, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_PROPOSAL",
+        "ok": True,
+        "reason": "phase_resync_patch_proposal_created",
+        "patch_proposal_path": str(out_path),
+        "source_request": str(request_path),
+        "problem": "field_intent_phase_resync_patch_proposal",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(out_path)],
+            "actions": ["write_phase_resync_patch_proposal"],
+            "note": "D49 patch proposal created. No runtime code mutation executed yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "Patch proposal created from D48 request."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "patch_proposal_only_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -1106,6 +1247,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_resync_patch_proposal":
+        return _run_field_intent_phase_resync_patch_proposal(task)
 
     if problem == "field_intent_phase_resync_patch":
         return _run_field_intent_phase_resync_patch_request(task)
