@@ -3253,6 +3253,212 @@ def _run_field_intent_memory_priority_bias(task: Dict[str, Any]) -> Dict[str, An
         }
     }
 
+
+def _run_field_intent_closed_loop_memory_policy(task: Dict[str, Any]) -> Dict[str, Any]:
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    d56_path = Path(str(payload.get("d56_path") or "reports/d56_guarded_memory_write_apply_result.json"))
+    d57_path = Path(str(payload.get("d57_path") or "reports/d57_memory_recall_validation.json"))
+    d58_path = Path(str(payload.get("d58_path") or "reports/d58_memory_priority_bias.json"))
+    d59_path = Path(str(payload.get("d59_path") or "reports/d59_memory_priority_bias_dispatch_probe.json"))
+
+    memory_path = Path(str(payload.get("memory_path") or "memory/field_intent_memory.jsonl"))
+    bias_store_path = Path(str(payload.get("bias_store_path") or "memory/field_intent_priority_bias.json"))
+
+    out_policy_path = Path("memory/field_intent_closed_loop_policy.json")
+    out_report_path = Path("reports/d60_closed_loop_field_memory_policy.json")
+    backup_path = Path(str(out_policy_path) + ".bak")
+
+    def read_json(path: Path):
+        if not path.exists():
+            return None, f"missing: {path}"
+        try:
+            return json.loads(path.read_text(encoding="utf-8")), ""
+        except Exception as exc:
+            return None, f"read_error {path}: {exc}"
+
+    d56, e56 = read_json(d56_path)
+    d57, e57 = read_json(d57_path)
+    d58, e58 = read_json(d58_path)
+    d59, e59 = read_json(d59_path)
+    bias_store, ebias = read_json(bias_store_path)
+
+    errors = [e for e in [e56, e57, e58, e59, ebias] if e]
+
+    if d56 and d56.get("validation", {}).get("ok") is not True:
+        errors.append("D56 validation not ok")
+
+    if d57 and d57.get("validation", {}).get("ok") is not True:
+        errors.append("D57 validation not ok")
+
+    if d58 and d58.get("validation", {}).get("ok") is not True:
+        errors.append("D58 validation not ok")
+
+    if d59 and d59.get("validation", {}).get("ok") is not True:
+        errors.append("D59 validation not ok")
+
+    if d56 and d56.get("memory_write_executed") is not True and d56.get("result") != "GUARDED_MEMORY_WRITE_ALREADY_PRESENT":
+        errors.append("D56 did not write or confirm memory")
+
+    if d57 and d57.get("memory_read_success") is not True:
+        errors.append("D57 did not recall memory")
+
+    if d58 and d58.get("bias_store_updated") is not True:
+        errors.append("D58 did not update bias store")
+
+    if d59 and d59.get("memory_bias_applied") is not True:
+        errors.append("D59 did not apply memory bias")
+
+    memory_atom = {}
+    if isinstance(d56, dict):
+        memory_atom = d56.get("memory_atom", {}) if isinstance(d56.get("memory_atom"), dict) else {}
+
+    bias_record = {}
+    if isinstance(d58, dict):
+        bias_record = d58.get("bias_record", {}) if isinstance(d58.get("bias_record"), dict) else {}
+
+    memory_key = str(memory_atom.get("memory_key") or bias_record.get("memory_key") or "").strip()
+    orbital_mode = str(memory_atom.get("orbital_mode") or bias_record.get("orbital_mode") or "").strip()
+    field_case = str(memory_atom.get("field_case") or bias_record.get("field_case") or "").strip()
+    bias_key = str((d58 or {}).get("bias_key") or (d59 or {}).get("bias_key") or "").strip()
+
+    if not memory_key:
+        errors.append("memory_key missing from closed-loop chain")
+
+    if not orbital_mode:
+        errors.append("orbital_mode missing from closed-loop chain")
+
+    if not field_case:
+        errors.append("field_case missing from closed-loop chain")
+
+    if not bias_key:
+        errors.append("bias_key missing from closed-loop chain")
+
+    now = datetime.now(timezone.utc).isoformat()
+    ok = not errors
+
+    out_report_path.parent.mkdir(parents=True, exist_ok=True)
+    out_policy_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if out_policy_path.exists():
+        backup_path.write_text(out_policy_path.read_text(encoding="utf-8"), encoding="utf-8")
+    else:
+        backup_path.write_text("", encoding="utf-8")
+
+    policy = {
+        "state": "D60_FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+        "result": "CLOSED_LOOP_POLICY_LOCKED" if ok else "CLOSED_LOOP_POLICY_BLOCKED",
+        "version": 1,
+        "locked": ok,
+        "created_at": now,
+        "updated_at": now,
+        "policy_key": bias_key,
+        "scope": {
+            "memory_key": memory_key,
+            "orbital_mode": orbital_mode,
+            "field_case": field_case,
+        },
+        "closed_loop": {
+            "d56_memory_write": bool(d56 and d56.get("validation", {}).get("ok") is True),
+            "d57_memory_recall": bool(d57 and d57.get("memory_read_success") is True),
+            "d58_memory_bias_created": bool(d58 and d58.get("bias_store_updated") is True),
+            "d59_dispatch_bias_applied": bool(d59 and d59.get("memory_bias_applied") is True),
+        },
+        "routing_policy": {
+            "match_key": bias_key,
+            "on_match": {
+                "raise_priority_to_at_least": "critical",
+                "preferred_problem": "field_intent_phase_resync_runtime_check",
+                "preferred_agents": ["HEALER", "TANK", "MAGE"],
+                "first_action": "runtime_check_before_code_mutation",
+            },
+            "guards": {
+                "preserve_payload": True,
+                "preserve_resonance_vector": True,
+                "do_not_overwrite_memory_atom": True,
+                "do_not_mutate_runtime_without_guard": True,
+                "backup_before_memory_write": True,
+                "validate_jsonl_after_memory_write": True,
+            },
+        },
+        "evidence": {
+            "d56": str(d56_path),
+            "d57": str(d57_path),
+            "d58": str(d58_path),
+            "d59": str(d59_path),
+            "memory_store": str(memory_path),
+            "bias_store": str(bias_store_path),
+            "priority_before_d59": (d59 or {}).get("priority_before_memory_bias"),
+            "priority_after_d59": (d59 or {}).get("priority_after_memory_bias"),
+            "boost_points": (d59 or {}).get("boost_points"),
+        },
+        "next_step": "D61 may turn this locked policy into a reusable closed-loop regression test",
+    }
+
+    out_policy_path.write_text(json.dumps(policy, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    report = {
+        "state": "D60_FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+        "result": policy["result"],
+        "route": "FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+        "bridge": "D60_FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+        "policy_path": str(out_policy_path),
+        "backup_path": str(backup_path),
+        "closed_loop_locked": ok,
+        "policy_key": bias_key,
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "field_case": field_case,
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+            "policy_locked": ok,
+            "memory_write_recall_bias_dispatch_chain_valid": ok,
+            "next_step": "D61 may create a regression test for the full D46-D60 loop",
+        },
+        "policy": policy,
+        "raw": {
+            "d56": d56,
+            "d57": d57,
+            "d58": d58,
+            "d59": d59,
+        },
+    }
+
+    out_report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+        "ok": ok,
+        "reason": "closed_loop_policy_locked" if ok else "closed_loop_policy_blocked",
+        "policy_path": str(out_policy_path),
+        "report_path": str(out_report_path),
+        "policy_key": bias_key,
+        "problem": "field_intent_closed_loop_memory_policy",
+        "execution": {
+            "ok": ok,
+            "changed_files": [str(out_policy_path), str(backup_path), str(out_report_path)],
+            "actions": ["read_d56", "read_d57", "read_d58", "read_d59", "validate_closed_loop", "write_d60_policy"],
+            "note": "D60 locked closed-loop field memory policy."
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+            "note": "Closed-loop field memory policy validation completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "closed_loop_policy_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -3328,6 +3534,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_closed_loop_memory_policy":
+        return _run_field_intent_closed_loop_memory_policy(task)
 
     if problem == "field_intent_memory_priority_bias_probe":
         return _run_field_intent_memory_priority_bias_probe(task)

@@ -1,0 +1,53 @@
+{
+  "state": "D60_FIELD_INTENT_CLOSED_LOOP_MEMORY_POLICY",
+  "result": "CLOSED_LOOP_POLICY_LOCKED",
+  "version": 1,
+  "locked": true,
+  "created_at": "2026-05-02T11:18:30.605179+00:00",
+  "updated_at": "2026-05-02T11:18:30.605179+00:00",
+  "policy_key": "field_intent:d3_o6:hex:phase_drift_hex",
+  "scope": {
+    "memory_key": "D3_O6",
+    "orbital_mode": "HEX",
+    "field_case": "PHASE_DRIFT_HEX"
+  },
+  "closed_loop": {
+    "d56_memory_write": true,
+    "d57_memory_recall": true,
+    "d58_memory_bias_created": true,
+    "d59_dispatch_bias_applied": true
+  },
+  "routing_policy": {
+    "match_key": "field_intent:d3_o6:hex:phase_drift_hex",
+    "on_match": {
+      "raise_priority_to_at_least": "critical",
+      "preferred_problem": "field_intent_phase_resync_runtime_check",
+      "preferred_agents": [
+        "HEALER",
+        "TANK",
+        "MAGE"
+      ],
+      "first_action": "runtime_check_before_code_mutation"
+    },
+    "guards": {
+      "preserve_payload": true,
+      "preserve_resonance_vector": true,
+      "do_not_overwrite_memory_atom": true,
+      "do_not_mutate_runtime_without_guard": true,
+      "backup_before_memory_write": true,
+      "validate_jsonl_after_memory_write": true
+    }
+  },
+  "evidence": {
+    "d56": "reports/d56_guarded_memory_write_apply_result.json",
+    "d57": "reports/d57_memory_recall_validation.json",
+    "d58": "reports/d58_memory_priority_bias.json",
+    "d59": "reports/d59_memory_priority_bias_dispatch_probe.json",
+    "memory_store": "memory/field_intent_memory.jsonl",
+    "bias_store": "memory/field_intent_priority_bias.json",
+    "priority_before_d59": "normal",
+    "priority_after_d59": "critical",
+    "boost_points": 30
+  },
+  "next_step": "D61 may turn this locked policy into a reusable closed-loop regression test"
+}
