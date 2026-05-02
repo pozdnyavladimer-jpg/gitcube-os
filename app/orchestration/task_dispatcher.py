@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from typing import Dict, Any, List
@@ -1580,6 +1582,238 @@ def _run_field_intent_guarded_runtime_patch_generator(task: Dict[str, Any]) -> D
         }
     }
 
+
+def _run_field_intent_guarded_runtime_patch_apply(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    bundle_path = Path(str(payload.get("bundle_path") or "reports/d51_guarded_runtime_patch_bundle.json"))
+    if not bundle_path.exists():
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+            "ok": False,
+            "reason": "patch_bundle_missing",
+            "bundle_path": str(bundle_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["D51 patch bundle file not found"]},
+        }
+
+    try:
+        bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+            "ok": False,
+            "reason": "patch_bundle_read_error",
+            "error": str(exc),
+            "bundle_path": str(bundle_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    patch_bundle = bundle.get("patch_bundle", {})
+    if not isinstance(patch_bundle, dict):
+        patch_bundle = {}
+
+    module_content = str(patch_bundle.get("module_content") or "")
+    target_path = Path(str(patch_bundle.get("new_file_candidate") or "runtime_experimental/phase_resync_policy.py"))
+
+    resonance_vector = bundle.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    memory_key = str(bundle.get("memory_key") or resonance_vector.get("memory_key") or "UNKNOWN_MEMORY_KEY")
+    orbital_mode = str(bundle.get("orbital_mode") or resonance_vector.get("orbital_mode") or "UNKNOWN_ORBITAL")
+    intent = str(bundle.get("intent") or "NEEDS_PHASE_REPAIR")
+    field_case = str(bundle.get("field_case") or "PHASE_DRIFT_HEX")
+
+    errors = []
+
+    if bundle.get("result") != "GUARDED_RUNTIME_PATCH_BUNDLE_CREATED":
+        errors.append("D51 bundle result must be GUARDED_RUNTIME_PATCH_BUNDLE_CREATED")
+
+    if bundle.get("mode") != "PATCH_BUNDLE_ONLY":
+        errors.append("D51 bundle mode must be PATCH_BUNDLE_ONLY")
+
+    if bundle.get("do_not_apply_patch_yet") is not True:
+        errors.append("D51 bundle must explicitly say do_not_apply_patch_yet=true")
+
+    if bundle.get("runtime_code_mutated") is not False:
+        errors.append("D51 bundle must not have mutated runtime code")
+
+    if target_path.as_posix() != "runtime_experimental/phase_resync_policy.py":
+        errors.append(f"unexpected target path: {target_path}")
+
+    if "def compute_phase_resync" not in module_content:
+        errors.append("module_content missing compute_phase_resync")
+
+    if str(resonance_vector.get("memory_key", "")) != memory_key:
+        errors.append("memory_key not preserved")
+
+    if str(resonance_vector.get("orbital_mode", "")) != orbital_mode:
+        errors.append("orbital_mode not preserved")
+
+    if errors:
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+            "ok": False,
+            "reason": "d52_guard_validation_failed_before_write",
+            "errors": errors,
+            "bundle_path": str(bundle_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": errors},
+        }
+
+    backup_dir = Path("reports/backups")
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    backup_path = backup_dir / "phase_resync_policy.py.d52.bak"
+
+    target_existed = target_path.exists()
+    original_text = target_path.read_text(encoding="utf-8") if target_existed else ""
+
+    if target_existed:
+        backup_path.write_text(original_text, encoding="utf-8")
+
+    def rollback(reason: str, validation_errors: list[str]) -> Dict[str, Any]:
+        try:
+            if target_existed:
+                target_path.write_text(original_text, encoding="utf-8")
+            else:
+                if target_path.exists():
+                    target_path.unlink()
+        except Exception as rollback_exc:
+            validation_errors.append(f"rollback_error: {rollback_exc}")
+
+        return {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+            "ok": False,
+            "reason": reason,
+            "bundle_path": str(bundle_path),
+            "target_path": str(target_path),
+            "backup_path": str(backup_path) if target_existed else None,
+            "rolled_back": True,
+            "execution": {
+                "ok": False,
+                "changed_files": [],
+                "actions": ["write_runtime_helper", "validation_failed", "rollback"],
+            },
+            "validation": {
+                "ok": False,
+                "errors": validation_errors,
+            },
+        }
+
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(module_content, encoding="utf-8")
+
+    def run_cmd(cmd: list[str]) -> Dict[str, Any]:
+        proc = subprocess.run(cmd, text=True, capture_output=True)
+        return {
+            "cmd": cmd,
+            "returncode": proc.returncode,
+            "stdout": proc.stdout,
+            "stderr": proc.stderr,
+            "ok": proc.returncode == 0,
+        }
+
+    compile_helper = run_cmd([sys.executable, "-m", "py_compile", str(target_path)])
+    if not compile_helper["ok"]:
+        return rollback("helper_py_compile_failed", [compile_helper["stderr"] or compile_helper["stdout"]])
+
+    compile_dispatcher = run_cmd([sys.executable, "-m", "py_compile", "app/orchestration/task_dispatcher.py"])
+    if not compile_dispatcher["ok"]:
+        return rollback("dispatcher_py_compile_failed", [compile_dispatcher["stderr"] or compile_dispatcher["stdout"]])
+
+    test_vector = dict(resonance_vector)
+    test_code = (
+        "from runtime_experimental.phase_resync_policy import compute_phase_resync\n"
+        f"v = {json.dumps(test_vector, ensure_ascii=False)}\n"
+        "r = compute_phase_resync(v)\n"
+        "assert r['ok'] is True\n"
+        "assert r['memory_key'] == v.get('memory_key')\n"
+        "assert r['orbital_mode'] == v.get('orbital_mode')\n"
+        "assert r['phase_error_after'] <= r['phase_error_after_max']\n"
+        "assert r['jitter_after'] <= r['jitter_after_max']\n"
+        "print('phase_resync_policy_ok')\n"
+    )
+
+    functional_test = run_cmd([sys.executable, "-c", test_code])
+    if not functional_test["ok"]:
+        return rollback("functional_validation_failed", [functional_test["stderr"] or functional_test["stdout"]])
+
+    result = {
+        "state": "D52_FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+        "result": "GUARDED_RUNTIME_HELPER_WRITTEN",
+        "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+        "source_bundle": str(bundle_path),
+        "target_path": str(target_path),
+        "backup_path": str(backup_path) if target_existed else None,
+        "bridge": "D52_FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "memory_key": memory_key,
+        "orbital_mode": orbital_mode,
+        "resonance_vector": resonance_vector,
+        "applied": {
+            "mode": "GUARDED_FILE_WRITE",
+            "runtime_code_mutated": True,
+            "new_file_written": True,
+            "rollback_available": target_existed,
+            "target_existed_before": target_existed,
+        },
+        "validation": {
+            "helper_py_compile": compile_helper,
+            "dispatcher_py_compile": compile_dispatcher,
+            "functional_test": functional_test,
+            "ok": True,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+            "helper_written": True,
+            "validation_passed": True,
+            "next_step": "D53 may integrate compute_phase_resync into the runtime path"
+        },
+        "raw_bundle": bundle,
+    }
+
+    result_path = Path("reports/d52_guarded_runtime_patch_apply_result.json")
+    result_path.parent.mkdir(parents=True, exist_ok=True)
+    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    changed_files = [str(target_path), str(result_path)]
+    if target_existed:
+        changed_files.append(str(backup_path))
+
+    return {
+        "route": "FIELD_INTENT_GUARDED_RUNTIME_PATCH_APPLY",
+        "ok": True,
+        "reason": "guarded_runtime_helper_written",
+        "bundle_path": str(bundle_path),
+        "target_path": str(target_path),
+        "result_path": str(result_path),
+        "backup_path": str(backup_path) if target_existed else None,
+        "problem": "field_intent_guarded_runtime_patch_apply",
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": changed_files,
+            "actions": ["write_phase_resync_policy_helper", "py_compile", "functional_validation"],
+            "note": "D52 wrote runtime helper with guarded validation."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "D52 helper file compiled and functional validation passed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "guarded_runtime_patch_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -1655,6 +1889,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_guarded_runtime_patch_apply":
+        return _run_field_intent_guarded_runtime_patch_apply(task)
 
     if problem == "field_intent_guarded_runtime_patch_generator":
         return _run_field_intent_guarded_runtime_patch_generator(task)
