@@ -875,6 +875,162 @@ def _run_field_intent_executor(task: Dict[str, Any]) -> Dict[str, Any]:
         },
     }
 
+
+def _d48_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def _run_field_intent_phase_resync_patch_request(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    action_path = Path(str(payload.get("action_path") or "reports/field_intent_executor_action.json"))
+    if not action_path.exists():
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_REQUEST",
+            "ok": False,
+            "reason": "executor_action_missing",
+            "action_path": str(action_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["executor action file not found"]},
+        }
+
+    try:
+        executor_action = json.loads(action_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_REQUEST",
+            "ok": False,
+            "reason": "executor_action_read_error",
+            "error": str(exc),
+            "action_path": str(action_path),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    repair_plan = executor_action.get("raw_repair_plan", {})
+    if not isinstance(repair_plan, dict):
+        repair_plan = {}
+
+    resonance_vector = executor_action.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = repair_plan.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    memory_key = str(resonance_vector.get("memory_key") or "UNKNOWN_MEMORY_KEY")
+    orbital_mode = str(resonance_vector.get("orbital_mode") or "UNKNOWN_ORBITAL")
+    phase_error = _d48_float(resonance_vector.get("phase_error"), 0.0)
+    jitter = _d48_float(resonance_vector.get("jitter"), 0.0)
+    strength = _d48_float(resonance_vector.get("strength"), 0.0)
+    ambiguity = _d48_float(resonance_vector.get("ambiguity"), 0.0)
+    decay = _d48_float(resonance_vector.get("decay"), 0.0)
+
+    intent = str(executor_action.get("intent") or repair_plan.get("intent") or payload.get("intent") or "NEEDS_PHASE_REPAIR")
+    field_case = str(executor_action.get("field_case") or repair_plan.get("field_case") or payload.get("field_case") or "PHASE_DRIFT")
+    bridge = str(executor_action.get("bridge") or repair_plan.get("bridge") or payload.get("bridge") or "D48_FIELD_INTENT_PHASE_RESYNC")
+    problem = str(payload.get("problem") or executor_action.get("executor_problem") or "field_intent_phase_resync_patch")
+
+    patch_request = {
+        "state": "D48_FIELD_INTENT_PHASE_RESYNC_PATCH_REQUEST",
+        "result": "PHASE_RESYNC_PATCH_REQUEST_CREATED",
+        "source_action": str(action_path),
+        "problem": problem,
+        "bridge": bridge,
+        "intent": intent,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "executor_problem": "field_intent_phase_resync_patch",
+        "resonance_vector": resonance_vector,
+        "diagnosis": {
+            "memory_key": memory_key,
+            "orbital_mode": orbital_mode,
+            "phase_error": phase_error,
+            "jitter": jitter,
+            "strength": strength,
+            "ambiguity": ambiguity,
+            "decay": decay,
+            "cause": "phase_error_exceeds_threshold" if phase_error >= 0.25 else "phase_repair_review"
+        },
+        "mage_request": {
+            "task": "Generate a safe phase-resync patch proposal.",
+            "mode": "PATCH_REQUEST_ONLY",
+            "do_not_mutate_code_yet": True,
+            "goal": "Reduce phase drift before memory write while preserving full D46 payload.",
+            "suggested_strategy": [
+                "add a phase_resync step before memory write",
+                "clamp or normalize phase_error toward target threshold",
+                "preserve orbital_mode and memory_key",
+                "do not overwrite resonance_vector",
+                "write patch proposal before any executable code change"
+            ],
+            "target_thresholds": {
+                "phase_error_after_max": 0.12,
+                "jitter_after_max": 0.08,
+                "preserve_intent": intent,
+                "preserve_orbital_mode": orbital_mode,
+                "preserve_memory_key": memory_key
+            },
+            "candidate_target_files": [
+                "app/orchestration/task_dispatcher.py",
+                "runtime_experimental/v_kernel_daemon.py",
+                "reports/field_intent_repair_plan.json",
+                "reports/field_intent_executor_action.json"
+            ]
+        },
+        "validation_rule": {
+            "must_preserve_payload": True,
+            "must_preserve_resonance_vector": True,
+            "must_not_mutate_code_yet": True,
+            "must_create_patch_proposal_file": True,
+            "phase_error_after_max": 0.12,
+            "jitter_after_max": 0.08
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_REQUEST",
+            "patch_request_created": True,
+            "target_agent": "MAGE",
+            "next_step": "D49 may create a concrete patch proposal from this request"
+        },
+        "raw_executor_action": executor_action
+    }
+
+    out_path = Path("reports/d47_phase_resync_patch_request.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(patch_request, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_PHASE_RESYNC_PATCH_REQUEST",
+        "ok": True,
+        "reason": "phase_resync_patch_request_created",
+        "patch_request_path": str(out_path),
+        "source_action": str(action_path),
+        "problem": problem,
+        "intent": intent,
+        "bridge": bridge,
+        "field_case": field_case,
+        "target_agent": "MAGE",
+        "executor_problem": "field_intent_phase_resync_patch",
+        "resonance_vector": resonance_vector,
+        "execution": {
+            "ok": True,
+            "changed_files": [str(out_path)],
+            "actions": ["write_phase_resync_patch_request"],
+            "note": "D48 patch request created. No code mutation executed yet."
+        },
+        "validation": {
+            "ok": True,
+            "errors": [],
+            "note": "Phase resync patch request created from D47 executor action."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "patch_request_only_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -950,6 +1106,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_resync_patch":
+        return _run_field_intent_phase_resync_patch_request(task)
 
     if problem == "field_intent_execute_repair":
         return _run_field_intent_executor(task)
