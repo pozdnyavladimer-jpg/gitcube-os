@@ -1814,6 +1814,140 @@ def _run_field_intent_guarded_runtime_patch_apply(task: Dict[str, Any]) -> Dict[
         }
     }
 
+
+def _run_field_intent_phase_resync_runtime_check(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    resonance_vector = payload.get("resonance_vector", {})
+    if not isinstance(resonance_vector, dict):
+        resonance_vector = {}
+
+    # Fallback: if event payload is thin, recover vector from D52 result.
+    if not resonance_vector:
+        fallback_path = Path(str(payload.get("source_result") or "reports/d52_guarded_runtime_patch_apply_result.json"))
+        if fallback_path.exists():
+            try:
+                fallback = json.loads(fallback_path.read_text(encoding="utf-8"))
+                rv = fallback.get("resonance_vector", {})
+                if isinstance(rv, dict):
+                    resonance_vector = rv
+            except Exception:
+                resonance_vector = {}
+
+    if not resonance_vector:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+            "ok": False,
+            "reason": "missing_resonance_vector",
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": ["No resonance_vector found in payload or fallback result"]},
+        }
+
+    try:
+        from runtime_experimental.phase_resync_policy import compute_phase_resync
+    except Exception as exc:
+        return {
+            "route": "FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+            "ok": False,
+            "reason": "phase_resync_helper_import_failed",
+            "error": str(exc),
+            "execution": {"ok": False, "changed_files": [], "actions": []},
+            "validation": {"ok": False, "errors": [str(exc)]},
+        }
+
+    phase_error_after_max = float(payload.get("phase_error_after_max", 0.12))
+    jitter_after_max = float(payload.get("jitter_after_max", 0.08))
+
+    check = compute_phase_resync(
+        resonance_vector,
+        phase_error_after_max=phase_error_after_max,
+        jitter_after_max=jitter_after_max,
+    )
+
+    memory_key_before = resonance_vector.get("memory_key")
+    orbital_mode_before = resonance_vector.get("orbital_mode")
+
+    errors = []
+
+    if check.get("memory_key") != memory_key_before:
+        errors.append("memory_key changed during runtime check")
+
+    if check.get("orbital_mode") != orbital_mode_before:
+        errors.append("orbital_mode changed during runtime check")
+
+    if check.get("phase_error_after", 999) > phase_error_after_max:
+        errors.append("phase_error_after exceeds threshold")
+
+    if check.get("jitter_after", 999) > jitter_after_max:
+        errors.append("jitter_after exceeds threshold")
+
+    ok = bool(check.get("ok")) and not errors
+
+    report = {
+        "state": "D53_FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+        "result": "PHASE_RESYNC_RUNTIME_CHECK_PASSED" if ok else "PHASE_RESYNC_RUNTIME_CHECK_FAILED",
+        "route": "FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+        "bridge": "D53_FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+        "intent": str(payload.get("intent") or "RUNTIME_PHASE_RESYNC_CHECK"),
+        "field_case": str(payload.get("field_case") or "PHASE_DRIFT_HEX"),
+        "target_agent": str(payload.get("target_agent") or payload.get("executor_hint") or "MAGE"),
+        "source_payload_problem": str(payload.get("problem") or "field_intent_phase_resync_runtime_check"),
+        "resonance_vector_before": resonance_vector,
+        "runtime_check": check,
+        "thresholds": {
+            "phase_error_after_max": phase_error_after_max,
+            "jitter_after_max": jitter_after_max,
+        },
+        "preservation": {
+            "memory_key_preserved": check.get("memory_key") == memory_key_before,
+            "orbital_mode_preserved": check.get("orbital_mode") == orbital_mode_before,
+            "resonance_vector_not_overwritten": True,
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+        },
+        "success_condition": {
+            "route": "FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+            "runtime_helper_imported": True,
+            "phase_resync_computed": True,
+            "payload_preserved": True,
+            "next_step": "D54 may inject runtime_check result into a guarded downstream decision"
+        },
+    }
+
+    out_path = Path("reports/d53_phase_resync_runtime_check.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {
+        "route": "FIELD_INTENT_PHASE_RESYNC_RUNTIME_CHECK",
+        "ok": ok,
+        "reason": "phase_resync_runtime_check_passed" if ok else "phase_resync_runtime_check_failed",
+        "report_path": str(out_path),
+        "problem": "field_intent_phase_resync_runtime_check",
+        "intent": report["intent"],
+        "field_case": report["field_case"],
+        "target_agent": report["target_agent"],
+        "resonance_vector": resonance_vector,
+        "runtime_check": check,
+        "execution": {
+            "ok": ok,
+            "changed_files": [str(out_path)],
+            "actions": ["import_phase_resync_policy", "compute_phase_resync", "write_runtime_check_report"],
+            "note": "D53 used the D52 helper in runtime check mode. No payload mutation yet."
+        },
+        "validation": {
+            "ok": ok,
+            "errors": errors,
+            "note": "Runtime phase resync check completed."
+        },
+        "auto_commit": {
+            "ok": False,
+            "reason": "runtime_check_report_manual_commit"
+        }
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -1889,6 +2023,9 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
         return result
 
 
+
+    if problem == "field_intent_phase_resync_runtime_check":
+        return _run_field_intent_phase_resync_runtime_check(task)
 
     if problem == "field_intent_guarded_runtime_patch_apply":
         return _run_field_intent_guarded_runtime_patch_apply(task)
