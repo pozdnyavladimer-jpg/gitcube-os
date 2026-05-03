@@ -1,0 +1,84 @@
+{
+  "state": "FIELD_INTENT_PRIORITY_BIAS_DECAYED_STORE",
+  "version": 1,
+  "biases": {
+    "field_intent:d3_o6:hex:phase_drift_hex": {
+      "bias_key": "field_intent:d3_o6:hex:phase_drift_hex",
+      "source": "D58_FIELD_INTENT_MEMORY_PRIORITY_BIAS",
+      "source_recall": "reports/d57_memory_recall_validation.json",
+      "memory_key": "D3_O6",
+      "orbital_mode": "HEX",
+      "field_case": "PHASE_DRIFT_HEX",
+      "intent": "RUNTIME_PHASE_RESYNC_CHECK",
+      "priority_boost_points": 30,
+      "recommended_priority": "critical",
+      "preferred_next_problem": "field_intent_phase_resync_runtime_check",
+      "preferred_agents": [
+        "HEALER",
+        "TANK",
+        "MAGE"
+      ],
+      "routing_hint": {
+        "prefer_runtime_check_before_new_repair": true,
+        "prefer_memory_safe_path": true,
+        "prefer_no_code_mutation_first": true
+      },
+      "evidence": {
+        "phase_error_before": 0.34,
+        "phase_error_after": 0.119,
+        "jitter_before": 0.03,
+        "jitter_after": 0.020999999999999998,
+        "strength": 0.81,
+        "ambiguity": 0.06,
+        "decay": 0.12,
+        "reasons": [
+          "known_large_phase_drift",
+          "phase_resync_successful",
+          "strong_resonance_signal",
+          "low_ambiguity_signal",
+          "memory_decay_present"
+        ]
+      },
+      "guard": {
+        "bias_only": true,
+        "runtime_code_mutated": false,
+        "memory_payload_overwritten": false,
+        "requires_d59_to_apply_to_dispatch": true
+      },
+      "created_at": "2026-05-02T06:00:35.518509+00:00",
+      "updated_at": "2026-05-02T06:00:35.518509+00:00",
+      "priority_boost_points_before": 30,
+      "recommended_priority_before_decay": "critical",
+      "apoptosis": {
+        "action": "preserve_or_reinforce",
+        "reason": "bias still matches active memory recurrence",
+        "recurrence_count": 1,
+        "phase_error_max": 0.34,
+        "jitter_max": 0.03,
+        "decay_points": 10,
+        "reinforce_points": 5,
+        "old_boost": 30,
+        "new_boost": 30,
+        "old_priority": "critical",
+        "new_priority": "critical",
+        "updated_at": "2026-05-03T14:53:16.320797+00:00"
+      }
+    }
+  },
+  "created_at": "2026-05-03T14:53:16.320872+00:00",
+  "updated_at": "2026-05-02T06:00:35.518509+00:00",
+  "result": "APOPTOSIS_DECAY_CANDIDATE_CREATED",
+  "source_bias_path": "memory/field_intent_priority_bias.json",
+  "source_memory_path": "memory/field_intent_memory.jsonl",
+  "canonical_overwritten": false,
+  "apoptosis_summary": {
+    "bias_entries_seen": 1,
+    "memory_atoms_seen": 1,
+    "decayed_count": 0,
+    "preserved_or_reinforced_count": 1,
+    "decay_points": 10,
+    "reinforce_points": 5,
+    "min_boost": 0,
+    "max_boost": 50
+  }
+}

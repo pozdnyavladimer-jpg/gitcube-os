@@ -1,0 +1,47 @@
+{
+  "state": "D65_MEMORY_APOPTOSIS_DECAY",
+  "result": "APOPTOSIS_DECAY_REPORT_CREATED",
+  "route": "FIELD_INTENT_MEMORY_APOPTOSIS",
+  "ok": true,
+  "created_at": "2026-05-03T14:53:16.322404+00:00",
+  "bias_path": "memory/field_intent_priority_bias.json",
+  "memory_path": "memory/field_intent_memory.jsonl",
+  "output_path": "memory/field_intent_priority_bias_decayed.json",
+  "report_path": "reports/d65_apoptosis_decay_report.json",
+  "canonical_overwritten": false,
+  "store_shape": "store",
+  "deltas": [
+    {
+      "bias_key": "field_intent:d3_o6:hex:phase_drift_hex",
+      "action": "preserve_or_reinforce",
+      "reason": "bias still matches active memory recurrence",
+      "old_boost": 30,
+      "new_boost": 30,
+      "old_priority": "critical",
+      "new_priority": "critical",
+      "recurrence_count": 1,
+      "phase_error_max": 0.34
+    }
+  ],
+  "summary": {
+    "bias_entries_seen": 1,
+    "memory_atoms_seen": 1,
+    "decayed_count": 0,
+    "preserved_or_reinforced_count": 1,
+    "decay_points": 10,
+    "reinforce_points": 5,
+    "min_boost": 0,
+    "max_boost": 50
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "success_condition": {
+    "decayed_candidate_created": true,
+    "canonical_memory_preserved": true,
+    "invalid_memory_does_not_crash": true,
+    "next_step": "D66 may review this candidate before D64 guarded apply to canonical memory."
+  }
+}
