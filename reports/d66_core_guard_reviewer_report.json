@@ -1,0 +1,64 @@
+{
+  "state": "D66_CORE_GUARD_REVIEWER",
+  "result": "D66_REVIEW_FORBIDDEN_CORE_MUTATION",
+  "route": "FIELD_INTENT_CORE_GUARD_REVIEWER",
+  "ok": false,
+  "created_at": "2026-05-03T12:09:27.455361+00:00",
+  "decision": "FORBIDDEN_CORE_MUTATION",
+  "reason": "protected_core_touched_without_two_eyes",
+  "policy_path": "runtime_experimental/core_guard_policy.json",
+  "proposal_path": "",
+  "report_path": "reports/d66_core_guard_reviewer_report.json",
+  "target_files": [
+    "app/orchestration/task_dispatcher.py"
+  ],
+  "actions": [
+    "direct_core_edit"
+  ],
+  "protected_files_touched": [
+    "app/orchestration/task_dispatcher.py"
+  ],
+  "canonical_memory_touched": [],
+  "forbidden_action_hits": [
+    "direct_core_edit"
+  ],
+  "validation": {
+    "ok": false,
+    "errors": [
+      "protected core mutation requires two eyes: local tests + regression"
+    ],
+    "warnings": [],
+    "unit_tests_passed": true,
+    "regression_passed": false,
+    "daemon_smoke_passed": false,
+    "backup_or_rollback_exists": false,
+    "payload_preserved": true,
+    "reviewer_approved": false,
+    "two_eyes_passed": false
+  },
+  "review_rules": {
+    "protected_core_requires_two_eyes": true,
+    "canonical_memory_requires_backup": true,
+    "validation_bypass_rejected": true,
+    "payload_preservation_required_for_core": true
+  },
+  "success_condition": {
+    "reviewer_executed": true,
+    "decision_emitted": true,
+    "runtime_code_mutated": false,
+    "next_step": "If APPROVE, D64 may use this report as one guarded-apply input. If not, create sandbox/test evidence first."
+  },
+  "raw_proposal": {
+    "target_files": [
+      "app/orchestration/task_dispatcher.py"
+    ],
+    "actions": [
+      "direct_core_edit"
+    ],
+    "validation": {
+      "unit_tests_passed": true,
+      "regression_passed": false,
+      "payload_preserved": true
+    }
+  }
+}

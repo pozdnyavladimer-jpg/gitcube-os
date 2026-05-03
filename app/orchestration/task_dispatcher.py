@@ -3611,6 +3611,59 @@ if __name__ == "__main__":
         }
     }
 
+
+def _run_field_intent_core_guard_review(task: Dict[str, Any]) -> Dict[str, Any]:
+    payload = task.get("payload", {}) if isinstance(task.get("payload"), dict) else {}
+
+    policy_path = str(payload.get("policy_path") or "runtime_experimental/core_guard_policy.json")
+    proposal_path = str(
+        payload.get("proposal_path")
+        or payload.get("patch_proposal_path")
+        or payload.get("request_path")
+        or ""
+    ).strip()
+    report_path = str(payload.get("report_path") or "reports/d66_core_guard_reviewer_report.json")
+
+    proposal = payload.get("proposal")
+    if not isinstance(proposal, dict):
+        proposal = dict(payload)
+
+    from runtime_experimental.core_guard_reviewer import review_core_mutation
+
+    report = review_core_mutation(
+        proposal=proposal,
+        proposal_path=proposal_path or None,
+        policy_path=policy_path,
+        report_path=report_path,
+    )
+
+    decision = str(report.get("decision") or "REJECT")
+
+    return {
+        "route": "FIELD_INTENT_CORE_GUARD_REVIEWER",
+        "ok": decision == "APPROVE",
+        "reason": str(report.get("reason") or "").strip(),
+        "problem": "field_intent_core_guard_review",
+        "decision": decision,
+        "policy_path": policy_path,
+        "proposal_path": proposal_path,
+        "report_path": report_path,
+        "protected_files_touched": report.get("protected_files_touched", []),
+        "canonical_memory_touched": report.get("canonical_memory_touched", []),
+        "forbidden_action_hits": report.get("forbidden_action_hits", []),
+        "execution": {
+            "ok": True,
+            "changed_files": [report_path],
+            "actions": ["read_core_guard_policy", "review_mutation_proposal", "write_d66_review_report"],
+            "note": "D66 reviewed proposal only. No runtime mutation executed.",
+        },
+        "validation": report.get("validation", {"ok": False, "errors": ["missing D66 validation"]}),
+        "auto_commit": {
+            "ok": False,
+            "reason": "review_report_manual_commit",
+        },
+    }
+
 def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
     task = _prepare_task(task)
     route = route_task(task)
@@ -3692,6 +3745,12 @@ def dispatch_task(task: Dict[str, Any]) -> Dict[str, Any]:
 
     if problem == "field_intent_closed_loop_memory_policy":
         return _run_field_intent_closed_loop_memory_policy(task)
+
+    if problem == "field_intent_core_guard_review":
+        return _run_field_intent_core_guard_review(task)
+
+    if problem == "field_intent_core_guard_reviewer":
+        return _run_field_intent_core_guard_review(task)
 
     if problem == "field_intent_memory_priority_bias_probe":
         return _run_field_intent_memory_priority_bias_probe(task)
