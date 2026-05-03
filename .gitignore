@@ -7,3 +7,5 @@ reports/
 objects.json
 v_resonance.json
 .env
+objects_json.bak
+objects.json.bak
