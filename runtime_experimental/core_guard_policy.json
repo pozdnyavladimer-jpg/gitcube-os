@@ -1,0 +1,92 @@
+{
+  "state": "D66_CORE_MUTATION_RULES",
+  "result": "CORE_RULES_LOCKED",
+  "created_at": "2026-05-03T11:04:37.041853+00:00",
+  "immutable_core": true,
+  "protected_files": [
+    "runtime_experimental/v_kernel_daemon.py",
+    "app/orchestration/task_dispatcher.py",
+    "runtime_experimental/phase_resync_policy.py",
+    "runtime_experimental/memory_apoptosis.py",
+    "memory/field_intent_memory.jsonl",
+    "memory/field_intent_priority_bias.json",
+    "memory/field_intent_closed_loop_policy.json"
+  ],
+  "protected_schema_fields": [
+    "payload.problem",
+    "payload.intent",
+    "payload.bridge",
+    "payload.field_case",
+    "payload.meta_key",
+    "payload.resonance_vector",
+    "payload.memory_key",
+    "payload.priority"
+  ],
+  "allowed_agent_actions": [
+    "create_isolated_module",
+    "create_report",
+    "create_test",
+    "create_patch_proposal",
+    "create_patch_request",
+    "create_decayed_memory_copy",
+    "create_candidate_memory"
+  ],
+  "forbidden_without_review": [
+    "direct_core_edit",
+    "daemon_mutation",
+    "dispatcher_mutation",
+    "canonical_memory_overwrite",
+    "external_signal_schema_break",
+    "payload_field_drop",
+    "regression_disable",
+    "validation_bypass",
+    "auto_commit_core_change",
+    "delete_memory_without_apoptosis_report"
+  ],
+  "two_eyes_rule": {
+    "eye_1_local_life": [
+      "python -m py_compile <changed_python_file>",
+      "python -m py_compile app/orchestration/task_dispatcher.py",
+      "python -m unittest discover -s tests -p test_*.py -v"
+    ],
+    "eye_2_global_life": [
+      "daemon smoke test",
+      "closed-loop regression",
+      "D66 independent reviewer approval"
+    ],
+    "required_for_guarded_apply": true
+  },
+  "tenuki_rule": {
+    "do_not_expand_high_pain_core_directly": true,
+    "preferred_move": [
+      "create isolated module",
+      "route to isolated module",
+      "validate module",
+      "write report",
+      "write memory atom",
+      "decay old pressure"
+    ]
+  },
+  "d66_reviewer_outputs": [
+    "APPROVE",
+    "REJECT",
+    "NEEDS_SANDBOX",
+    "FORBIDDEN_CORE_MUTATION",
+    "VALIDATION_BYPASS",
+    "UNSAFE_MEMORY_WRITE"
+  ],
+  "d67_map_contract": {
+    "path": "reports/d67_topological_memory_map.json",
+    "required_fields": [
+      "nodes",
+      "edges",
+      "pain_score",
+      "priority_bias",
+      "protected_core",
+      "suggested_moves",
+      "tenuki_recommendations",
+      "do_not_expand_directly"
+    ]
+  },
+  "core_axiom": "Do not repair trauma inside trauma. Route around it, validate it, remember it, then decay the old path."
+}

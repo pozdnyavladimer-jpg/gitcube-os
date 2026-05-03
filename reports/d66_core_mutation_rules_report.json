@@ -1,0 +1,22 @@
+{
+  "state": "D66_CORE_MUTATION_RULES_BOOT",
+  "result": "CORE_MUTATION_RULES_CREATED",
+  "route": "DOCS_CORE_MUTATION_RULES",
+  "ok": true,
+  "created_at": "2026-05-03T11:04:37.041853+00:00",
+  "changed_files": [
+    "docs/CORE_MUTATION_RULES.md",
+    "runtime_experimental/core_guard_policy.json",
+    "reports/d66_core_mutation_rules_report.json"
+  ],
+  "validation": {
+    "ok": true,
+    "errors": []
+  },
+  "success_condition": {
+    "docs_created": true,
+    "policy_created": true,
+    "runtime_code_mutated": false,
+    "next_step": "Build D66 reviewer that enforces runtime_experimental/core_guard_policy.json"
+  }
+}
