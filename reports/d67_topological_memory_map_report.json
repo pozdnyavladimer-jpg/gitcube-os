@@ -1,0 +1,57 @@
+{
+  "state": "D67_TOPOLOGICAL_MEMORY_MAP_REPORT",
+  "result": "D67_MAP_BUILD_COMPLETED",
+  "route": "FIELD_INTENT_TOPOLOGICAL_MEMORY_MAP",
+  "ok": true,
+  "created_at": "2026-05-03T12:40:48.510710+00:00",
+  "map_path": "reports/d67_topological_memory_map.json",
+  "report_path": "reports/d67_topological_memory_map_report.json",
+  "summary": {
+    "nodes_count": 196,
+    "edges_count": 196,
+    "protected_core_count": 7,
+    "hot_nodes_count": 3,
+    "tenuki_count": 3,
+    "suggested_moves_count": 3
+  },
+  "top_suggested_moves": [
+    {
+      "target": "app/orchestration/task_dispatcher.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/phase_resync_policy.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/v_kernel_daemon.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "errors": []
+  },
+  "success_condition": {
+    "d67_map_created": true,
+    "topology_extracted": true,
+    "pain_scores_computed": true,
+    "tenuki_recommendations_created": true,
+    "runtime_code_mutated": false
+  }
+}

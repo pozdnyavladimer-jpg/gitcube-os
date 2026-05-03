@@ -1,0 +1,5415 @@
+{
+  "state": "D67_TOPOLOGICAL_MEMORY_MAP",
+  "result": "TOPOLOGICAL_MEMORY_MAP_CREATED",
+  "route": "FIELD_INTENT_TOPOLOGICAL_MEMORY_MAP",
+  "ok": true,
+  "created_at": "2026-05-03T12:40:48.510710+00:00",
+  "map_path": "reports/d67_topological_memory_map.json",
+  "summary": {
+    "nodes_count": 196,
+    "edges_count": 196,
+    "protected_core_count": 7,
+    "hot_nodes_count": 3,
+    "tenuki_count": 3,
+    "suggested_moves_count": 3
+  },
+  "legend": {
+    "red": "high pain / trauma attractor",
+    "amber": "medium stress / watch",
+    "blue": "low stress / memory present",
+    "white": "stable or no known pain",
+    "TENUKI": "do not expand directly; create a healthy bypass",
+    "SABAKI": "stabilize pressure through flexible shape",
+    "APOPTOSIS_WATCH": "monitor and decay if no recurrence"
+  },
+  "core_axiom": "Do not repair trauma inside trauma. Route around it, validate it, remember it, then decay the old path.",
+  "nodes": [
+    {
+      "id": "__future__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "actor_executor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/live_agent.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/orchestration/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/orchestration/execution_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/orchestration/router_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/orchestration/task_dispatcher.py",
+      "type": "file",
+      "role": "router",
+      "protected_core": true,
+      "pain_score": 0.8125,
+      "heat": "red",
+      "priority_bias": 30,
+      "repeat_count": 1,
+      "phase_error": 0.34,
+      "memory_keys": [
+        "D3_O6"
+      ],
+      "bias_keys": [
+        "field_intent:d3_o6:hex:phase_drift_hex"
+      ],
+      "recommendation": "do_not_expand_directly",
+      "suggested_move": {
+        "recommendation": "do_not_expand_directly",
+        "move_type": "TENUKI",
+        "action": "create isolated policy/reviewer module and route through a narrow interface",
+        "reason": "protected core has stress; direct expansion risks core mutation"
+      }
+    },
+    {
+      "id": "app/state_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/ui_streamlit.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "app/view_model.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/app_to_core_adapter.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/core_to_app_adapter.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/examples_to_core_adapter.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/generated/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "bridges/registry.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "cleanup_ghosts.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/analysis/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/analysis/dependency_graph.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/cube_validator.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/decision_kernel.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/evaluation.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/execution/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/execution/llm_fix_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/execution/non_existing_module.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/execution/structural_fix_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/field/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/field/field_state.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/field/role_lens.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/field/v_core_self_stabilizing_mesh.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/memory/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/memory/evolution_memory.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/memory/graph_weight_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/memory/target_memory.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/memory/task_cooldown.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/neuromodulator.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/policy/__init__.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/policy/safety_policy.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/projector.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/repo_context.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/state.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/topological_filter.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/auto_branch.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/auto_commit.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/file_watch_snapshot.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/repo_similarity_bridge.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/shadow_autofix.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/shadow_detector.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/utils/stdlib_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/validation/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/validation/healer_validator.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "core/validation/import_validator.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "docs/D66_CORE_GUARD_REVIEWER_BOOT.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "docs/D66_CORE_MUTATION_RULES_BOOT.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "docs/D67_TOPOLOGICAL_MEMORY_MAP_BOOT.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "docs/architecture/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "environments/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "environments/balanced.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "environments/base.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "environments/exploratory.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "environments/harsh.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/action_guard_demo.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/compare_modes.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/cube_agent_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/cube_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/cube_stacking_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/cube_validation_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_adaptive.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_binary_cube.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_compare.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_fibonacci.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_fractal_vision.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_image_cube.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/demo_story.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/environment_run.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/experiment_binary_vs_normal.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/experimental_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/loop_run.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/neuro_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/projector_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/promotion_agent_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/render_adapter_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/render_image_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/repo_awareness_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/repo_pair_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/simple_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/symbiosis_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_engine_with_vision.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_eye_pairs.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_eye_party.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/test_view.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "examples/topological_filter_demo.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "force_mage_seed.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "inject_task.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "memory/field_intent_closed_loop_policy.json",
+      "type": "file",
+      "role": "policy",
+      "protected_core": true,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "memory/field_intent_memory.jsonl",
+      "type": "file",
+      "role": "memory",
+      "protected_core": true,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "memory/field_intent_priority_bias.json",
+      "type": "file",
+      "role": "memory",
+      "protected_core": true,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "patch_llm_fix.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "patch_select_task_v2.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "repo_analyzer.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "repo_difflib_alias.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "repo_difflib_local.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "repo_json.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "repo_shutil.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "router.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "run_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/action_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/adaptive_bindu.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/agent_learning.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/agent_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/agent_modes.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/binary_cube.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/bindu.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/bridge_runtime.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/class_interactions.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/class_layer.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/compression.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/cube_agent.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/cube_stacking.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/ecology.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/env_select.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/environment_score.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/fibonacci_scaling.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/fractal_vision.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/image_cube.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/market_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/memory.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/memory_control.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/party_profile.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/perelman_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/promotion_agent.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/render_adapter.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/repo_agent.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/reroute.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/school_layer.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/sd_client.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/symbiosis_controller.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/transition_memory.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/v_eye_profile.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime/v_pair_fusion.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/__init__.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/_patch_title.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/agent_loop.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/agents_logic.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/assassin_actor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/core_guard_reviewer.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/explorer_sensor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/external_task_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/field_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/github_bridge.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/github_input.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/healer_actor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/healer_executor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/healer_support.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/import_vkernel_intent.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/lab_bridge.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/mage_actor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/mage_executor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/memory_apoptosis.py",
+      "type": "file",
+      "role": "core",
+      "protected_core": true,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/memory_router.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/meta_guard.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/navigator_bridge.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/object_store.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/object_store_patch.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/os_sync.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/phase_resync_policy.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": true,
+      "pain_score": 0.8125,
+      "heat": "red",
+      "priority_bias": 30,
+      "repeat_count": 1,
+      "phase_error": 0.34,
+      "memory_keys": [
+        "D3_O6"
+      ],
+      "bias_keys": [
+        "field_intent:d3_o6:hex:phase_drift_hex"
+      ],
+      "recommendation": "do_not_expand_directly",
+      "suggested_move": {
+        "recommendation": "do_not_expand_directly",
+        "move_type": "TENUKI",
+        "action": "create isolated policy/reviewer module and route through a narrow interface",
+        "reason": "protected core has stress; direct expansion risks core mutation"
+      }
+    },
+    {
+      "id": "runtime_experimental/pr_actor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/pressure_policy.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/resonance_audit.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/role_transaction.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/tank_executor.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/tank_policy.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/topological_memory_map.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "runtime_experimental/v_kernel_daemon.py",
+      "type": "file",
+      "role": "daemon",
+      "protected_core": true,
+      "pain_score": 0.8125,
+      "heat": "red",
+      "priority_bias": 30,
+      "repeat_count": 1,
+      "phase_error": 0.34,
+      "memory_keys": [
+        "D3_O6"
+      ],
+      "bias_keys": [
+        "field_intent:d3_o6:hex:phase_drift_hex"
+      ],
+      "recommendation": "do_not_expand_directly",
+      "suggested_move": {
+        "recommendation": "do_not_expand_directly",
+        "move_type": "TENUKI",
+        "action": "create isolated policy/reviewer module and route through a narrow interface",
+        "reason": "protected core has stress; direct expansion risks core mutation"
+      }
+    },
+    {
+      "id": "runtime_experimental/vitality_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "status.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "test_broken.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/__init__.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_broken_import_probe.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_d46_d60_closed_loop_policy.py",
+      "type": "file",
+      "role": "policy",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_d66_core_guard_reviewer.py",
+      "type": "file",
+      "role": "reviewer",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_d67_topological_memory_map.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_state.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/tmp_memory_probe.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "v_bridge.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "v_clock.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "v_core_field_engine.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "v_core_self_stabilizing_mesh.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "viewer.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "actor_executor.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/mage_executor.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/healer_executor.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/tank_executor.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "runtime_experimental/tank_policy.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "actor_executor.py",
+      "to": "router.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/live_agent.py",
+      "to": "app/state_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/live_agent.py",
+      "to": "app/view_model.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "actor_executor.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "router.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "repo_analyzer.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "core/memory/task_cooldown.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/execution_loop.py",
+      "to": "core/memory/graph_weight_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/router_engine.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/router_engine.py",
+      "to": "core/analysis/dependency_graph.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "app/orchestration/router_engine.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/field/v_core_self_stabilizing_mesh.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/execution/structural_fix_engine.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/execution/llm_fix_engine.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/validation/healer_validator.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/validation/import_validator.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/utils/shadow_autofix.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/utils/auto_commit.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "core/memory/target_memory.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "runtime_experimental/core_guard_reviewer.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/orchestration/task_dispatcher.py",
+      "to": "runtime_experimental/phase_resync_policy.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/adaptive_bindu.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/binary_cube.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/transition_memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/agent_modes.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/fractal_vision.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/perelman_guard.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/state_engine.py",
+      "to": "runtime/school_layer.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "app/ui_streamlit.py",
+      "to": "app/state_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "cleanup_ghosts.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "cleanup_ghosts.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/analysis/dependency_graph.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/evaluation.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/execution/llm_fix_engine.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/execution/llm_fix_engine.py",
+      "to": "core/memory/evolution_memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/execution/llm_fix_engine.py",
+      "to": "core/memory/graph_weight_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/execution/llm_fix_engine.py",
+      "to": "core/utils/repo_similarity_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/execution/structural_fix_engine.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/field/field_state.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/field/v_core_self_stabilizing_mesh.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/memory/evolution_memory.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/memory/graph_weight_engine.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/memory/target_memory.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/memory/task_cooldown.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/projector.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/auto_branch.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/auto_commit.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/auto_commit.py",
+      "to": "core/utils/auto_branch.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/file_watch_snapshot.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/repo_similarity_bridge.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/shadow_autofix.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/utils/shadow_detector.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/validation/healer_validator.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "core/validation/import_validator.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "docs/D66_CORE_GUARD_REVIEWER_BOOT.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "docs/D66_CORE_MUTATION_RULES_BOOT.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "docs/D67_TOPOLOGICAL_MEMORY_MAP_BOOT.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "environments/balanced.py",
+      "to": "environments/base.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "environments/exploratory.py",
+      "to": "environments/base.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "environments/harsh.py",
+      "to": "environments/base.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/action_guard_demo.py",
+      "to": "runtime/cube_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/action_guard_demo.py",
+      "to": "runtime/action_guard.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/cube_agent_demo.py",
+      "to": "runtime/cube_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/cube_demo.py",
+      "to": "core/cube_validator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/cube_stacking_demo.py",
+      "to": "core/cube_validator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/cube_stacking_demo.py",
+      "to": "runtime/cube_stacking.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/cube_validation_demo.py",
+      "to": "core/cube_validator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "runtime/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "runtime/memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "core/topological_filter.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "runtime/memory_control.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "runtime/agent_learning.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_adaptive.py",
+      "to": "runtime/adaptive_bindu.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "runtime/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "runtime/memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "core/topological_filter.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "runtime/memory_control.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "runtime/agent_learning.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_compare.py",
+      "to": "runtime/adaptive_bindu.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_fibonacci.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_fibonacci.py",
+      "to": "runtime/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_fibonacci.py",
+      "to": "runtime/fibonacci_scaling.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/demo_fractal_vision.py",
+      "to": "runtime/fractal_vision.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/experiment_binary_vs_normal.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/experiment_binary_vs_normal.py",
+      "to": "runtime/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/experiment_binary_vs_normal.py",
+      "to": "runtime/binary_cube.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/neuro_demo.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/projector_demo.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/projector_demo.py",
+      "to": "core/projector.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/promotion_agent_demo.py",
+      "to": "runtime/cube_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/promotion_agent_demo.py",
+      "to": "runtime/promotion_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_adapter_demo.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_adapter_demo.py",
+      "to": "core/projector.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_adapter_demo.py",
+      "to": "runtime/render_adapter.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_image_demo.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_image_demo.py",
+      "to": "core/projector.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_image_demo.py",
+      "to": "runtime/render_adapter.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/render_image_demo.py",
+      "to": "runtime/sd_client.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/repo_awareness_demo.py",
+      "to": "core/repo_context.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/repo_awareness_demo.py",
+      "to": "runtime/repo_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/repo_pair_demo.py",
+      "to": "runtime/cube_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/repo_pair_demo.py",
+      "to": "runtime/cube_stacking.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/symbiosis_demo.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/symbiosis_demo.py",
+      "to": "runtime/symbiosis_controller.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/test_engine.py",
+      "to": "app/state_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/test_engine_with_vision.py",
+      "to": "app/state_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/test_view.py",
+      "to": "app/state_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/test_view.py",
+      "to": "app/view_model.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "examples/topological_filter_demo.py",
+      "to": "core/topological_filter.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "force_mage_seed.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "inject_task.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "patch_select_task_v2.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "repo_analyzer.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "repo_analyzer.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "run_loop.py",
+      "to": "app/orchestration/execution_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/agent_loop.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/agent_loop.py",
+      "to": "core/evaluation.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/bridge_runtime.py",
+      "to": "bridges/registry.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/compression.py",
+      "to": "runtime/memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/cube_agent.py",
+      "to": "core/cube_validator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/cube_agent.py",
+      "to": "core/repo_context.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/cube_agent.py",
+      "to": "runtime/repo_agent.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/cube_stacking.py",
+      "to": "core/cube_validator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/env_select.py",
+      "to": "environments/balanced.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/env_select.py",
+      "to": "environments/harsh.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/env_select.py",
+      "to": "environments/exploratory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/environment_score.py",
+      "to": "environments/base.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/fractal_vision.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/party_profile.py",
+      "to": "runtime/class_layer.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/render_adapter.py",
+      "to": "core/projector.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/repo_agent.py",
+      "to": "core/repo_context.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/reroute.py",
+      "to": "runtime/environment_score.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/symbiosis_controller.py",
+      "to": "core/neuromodulator.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime/v_pair_fusion.py",
+      "to": "runtime/v_eye_profile.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/agent_loop.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/agent_loop.py",
+      "to": "core/evaluation.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/agent_loop.py",
+      "to": "runtime_experimental/role_transaction.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/core_guard_reviewer.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/external_task_guard.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/external_task_guard.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/healer_executor.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/healer_executor.py",
+      "to": "core/memory/graph_weight_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/healer_executor.py",
+      "to": "core/memory/task_cooldown.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/import_vkernel_intent.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/mage_executor.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/mage_executor.py",
+      "to": "app/orchestration/task_dispatcher.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "runtime_experimental/mage_executor.py",
+      "to": "runtime_experimental/tank_policy.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/memory_router.py",
+      "to": "router.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/memory_router.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/meta_guard.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/meta_guard.py",
+      "to": "runtime_experimental/github_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/object_store_patch.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "v_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/field_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/agent_loop.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/vitality_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/lab_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/navigator_bridge.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/agents_logic.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/explorer_sensor.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/resonance_audit.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/pressure_policy.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/os_sync.py",
+      "to": "runtime_experimental/external_task_guard.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/phase_resync_policy.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "runtime_experimental/tank_executor.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/tank_executor.py",
+      "to": "router.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/tank_executor.py",
+      "to": "app/orchestration/router_engine.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/tank_executor.py",
+      "to": "core/memory/target_memory.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/tank_policy.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/topological_memory_map.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/v_kernel_daemon.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "runtime_experimental/v_kernel_daemon.py",
+      "to": "app/orchestration/task_dispatcher.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "runtime_experimental/v_kernel_daemon.py",
+      "to": "core/utils/shadow_detector.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "runtime_experimental/v_kernel_daemon.py",
+      "to": "core/utils/file_watch_snapshot.py",
+      "type": "import",
+      "weight": 1.8125,
+      "stress": 0.8125
+    },
+    {
+      "from": "tests/test_broken_import_probe.py",
+      "to": "core/execution/non_existing_module.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "tests/test_d66_core_guard_reviewer.py",
+      "to": "runtime_experimental/core_guard_reviewer.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "tests/test_d67_topological_memory_map.py",
+      "to": "runtime_experimental/topological_memory_map.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "tests/test_state.py",
+      "to": "core/state.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "v_clock.py",
+      "to": "runtime_experimental/object_store.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "v_core_field_engine.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    }
+  ],
+  "suggested_moves": [
+    {
+      "target": "app/orchestration/task_dispatcher.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/phase_resync_policy.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/v_kernel_daemon.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    }
+  ],
+  "tenuki_recommendations": [
+    {
+      "target": "app/orchestration/task_dispatcher.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/phase_resync_policy.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    },
+    {
+      "target": "runtime_experimental/v_kernel_daemon.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "recommendation": "do_not_expand_directly",
+      "move_type": "TENUKI",
+      "action": "create isolated policy/reviewer module and route through a narrow interface",
+      "reason": "protected core has stress; direct expansion risks core mutation"
+    }
+  ],
+  "raw_inputs": {
+    "memory_atoms_seen": 1,
+    "bias_entries_seen": 1,
+    "protected_files": [
+      "app/orchestration/task_dispatcher.py",
+      "memory/field_intent_closed_loop_policy.json",
+      "memory/field_intent_memory.jsonl",
+      "memory/field_intent_priority_bias.json",
+      "runtime_experimental/memory_apoptosis.py",
+      "runtime_experimental/phase_resync_policy.py",
+      "runtime_experimental/v_kernel_daemon.py"
+    ]
+  },
+  "validation": {
+    "ok": true,
+    "errors": []
+  },
+  "success_condition": {
+    "map_created": true,
+    "machine_readable": true,
+    "runtime_code_mutated": false,
+    "next_step": "D68 may visualize this JSON or D64 may use it for safe mutation planning."
+  }
+}
