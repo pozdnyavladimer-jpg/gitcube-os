@@ -61,15 +61,15 @@
         "new_boost": 30,
         "old_priority": "critical",
         "new_priority": "critical",
-        "updated_at": "2026-05-03T14:53:16.320797+00:00"
+        "updated_at": "2026-05-04T04:44:18.925057+00:00"
       }
     }
   },
-  "created_at": "2026-05-03T14:53:16.320872+00:00",
+  "created_at": "2026-05-04T04:44:18.925100+00:00",
   "updated_at": "2026-05-02T06:00:35.518509+00:00",
   "result": "APOPTOSIS_DECAY_CANDIDATE_CREATED",
-  "source_bias_path": "memory/field_intent_priority_bias.json",
-  "source_memory_path": "memory/field_intent_memory.jsonl",
+  "source_bias_path": "/workspaces/gitcube-os/memory/field_intent_priority_bias.json",
+  "source_memory_path": "/workspaces/gitcube-os/memory/field_intent_memory.jsonl",
   "canonical_overwritten": false,
   "apoptosis_summary": {
     "bias_entries_seen": 1,
