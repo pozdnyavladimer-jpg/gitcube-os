@@ -3,11 +3,11 @@
   "result": "TOPOLOGICAL_MEMORY_MAP_CREATED",
   "route": "FIELD_INTENT_TOPOLOGICAL_MEMORY_MAP",
   "ok": true,
-  "created_at": "2026-05-03T13:12:52.462987+00:00",
-  "map_path": "reports/d67_topological_memory_map.json",
+  "created_at": "2026-05-04T04:44:19.259222+00:00",
+  "map_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map.json",
   "summary": {
-    "nodes_count": 196,
-    "edges_count": 196,
+    "nodes_count": 201,
+    "edges_count": 204,
     "protected_core_count": 7,
     "hot_nodes_count": 3,
     "tenuki_count": 3,
@@ -24,6 +24,46 @@
   },
   "core_axiom": "Do not repair trauma inside trauma. Route around it, validate it, remember it, then decay the old path.",
   "nodes": [
+    {
+      "id": "D63_FIELD_MEMORY_REPLAY_RUNNER_BOOT.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "D65_MEMORY_APOPTOSIS_BOOT.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
     {
       "id": "__future__.py",
       "type": "file",
@@ -3149,6 +3189,26 @@
       }
     },
     {
+      "id": "runtime_experimental/field_memory_replay_runner.py",
+      "type": "file",
+      "role": "module",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
       "id": "runtime_experimental/github_bridge.py",
       "type": "file",
       "role": "module",
@@ -3777,6 +3837,46 @@
       }
     },
     {
+      "id": "tests/test_d63_field_memory_replay_runner.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
+      "id": "tests/test_d65_memory_apoptosis.py",
+      "type": "file",
+      "role": "test",
+      "protected_core": false,
+      "pain_score": 0.0,
+      "heat": "white",
+      "priority_bias": 0,
+      "repeat_count": 0,
+      "phase_error": 0.0,
+      "memory_keys": [],
+      "bias_keys": [],
+      "recommendation": "stable",
+      "suggested_move": {
+        "recommendation": "stable",
+        "move_type": "HOLD_SHAPE",
+        "action": "no direct action",
+        "reason": "no significant pain signal"
+      }
+    },
+    {
       "id": "tests/test_d66_core_guard_reviewer.py",
       "type": "file",
       "role": "reviewer",
@@ -3958,6 +4058,20 @@
     }
   ],
   "edges": [
+    {
+      "from": "D63_FIELD_MEMORY_REPLAY_RUNNER_BOOT.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "D65_MEMORY_APOPTOSIS_BOOT.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
     {
       "from": "actor_executor.py",
       "to": "__future__.py",
@@ -5037,6 +5151,27 @@
       "stress": 0.0
     },
     {
+      "from": "runtime_experimental/field_memory_replay_runner.py",
+      "to": "__future__.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/field_memory_replay_runner.py",
+      "to": "runtime_experimental/memory_apoptosis.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/field_memory_replay_runner.py",
+      "to": "runtime_experimental/topological_memory_map.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
       "from": "runtime_experimental/healer_executor.py",
       "to": "__future__.py",
       "type": "import",
@@ -5081,6 +5216,13 @@
     {
       "from": "runtime_experimental/mage_executor.py",
       "to": "runtime_experimental/tank_policy.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "runtime_experimental/memory_apoptosis.py",
+      "to": "__future__.py",
       "type": "import",
       "weight": 1.0,
       "stress": 0.0
@@ -5291,6 +5433,20 @@
     {
       "from": "tests/test_broken_import_probe.py",
       "to": "core/execution/non_existing_module.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "tests/test_d63_field_memory_replay_runner.py",
+      "to": "runtime_experimental/field_memory_replay_runner.py",
+      "type": "import",
+      "weight": 1.0,
+      "stress": 0.0
+    },
+    {
+      "from": "tests/test_d65_memory_apoptosis.py",
+      "to": "runtime_experimental/memory_apoptosis.py",
       "type": "import",
       "weight": 1.0,
       "stress": 0.0

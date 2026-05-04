@@ -1,0 +1,93 @@
+{
+  "state": "D63_FIELD_MEMORY_REPLAY_RUNNER",
+  "result": "FIELD_MEMORY_REPLAY_COMPLETED",
+  "route": "FIELD_INTENT_FIELD_MEMORY_REPLAY",
+  "ok": true,
+  "created_at": "2026-05-04T04:44:19.263844+00:00",
+  "root": "/workspaces/gitcube-os",
+  "output_path": "reports/d63_field_memory_replay_report.json",
+  "modules": [
+    {
+      "module": "D65_MEMORY_APOPTOSIS",
+      "ok": true,
+      "result": "APOPTOSIS_DECAY_REPORT_CREATED",
+      "detail": {
+        "summary": {
+          "bias_entries_seen": 1,
+          "memory_atoms_seen": 1,
+          "decayed_count": 0,
+          "preserved_or_reinforced_count": 1,
+          "decay_points": 10,
+          "reinforce_points": 5,
+          "min_boost": 0,
+          "max_boost": 50
+        }
+      }
+    },
+    {
+      "module": "D67_TOPOLOGICAL_MEMORY_MAP",
+      "ok": true,
+      "result": "TOPOLOGICAL_MEMORY_MAP_CREATED",
+      "detail": {
+        "summary": {
+          "nodes_count": 201,
+          "edges_count": 204,
+          "protected_core_count": 7,
+          "hot_nodes_count": 3,
+          "tenuki_count": 3,
+          "suggested_moves_count": 3
+        }
+      }
+    },
+    {
+      "module": "D66_CORE_GUARD_REVIEWER",
+      "ok": true,
+      "result": "D66_REVIEW_FORBIDDEN_CORE_MUTATION",
+      "detail": {
+        "decision": "FORBIDDEN_CORE_MUTATION",
+        "ok": false
+      }
+    }
+  ],
+  "macro_decision": {
+    "decision": "PLAN_ISOLATED_BYPASS",
+    "reason": "D67 found protected stressed core; use TENUKI instead of direct expansion",
+    "priority": "critical",
+    "requires": [
+      "D66 reviewer approval",
+      "local tests",
+      "regression evidence",
+      "no direct protected-core mutation"
+    ],
+    "targets": [
+      "app/orchestration/task_dispatcher.py",
+      "runtime_experimental/phase_resync_policy.py",
+      "runtime_experimental/v_kernel_daemon.py"
+    ]
+  },
+  "summary": {
+    "modules_seen": 3,
+    "warnings_count": 0,
+    "errors_count": 0,
+    "decision": "PLAN_ISOLATED_BYPASS",
+    "priority": "critical",
+    "targets_count": 3
+  },
+  "input_reports": {
+    "d65_report_path": "/workspaces/gitcube-os/reports/d65_apoptosis_decay_report.json",
+    "d66_report_path": "/workspaces/gitcube-os/reports/d66_core_guard_reviewer_report.json",
+    "d67_map_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map.json",
+    "d67_report_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map_report.json"
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "success_condition": {
+    "replay_completed": true,
+    "canonical_memory_mutated": false,
+    "core_code_mutated": false,
+    "next_step": "D64 can consume this replay report plus D66/D67 evidence to propose a guarded safe mutation."
+  }
+}
