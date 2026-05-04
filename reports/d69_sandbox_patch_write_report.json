@@ -1,0 +1,52 @@
+{
+  "state": "D69_SANDBOX_PATCH_WRITER",
+  "result": "SANDBOX_PATCH_WRITE_COMPLETED",
+  "route": "FIELD_INTENT_SANDBOX_PATCH_WRITER",
+  "ok": true,
+  "created_at": "2026-05-04T05:31:23.658791+00:00",
+  "proposal_path": "/workspaces/gitcube-os/reports/d68_ai_patch_proposal.json",
+  "bundle_path": "/workspaces/gitcube-os/reports/d69_sandbox_patch_bundle.json",
+  "report_path": "/workspaces/gitcube-os/reports/d69_sandbox_patch_write_report.json",
+  "written_files": [
+    "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py"
+  ],
+  "rejected_files": [],
+  "probe_results": [
+    {
+      "path": "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+      "ok": true,
+      "reason": "probe_ok"
+    },
+    {
+      "path": "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+      "ok": true,
+      "reason": "probe_ok"
+    },
+    {
+      "path": "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py",
+      "ok": true,
+      "reason": "probe_ok"
+    }
+  ],
+  "summary": {
+    "written_files_count": 3,
+    "rejected_files_count": 0,
+    "probe_ok_count": 3,
+    "warnings_count": 0,
+    "errors_count": 0
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "success_condition": {
+    "sandbox_files_written": true,
+    "sandbox_only": true,
+    "protected_core_untouched": true,
+    "canonical_memory_untouched": true,
+    "next_step": "D70 should review the sandbox patch bundle and emit approve/reject evidence."
+  }
+}
