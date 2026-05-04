@@ -1,0 +1,105 @@
+{
+  "state": "D68_AI_PATCH_PROPOSAL",
+  "result": "AI_PATCH_PROPOSAL_CONTRACT_CREATED",
+  "route": "FIELD_INTENT_AI_PATCH_PROPOSAL_ADAPTER",
+  "ok": true,
+  "created_at": "2026-05-04T04:56:40.204742+00:00",
+  "proposal_mode": "AI_PROPOSAL_ONLY_ISOLATED_BYPASS",
+  "proposed_action": "CREATE_ISOLATED_BYPASS_MODULE",
+  "priority": "critical",
+  "decision_source": "PLAN_ISOLATED_BYPASS",
+  "rationale": "D63/D67 recommend TENUKI around stressed protected core.",
+  "hot_targets": [
+    "app/orchestration/task_dispatcher.py",
+    "runtime_experimental/phase_resync_policy.py",
+    "runtime_experimental/v_kernel_daemon.py"
+  ],
+  "protected_files": [
+    "runtime_experimental/v_kernel_daemon.py",
+    "app/orchestration/task_dispatcher.py",
+    "runtime_experimental/phase_resync_policy.py",
+    "runtime_experimental/memory_apoptosis.py",
+    "memory/field_intent_memory.jsonl",
+    "memory/field_intent_priority_bias.json",
+    "memory/field_intent_closed_loop_policy.json"
+  ],
+  "candidate_created_files": [
+    "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py"
+  ],
+  "forbidden_actions": [
+    "direct_core_edit",
+    "overwrite_canonical_memory",
+    "write_to_protected_file",
+    "auto_commit_without_review",
+    "execute_generated_patch_without_tests"
+  ],
+  "validation_gates": [
+    "D66_CORE_GUARD_REVIEW_REQUIRED",
+    "UNIT_TESTS_REQUIRED",
+    "REGRESSION_TESTS_REQUIRED",
+    "NO_PROTECTED_CORE_MUTATION",
+    "NO_CANONICAL_MEMORY_OVERWRITE",
+    "ROLLBACK_PLAN_REQUIRED"
+  ],
+  "llm_ready_payload": {
+    "system_contract": "Proposal only. Return JSON. Do not write files. Do not mutate protected core. Do not overwrite canonical memory.",
+    "prompt": "You are an AI patch proposal agent for GitCube OS. Create a patch proposal only. Do not mutate code. Follow D66 core guard rules. Protected core must not be edited directly. Use TENUKI: create an isolated bypass module and tests. Return JSON only with target_files, created_files, test_plan, rollback_plan, and validation_gates. Macro decision: {'decision': 'PLAN_ISOLATED_BYPASS', 'reason': 'D67 found protected stressed core; use TENUKI instead of direct expansion', 'priority': 'critical', 'requires': ['D66 reviewer approval', 'local tests', 'regression evidence', 'no direct protected-core mutation'], 'targets': ['app/orchestration/task_dispatcher.py', 'runtime_experimental/phase_resync_policy.py', 'runtime_experimental/v_kernel_daemon.py']}. Hot targets: ['app/orchestration/task_dispatcher.py', 'runtime_experimental/phase_resync_policy.py', 'runtime_experimental/v_kernel_daemon.py']. Protected files: ['runtime_experimental/v_kernel_daemon.py', 'app/orchestration/task_dispatcher.py', 'runtime_experimental/phase_resync_policy.py', 'runtime_experimental/memory_apoptosis.py', 'memory/field_intent_memory.jsonl', 'memory/field_intent_priority_bias.json', 'memory/field_intent_closed_loop_policy.json']. Allowed candidate files: ['runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py', 'runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py', 'runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py'].",
+    "expected_json_schema": {
+      "proposal_name": "string",
+      "intent": "string",
+      "target_files": [
+        "string"
+      ],
+      "created_files": [
+        "string"
+      ],
+      "protected_files_not_touched": true,
+      "test_plan": [
+        "string"
+      ],
+      "rollback_plan": [
+        "string"
+      ],
+      "validation_gates": [
+        "string"
+      ],
+      "risk_level": "low|medium|high|critical"
+    }
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "canonical_memory_mutated": false,
+    "protected_core_mutated": false,
+    "external_ai_called": false,
+    "proposal_only": true
+  },
+  "input_reports": {
+    "d63_report_path": "/workspaces/gitcube-os/reports/d63_field_memory_replay_report.json",
+    "d67_map_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map.json",
+    "d67_report_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map_report.json",
+    "d66_reviewer_report_path": "/workspaces/gitcube-os/reports/d66_core_guard_reviewer_report.json",
+    "core_policy_path": "/workspaces/gitcube-os/runtime_experimental/core_guard_policy.json"
+  },
+  "summary": {
+    "decision": "PLAN_ISOLATED_BYPASS",
+    "priority": "critical",
+    "hot_targets_count": 3,
+    "candidate_files_count": 3,
+    "validation_gates_count": 6,
+    "warnings_count": 0,
+    "errors_count": 0
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "success_condition": {
+    "proposal_contract_created": true,
+    "ai_can_read_this_report": true,
+    "ai_cannot_mutate_code_from_this_step": true,
+    "next_step": "D69 may consume this contract and write sandbox-only files after D66-compatible checks."
+  }
+}
