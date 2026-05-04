@@ -1,0 +1,113 @@
+{
+  "state": "D71_ROUTE_DRY_RUN_SIMULATION",
+  "result": "D71_ROUTE_DRY_RUN_COMPLETED",
+  "route": "FIELD_INTENT_ROUTE_DRY_RUN_SIMULATION",
+  "ok": true,
+  "decision": "ROUTE_DRY_RUN_APPROVED",
+  "created_at": "2026-05-04T07:31:06.291879+00:00",
+  "source_d64_request": "/workspaces/gitcube-os/reports/d64_safe_mutation_gate_request.json",
+  "source_d70_review": "/workspaces/gitcube-os/reports/d70_sandbox_bundle_review.json",
+  "source_d69_bundle": "/workspaces/gitcube-os/reports/d69_sandbox_patch_bundle.json",
+  "sandbox_candidates": [
+    "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+    "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py"
+  ],
+  "candidate_hashes": {
+    "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py": "850181038a03eb196f3bb8d4949547ffe3662bf5f0505de036e1948fe9688608",
+    "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py": "3fd42edbf63106a513e800a4ddfa4e6b6b5185319734502d2c93ef341f641715",
+    "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py": "99c3095835cb694860474517fb40467493bac20dc68c64fdb7ab0fabe78303d3"
+  },
+  "protected_files": [
+    "runtime_experimental/v_kernel_daemon.py",
+    "app/orchestration/task_dispatcher.py",
+    "runtime_experimental/phase_resync_policy.py",
+    "runtime_experimental/memory_apoptosis.py",
+    "memory/field_intent_memory.jsonl",
+    "memory/field_intent_priority_bias.json",
+    "memory/field_intent_closed_loop_policy.json"
+  ],
+  "target_scope": [
+    "app/orchestration/task_dispatcher.py",
+    "runtime_experimental/phase_resync_policy.py",
+    "runtime_experimental/v_kernel_daemon.py"
+  ],
+  "simulated_route_diff": [
+    {
+      "operation": "SIMULATE_ROUTE_INSERT",
+      "route_name": "DRY_RUN_DISPATCHER_BYPASS_PROPOSAL",
+      "sandbox_handler": "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+      "handler_sha256": "850181038a03eb196f3bb8d4949547ffe3662bf5f0505de036e1948fe9688608",
+      "target_scope": [
+        "app/orchestration/task_dispatcher.py",
+        "runtime_experimental/phase_resync_policy.py",
+        "runtime_experimental/v_kernel_daemon.py"
+      ],
+      "would_touch_files": [],
+      "would_touch_protected_core": false,
+      "would_touch_canonical_memory": false,
+      "would_execute_runtime_mutation": false,
+      "dry_run_only": true
+    },
+    {
+      "operation": "SIMULATE_ROUTE_INSERT",
+      "route_name": "DRY_RUN_PHASE_RESYNC_BYPASS_PROPOSAL",
+      "sandbox_handler": "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+      "handler_sha256": "3fd42edbf63106a513e800a4ddfa4e6b6b5185319734502d2c93ef341f641715",
+      "target_scope": [
+        "app/orchestration/task_dispatcher.py",
+        "runtime_experimental/phase_resync_policy.py",
+        "runtime_experimental/v_kernel_daemon.py"
+      ],
+      "would_touch_files": [],
+      "would_touch_protected_core": false,
+      "would_touch_canonical_memory": false,
+      "would_execute_runtime_mutation": false,
+      "dry_run_only": true
+    },
+    {
+      "operation": "SIMULATE_ROUTE_INSERT",
+      "route_name": "DRY_RUN_DAEMON_BYPASS_PROPOSAL",
+      "sandbox_handler": "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py",
+      "handler_sha256": "99c3095835cb694860474517fb40467493bac20dc68c64fdb7ab0fabe78303d3",
+      "target_scope": [
+        "app/orchestration/task_dispatcher.py",
+        "runtime_experimental/phase_resync_policy.py",
+        "runtime_experimental/v_kernel_daemon.py"
+      ],
+      "would_touch_files": [],
+      "would_touch_protected_core": false,
+      "would_touch_canonical_memory": false,
+      "would_execute_runtime_mutation": false,
+      "dry_run_only": true
+    }
+  ],
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "dry_run_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "ROUTE_DRY_RUN_APPROVED",
+    "sandbox_candidates_count": 3,
+    "simulated_route_diff_count": 3,
+    "protected_files_count": 7,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "dry_run_completed": true,
+    "actual_apply_executed": false,
+    "protected_core_untouched": true,
+    "canonical_memory_untouched": true,
+    "next_step": "D72 can package this dry-run as a reviewed apply plan; D64/D66 must still approve before any real mutation."
+  }
+}
