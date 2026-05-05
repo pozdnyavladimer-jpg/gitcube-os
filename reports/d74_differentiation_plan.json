@@ -1,0 +1,217 @@
+{
+  "state": "D74_DIFFERENTIATION_PLANNER",
+  "result": "D74_DIFFERENTIATION_PLAN_CREATED",
+  "route": "FIELD_INTENT_DIFFERENTIATION_PLANNER",
+  "ok": true,
+  "decision": "DIFFERENTIATION_PLAN_READY",
+  "created_at": "2026-05-05T05:34:11.209558+00:00",
+  "plan_id": "d74-58851a76f4247790",
+  "differentiation_plan": {
+    "plan_id": "d74-58851a76f4247790",
+    "enabled": true,
+    "mode": "PLAN_ONLY_NO_CODE_MUTATION",
+    "principle": "do not expand stressed core directly; create isolated child modules and route through narrow adapters",
+    "candidates": [
+      {
+        "source_node": "app/orchestration/task_dispatcher.py",
+        "pain_score": 0.8125,
+        "protected_core": true,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "route_policy_child",
+        "gradient_intent": "separate routing pressure from core dispatcher",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+        "recommended_test_module": "tests/test_d74_01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "protected core has stress; direct expansion risks core mutation",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      },
+      {
+        "source_node": "runtime_experimental/phase_resync_policy.py",
+        "pain_score": 0.8125,
+        "protected_core": true,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "phase_resync_child",
+        "gradient_intent": "separate phase repair pressure into isolated policy",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/02_runtime_experimental_phase_resync_policy_py_phase_resync_child.py",
+        "recommended_test_module": "tests/test_d74_02_runtime_experimental_phase_resync_policy_py_phase_resync_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "protected core has stress; direct expansion risks core mutation",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      },
+      {
+        "source_node": "runtime_experimental/v_kernel_daemon.py",
+        "pain_score": 0.8125,
+        "protected_core": true,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "daemon_bridge_child",
+        "gradient_intent": "separate daemon bridge pressure from kernel loop",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/03_runtime_experimental_v_kernel_daemon_py_daemon_bridge_child.py",
+        "recommended_test_module": "tests/test_d74_03_runtime_experimental_v_kernel_daemon_py_daemon_bridge_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "protected core has stress; direct expansion risks core mutation",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      },
+      {
+        "source_node": "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py",
+        "pain_score": 0.5,
+        "protected_core": false,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "daemon_bridge_child",
+        "gradient_intent": "separate daemon bridge pressure from kernel loop",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/04_runtime_experimental_ai_bypass_proposals_daemon_bypass_proposal_py_daemon_bridge_child.py",
+        "recommended_test_module": "tests/test_d74_04_runtime_experimental_ai_bypass_proposals_daemon_bypass_proposal_py_daemon_bridge_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "D73 dry-run package target requires differentiation review",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      },
+      {
+        "source_node": "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+        "pain_score": 0.5,
+        "protected_core": false,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "route_policy_child",
+        "gradient_intent": "separate routing pressure from core dispatcher",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/05_runtime_experimental_ai_bypass_proposals_dispatcher_bypass_proposal_py_route_policy_child.py",
+        "recommended_test_module": "tests/test_d74_05_runtime_experimental_ai_bypass_proposals_dispatcher_bypass_proposal_py_route_policy_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "D73 dry-run package target requires differentiation review",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      },
+      {
+        "source_node": "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+        "pain_score": 0.5,
+        "protected_core": false,
+        "differentiation_type": "TENUKI_CHILD_MODULE",
+        "gradient_role": "phase_resync_child",
+        "gradient_intent": "separate phase repair pressure into isolated policy",
+        "recommended_child_module": "runtime_experimental/differentiated_modules/06_runtime_experimental_ai_bypass_proposals_phase_resync_bypass_proposal_py_phase_resync_child.py",
+        "recommended_test_module": "tests/test_d74_06_runtime_experimental_ai_bypass_proposals_phase_resync_bypass_proposal_py_phase_resync_child.py",
+        "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+        "old_node_policy": "do_not_expand_directly",
+        "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+        "reason": "D73 dry-run package target requires differentiation review",
+        "move_type": "TENUKI",
+        "required_gates": [
+          "D73_PACKAGE_READY",
+          "D66_RECHECK",
+          "UNIT_TESTS",
+          "REGRESSION_TESTS",
+          "ROLLBACK_MANIFEST",
+          "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+        ]
+      }
+    ],
+    "required_next_gates": [
+      "D66_RECHECK",
+      "D73_PACKAGE_READY",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit",
+      "overwrite_canonical_memory",
+      "auto_commit_runtime_mutation",
+      "apply_without_D66_recheck",
+      "apply_without_rollback"
+    ],
+    "next_allowed_actions": [
+      "generate child-module scaffold proposal",
+      "generate tests for first child module",
+      "run sandbox-only probes",
+      "prepare D75 differentiation scaffold package"
+    ]
+  },
+  "input_reports": {
+    "d73_package_path": "/workspaces/gitcube-os/reports/d73_guarded_apply_dry_run_package.json",
+    "d67_report_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map_report.json",
+    "d67_map_path": "/workspaces/gitcube-os/reports/d67_topological_memory_map.json",
+    "d65_report_path": "/workspaces/gitcube-os/reports/d65_apoptosis_decay_report.json",
+    "core_policy_path": "/workspaces/gitcube-os/runtime_experimental/core_guard_policy.json"
+  },
+  "evidence": {
+    "d73_decision": "GUARDED_APPLY_DRY_RUN_PACKAGE_READY",
+    "d73_ok": true,
+    "d67_result": "D67_MAP_BUILD_COMPLETED",
+    "d65_result": "APOPTOSIS_DECAY_REPORT_CREATED",
+    "protected_files_count": 7,
+    "target_records_count": 6
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "plan_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "DIFFERENTIATION_PLAN_READY",
+    "plan_id": "d74-58851a76f4247790",
+    "candidate_count": 6,
+    "protected_candidate_count": 3,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "differentiation_plan_created": true,
+    "actual_apply_executed": false,
+    "next_step": "D75 can scaffold the first isolated child module proposal, still sandbox-only."
+  }
+}
