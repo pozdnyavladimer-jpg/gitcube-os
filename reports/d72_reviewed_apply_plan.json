@@ -1,0 +1,158 @@
+{
+  "state": "D72_REVIEWED_APPLY_PLAN",
+  "result": "D72_REVIEWED_APPLY_PLAN_CREATED",
+  "route": "FIELD_INTENT_REVIEWED_APPLY_PLAN",
+  "ok": true,
+  "decision": "REVIEWED_APPLY_PLAN_READY",
+  "created_at": "2026-05-05T04:20:50.065755+00:00",
+  "plan_id": "d72-449295adfa2de778",
+  "reviewed_apply_plan": {
+    "plan_id": "d72-449295adfa2de778",
+    "enabled": true,
+    "apply_mode": "MANUAL_GUARDED_APPLY_ONLY",
+    "status": "REVIEWED_APPLY_PLAN_READY",
+    "sandbox_candidates": [
+      "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+      "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+      "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py"
+    ],
+    "simulated_route_diff": [
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_DISPATCHER_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+        "handler_sha256": "850181038a03eb196f3bb8d4949547ffe3662bf5f0505de036e1948fe9688608",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      },
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_PHASE_RESYNC_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+        "handler_sha256": "3fd42edbf63106a513e800a4ddfa4e6b6b5185319734502d2c93ef341f641715",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      },
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_DAEMON_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py",
+        "handler_sha256": "99c3095835cb694860474517fb40467493bac20dc68c64fdb7ab0fabe78303d3",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      }
+    ],
+    "target_scope": [
+      "app/orchestration/task_dispatcher.py",
+      "runtime_experimental/phase_resync_policy.py",
+      "runtime_experimental/v_kernel_daemon.py"
+    ],
+    "rollback_plan": {
+      "required": true,
+      "mode": "PRE_APPLY_BACKUP_AND_REVERT",
+      "backup_targets": [
+        "runtime_experimental/v_kernel_daemon.py",
+        "app/orchestration/task_dispatcher.py",
+        "runtime_experimental/phase_resync_policy.py",
+        "runtime_experimental/memory_apoptosis.py",
+        "memory/field_intent_memory.jsonl",
+        "memory/field_intent_priority_bias.json",
+        "memory/field_intent_closed_loop_policy.json"
+      ],
+      "rollback_artifacts_required": [
+        "pre_apply_git_sha",
+        "protected_file_backup_manifest",
+        "post_apply_validation_report"
+      ],
+      "rollback_command_policy": "git_restore_or_revert_only_after_human_review"
+    },
+    "required_gates_before_real_apply": [
+      "D66_REVIEWER_RECHECK",
+      "D71_DRY_RUN_APPROVED",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_PLAN_READY",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit_without_guarded_route",
+      "overwrite_canonical_memory",
+      "auto_commit_runtime_mutation",
+      "apply_without_rollback",
+      "apply_without_D66_recheck"
+    ],
+    "next_allowed_actions": [
+      "generate pre-apply backup manifest",
+      "run D66 reviewer recheck on this plan",
+      "run full unit/regression suite",
+      "prepare D73 guarded apply dry-run package"
+    ]
+  },
+  "input_reports": {
+    "d64_request_path": "/workspaces/gitcube-os/reports/d64_safe_mutation_gate_request.json",
+    "d71_dry_run_path": "/workspaces/gitcube-os/reports/d71_route_dry_run_simulation.json",
+    "d66_review_path": "/workspaces/gitcube-os/reports/d66_core_guard_reviewer_report.json",
+    "core_policy_path": "/workspaces/gitcube-os/runtime_experimental/core_guard_policy.json"
+  },
+  "evidence": {
+    "d64_decision": "CREATE_GUARDED_APPLY_REQUEST",
+    "d64_ok": true,
+    "d71_decision": "ROUTE_DRY_RUN_APPROVED",
+    "d71_ok": true,
+    "d66_decision": "FORBIDDEN_CORE_MUTATION",
+    "route_diff_count": 3,
+    "sandbox_candidates_count": 3
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "plan_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "REVIEWED_APPLY_PLAN_READY",
+    "plan_id": "d72-449295adfa2de778",
+    "sandbox_candidates_count": 3,
+    "route_diff_count": 3,
+    "protected_files_count": 7,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "reviewed_apply_plan_created": true,
+    "actual_apply_executed": false,
+    "rollback_required": true,
+    "next_step": "D73 can prepare a guarded apply dry-run package, but no real mutation should run without D66 recheck and rollback evidence."
+  }
+}
