@@ -1,0 +1,87 @@
+{
+  "state": "D76_CHILD_MODULE_PROBE_RUNNER",
+  "result": "D76_CHILD_MODULE_PROBE_COMPLETED",
+  "route": "FIELD_INTENT_CHILD_MODULE_PROBE",
+  "ok": true,
+  "decision": "CHILD_MODULE_PROBE_PASSED",
+  "created_at": "2026-05-05T07:26:22.168456+00:00",
+  "input_reports": {
+    "d75_report_path": "/workspaces/gitcube-os/reports/d75_differentiation_scaffold_package.json"
+  },
+  "probe_target": {
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "test_module_path": "tests/test_d75_01_app_orchestration_task_dispatcher_py_route_policy_child.py"
+  },
+  "module_description": {
+    "state": "D75_DIFFERENTIATED_CHILD_MODULE",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "gradient_role": "route_policy_child",
+    "gradient_intent": "separate routing pressure from core dispatcher",
+    "pain_score_at_birth": 0.8125,
+    "sandbox_only": true
+  },
+  "probe_result": {
+    "ok": true,
+    "state": "D75_DIFFERENTIATED_CHILD_MODULE",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "gradient_role": "route_policy_child",
+    "payload_preserved": {
+      "kind": "D76_CHILD_MODULE_PROBE",
+      "source": "D76"
+    },
+    "guardrails": {
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "actual_apply_executed": false,
+      "sandbox_only": true
+    }
+  },
+  "route_contract": {
+    "ok": true,
+    "contract": "D75_CHILD_MODULE_ROUTE_CONTRACT",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "handler_role": "route_policy_child",
+    "allowed_mode": "SANDBOX_PROBE_ONLY",
+    "forbidden_actions": [
+      "direct_core_edit",
+      "overwrite_canonical_memory",
+      "external_ai_call",
+      "auto_apply_runtime_mutation"
+    ],
+    "required_before_integration": [
+      "D66_RECHECK",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ]
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "probe_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "CHILD_MODULE_PROBE_PASSED",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "probe_ok": true,
+    "contract_ok": true
+  },
+  "success_condition": {
+    "child_probe_passed": true,
+    "actual_apply_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D77 can prepare a narrow adapter contract proposal, still without core mutation."
+  }
+}
