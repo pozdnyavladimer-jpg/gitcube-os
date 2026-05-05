@@ -1,0 +1,220 @@
+{
+  "state": "D73_GUARDED_APPLY_DRY_RUN_PACKAGE",
+  "result": "D73_GUARDED_APPLY_DRY_RUN_PACKAGE_CREATED",
+  "route": "FIELD_INTENT_GUARDED_APPLY_DRY_RUN_PACKAGE",
+  "ok": true,
+  "decision": "GUARDED_APPLY_DRY_RUN_PACKAGE_READY",
+  "created_at": "2026-05-05T05:17:42.785545+00:00",
+  "dry_run_package": {
+    "package_state": "D73_GUARDED_APPLY_DRY_RUN_PACKAGE",
+    "enabled": true,
+    "mode": "DRY_RUN_PACKAGE_ONLY",
+    "pre_apply_git_sha": "b0b838c1b672482856275b41c3018fb228f774c8",
+    "git_status_before_package": "A  D73_GUARDED_APPLY_DRY_RUN_PACKAGE_BOOT.py\n?? runtime_experimental/guarded_apply_dry_run_package.py\n?? tests/test_d73_guarded_apply_dry_run_package.py",
+    "source_plan_id": "d72-449295adfa2de778",
+    "sandbox_candidates": [
+      "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+      "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+      "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py"
+    ],
+    "simulated_route_diff": [
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_DISPATCHER_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/dispatcher_bypass_proposal.py",
+        "handler_sha256": "850181038a03eb196f3bb8d4949547ffe3662bf5f0505de036e1948fe9688608",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      },
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_PHASE_RESYNC_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/phase_resync_bypass_proposal.py",
+        "handler_sha256": "3fd42edbf63106a513e800a4ddfa4e6b6b5185319734502d2c93ef341f641715",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      },
+      {
+        "operation": "SIMULATE_ROUTE_INSERT",
+        "route_name": "DRY_RUN_DAEMON_BYPASS_PROPOSAL",
+        "sandbox_handler": "runtime_experimental/ai_bypass_proposals/daemon_bypass_proposal.py",
+        "handler_sha256": "99c3095835cb694860474517fb40467493bac20dc68c64fdb7ab0fabe78303d3",
+        "target_scope": [
+          "app/orchestration/task_dispatcher.py",
+          "runtime_experimental/phase_resync_policy.py",
+          "runtime_experimental/v_kernel_daemon.py"
+        ],
+        "would_touch_files": [],
+        "would_touch_protected_core": false,
+        "would_touch_canonical_memory": false,
+        "would_execute_runtime_mutation": false,
+        "dry_run_only": true
+      }
+    ],
+    "backup_manifest": [
+      {
+        "path": "runtime_experimental/v_kernel_daemon.py",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 3385,
+        "sha256": "67938de7dcf3a27033c6a4d73bbabfae74adffee9615d8f2a324f12b85fc1897",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- runtime_experimental/v_kernel_daemon.py"
+      },
+      {
+        "path": "app/orchestration/task_dispatcher.py",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 149128,
+        "sha256": "e3a7d698924b546e95541dfb98e667d440013b6aec2f234b70d9644daa159a3a",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- app/orchestration/task_dispatcher.py"
+      },
+      {
+        "path": "runtime_experimental/phase_resync_policy.py",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 1552,
+        "sha256": "3f48c99ae39137f049e0f105cafae365cb83e63d4721c0608e568b1d5b85ac7f",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- runtime_experimental/phase_resync_policy.py"
+      },
+      {
+        "path": "runtime_experimental/memory_apoptosis.py",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 11325,
+        "sha256": "60b029d86996faf286ff7d444ffb45cafdeff0c4274f67613b8e967b42234984",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- runtime_experimental/memory_apoptosis.py"
+      },
+      {
+        "path": "memory/field_intent_memory.jsonl",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 1398,
+        "sha256": "4f5d42b9f5b579b5fa8e97823b09467e606d2069b2f772dff123bb1f7814da34",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- memory/field_intent_memory.jsonl"
+      },
+      {
+        "path": "memory/field_intent_priority_bias.json",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 1745,
+        "sha256": "61ea813c6dfa9d548c864f30d407ba85586cb4814ec89e7a91f1115269c79da0",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- memory/field_intent_priority_bias.json"
+      },
+      {
+        "path": "memory/field_intent_closed_loop_policy.json",
+        "exists": true,
+        "is_file": true,
+        "size_bytes": 1787,
+        "sha256": "ace67ca7aa23fcefe40d5581a2741aac23f1514a5aa7457591be074a4fbb84a8",
+        "backup_required_before_apply": true,
+        "restore_policy": "git restore -- memory/field_intent_closed_loop_policy.json"
+      }
+    ],
+    "rollback_instructions": {
+      "rollback_required": true,
+      "restore_protected_files": [
+        "git restore -- runtime_experimental/v_kernel_daemon.py",
+        "git restore -- app/orchestration/task_dispatcher.py",
+        "git restore -- runtime_experimental/phase_resync_policy.py",
+        "git restore -- runtime_experimental/memory_apoptosis.py",
+        "git restore -- memory/field_intent_memory.jsonl",
+        "git restore -- memory/field_intent_priority_bias.json",
+        "git restore -- memory/field_intent_closed_loop_policy.json"
+      ],
+      "revert_commit_policy": "only_after_human_or_higher_policy_review",
+      "must_preserve_reports": true
+    },
+    "required_validation_commands": [
+      "python -m py_compile runtime_experimental/reviewed_apply_plan.py",
+      "python -m py_compile runtime_experimental/route_dry_run_simulator.py",
+      "python -m unittest tests.test_d64_safe_mutation_gate -v",
+      "python -m unittest tests.test_d70_sandbox_bundle_reviewer -v",
+      "python -m unittest tests.test_d71_route_dry_run_simulator -v",
+      "python -m unittest tests.test_d72_reviewed_apply_plan -v",
+      "python -m unittest tests.test_d73_guarded_apply_dry_run_package -v"
+    ],
+    "required_gates_before_real_apply": [
+      "D66_REVIEWER_RECHECK",
+      "D71_ROUTE_DRY_RUN_APPROVED",
+      "D72_REVIEWED_APPLY_PLAN_READY",
+      "ROLLBACK_MANIFEST_READY",
+      "FULL_TEST_SUITE_OK",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit",
+      "overwrite_canonical_memory",
+      "auto_commit_runtime_mutation",
+      "apply_without_backup_manifest",
+      "apply_without_D66_recheck",
+      "apply_without_explicit_approval"
+    ]
+  },
+  "input_reports": {
+    "d72_plan_path": "/workspaces/gitcube-os/reports/d72_reviewed_apply_plan.json",
+    "d71_dry_run_path": "/workspaces/gitcube-os/reports/d71_route_dry_run_simulation.json",
+    "d64_request_path": "/workspaces/gitcube-os/reports/d64_safe_mutation_gate_request.json",
+    "d66_review_path": "/workspaces/gitcube-os/reports/d66_core_guard_reviewer_report.json",
+    "core_policy_path": "/workspaces/gitcube-os/runtime_experimental/core_guard_policy.json"
+  },
+  "evidence": {
+    "d72_decision": "REVIEWED_APPLY_PLAN_READY",
+    "d72_ok": true,
+    "d71_decision": "ROUTE_DRY_RUN_APPROVED",
+    "d64_decision": "CREATE_GUARDED_APPLY_REQUEST",
+    "d66_decision": "FORBIDDEN_CORE_MUTATION",
+    "pre_apply_git_sha": "b0b838c1b672482856275b41c3018fb228f774c8",
+    "backup_manifest_count": 7,
+    "sandbox_candidates_count": 3,
+    "route_diff_count": 3
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "package_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "GUARDED_APPLY_DRY_RUN_PACKAGE_READY",
+    "sandbox_candidates_count": 3,
+    "route_diff_count": 3,
+    "backup_manifest_count": 7,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "dry_run_package_created": true,
+    "actual_apply_executed": false,
+    "backup_manifest_ready": true,
+    "next_step": "D74 should analyze differentiation / module extraction pressure. Real apply remains blocked until D66 recheck and explicit approval."
+  }
+}
