@@ -1,0 +1,98 @@
+{
+  "state": "D75_DIFFERENTIATION_SCAFFOLD_PACKAGE",
+  "result": "D75_DIFFERENTIATION_SCAFFOLD_CREATED",
+  "route": "FIELD_INTENT_DIFFERENTIATION_SCAFFOLD",
+  "ok": true,
+  "decision": "DIFFERENTIATION_SCAFFOLD_READY",
+  "created_at": "2026-05-05T06:29:00.045885+00:00",
+  "scaffold_package": {
+    "package_state": "D75_DIFFERENTIATION_SCAFFOLD_PACKAGE",
+    "enabled": true,
+    "mode": "SANDBOX_ONLY_CHILD_MODULE_SCAFFOLD",
+    "source_d74_plan": "/workspaces/gitcube-os/reports/d74_differentiation_plan.json",
+    "selected_candidate": {
+      "source_node": "app/orchestration/task_dispatcher.py",
+      "pain_score": 0.8125,
+      "protected_core": true,
+      "differentiation_type": "TENUKI_CHILD_MODULE",
+      "gradient_role": "route_policy_child",
+      "gradient_intent": "separate routing pressure from core dispatcher",
+      "recommended_child_module": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+      "recommended_test_module": "tests/test_d74_01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+      "integration_strategy": "narrow_adapter_route_after_D66_recheck",
+      "old_node_policy": "do_not_expand_directly",
+      "apoptosis_policy": "after child module is stable, reduce pressure on old node through D65 decay",
+      "reason": "protected core has stress; direct expansion risks core mutation",
+      "move_type": "TENUKI",
+      "required_gates": [
+        "D73_PACKAGE_READY",
+        "D66_RECHECK",
+        "UNIT_TESTS",
+        "REGRESSION_TESTS",
+        "ROLLBACK_MANIFEST",
+        "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+      ]
+    },
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "test_module_path": "tests/test_d75_01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "created_files": [
+      "runtime_experimental/differentiated_modules/__init__.py",
+      "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+      "tests/test_d75_01_app_orchestration_task_dispatcher_py_route_policy_child.py"
+    ],
+    "integration_status": "NOT_INTEGRATED",
+    "required_before_integration": [
+      "D66_RECHECK",
+      "D73_PACKAGE_READY",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit",
+      "overwrite_canonical_memory",
+      "external_ai_call",
+      "auto_apply_runtime_mutation"
+    ]
+  },
+  "input_reports": {
+    "d74_plan_path": "/workspaces/gitcube-os/reports/d74_differentiation_plan.json"
+  },
+  "evidence": {
+    "d74_decision": "DIFFERENTIATION_PLAN_READY",
+    "d74_ok": true,
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "gradient_role": "route_policy_child",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "test_module_path": "tests/test_d75_01_app_orchestration_task_dispatcher_py_route_policy_child.py"
+  },
+  "guardrails": {
+    "sandbox_code_created": true,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "scaffold_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "DIFFERENTIATION_SCAFFOLD_READY",
+    "created_files_count": 3,
+    "errors_count": 0,
+    "warnings_count": 0,
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "test_module_path": "tests/test_d75_01_app_orchestration_task_dispatcher_py_route_policy_child.py"
+  },
+  "success_condition": {
+    "scaffold_created": true,
+    "actual_apply_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D76 can run child-module probes and prepare adapter contract, still without core mutation."
+  }
+}
