@@ -1,0 +1,24 @@
+{
+  "state": "D87_APPLY_BLOCKERS",
+  "ok": true,
+  "created_at": "2026-05-06T07:27:27.072275+00:00",
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "external_ai_call_allowed_now": false,
+  "git_action_by_ai_allowed_now": false,
+  "hard_blockers": [
+    "no explicit D88 higher policy approval",
+    "no guarded apply command generated",
+    "no runtime mutation execution",
+    "no route insertion permission",
+    "no protected-core mutation permission"
+  ],
+  "required_before_apply_can_be_discussed": [
+    "D88_HIGHER_POLICY_APPROVAL_REQUEST",
+    "D89_FINAL_HUMAN_CONFIRMATION",
+    "D66_RECHECK",
+    "FULL_TEST_DISCOVERY",
+    "ROLLBACK_MANIFEST_RECONFIRMATION"
+  ]
+}
