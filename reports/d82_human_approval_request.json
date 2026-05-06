@@ -1,0 +1,17 @@
+{
+  "state": "D82_HUMAN_APPROVAL_REQUEST",
+  "ok": true,
+  "intent_id": "d82-65a54c146b2632b0",
+  "required_phrase": "APPROVE_D82_AI_PROPOSAL_INTAKE",
+  "approval_scope": "ALLOW_AI_PROPOSAL_TO_SANDBOX_INTAKE_ONLY",
+  "allowed_next_gate": "D83_SANDBOX_WRITER_HANDOFF",
+  "human_statement": "I approve only structured AI proposal JSON to move into sandbox handoff. I do not approve protected-core mutation, route insertion, auto-apply, external AI calls, or git actions.",
+  "blocked_actions": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ]
+}
