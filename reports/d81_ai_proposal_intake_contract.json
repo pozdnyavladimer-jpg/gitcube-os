@@ -1,0 +1,69 @@
+{
+  "state": "D81_AI_PROPOSAL_INTAKE_CONTRACT",
+  "enabled": true,
+  "mode": "JSON_CONTRACT_ONLY",
+  "source_boundary_id": "d80-12b404afe58ca932",
+  "source_proposal_id": "d80-proposal-df0778555af50d97",
+  "accepted_input": {
+    "format": "json",
+    "required_fields": [
+      "proposal_id",
+      "proposal_type",
+      "target_scope",
+      "candidate_files",
+      "guardrails",
+      "validation_plan"
+    ],
+    "candidate_files_prefixes_allowed": [
+      "runtime_experimental/",
+      "reports/",
+      "tests/"
+    ],
+    "candidate_files_prefixes_blocked": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ]
+  },
+  "required_guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "proposal_only": true,
+    "json_only": true
+  },
+  "forbidden_fields": [
+    "api_key",
+    "api_secret",
+    "apply_now",
+    "auto_apply",
+    "canonical_memory_overwrite",
+    "command",
+    "direct_core_edit",
+    "exec",
+    "git_commit",
+    "git_push",
+    "overwrite_canonical_memory",
+    "protected_core_mutation",
+    "raw_shell_command",
+    "shell_command",
+    "subprocess",
+    "token"
+  ],
+  "forbidden_actions": [
+    "execute_shell_command",
+    "write_raw_code_to_protected_core",
+    "auto_apply_patch",
+    "git_commit_or_push",
+    "request_or_store_api_secret",
+    "overwrite_canonical_memory",
+    "route_insert_without_D66_D79_D80_D81_D82"
+  ],
+  "next_gate": "D82_HUMAN_APPROVAL_SIGNED_INTENT"
+}

@@ -1,0 +1,130 @@
+{
+  "state": "D81_AI_PROPOSAL_INTAKE",
+  "result": "D81_AI_PROPOSAL_INTAKE_CREATED",
+  "route": "FIELD_INTENT_AI_PROPOSAL_INTAKE",
+  "ok": true,
+  "decision": "AI_PROPOSAL_INTAKE_READY",
+  "created_at": "2026-05-06T06:29:10.331764+00:00",
+  "intake_id": "d81-ad730475bb60a637",
+  "intake_contract_path": "/workspaces/gitcube-os/reports/d81_ai_proposal_intake_contract.json",
+  "intake_contract": {
+    "state": "D81_AI_PROPOSAL_INTAKE_CONTRACT",
+    "enabled": true,
+    "mode": "JSON_CONTRACT_ONLY",
+    "source_boundary_id": "d80-12b404afe58ca932",
+    "source_proposal_id": "d80-proposal-df0778555af50d97",
+    "accepted_input": {
+      "format": "json",
+      "required_fields": [
+        "proposal_id",
+        "proposal_type",
+        "target_scope",
+        "candidate_files",
+        "guardrails",
+        "validation_plan"
+      ],
+      "candidate_files_prefixes_allowed": [
+        "runtime_experimental/",
+        "reports/",
+        "tests/"
+      ],
+      "candidate_files_prefixes_blocked": [
+        "app/orchestration/",
+        "core/",
+        "runtime/",
+        "bridges/",
+        "memory/"
+      ]
+    },
+    "required_guardrails": {
+      "external_ai_called": false,
+      "network_accessed": false,
+      "runtime_code_mutated": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "proposal_only": true,
+      "json_only": true
+    },
+    "forbidden_fields": [
+      "api_key",
+      "api_secret",
+      "apply_now",
+      "auto_apply",
+      "canonical_memory_overwrite",
+      "command",
+      "direct_core_edit",
+      "exec",
+      "git_commit",
+      "git_push",
+      "overwrite_canonical_memory",
+      "protected_core_mutation",
+      "raw_shell_command",
+      "shell_command",
+      "subprocess",
+      "token"
+    ],
+    "forbidden_actions": [
+      "execute_shell_command",
+      "write_raw_code_to_protected_core",
+      "auto_apply_patch",
+      "git_commit_or_push",
+      "request_or_store_api_secret",
+      "overwrite_canonical_memory",
+      "route_insert_without_D66_D79_D80_D81_D82"
+    ],
+    "next_gate": "D82_HUMAN_APPROVAL_SIGNED_INTENT"
+  },
+  "input_reports": {
+    "d80_boundary_path": "/workspaces/gitcube-os/reports/d80_ai_provider_boundary.json",
+    "d80_proposal_path": "/workspaces/gitcube-os/reports/d80_ai_provider_mock_proposal.json"
+  },
+  "evidence": {
+    "boundary_id": "d80-12b404afe58ca932",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "provider": "mock_local",
+    "mode": "PROPOSE_ONLY",
+    "recommended_next_module": "D81_AI_PROPOSAL_INTAKE",
+    "proposal_action": "CREATE_JSON_INTAKE_GATE_FOR_AI_PROPOSALS"
+  },
+  "policy_checks": {
+    "json_contract_only": true,
+    "boundary_propose_only": true,
+    "proposal_propose_only": true,
+    "no_forbidden_keys": true,
+    "required_fields_declared": true,
+    "forbidden_fields_declared": true
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "proposal_intake_only": true,
+    "json_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "AI_PROPOSAL_INTAKE_READY",
+    "intake_id": "d81-ad730475bb60a637",
+    "boundary_id": "d80-12b404afe58ca932",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "proposal_intake_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D82 should create human/signed approval intent before any sandbox writer receives AI proposals."
+  }
+}
