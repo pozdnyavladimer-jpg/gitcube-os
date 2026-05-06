@@ -1,0 +1,100 @@
+{
+  "state": "D86_LOCAL_REGRESSION_RUNNER",
+  "result": "D86_LOCAL_REGRESSION_RESULTS_CREATED",
+  "route": "FIELD_INTENT_LOCAL_REGRESSION_RUNNER",
+  "ok": true,
+  "decision": "LOCAL_REGRESSION_PASSED",
+  "created_at": "2026-05-06T07:19:15.802409+00:00",
+  "package_id": "d85-98bf21d59b63de1b",
+  "review_id": "d84-4fb2f92a92ca1f09",
+  "results_path": "/workspaces/gitcube-os/reports/d86_local_regression_results.json",
+  "input_reports": {
+    "d85_report_path": "/workspaces/gitcube-os/reports/d85_regression_rollback_evidence.json",
+    "d85_rollback_path": "/workspaces/gitcube-os/reports/d85_rollback_manifest.json",
+    "d85_checklist_path": "/workspaces/gitcube-os/reports/d85_regression_checklist.json"
+  },
+  "regression_results": {
+    "state": "D86_LOCAL_REGRESSION_RESULTS",
+    "ok": true,
+    "created_at": "2026-05-06T07:19:15.796357+00:00",
+    "package_id": "d85-98bf21d59b63de1b",
+    "review_id": "d84-4fb2f92a92ca1f09",
+    "commands_allowed_count": 4,
+    "commands_run_count": 4,
+    "commands_passed_count": 4,
+    "commands_failed_count": 0,
+    "command_results": [
+      {
+        "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/sandbox_writer_output_review.py",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 60
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d84_sandbox_writer_output_review -v",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "test_blocks_missing_d83 (tests.test_d84_sandbox_writer_output_review.TestD84SandboxWriterOutputReview.test_blocks_missing_d83) ... ok\ntest_blocks_protected_candidate_path (tests.test_d84_sandbox_writer_output_review.TestD84SandboxWriterOutputReview.test_blocks_protected_candidate_path) ... ok\ntest_reviews_sandbox_writer_output_only (tests.test_d84_sandbox_writer_output_review.TestD84SandboxWriterOutputReview.test_reviews_sandbox_writer_output_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.005s\n\nOK\n",
+        "duration_timeout_seconds": 60
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/regression_rollback_evidence.py",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 60
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d85_regression_rollback_evidence -v",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "test_blocks_missing_d84 (tests.test_d85_regression_rollback_evidence.TestD85RegressionRollbackEvidence.test_blocks_missing_d84) ... ok\ntest_blocks_protected_candidate_path (tests.test_d85_regression_rollback_evidence.TestD85RegressionRollbackEvidence.test_blocks_protected_candidate_path) ... ok\ntest_creates_regression_rollback_bundle (tests.test_d85_regression_rollback_evidence.TestD85RegressionRollbackEvidence.test_creates_regression_rollback_bundle) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.003s\n\nOK\n",
+        "duration_timeout_seconds": 60
+      }
+    ],
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_touched": false,
+    "network_accessed": false,
+    "external_ai_called": false
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "local_regression_only": true,
+    "allowlisted_commands_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "LOCAL_REGRESSION_PASSED",
+    "package_id": "d85-98bf21d59b63de1b",
+    "review_id": "d84-4fb2f92a92ca1f09",
+    "commands_run_count": 4,
+    "commands_failed_count": 0,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "local_regression_results_created": true,
+    "all_local_regression_commands_passed": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D87 can assemble final pre-apply safety capsule; real apply remains blocked until explicit higher approval."
+  }
+}
