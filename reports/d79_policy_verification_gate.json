@@ -1,0 +1,85 @@
+{
+  "state": "D79_POLICY_VERIFICATION_GATE",
+  "result": "D79_POLICY_VERIFICATION_PASSED",
+  "route": "FIELD_INTENT_POLICY_VERIFICATION_GATE",
+  "ok": true,
+  "decision": "POLICY_VERIFIED_DRY_RUN_READY",
+  "created_at": "2026-05-06T05:50:37.542163+00:00",
+  "gate_id": "d79-45370124a4f4c0d3",
+  "policy_verdict": {
+    "verdict": "DRY_RUN_POLICY_APPROVED",
+    "scope": "dry_run_diff_only",
+    "real_route_insert_allowed": false,
+    "real_apply_allowed": false,
+    "ai_provider_allowed": false,
+    "ai_mode_allowed_next": "PROPOSE_ONLY_AFTER_D80_BOUNDARY"
+  },
+  "input_reports": {
+    "d78_report_path": "/workspaces/gitcube-os/reports/d78_narrow_adapter_dry_run_diff.json",
+    "d64_request_path": "/workspaces/gitcube-os/reports/d64_safe_mutation_gate_request.json",
+    "d66_review_path": "/workspaces/gitcube-os/reports/d66_core_guard_reviewer_report.json"
+  },
+  "evidence": {
+    "d78_ok": true,
+    "d78_decision": "NARROW_ADAPTER_DRY_RUN_DIFF_READY",
+    "d64": {
+      "available": true,
+      "ok": true,
+      "decision": "CREATE_GUARDED_APPLY_REQUEST",
+      "result": "D64_GUARDED_APPLY_REQUEST_CREATED"
+    },
+    "d66": {
+      "available": true,
+      "ok": false,
+      "decision": "FORBIDDEN_CORE_MUTATION",
+      "result": "D66_REVIEW_FORBIDDEN_CORE_MUTATION",
+      "reason": "protected_core_touched_without_two_eyes"
+    },
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "contract_id": "d77-47ae176b7c627120",
+    "diff_sha256": "10ddff370626aff84910e10d3fd2eae42597dd6e3ad2d2d4165ae3e1c8f5c23c"
+  },
+  "policy_checks": {
+    "d78_dry_run_only": true,
+    "no_runtime_mutation": true,
+    "no_protected_core_mutation": true,
+    "no_canonical_memory_mutation": true,
+    "no_external_ai_call": true,
+    "no_actual_apply": true,
+    "no_route_insert": true,
+    "child_module_sandboxed": true,
+    "diff_file_verified": true
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "policy_gate_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "POLICY_VERIFIED_DRY_RUN_READY",
+    "gate_id": "d79-45370124a4f4c0d3",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "policy_verified": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D80 can create AI Provider Boundary in PROPOSE_ONLY mode; real apply remains blocked."
+  }
+}
