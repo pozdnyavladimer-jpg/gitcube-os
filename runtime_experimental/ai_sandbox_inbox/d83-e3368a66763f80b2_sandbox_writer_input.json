@@ -1,0 +1,57 @@
+{
+  "state": "D83_SANDBOX_WRITER_INPUT",
+  "ok": true,
+  "handoff_id": "d83-e3368a66763f80b2",
+  "mode": "SANDBOX_WRITER_INPUT_ONLY",
+  "created_at": "2026-05-06T06:48:12.179876+00:00",
+  "source": {
+    "intent_id": "d82-65a54c146b2632b0",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "boundary_id": "d80-12b404afe58ca932",
+    "d81_intake_id": "d81-ad730475bb60a637"
+  },
+  "allowed_writer_scope": {
+    "write_prefixes": [
+      "runtime_experimental/ai_sandbox_work/",
+      "reports/",
+      "tests/"
+    ],
+    "read_prefixes": [
+      "reports/",
+      "runtime_experimental/",
+      "tests/"
+    ],
+    "blocked_prefixes": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ]
+  },
+  "required_before_any_apply": [
+    "D84_SANDBOX_WRITER_OUTPUT_REVIEW",
+    "D66_RECHECK",
+    "UNIT_TESTS",
+    "REGRESSION_TESTS",
+    "ROLLBACK_MANIFEST",
+    "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+  ],
+  "forbidden_actions": [
+    "direct_core_edit",
+    "route_insert",
+    "actual_apply",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai",
+    "canonical_memory_overwrite"
+  ],
+  "guardrails": {
+    "proposal_only": true,
+    "sandbox_only": true,
+    "actual_apply_allowed": false,
+    "route_insert_allowed": false,
+    "protected_core_mutation_allowed": false,
+    "external_ai_call_allowed": false,
+    "git_action_allowed": false
+  }
+}

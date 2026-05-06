@@ -1,0 +1,75 @@
+{
+  "state": "D83_SANDBOX_WRITER_HANDOFF",
+  "result": "D83_SANDBOX_WRITER_HANDOFF_CREATED",
+  "route": "FIELD_INTENT_SANDBOX_WRITER_HANDOFF",
+  "ok": true,
+  "decision": "SANDBOX_WRITER_HANDOFF_READY",
+  "created_at": "2026-05-06T06:48:12.182789+00:00",
+  "handoff_id": "d83-e3368a66763f80b2",
+  "writer_input_path": "/workspaces/gitcube-os/runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json",
+  "manifest_path": "/workspaces/gitcube-os/reports/d83_sandbox_writer_handoff_manifest.json",
+  "input_reports": {
+    "d82_report_path": "/workspaces/gitcube-os/reports/d82_human_signed_intent.json",
+    "d82_request_path": "/workspaces/gitcube-os/reports/d82_human_approval_request.json",
+    "d81_contract_path": "/workspaces/gitcube-os/reports/d81_ai_proposal_intake_contract.json"
+  },
+  "evidence": {
+    "intent_id": "d82-65a54c146b2632b0",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "boundary_id": "d80-12b404afe58ca932",
+    "d81_intake_id": "d81-ad730475bb60a637",
+    "signature_sha256": "859fbb96b3f56a374af9ae79f23021cede104b441da38c764f1227d0f37ca3a7",
+    "writer_input_path": "/workspaces/gitcube-os/runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json"
+  },
+  "handoff_manifest": {
+    "state": "D83_SANDBOX_WRITER_HANDOFF_MANIFEST",
+    "ok": true,
+    "handoff_id": "d83-e3368a66763f80b2",
+    "created_at": "2026-05-06T06:48:12.179890+00:00",
+    "writer_input_path": "/workspaces/gitcube-os/runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json",
+    "source_reports": [
+      "/workspaces/gitcube-os/reports/d82_human_signed_intent.json",
+      "/workspaces/gitcube-os/reports/d82_human_approval_request.json",
+      "/workspaces/gitcube-os/reports/d81_ai_proposal_intake_contract.json"
+    ],
+    "actual_files_created": [
+      "runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json"
+    ],
+    "actual_files_mutated": [],
+    "protected_core_touched": false,
+    "next_gate": "D84_SANDBOX_WRITER_OUTPUT_REVIEW"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "sandbox_handoff_only": true,
+    "writer_input_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "SANDBOX_WRITER_HANDOFF_READY",
+    "handoff_id": "d83-e3368a66763f80b2",
+    "intent_id": "d82-65a54c146b2632b0",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "sandbox_writer_handoff_created": true,
+    "writer_input_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D84 should review sandbox writer output before any generated artifact can approach guarded apply."
+  }
+}

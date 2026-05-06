@@ -1,0 +1,18 @@
+{
+  "state": "D83_SANDBOX_WRITER_HANDOFF_MANIFEST",
+  "ok": true,
+  "handoff_id": "d83-e3368a66763f80b2",
+  "created_at": "2026-05-06T06:48:12.179890+00:00",
+  "writer_input_path": "/workspaces/gitcube-os/runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json",
+  "source_reports": [
+    "/workspaces/gitcube-os/reports/d82_human_signed_intent.json",
+    "/workspaces/gitcube-os/reports/d82_human_approval_request.json",
+    "/workspaces/gitcube-os/reports/d81_ai_proposal_intake_contract.json"
+  ],
+  "actual_files_created": [
+    "runtime_experimental/ai_sandbox_inbox/d83-e3368a66763f80b2_sandbox_writer_input.json"
+  ],
+  "actual_files_mutated": [],
+  "protected_core_touched": false,
+  "next_gate": "D84_SANDBOX_WRITER_OUTPUT_REVIEW"
+}
