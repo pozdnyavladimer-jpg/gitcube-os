@@ -1,0 +1,47 @@
+{
+  "state": "D80_AI_PROVIDER_MOCK_PROPOSAL",
+  "ok": true,
+  "proposal_id": "d80-proposal-df0778555af50d97",
+  "provider": "mock_local",
+  "mode": "PROPOSE_ONLY",
+  "created_at": "2026-05-06T05:57:45.780287+00:00",
+  "source": {
+    "d79_gate_id": "d79-45370124a4f4c0d3",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD"
+  },
+  "proposal": {
+    "type": "NEXT_MODULE_PROPOSAL",
+    "recommended_next_module": "D81_AI_PROPOSAL_INTAKE",
+    "action": "CREATE_JSON_INTAKE_GATE_FOR_AI_PROPOSALS",
+    "reason": "D80 boundary is sealed; next step is to accept only structured proposal JSON, never raw code execution.",
+    "allowed_output_contract": {
+      "format": "json",
+      "required_fields": [
+        "proposal_id",
+        "proposal_type",
+        "target_scope",
+        "candidate_files",
+        "guardrails",
+        "validation_plan"
+      ],
+      "forbidden_fields": [
+        "raw_shell_command",
+        "auto_apply",
+        "direct_core_edit",
+        "api_secret"
+      ]
+    }
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "proposal_only": true,
+    "mock_provider_only": true
+  }
+}

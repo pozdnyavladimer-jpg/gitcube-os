@@ -1,0 +1,92 @@
+{
+  "state": "D80_AI_PROVIDER_BOUNDARY",
+  "result": "D80_AI_PROVIDER_BOUNDARY_CREATED",
+  "route": "FIELD_INTENT_AI_PROVIDER_BOUNDARY",
+  "ok": true,
+  "decision": "AI_PROVIDER_BOUNDARY_READY",
+  "created_at": "2026-05-06T05:57:45.780613+00:00",
+  "boundary_id": "d80-12b404afe58ca932",
+  "boundary": {
+    "boundary_id": "d80-12b404afe58ca932",
+    "state": "D80_AI_PROVIDER_BOUNDARY",
+    "enabled": true,
+    "provider": "mock_local",
+    "mode": "PROPOSE_ONLY",
+    "network_access_allowed": false,
+    "external_ai_call_allowed": false,
+    "api_keys_required": false,
+    "raw_code_execution_allowed": false,
+    "shell_command_generation_allowed": false,
+    "direct_file_write_allowed": false,
+    "git_commit_allowed": false,
+    "actual_apply_allowed": false,
+    "route_insert_allowed": false,
+    "allowed_input_sources": [
+      "reports/d79_policy_verification_gate.json",
+      "reports/d78_narrow_adapter_dry_run_diff.json",
+      "reports/d77_narrow_adapter_contract.json",
+      "reports/d76_child_module_probe_report.json"
+    ],
+    "allowed_outputs": [
+      "structured proposal JSON",
+      "sandbox-only candidate plan",
+      "validation plan"
+    ],
+    "forbidden_outputs": [
+      "raw patch applied to protected core",
+      "shell command requiring execution",
+      "git commit instruction as autonomous action",
+      "secret/API key request",
+      "canonical memory overwrite"
+    ],
+    "next_required_gate": "D81_AI_PROPOSAL_INTAKE"
+  },
+  "mock_proposal_path": "/workspaces/gitcube-os/reports/d80_ai_provider_mock_proposal.json",
+  "input_reports": {
+    "d79_report_path": "/workspaces/gitcube-os/reports/d79_policy_verification_gate.json"
+  },
+  "evidence": {
+    "d79_ok": true,
+    "d79_decision": "POLICY_VERIFIED_DRY_RUN_READY",
+    "d79_gate_id": "d79-45370124a4f4c0d3",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "provider": "mock_local"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "provider_boundary_only": true,
+    "proposal_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "AI_PROVIDER_BOUNDARY_READY",
+    "boundary_id": "d80-12b404afe58ca932",
+    "provider": "mock_local",
+    "mode": "PROPOSE_ONLY",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "ai_boundary_created": true,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D81 should validate AI proposal JSON before any sandbox writer receives it."
+  }
+}
