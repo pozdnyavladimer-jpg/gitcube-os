@@ -1,0 +1,78 @@
+{
+  "state": "D78_NARROW_ADAPTER_DRY_RUN_DIFF",
+  "result": "D78_NARROW_ADAPTER_DRY_RUN_DIFF_CREATED",
+  "route": "FIELD_INTENT_NARROW_ADAPTER_DRY_RUN_DIFF",
+  "ok": true,
+  "decision": "NARROW_ADAPTER_DRY_RUN_DIFF_READY",
+  "created_at": "2026-05-06T05:17:43.438349+00:00",
+  "package_id": "d78-31e265a960503590",
+  "dry_run_diff_package": {
+    "package_id": "d78-31e265a960503590",
+    "mode": "DRY_RUN_DIFF_ONLY_NO_ROUTE_INSERT",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "contract_id": "d77-47ae176b7c627120",
+    "diff_output_path": "/workspaces/gitcube-os/reports/d78_narrow_adapter_dry_run.diff",
+    "diff_sha256": "10ddff370626aff84910e10d3fd2eae42597dd6e3ad2d2d4165ae3e1c8f5c23c",
+    "would_touch_files": [
+      "app/orchestration/task_dispatcher.py"
+    ],
+    "would_touch_protected_core": true,
+    "actual_files_touched": [],
+    "route_insert_allowed_now": false,
+    "apply_allowed_now": false,
+    "required_before_apply": [
+      "D66_RECHECK",
+      "D73_PACKAGE_READY",
+      "D76_CHILD_PROBE_PASSED",
+      "D77_CONTRACT_READY",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit",
+      "protected_core_mutation",
+      "overwrite_canonical_memory",
+      "external_ai_call",
+      "auto_apply_runtime_mutation"
+    ],
+    "diff_preview": "diff --git a/app/orchestration/task_dispatcher.py b/app/orchestration/task_dispatcher.py\n--- a/app/orchestration/task_dispatcher.py\n+++ b/app/orchestration/task_dispatcher.py\n@@ DRY-RUN ONLY: narrow adapter route proposal, not applied @@\n+# D78 DRY-RUN ONLY — DO NOT APPLY AUTOMATICALLY\n+# contract_id: d77-47ae176b7c627120\n+# adapter_name: D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD\n+# child_module: runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py\n+#\n+# Proposed guarded import:\n+#     from runtime_experimental.differentiated_modules.01_app_orchestration_task_dispatcher_py_route_policy_child import run_sandbox_probe as D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD_SANDBOX_PROBE\n+#\n+# Proposed guarded route shape:\n+#     if event.get(\"route\") == \"D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD\":\n+#         return D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD_SANDBOX_PROBE(event)\n+#\n+# Required before any real route insertion:\n+#     - D66_RECHECK\n+#     - D73_PACKAGE_READY\n+#     - D76_CHILD_PROBE_PASSED\n+#     - UNIT_TESTS\n+#     - REGRESSION_TESTS\n+#     - ROLLBACK_MANIFEST\n+#     - HUMAN_OR_HIGHER_POLICY_APPROVAL\n"
+  },
+  "input_reports": {
+    "d77_contract_path": "/workspaces/gitcube-os/reports/d77_narrow_adapter_contract.json"
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "dry_run_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "NARROW_ADAPTER_DRY_RUN_DIFF_READY",
+    "package_id": "d78-31e265a960503590",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "diff_sha256": "10ddff370626aff84910e10d3fd2eae42597dd6e3ad2d2d4165ae3e1c8f5c23c",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "dry_run_diff_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D79 can verify the dry-run diff against D66/D64 policies before guarded route insertion."
+  }
+}

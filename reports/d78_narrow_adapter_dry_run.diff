@@ -1,0 +1,24 @@
+diff --git a/app/orchestration/task_dispatcher.py b/app/orchestration/task_dispatcher.py
+--- a/app/orchestration/task_dispatcher.py
++++ b/app/orchestration/task_dispatcher.py
+@@ DRY-RUN ONLY: narrow adapter route proposal, not applied @@
++# D78 DRY-RUN ONLY — DO NOT APPLY AUTOMATICALLY
++# contract_id: d77-47ae176b7c627120
++# adapter_name: D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD
++# child_module: runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py
++#
++# Proposed guarded import:
++#     from runtime_experimental.differentiated_modules.01_app_orchestration_task_dispatcher_py_route_policy_child import run_sandbox_probe as D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD_SANDBOX_PROBE
++#
++# Proposed guarded route shape:
++#     if event.get("route") == "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD":
++#         return D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD_SANDBOX_PROBE(event)
++#
++# Required before any real route insertion:
++#     - D66_RECHECK
++#     - D73_PACKAGE_READY
++#     - D76_CHILD_PROBE_PASSED
++#     - UNIT_TESTS
++#     - REGRESSION_TESTS
++#     - ROLLBACK_MANIFEST
++#     - HUMAN_OR_HIGHER_POLICY_APPROVAL
