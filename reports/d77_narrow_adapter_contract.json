@@ -1,0 +1,92 @@
+{
+  "state": "D77_NARROW_ADAPTER_CONTRACT",
+  "result": "D77_NARROW_ADAPTER_CONTRACT_CREATED",
+  "route": "FIELD_INTENT_NARROW_ADAPTER_CONTRACT",
+  "ok": true,
+  "decision": "NARROW_ADAPTER_CONTRACT_READY",
+  "created_at": "2026-05-06T05:03:31.004934+00:00",
+  "contract_id": "d77-47ae176b7c627120",
+  "narrow_adapter_contract": {
+    "contract_id": "d77-47ae176b7c627120",
+    "contract_state": "D77_NARROW_ADAPTER_CONTRACT",
+    "enabled": true,
+    "mode": "CONTRACT_ONLY_NO_ROUTE_INSERT",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "handler_role": "route_policy_child",
+    "boundary": {
+      "input": "event: dict[str, Any]",
+      "output": "sandbox probe result with payload preservation and guardrails",
+      "adapter_width": "narrow",
+      "allowed_call": "child_module.run_sandbox_probe(event)",
+      "forbidden_call": "direct protected-core mutation"
+    },
+    "route_policy": {
+      "integration_status": "NOT_INTEGRATED",
+      "route_insert_allowed_now": false,
+      "contract_only": true,
+      "allowed_next_step": "generate adapter dry-run diff only"
+    },
+    "required_before_integration": [
+      "D66_RECHECK",
+      "D73_PACKAGE_READY",
+      "D76_CHILD_PROBE_PASSED",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "forbidden_actions": [
+      "direct_core_edit",
+      "protected_core_mutation",
+      "overwrite_canonical_memory",
+      "external_ai_call",
+      "auto_apply_runtime_mutation",
+      "route_insert_without_D66_recheck",
+      "route_insert_without_rollback_manifest"
+    ]
+  },
+  "input_reports": {
+    "d76_report_path": "/workspaces/gitcube-os/reports/d76_child_module_probe_report.json",
+    "d75_report_path": "/workspaces/gitcube-os/reports/d75_differentiation_scaffold_package.json",
+    "d74_plan_path": "/workspaces/gitcube-os/reports/d74_differentiation_plan.json"
+  },
+  "evidence": {
+    "d76_decision": "CHILD_MODULE_PROBE_PASSED",
+    "d76_ok": true,
+    "d75_decision": "DIFFERENTIATION_SCAFFOLD_READY",
+    "d74_decision": "DIFFERENTIATION_PLAN_READY",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "handler_role": "route_policy_child",
+    "source_node": "app/orchestration/task_dispatcher.py"
+  },
+  "guardrails": {
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "actual_apply_executed": false,
+    "contract_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "NARROW_ADAPTER_CONTRACT_READY",
+    "contract_id": "d77-47ae176b7c627120",
+    "adapter_name": "D77_NARROW_ADAPTER_APP_ORCHESTRATION_TASK_DISPATCHER_PY_ROUTE_POLICY_CHILD",
+    "source_node": "app/orchestration/task_dispatcher.py",
+    "child_module_path": "runtime_experimental/differentiated_modules/01_app_orchestration_task_dispatcher_py_route_policy_child.py",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "narrow_adapter_contract_created": true,
+    "actual_apply_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D78 can generate a narrow adapter dry-run diff package, still without route insertion."
+  }
+}
