@@ -1,0 +1,140 @@
+{
+  "state": "D85_REGRESSION_ROLLBACK_EVIDENCE",
+  "result": "D85_REGRESSION_ROLLBACK_EVIDENCE_CREATED",
+  "route": "FIELD_INTENT_REGRESSION_ROLLBACK_EVIDENCE",
+  "ok": true,
+  "decision": "REGRESSION_ROLLBACK_EVIDENCE_READY",
+  "created_at": "2026-05-06T07:10:48.235889+00:00",
+  "package_id": "d85-98bf21d59b63de1b",
+  "rollback_manifest_path": "/workspaces/gitcube-os/reports/d85_rollback_manifest.json",
+  "regression_checklist_path": "/workspaces/gitcube-os/reports/d85_regression_checklist.json",
+  "input_reports": {
+    "d84_report_path": "/workspaces/gitcube-os/reports/d84_sandbox_writer_output_review.json"
+  },
+  "evidence": {
+    "review_id": "d84-4fb2f92a92ca1f09",
+    "handoff_id": "d83-e3368a66763f80b2",
+    "proposal_id": "d80-proposal-df0778555af50d97",
+    "candidate_files": [
+      "runtime_experimental/ai_sandbox_work/d84-4fb2f92a92ca1f09/candidate_proposal.json",
+      "tests/test_d84-4fb2f92a92ca1f09_candidate_probe.py",
+      "reports/d84-4fb2f92a92ca1f09_candidate_review.json"
+    ]
+  },
+  "rollback_manifest": {
+    "state": "D85_ROLLBACK_MANIFEST",
+    "ok": true,
+    "package_id": "d85-98bf21d59b63de1b",
+    "created_at": "2026-05-06T07:10:48.235177+00:00",
+    "pre_apply_git_sha": "NO_APPLY_EXECUTED",
+    "source_review_id": "d84-4fb2f92a92ca1f09",
+    "source_handoff_id": "d83-e3368a66763f80b2",
+    "source_proposal_id": "d80-proposal-df0778555af50d97",
+    "candidate_files": [
+      "runtime_experimental/ai_sandbox_work/d84-4fb2f92a92ca1f09/candidate_proposal.json",
+      "tests/test_d84-4fb2f92a92ca1f09_candidate_probe.py",
+      "reports/d84-4fb2f92a92ca1f09_candidate_review.json"
+    ],
+    "created_files": [
+      "runtime_experimental/ai_sandbox_work/d84-4fb2f92a92ca1f09/candidate_proposal.json",
+      "tests/test_d84-4fb2f92a92ca1f09_candidate_probe.py",
+      "reports/d84-4fb2f92a92ca1f09_candidate_review.json"
+    ],
+    "mutated_files": [],
+    "protected_files": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "restore_strategy": {
+      "type": "delete_created_sandbox_candidates_only",
+      "commands_are_documentation_only": true,
+      "commands": [
+        "git status --short",
+        "git clean -n runtime_experimental/ai_sandbox_work reports tests",
+        "manual review before any clean/apply"
+      ]
+    },
+    "verification_commands": [
+      "python -m py_compile runtime_experimental/sandbox_writer_output_review.py",
+      "python -m unittest tests.test_d84_sandbox_writer_output_review -v",
+      "python -m py_compile runtime_experimental/regression_rollback_evidence.py",
+      "python -m unittest tests.test_d85_regression_rollback_evidence -v"
+    ],
+    "human_review_required": true,
+    "actual_rollback_executed": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_touched": false
+  },
+  "regression_checklist": {
+    "state": "D85_REGRESSION_CHECKLIST",
+    "ok": true,
+    "package_id": "d85-98bf21d59b63de1b",
+    "created_at": "2026-05-06T07:10:48.235197+00:00",
+    "source_review_id": "d84-4fb2f92a92ca1f09",
+    "required_before_any_apply": [
+      "D66_RECHECK",
+      "D64_SAFE_MUTATION_GATE_RECHECK",
+      "UNIT_TESTS",
+      "REGRESSION_TESTS",
+      "ROLLBACK_MANIFEST_PRESENT",
+      "HUMAN_OR_HIGHER_POLICY_APPROVAL"
+    ],
+    "commands_to_run_manually": [
+      "python -m unittest discover -s tests -v",
+      "python -m py_compile runtime_experimental/*.py",
+      "git diff --stat",
+      "git status --short"
+    ],
+    "pass_condition": {
+      "all_tests_green": true,
+      "rollback_manifest_present": true,
+      "no_protected_core_mutation": true,
+      "no_route_insert": true,
+      "no_actual_apply": true
+    },
+    "not_allowed": [
+      "auto_apply_runtime_mutation",
+      "direct_core_edit",
+      "route_insert",
+      "commit_generated_patch_without_human_review"
+    ]
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "rollback_evidence_only": true,
+    "regression_evidence_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "REGRESSION_ROLLBACK_EVIDENCE_READY",
+    "package_id": "d85-98bf21d59b63de1b",
+    "review_id": "d84-4fb2f92a92ca1f09",
+    "candidate_files_count": 3,
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "regression_rollback_evidence_created": true,
+    "rollback_manifest_created": true,
+    "regression_checklist_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D86 can run local regression command probes and collect results; real apply still blocked."
+  }
+}

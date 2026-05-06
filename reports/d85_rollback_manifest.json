@@ -1,0 +1,48 @@
+{
+  "state": "D85_ROLLBACK_MANIFEST",
+  "ok": true,
+  "package_id": "d85-98bf21d59b63de1b",
+  "created_at": "2026-05-06T07:10:48.235177+00:00",
+  "pre_apply_git_sha": "NO_APPLY_EXECUTED",
+  "source_review_id": "d84-4fb2f92a92ca1f09",
+  "source_handoff_id": "d83-e3368a66763f80b2",
+  "source_proposal_id": "d80-proposal-df0778555af50d97",
+  "candidate_files": [
+    "runtime_experimental/ai_sandbox_work/d84-4fb2f92a92ca1f09/candidate_proposal.json",
+    "tests/test_d84-4fb2f92a92ca1f09_candidate_probe.py",
+    "reports/d84-4fb2f92a92ca1f09_candidate_review.json"
+  ],
+  "created_files": [
+    "runtime_experimental/ai_sandbox_work/d84-4fb2f92a92ca1f09/candidate_proposal.json",
+    "tests/test_d84-4fb2f92a92ca1f09_candidate_probe.py",
+    "reports/d84-4fb2f92a92ca1f09_candidate_review.json"
+  ],
+  "mutated_files": [],
+  "protected_files": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "restore_strategy": {
+    "type": "delete_created_sandbox_candidates_only",
+    "commands_are_documentation_only": true,
+    "commands": [
+      "git status --short",
+      "git clean -n runtime_experimental/ai_sandbox_work reports tests",
+      "manual review before any clean/apply"
+    ]
+  },
+  "verification_commands": [
+    "python -m py_compile runtime_experimental/sandbox_writer_output_review.py",
+    "python -m unittest tests.test_d84_sandbox_writer_output_review -v",
+    "python -m py_compile runtime_experimental/regression_rollback_evidence.py",
+    "python -m unittest tests.test_d85_regression_rollback_evidence -v"
+  ],
+  "human_review_required": true,
+  "actual_rollback_executed": false,
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_touched": false
+}
