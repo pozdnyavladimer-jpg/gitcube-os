@@ -1,0 +1,76 @@
+{
+  "state": "D91_EXPLICIT_APPLY_SCOPE_APPROVAL",
+  "result": "D91_EXPLICIT_APPLY_SCOPE_APPROVAL_BLOCKED",
+  "route": "FIELD_INTENT_EXPLICIT_APPLY_SCOPE_APPROVAL",
+  "ok": false,
+  "decision": "EXPLICIT_APPLY_SCOPE_APPROVAL_BLOCKED",
+  "created_at": "2026-05-07T05:14:01.845751+00:00",
+  "approval_id": "d91-c89da98dbc458310",
+  "scope_request_path": "",
+  "apply_still_blocked_path": "",
+  "input_reports": {
+    "d90_report_path": "/workspaces/gitcube-os/reports/d90_controlled_apply_plan.json",
+    "d90_preview_path": "/workspaces/gitcube-os/reports/d90_apply_command_preview.json",
+    "d90_checklist_path": "/workspaces/gitcube-os/reports/d90_manual_review_checklist.json"
+  },
+  "evidence": {
+    "plan_id": "d90-9171379f10436537",
+    "confirmation_id": "d89-6613bca72b55df63",
+    "package_id": "d85-98bf21d59b63de1b",
+    "d90_decision": "CONTROLLED_APPLY_PLAN_PREVIEW_READY",
+    "d90_required_next_gate": "D91_EXPLICIT_APPLY_SCOPE_APPROVAL",
+    "apply_allowed_now": false
+  },
+  "scope_request": {},
+  "apply_still_blocked": {
+    "state": "D91_APPLY_STILL_BLOCKED",
+    "ok": true,
+    "approval_id": "d91-c89da98dbc458310",
+    "created_at": "2026-05-07T05:14:01.845745+00:00",
+    "apply_allowed_now": false,
+    "route_insert_allowed_now": false,
+    "protected_core_mutation_allowed_now": false,
+    "canonical_memory_mutation_allowed_now": false,
+    "external_ai_call_allowed_now": false,
+    "git_action_by_ai_allowed_now": false,
+    "reason": "D91 approves D92 dry-run package generation only. Real apply still requires a later explicit execution gate.",
+    "next_required_gate": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "scope_approval_only": true,
+    "d92_dry_run_only": true,
+    "approval_for_real_apply": false
+  },
+  "validation": {
+    "ok": false,
+    "errors": [
+      "D90 checklist must_remain_false flag runtime_code_mutated is not false"
+    ],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "EXPLICIT_APPLY_SCOPE_APPROVAL_BLOCKED",
+    "approval_id": "d91-c89da98dbc458310",
+    "plan_id": "d90-9171379f10436537",
+    "confirmation_id": "d89-6613bca72b55df63",
+    "package_id": "d85-98bf21d59b63de1b",
+    "errors_count": 1,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "explicit_apply_scope_approval_created": false,
+    "d92_dry_run_scope_created": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D92 can create a guarded apply dry-run package. Real apply remains blocked."
+  }
+}
