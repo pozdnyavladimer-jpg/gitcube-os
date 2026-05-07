@@ -1,0 +1,14 @@
+{
+  "state": "D91_APPLY_STILL_BLOCKED",
+  "ok": true,
+  "approval_id": "d91-c89da98dbc458310",
+  "created_at": "2026-05-07T05:47:55.990797+00:00",
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "canonical_memory_mutation_allowed_now": false,
+  "external_ai_call_allowed_now": false,
+  "git_action_by_ai_allowed_now": false,
+  "reason": "D91 approves D92 dry-run package generation only. Real apply still requires a later explicit execution gate.",
+  "next_required_gate": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE"
+}

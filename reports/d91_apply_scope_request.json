@@ -1,0 +1,28 @@
+{
+  "state": "D91_APPLY_SCOPE_REQUEST",
+  "ok": true,
+  "approval_id": "d91-c89da98dbc458310",
+  "created_at": "2026-05-07T05:47:55.990780+00:00",
+  "approval_phrase": "APPROVE_D91_SCOPE_FOR_D92_GUARDED_APPLY_DRY_RUN_ONLY",
+  "approval_mode": "SCOPE_APPROVAL_FOR_D92_GUARDED_APPLY_DRY_RUN_ONLY",
+  "source_plan_id": "d90-9171379f10436537",
+  "source_confirmation_id": "d89-6613bca72b55df63",
+  "source_package_id": "d85-98bf21d59b63de1b",
+  "scope_statement": "D91 approves only the creation of a D92 guarded apply dry-run package. It does not approve real apply, route insertion, protected-core mutation, external AI calls, or AI git actions.",
+  "approved_next_gate": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE",
+  "allowed_scope_for_d92": [
+    "generate_guarded_apply_dry_run_package",
+    "generate_apply_scope_diff_preview",
+    "generate_pre_apply_recheck_commands",
+    "generate_abort_conditions"
+  ],
+  "forbidden_real_actions": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ],
+  "source_preview_commands_are_documentation_only": true
+}
