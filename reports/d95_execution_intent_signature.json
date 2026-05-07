@@ -1,0 +1,22 @@
+{
+  "state": "D95_EXECUTION_INTENT_SIGNATURE",
+  "ok": true,
+  "intent_id": "d95-ffcfdd80c2813101",
+  "request_id": "d94-0ed25fa30e62ce7e",
+  "gate_id": "d93-41debdf4a745dae8",
+  "package_id": "d92-4c1743c94b29530f",
+  "created_at": "2026-05-07T06:34:47.034326+00:00",
+  "signer": "human_operator",
+  "signature_method": "deterministic_local_json_signature",
+  "approval_phrase": "APPROVE_D95_HUMAN_SIGNED_EXECUTION_INTENT_FOR_D96_REGRESSION_ONLY",
+  "signature_sha256": "82a44d221805936d788132e4c2fde249e71574a742058620dc9976e85a490cc3",
+  "signed_scope": "D96_FINAL_LOCAL_FULL_REGRESSION_ONLY",
+  "not_approved": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ]
+}
