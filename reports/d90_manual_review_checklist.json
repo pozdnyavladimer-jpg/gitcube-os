@@ -1,0 +1,25 @@
+{
+  "state": "D90_MANUAL_REVIEW_CHECKLIST",
+  "ok": true,
+  "plan_id": "d90-9171379f10436537",
+  "created_at": "2026-05-07T05:05:56.922277+00:00",
+  "human_review_required": true,
+  "checklist": [
+    "Confirm D89 statement exists and scope is D90 planning only.",
+    "Confirm D85 rollback manifest exists.",
+    "Confirm D86 local regression results passed.",
+    "Confirm no protected core mutation is planned.",
+    "Confirm no route insertion is planned.",
+    "Confirm no external AI/network call is required.",
+    "Confirm D91 explicit apply-scope approval is required before any real apply."
+  ],
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false
+  }
+}
