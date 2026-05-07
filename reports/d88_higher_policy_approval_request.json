@@ -1,0 +1,74 @@
+{
+  "state": "D88_HIGHER_POLICY_APPROVAL_REQUEST",
+  "result": "D88_HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
+  "route": "FIELD_INTENT_HIGHER_POLICY_APPROVAL_REQUEST",
+  "ok": false,
+  "decision": "HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
+  "created_at": "2026-05-07T04:26:48.836571+00:00",
+  "request_id": "d88-f38eb305ddd5fc24",
+  "review_packet_path": "",
+  "apply_still_blocked_path": "",
+  "input_reports": {
+    "d87_report_path": "/workspaces/gitcube-os/reports/d87_final_pre_apply_safety_capsule.json",
+    "d87_capsule_path": "/workspaces/gitcube-os/reports/d87_pre_apply_safety_capsule.json",
+    "d87_blockers_path": "/workspaces/gitcube-os/reports/d87_apply_blockers.json"
+  },
+  "evidence": {
+    "capsule_id": "d87-1b26ec83dc46312e",
+    "package_id": "d85-98bf21d59b63de1b",
+    "review_id": "d84-4fb2f92a92ca1f09",
+    "d87_decision": "FINAL_PRE_APPLY_SAFETY_CAPSULE_READY",
+    "d87_next_gate": "D88_HIGHER_POLICY_APPROVAL_REQUEST",
+    "apply_allowed_now": false
+  },
+  "review_packet": {},
+  "apply_still_blocked": {
+    "state": "D88_APPLY_STILL_BLOCKED",
+    "ok": true,
+    "request_id": "d88-f38eb305ddd5fc24",
+    "created_at": "2026-05-07T04:26:48.836565+00:00",
+    "apply_allowed_now": false,
+    "route_insert_allowed_now": false,
+    "protected_core_mutation_allowed_now": false,
+    "canonical_memory_mutation_allowed_now": false,
+    "external_ai_call_allowed_now": false,
+    "git_action_by_ai_allowed_now": false,
+    "reason": "D88 creates a higher-policy review request only. It does not grant apply permission.",
+    "next_required_gate": "D89_FINAL_HUMAN_CONFIRMATION"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "higher_policy_request_only": true,
+    "approval_not_granted": true
+  },
+  "validation": {
+    "ok": false,
+    "errors": [
+      "D87 capsule hard_no_mutation flag runtime_code_mutated is not false"
+    ],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
+    "request_id": "d88-f38eb305ddd5fc24",
+    "capsule_id": "d87-1b26ec83dc46312e",
+    "package_id": "d85-98bf21d59b63de1b",
+    "errors_count": 1,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "higher_policy_request_created": false,
+    "review_packet_created": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D89 should create final human confirmation artifact. Real apply remains blocked."
+  }
+}
