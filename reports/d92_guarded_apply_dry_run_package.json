@@ -1,0 +1,157 @@
+{
+  "state": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE",
+  "result": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE_CREATED",
+  "route": "FIELD_INTENT_GUARDED_APPLY_DRY_RUN_PACKAGE",
+  "ok": true,
+  "decision": "GUARDED_APPLY_DRY_RUN_PACKAGE_READY",
+  "created_at": "2026-05-07T06:00:49.103414+00:00",
+  "package_id": "d92-4c1743c94b29530f",
+  "diff_preview_path": "/workspaces/gitcube-os/reports/d92_apply_scope_diff_preview.json",
+  "recheck_commands_path": "/workspaces/gitcube-os/reports/d92_pre_apply_recheck_commands.json",
+  "abort_conditions_path": "/workspaces/gitcube-os/reports/d92_abort_conditions.json",
+  "input_reports": {
+    "d91_report_path": "/workspaces/gitcube-os/reports/d91_explicit_apply_scope_approval.json",
+    "d91_scope_path": "/workspaces/gitcube-os/reports/d91_apply_scope_request.json",
+    "d91_blocked_path": "/workspaces/gitcube-os/reports/d91_apply_still_blocked.json"
+  },
+  "dry_run_package": {
+    "state": "D92_GUARDED_APPLY_DRY_RUN_PACKAGE_PREVIEW",
+    "ok": true,
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:00:49.102820+00:00",
+    "mode": "GUARDED_DRY_RUN_PACKAGE_ONLY",
+    "source_approval_id": "d91-c89da98dbc458310",
+    "source_plan_id": "d90-9171379f10436537",
+    "source_package_id": "d85-98bf21d59b63de1b",
+    "approved_scope_from_d91": [
+      "generate_guarded_apply_dry_run_package",
+      "generate_apply_scope_diff_preview",
+      "generate_pre_apply_recheck_commands",
+      "generate_abort_conditions"
+    ],
+    "dry_run_contract": {
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "network_accessed": false,
+      "git_commit_by_ai": false,
+      "dry_run_package_only": true
+    },
+    "generated_artifacts": {
+      "diff_preview_state": "D92_APPLY_SCOPE_DIFF_PREVIEW",
+      "recheck_commands_state": "D92_PRE_APPLY_RECHECK_COMMANDS",
+      "abort_conditions_state": "D92_ABORT_CONDITIONS"
+    },
+    "required_next_gate": "D93_DRY_RUN_RECHECK_GATE"
+  },
+  "diff_preview": {
+    "state": "D92_APPLY_SCOPE_DIFF_PREVIEW",
+    "ok": true,
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:00:49.102796+00:00",
+    "dry_run_only": true,
+    "documentation_only": true,
+    "source_approval_id": "d91-c89da98dbc458310",
+    "source_plan_id": "d90-9171379f10436537",
+    "source_package_id": "d85-98bf21d59b63de1b",
+    "planned_files_to_touch": [],
+    "protected_files_to_touch": [],
+    "route_insertions": [],
+    "runtime_mutations": [],
+    "canonical_memory_changes": [],
+    "external_calls": [],
+    "diff_status": "NO_REAL_DIFF_PREPARED_D92_IS_DRY_RUN_PACKAGE_ONLY",
+    "allowed_next_gate": "D93_DRY_RUN_RECHECK_GATE"
+  },
+  "pre_apply_recheck_commands": {
+    "state": "D92_PRE_APPLY_RECHECK_COMMANDS",
+    "ok": true,
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:00:49.102811+00:00",
+    "commands_are_documentation_only": true,
+    "commands_must_not_be_executed_by_ai": true,
+    "human_may_run_manually": true,
+    "commands": [
+      "python -m unittest discover -s tests -v",
+      "python -m py_compile runtime_experimental/*.py",
+      "python -m unittest tests.test_d90_controlled_apply_plan -v",
+      "python -m unittest tests.test_d91_explicit_apply_scope_approval -v",
+      "python -m unittest tests.test_d92_guarded_apply_dry_run_package -v",
+      "git diff --stat",
+      "git status --short"
+    ],
+    "blocked_commands": [
+      "git apply",
+      "git commit",
+      "git push",
+      "route insert",
+      "direct protected-core edit"
+    ]
+  },
+  "abort_conditions": {
+    "state": "D92_ABORT_CONDITIONS",
+    "ok": true,
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:00:49.102816+00:00",
+    "abort_if": [
+      "any unit test fails",
+      "D66 recheck is missing or failed",
+      "D85 rollback manifest is missing",
+      "D86 local regression results are missing or failed",
+      "planned diff touches protected core",
+      "planned diff mutates canonical memory",
+      "planned diff inserts route without later explicit gate",
+      "external AI/network call is required",
+      "AI attempts git commit or push"
+    ],
+    "must_remain_false": {
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "network_accessed": false,
+      "git_commit_by_ai": false,
+      "runtime_code_mutated": false
+    }
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "guarded_dry_run_package_only": true,
+    "apply_allowed_now": false,
+    "approval_for_real_apply": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "GUARDED_APPLY_DRY_RUN_PACKAGE_READY",
+    "package_id": "d92-4c1743c94b29530f",
+    "approval_id": "d91-c89da98dbc458310",
+    "plan_id": "d90-9171379f10436537",
+    "source_package_id": "d85-98bf21d59b63de1b",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "guarded_apply_dry_run_package_created": true,
+    "diff_preview_created": true,
+    "recheck_commands_created": true,
+    "abort_conditions_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D93 should verify D92 dry-run package. Real apply remains blocked."
+  }
+}

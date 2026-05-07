@@ -1,0 +1,27 @@
+{
+  "state": "D92_ABORT_CONDITIONS",
+  "ok": true,
+  "package_id": "d92-4c1743c94b29530f",
+  "created_at": "2026-05-07T06:00:49.102816+00:00",
+  "abort_if": [
+    "any unit test fails",
+    "D66 recheck is missing or failed",
+    "D85 rollback manifest is missing",
+    "D86 local regression results are missing or failed",
+    "planned diff touches protected core",
+    "planned diff mutates canonical memory",
+    "planned diff inserts route without later explicit gate",
+    "external AI/network call is required",
+    "AI attempts git commit or push"
+  ],
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false,
+    "runtime_code_mutated": false
+  }
+}
