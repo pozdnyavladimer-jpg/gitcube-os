@@ -1,0 +1,20 @@
+{
+  "state": "D94_EXPLICIT_HUMAN_EXECUTION_PHRASE",
+  "ok": true,
+  "request_id": "d94-0ed25fa30e62ce7e",
+  "gate_id": "d93-41debdf4a745dae8",
+  "package_id": "d92-4c1743c94b29530f",
+  "created_at": "2026-05-07T06:24:17.497851+00:00",
+  "required_phrase": "APPROVE_D94_FINAL_EXECUTION_REQUEST_REVIEW_ONLY",
+  "approval_scope": "REVIEW_REQUEST_ONLY",
+  "human_statement": "I approve only the D94 final execution request review. This does not authorize real apply, route insertion, protected-core mutation, canonical memory overwrite, external AI/network calls, or AI git actions.",
+  "not_approved": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ],
+  "approved_next_gate_if_reviewed": "D95_HUMAN_SIGNED_EXECUTION_INTENT"
+}

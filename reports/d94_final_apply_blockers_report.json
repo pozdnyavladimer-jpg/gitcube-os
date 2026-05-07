@@ -1,0 +1,23 @@
+{
+  "state": "D94_FINAL_APPLY_BLOCKERS_REPORT",
+  "ok": true,
+  "request_id": "d94-0ed25fa30e62ce7e",
+  "gate_id": "d93-41debdf4a745dae8",
+  "package_id": "d92-4c1743c94b29530f",
+  "created_at": "2026-05-07T06:24:17.497854+00:00",
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "canonical_memory_mutation_allowed_now": false,
+  "external_ai_call_allowed_now": false,
+  "git_action_by_ai_allowed_now": false,
+  "blockers": [
+    "no D95 human signed execution intent",
+    "no D96 final local full regression evidence",
+    "no D97 protected-core no-touch reconfirmation",
+    "no D98 rollback/restore command pack",
+    "no D99 final guarded execution capsule"
+  ],
+  "reason": "D94 creates a final execution approval request only. It does not grant execution permission.",
+  "next_required_gate": "D95_HUMAN_SIGNED_EXECUTION_INTENT"
+}
