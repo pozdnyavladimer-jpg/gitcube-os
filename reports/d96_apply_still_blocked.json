@@ -1,0 +1,14 @@
+{
+  "state": "D96_APPLY_STILL_BLOCKED",
+  "ok": true,
+  "regression_id": "d96-f2deaea814400eb5",
+  "created_at": "2026-05-07T10:03:02.642067+00:00",
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "canonical_memory_mutation_allowed_now": false,
+  "external_ai_call_allowed_now": false,
+  "git_action_by_ai_allowed_now": false,
+  "reason": "D96 runs local regression only. It does not grant execution permission.",
+  "next_required_gate": "D97_PROTECTED_CORE_NO_TOUCH_RECONFIRMATION"
+}

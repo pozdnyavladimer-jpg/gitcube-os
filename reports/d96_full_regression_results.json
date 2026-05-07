@@ -1,0 +1,81 @@
+{
+  "state": "D96_FULL_REGRESSION_RESULTS",
+  "ok": true,
+  "regression_id": "d96-f2deaea814400eb5",
+  "intent_id": "d95-ffcfdd80c2813101",
+  "created_at": "2026-05-07T10:03:02.642038+00:00",
+  "commands_executed_locally": true,
+  "network_accessed": false,
+  "external_ai_called": false,
+  "command_results": [
+    {
+      "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/final_local_full_regression.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d90_controlled_apply_plan -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d89_approves_real_apply (tests.test_d90_controlled_apply_plan.TestD90ControlledApplyPlan.test_blocks_if_d89_approves_real_apply) ... ok\ntest_blocks_missing_d89 (tests.test_d90_controlled_apply_plan.TestD90ControlledApplyPlan.test_blocks_missing_d89) ... ok\ntest_creates_controlled_apply_plan_preview_only (tests.test_d90_controlled_apply_plan.TestD90ControlledApplyPlan.test_creates_controlled_apply_plan_preview_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.017s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d91_explicit_apply_scope_approval -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d90_approves_real_apply (tests.test_d91_explicit_apply_scope_approval.TestD91ExplicitApplyScopeApproval.test_blocks_if_d90_approves_real_apply) ... ok\ntest_blocks_missing_d90 (tests.test_d91_explicit_apply_scope_approval.TestD91ExplicitApplyScopeApproval.test_blocks_missing_d90) ... ok\ntest_creates_scope_approval_for_d92_only (tests.test_d91_explicit_apply_scope_approval.TestD91ExplicitApplyScopeApproval.test_creates_scope_approval_for_d92_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.018s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d92_guarded_apply_dry_run_package -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_missing_d91 (tests.test_d92_guarded_apply_dry_run_package.TestD92GuardedApplyDryRunPackage.test_blocks_missing_d91) ... ok\ntest_blocks_real_apply_approval (tests.test_d92_guarded_apply_dry_run_package.TestD92GuardedApplyDryRunPackage.test_blocks_real_apply_approval) ... ok\ntest_creates_dry_run_package_only (tests.test_d92_guarded_apply_dry_run_package.TestD92GuardedApplyDryRunPackage.test_creates_dry_run_package_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.040s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d93_dry_run_recheck_gate -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_diff_touches_file (tests.test_d93_dry_run_recheck_gate.TestD93DryRunRecheckGate.test_blocks_if_diff_touches_file) ... ok\ntest_blocks_missing_d92 (tests.test_d93_dry_run_recheck_gate.TestD93DryRunRecheckGate.test_blocks_missing_d92) ... ok\ntest_creates_recheck_gate_only (tests.test_d93_dry_run_recheck_gate.TestD93DryRunRecheckGate.test_creates_recheck_gate_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.027s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d94_final_execution_approval_request -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d93_approves_real_apply (tests.test_d94_final_execution_approval_request.TestD94FinalExecutionApprovalRequest.test_blocks_if_d93_approves_real_apply) ... ok\ntest_blocks_missing_d93 (tests.test_d94_final_execution_approval_request.TestD94FinalExecutionApprovalRequest.test_blocks_missing_d93) ... ok\ntest_creates_final_execution_request_only (tests.test_d94_final_execution_approval_request.TestD94FinalExecutionApprovalRequest.test_creates_final_execution_request_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.013s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d95_human_signed_execution_intent -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d94_approves_real_apply (tests.test_d95_human_signed_execution_intent.TestD95HumanSignedExecutionIntent.test_blocks_if_d94_approves_real_apply) ... ok\ntest_blocks_missing_d94 (tests.test_d95_human_signed_execution_intent.TestD95HumanSignedExecutionIntent.test_blocks_missing_d94) ... ok\ntest_creates_human_signed_intent_for_d96_only (tests.test_d95_human_signed_execution_intent.TestD95HumanSignedExecutionIntent.test_creates_human_signed_intent_for_d96_only) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.014s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d96_final_local_full_regression -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d95_approves_real_apply (tests.test_d96_final_local_full_regression.TestD96FinalLocalFullRegression.test_blocks_if_d95_approves_real_apply) ... ok\ntest_blocks_missing_d95 (tests.test_d96_final_local_full_regression.TestD96FinalLocalFullRegression.test_blocks_missing_d95) ... ok\ntest_creates_regression_artifact_without_running_commands (tests.test_d96_final_local_full_regression.TestD96FinalLocalFullRegression.test_creates_regression_artifact_without_running_commands) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.013s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    }
+  ],
+  "summary": {
+    "commands_count": 8,
+    "passed_count": 8,
+    "failed_count": 0
+  }
+}
