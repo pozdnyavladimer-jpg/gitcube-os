@@ -37,7 +37,8 @@
       "external_ai_called": false,
       "network_accessed": false,
       "git_commit_by_ai": false,
-      "dry_run_package_only": true
+      "dry_run_package_only": true,
+      "runtime_code_mutated": false
     },
     "generated_artifacts": {
       "diff_preview_state": "D92_APPLY_SCOPE_DIFF_PREVIEW",
