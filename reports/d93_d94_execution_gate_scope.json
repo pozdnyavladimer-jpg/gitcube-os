@@ -1,0 +1,26 @@
+{
+  "state": "D93_D94_EXECUTION_GATE_SCOPE",
+  "ok": true,
+  "gate_id": "d93-41debdf4a745dae8",
+  "package_id": "d92-4c1743c94b29530f",
+  "created_at": "2026-05-07T06:14:55.354869+00:00",
+  "allowed_next_gate": "D94_FINAL_EXECUTION_APPROVAL_REQUEST",
+  "d94_allowed_to_create": [
+    "final_execution_approval_request",
+    "explicit_human_execution_phrase",
+    "final_apply_blockers_report"
+  ],
+  "d94_must_not_execute": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ],
+  "apply_allowed_after_d93": false,
+  "route_insert_allowed_after_d93": false,
+  "protected_core_mutation_allowed_after_d93": false,
+  "human_review_required": true,
+  "required_phrase_for_later_gate": "APPROVE_D94_FINAL_EXECUTION_REQUEST_REVIEW_ONLY"
+}

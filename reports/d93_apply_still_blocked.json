@@ -1,0 +1,14 @@
+{
+  "state": "D93_APPLY_STILL_BLOCKED",
+  "ok": true,
+  "gate_id": "d93-41debdf4a745dae8",
+  "created_at": "2026-05-07T06:14:55.354866+00:00",
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "canonical_memory_mutation_allowed_now": false,
+  "external_ai_call_allowed_now": false,
+  "git_action_by_ai_allowed_now": false,
+  "reason": "D93 verifies the dry-run package only. It does not grant execution permission.",
+  "next_required_gate": "D94_FINAL_EXECUTION_APPROVAL_REQUEST"
+}

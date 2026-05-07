@@ -1,24 +1,90 @@
 {
   "state": "D93_DRY_RUN_RECHECK_GATE",
-  "result": "D93_DRY_RUN_RECHECK_GATE_BLOCKED",
+  "result": "D93_DRY_RUN_RECHECK_GATE_CREATED",
   "route": "FIELD_INTENT_DRY_RUN_RECHECK_GATE",
-  "ok": false,
-  "decision": "DRY_RUN_RECHECK_GATE_BLOCKED",
-  "created_at": "2026-05-07T06:13:17.305261+00:00",
+  "ok": true,
+  "decision": "DRY_RUN_RECHECK_GATE_READY",
+  "created_at": "2026-05-07T06:14:55.355525+00:00",
   "gate_id": "d93-41debdf4a745dae8",
   "package_id": "d92-4c1743c94b29530f",
-  "recheck_results_path": "",
-  "apply_still_blocked_path": "",
-  "d94_scope_path": "",
+  "recheck_results_path": "/workspaces/gitcube-os/reports/d93_recheck_results.json",
+  "apply_still_blocked_path": "/workspaces/gitcube-os/reports/d93_apply_still_blocked.json",
+  "d94_scope_path": "/workspaces/gitcube-os/reports/d93_d94_execution_gate_scope.json",
   "input_reports": {
     "d92_report_path": "/workspaces/gitcube-os/reports/d92_guarded_apply_dry_run_package.json",
     "d92_diff_path": "/workspaces/gitcube-os/reports/d92_apply_scope_diff_preview.json",
     "d92_recheck_path": "/workspaces/gitcube-os/reports/d92_pre_apply_recheck_commands.json",
     "d92_aborts_path": "/workspaces/gitcube-os/reports/d92_abort_conditions.json"
   },
-  "recheck_results": {},
-  "apply_still_blocked": {},
-  "d94_scope": {},
+  "recheck_results": {
+    "state": "D93_RECHECK_RESULTS",
+    "ok": true,
+    "gate_id": "d93-41debdf4a745dae8",
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:14:55.354856+00:00",
+    "verified_artifacts": [
+      "d92_guarded_apply_dry_run_package",
+      "d92_apply_scope_diff_preview",
+      "d92_pre_apply_recheck_commands",
+      "d92_abort_conditions"
+    ],
+    "verified_conditions": {
+      "d92_package_ready": true,
+      "diff_is_dry_run_only": true,
+      "diff_touches_no_files": true,
+      "commands_are_documentation_only": true,
+      "abort_conditions_present": true,
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "network_accessed": false,
+      "git_commit_by_ai": false
+    },
+    "commands_executed_by_d93": [],
+    "commands_not_executed_reason": "D93 verifies D92 command preview as documentation only."
+  },
+  "apply_still_blocked": {
+    "state": "D93_APPLY_STILL_BLOCKED",
+    "ok": true,
+    "gate_id": "d93-41debdf4a745dae8",
+    "created_at": "2026-05-07T06:14:55.354866+00:00",
+    "apply_allowed_now": false,
+    "route_insert_allowed_now": false,
+    "protected_core_mutation_allowed_now": false,
+    "canonical_memory_mutation_allowed_now": false,
+    "external_ai_call_allowed_now": false,
+    "git_action_by_ai_allowed_now": false,
+    "reason": "D93 verifies the dry-run package only. It does not grant execution permission.",
+    "next_required_gate": "D94_FINAL_EXECUTION_APPROVAL_REQUEST"
+  },
+  "d94_scope": {
+    "state": "D93_D94_EXECUTION_GATE_SCOPE",
+    "ok": true,
+    "gate_id": "d93-41debdf4a745dae8",
+    "package_id": "d92-4c1743c94b29530f",
+    "created_at": "2026-05-07T06:14:55.354869+00:00",
+    "allowed_next_gate": "D94_FINAL_EXECUTION_APPROVAL_REQUEST",
+    "d94_allowed_to_create": [
+      "final_execution_approval_request",
+      "explicit_human_execution_phrase",
+      "final_apply_blockers_report"
+    ],
+    "d94_must_not_execute": [
+      "actual_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "git_commit_or_push_by_ai"
+    ],
+    "apply_allowed_after_d93": false,
+    "route_insert_allowed_after_d93": false,
+    "protected_core_mutation_allowed_after_d93": false,
+    "human_review_required": true,
+    "required_phrase_for_later_gate": "APPROVE_D94_FINAL_EXECUTION_REQUEST_REVIEW_ONLY"
+  },
   "guardrails": {
     "external_ai_called": false,
     "network_accessed": false,
@@ -33,22 +99,20 @@
     "approval_for_real_apply": false
   },
   "validation": {
-    "ok": false,
-    "errors": [
-      "D92.dry_run_contract.runtime_code_mutated must be false"
-    ],
+    "ok": true,
+    "errors": [],
     "warnings": []
   },
   "summary": {
-    "decision": "DRY_RUN_RECHECK_GATE_BLOCKED",
+    "decision": "DRY_RUN_RECHECK_GATE_READY",
     "gate_id": "d93-41debdf4a745dae8",
     "package_id": "d92-4c1743c94b29530f",
-    "errors_count": 1,
+    "errors_count": 0,
     "warnings_count": 0
   },
   "success_condition": {
-    "dry_run_recheck_gate_created": false,
-    "d92_package_verified": false,
+    "dry_run_recheck_gate_created": true,
+    "d92_package_verified": true,
     "actual_apply_executed": false,
     "route_inserted": false,
     "protected_core_untouched": true,
