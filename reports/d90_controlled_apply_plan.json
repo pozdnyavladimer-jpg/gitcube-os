@@ -104,7 +104,8 @@
       "canonical_memory_mutated": false,
       "external_ai_called": false,
       "network_accessed": false,
-      "git_commit_by_ai": false
+      "git_commit_by_ai": false,
+      "runtime_code_mutated": false
     }
   },
   "guardrails": {
