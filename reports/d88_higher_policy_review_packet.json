@@ -1,0 +1,44 @@
+{
+  "state": "D88_HIGHER_POLICY_REVIEW_PACKET",
+  "ok": true,
+  "request_id": "d88-f38eb305ddd5fc24",
+  "created_at": "2026-05-07T04:28:44.513215+00:00",
+  "review_mode": "HIGHER_POLICY_REVIEW_REQUEST_ONLY",
+  "review_phrase": "REVIEW_D88_HIGHER_POLICY_REQUEST_ONLY",
+  "source_capsule_id": "d87-1b26ec83dc46312e",
+  "source_package_id": "d85-98bf21d59b63de1b",
+  "source_review_id": "d84-4fb2f92a92ca1f09",
+  "evidence_chain": {
+    "d87_decision": "FINAL_PRE_APPLY_SAFETY_CAPSULE_READY",
+    "d85_decision": "REGRESSION_ROLLBACK_EVIDENCE_READY",
+    "d86_decision": "LOCAL_REGRESSION_PASSED",
+    "d86_commands_failed_count": 0,
+    "rollback_manifest_present": true,
+    "regression_checklist_present": true
+  },
+  "policy_question": "May this reviewed sandbox-only candidate move to D89 final human confirmation planning?",
+  "policy_answer_now": "NOT_APPROVED_YET",
+  "allowed_next_gate_if_reviewed": "D89_FINAL_HUMAN_CONFIRMATION",
+  "blocked_now": [
+    "no explicit D88 higher policy approval",
+    "no guarded apply command generated",
+    "no runtime mutation execution",
+    "no route insertion permission",
+    "no protected-core mutation permission"
+  ],
+  "required_before_any_real_apply": [
+    "D89_FINAL_HUMAN_CONFIRMATION",
+    "D66_RECHECK",
+    "FULL_TEST_DISCOVERY",
+    "ROLLBACK_MANIFEST_RECONFIRMATION",
+    "EXPLICIT_APPLY_SCOPE_APPROVAL"
+  ],
+  "not_allowed": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ]
+}

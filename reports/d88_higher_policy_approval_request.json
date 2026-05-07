@@ -1,13 +1,13 @@
 {
   "state": "D88_HIGHER_POLICY_APPROVAL_REQUEST",
-  "result": "D88_HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
+  "result": "D88_HIGHER_POLICY_APPROVAL_REQUEST_CREATED",
   "route": "FIELD_INTENT_HIGHER_POLICY_APPROVAL_REQUEST",
-  "ok": false,
-  "decision": "HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
-  "created_at": "2026-05-07T04:26:48.836571+00:00",
+  "ok": true,
+  "decision": "HIGHER_POLICY_APPROVAL_REQUEST_READY",
+  "created_at": "2026-05-07T04:28:44.513581+00:00",
   "request_id": "d88-f38eb305ddd5fc24",
-  "review_packet_path": "",
-  "apply_still_blocked_path": "",
+  "review_packet_path": "/workspaces/gitcube-os/reports/d88_higher_policy_review_packet.json",
+  "apply_still_blocked_path": "/workspaces/gitcube-os/reports/d88_apply_still_blocked.json",
   "input_reports": {
     "d87_report_path": "/workspaces/gitcube-os/reports/d87_final_pre_apply_safety_capsule.json",
     "d87_capsule_path": "/workspaces/gitcube-os/reports/d87_pre_apply_safety_capsule.json",
@@ -21,12 +21,55 @@
     "d87_next_gate": "D88_HIGHER_POLICY_APPROVAL_REQUEST",
     "apply_allowed_now": false
   },
-  "review_packet": {},
+  "review_packet": {
+    "state": "D88_HIGHER_POLICY_REVIEW_PACKET",
+    "ok": true,
+    "request_id": "d88-f38eb305ddd5fc24",
+    "created_at": "2026-05-07T04:28:44.513215+00:00",
+    "review_mode": "HIGHER_POLICY_REVIEW_REQUEST_ONLY",
+    "review_phrase": "REVIEW_D88_HIGHER_POLICY_REQUEST_ONLY",
+    "source_capsule_id": "d87-1b26ec83dc46312e",
+    "source_package_id": "d85-98bf21d59b63de1b",
+    "source_review_id": "d84-4fb2f92a92ca1f09",
+    "evidence_chain": {
+      "d87_decision": "FINAL_PRE_APPLY_SAFETY_CAPSULE_READY",
+      "d85_decision": "REGRESSION_ROLLBACK_EVIDENCE_READY",
+      "d86_decision": "LOCAL_REGRESSION_PASSED",
+      "d86_commands_failed_count": 0,
+      "rollback_manifest_present": true,
+      "regression_checklist_present": true
+    },
+    "policy_question": "May this reviewed sandbox-only candidate move to D89 final human confirmation planning?",
+    "policy_answer_now": "NOT_APPROVED_YET",
+    "allowed_next_gate_if_reviewed": "D89_FINAL_HUMAN_CONFIRMATION",
+    "blocked_now": [
+      "no explicit D88 higher policy approval",
+      "no guarded apply command generated",
+      "no runtime mutation execution",
+      "no route insertion permission",
+      "no protected-core mutation permission"
+    ],
+    "required_before_any_real_apply": [
+      "D89_FINAL_HUMAN_CONFIRMATION",
+      "D66_RECHECK",
+      "FULL_TEST_DISCOVERY",
+      "ROLLBACK_MANIFEST_RECONFIRMATION",
+      "EXPLICIT_APPLY_SCOPE_APPROVAL"
+    ],
+    "not_allowed": [
+      "actual_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "git_commit_or_push_by_ai"
+    ]
+  },
   "apply_still_blocked": {
     "state": "D88_APPLY_STILL_BLOCKED",
     "ok": true,
     "request_id": "d88-f38eb305ddd5fc24",
-    "created_at": "2026-05-07T04:26:48.836565+00:00",
+    "created_at": "2026-05-07T04:28:44.513227+00:00",
     "apply_allowed_now": false,
     "route_insert_allowed_now": false,
     "protected_core_mutation_allowed_now": false,
@@ -49,23 +92,21 @@
     "approval_not_granted": true
   },
   "validation": {
-    "ok": false,
-    "errors": [
-      "D87 capsule hard_no_mutation flag runtime_code_mutated is not false"
-    ],
+    "ok": true,
+    "errors": [],
     "warnings": []
   },
   "summary": {
-    "decision": "HIGHER_POLICY_APPROVAL_REQUEST_BLOCKED",
+    "decision": "HIGHER_POLICY_APPROVAL_REQUEST_READY",
     "request_id": "d88-f38eb305ddd5fc24",
     "capsule_id": "d87-1b26ec83dc46312e",
     "package_id": "d85-98bf21d59b63de1b",
-    "errors_count": 1,
+    "errors_count": 0,
     "warnings_count": 0
   },
   "success_condition": {
-    "higher_policy_request_created": false,
-    "review_packet_created": false,
+    "higher_policy_request_created": true,
+    "review_packet_created": true,
     "actual_apply_executed": false,
     "route_inserted": false,
     "protected_core_untouched": true,
