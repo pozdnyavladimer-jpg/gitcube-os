@@ -1,0 +1,22 @@
+{
+  "state": "D89_HUMAN_CONFIRMATION_STATEMENT",
+  "ok": true,
+  "confirmation_id": "d89-6613bca72b55df63",
+  "created_at": "2026-05-07T04:53:05.000405+00:00",
+  "confirmation_phrase": "CONFIRM_D89_FINAL_HUMAN_REVIEW_FOR_D90_PLANNING_ONLY",
+  "human_confirmation_scope": "ALLOW_D90_CONTROLLED_APPLY_PLAN_GENERATION_ONLY",
+  "human_statement": "I confirm D88 higher-policy review packet may advance to D90 controlled apply planning only. This does not approve real apply, route insertion, protected-core mutation, external AI calls, or AI git actions.",
+  "source_request_id": "d88-f38eb305ddd5fc24",
+  "source_capsule_id": "d87-1b26ec83dc46312e",
+  "source_package_id": "d85-98bf21d59b63de1b",
+  "source_review_id": "d84-4fb2f92a92ca1f09",
+  "approved_next_gate": "D90_CONTROLLED_APPLY_PLAN",
+  "not_approved": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai"
+  ]
+}
