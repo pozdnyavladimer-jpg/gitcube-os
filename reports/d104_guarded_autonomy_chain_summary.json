@@ -1,0 +1,29 @@
+{
+  "state": "D104_GUARDED_AUTONOMY_CHAIN_SUMMARY",
+  "ok": true,
+  "ledger_id": "d104-adf3c33dad17e20a",
+  "builder_id": "d103-42429ba16f49da93",
+  "created_at": "2026-05-08T07:18:36.004648+00:00",
+  "chain": [
+    "D90 Controlled Apply Plan",
+    "D91 Explicit Apply Scope Approval",
+    "D92 Guarded Apply Dry-Run Package",
+    "D93 Dry-Run Recheck Gate",
+    "D94 Final Execution Approval Request",
+    "D95 Human Signed Execution Intent",
+    "D96 Final Local Full Regression",
+    "D97 Protected Core No-Touch Reconfirmation",
+    "D98 Rollback Restore Command Pack",
+    "D99 Final Guarded Execution Capsule",
+    "D100 Controlled Human Execution Decision",
+    "D101 One-Shot Manual Execution Capsule",
+    "D102 Post-Execution Verifier",
+    "D103 Rollback Evidence Builder",
+    "D104 Final Audit Ledger"
+  ],
+  "chain_length": 15,
+  "core_rule": "AI proposes; system verifies; human approves; execution remains gated.",
+  "current_terminal_status": "PRE_EXECUTION_AUDIT_CHAIN_SEALED",
+  "real_apply_status": "BLOCKED",
+  "ai_mode": "PROPOSE_ONLY"
+}

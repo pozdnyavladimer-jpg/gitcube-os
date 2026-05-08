@@ -1,0 +1,25 @@
+{
+  "state": "D104_TERMINAL_SAFETY_STATE",
+  "ok": true,
+  "ledger_id": "d104-adf3c33dad17e20a",
+  "builder_id": "d103-42429ba16f49da93",
+  "created_at": "2026-05-08T07:18:36.004656+00:00",
+  "terminal_decision": "GUARDED_AUTONOMY_PRE_EXECUTION_CHAIN_SEALED",
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "canonical_memory_mutated": false,
+  "external_ai_called": false,
+  "network_accessed": false,
+  "git_commit_by_ai": false,
+  "rollback_executed": false,
+  "restore_executed": false,
+  "ai_autonomous_execution_allowed": false,
+  "human_review_required_for_any_future_execution": true,
+  "safe_next_options": [
+    "create README/update documentation",
+    "start a new propose-only AI connector track",
+    "create D105 optional audit dashboard",
+    "stop here and tag the guarded chain"
+  ]
+}
