@@ -1,0 +1,49 @@
+{
+  "state": "D106_PROVIDER_INPUT_CONTRACT",
+  "ok": true,
+  "boundary_id": "d106-24e955724528d266",
+  "mode": "AI_PROVIDER_INPUT_PROPOSE_ONLY",
+  "created_at": "2026-05-08T09:18:58.440465+00:00",
+  "required_input_fields": [
+    "request_id",
+    "task_intent",
+    "human_prompt",
+    "allowed_scope",
+    "blocked_scope",
+    "expected_output_contract"
+  ],
+  "blocked_input_fields": [
+    "api_key",
+    "api_secret",
+    "token",
+    "password",
+    "raw_shell_command",
+    "shell_command",
+    "subprocess",
+    "exec",
+    "eval",
+    "auto_apply",
+    "apply_now",
+    "git_commit",
+    "git_push",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "direct_core_edit"
+  ],
+  "allowed_scope": [
+    "runtime_experimental/ai_sandbox_work/",
+    "reports/",
+    "tests/",
+    "docs/"
+  ],
+  "blocked_scope": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "real_provider_allowed_now": false,
+  "mock_provider_only": true
+}

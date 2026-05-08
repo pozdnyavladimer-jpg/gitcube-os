@@ -1,0 +1,59 @@
+{
+  "state": "D106_FORBIDDEN_ACTION_MATRIX",
+  "ok": true,
+  "boundary_id": "d106-24e955724528d266",
+  "created_at": "2026-05-08T09:18:58.440482+00:00",
+  "forbidden_actions": {
+    "real_apply": true,
+    "auto_apply": true,
+    "route_insert": true,
+    "protected_core_mutation": true,
+    "canonical_memory_overwrite": true,
+    "external_ai_network_call": true,
+    "shell_exec": true,
+    "subprocess_exec": true,
+    "git_commit_by_ai": true,
+    "git_push_by_ai": true,
+    "rollback_execute": true,
+    "restore_execute": true,
+    "delete_runtime_candidate": true
+  },
+  "forbidden_fields": {
+    "api_key": true,
+    "api_secret": true,
+    "token": true,
+    "password": true,
+    "raw_shell_command": true,
+    "shell_command": true,
+    "subprocess": true,
+    "exec": true,
+    "eval": true,
+    "auto_apply": true,
+    "apply_now": true,
+    "git_commit": true,
+    "git_push": true,
+    "route_insert": true,
+    "protected_core_mutation": true,
+    "canonical_memory_overwrite": true,
+    "direct_core_edit": true
+  },
+  "blocked_paths": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "allowed_paths_for_proposals_only": [
+    "runtime_experimental/ai_sandbox_work/",
+    "reports/",
+    "tests/",
+    "docs/"
+  ],
+  "ai_may_call_network": false,
+  "ai_may_use_secrets": false,
+  "ai_may_execute_shell": false,
+  "ai_may_apply_patch": false,
+  "ai_may_commit_or_push": false,
+  "ai_may_mutate_protected_core": false
+}

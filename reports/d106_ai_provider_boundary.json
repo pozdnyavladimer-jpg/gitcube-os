@@ -1,0 +1,318 @@
+{
+  "state": "D106_AI_PROVIDER_BOUNDARY",
+  "result": "D106_AI_PROVIDER_BOUNDARY_CREATED",
+  "route": "FIELD_INTENT_AI_PROPOSE_ONLY_PROVIDER_BOUNDARY",
+  "ok": true,
+  "decision": "AI_PROVIDER_BOUNDARY_READY",
+  "created_at": "2026-05-08T09:18:58.441295+00:00",
+  "boundary_id": "d106-24e955724528d266",
+  "source_terminal_state": "reports/d104_terminal_safety_state.json",
+  "source_doc_report": "reports/d105_guarded_autonomy_chain_doc.json",
+  "input_contract": {
+    "state": "D106_PROVIDER_INPUT_CONTRACT",
+    "ok": true,
+    "boundary_id": "d106-24e955724528d266",
+    "mode": "AI_PROVIDER_INPUT_PROPOSE_ONLY",
+    "created_at": "2026-05-08T09:18:58.440465+00:00",
+    "required_input_fields": [
+      "request_id",
+      "task_intent",
+      "human_prompt",
+      "allowed_scope",
+      "blocked_scope",
+      "expected_output_contract"
+    ],
+    "blocked_input_fields": [
+      "api_key",
+      "api_secret",
+      "token",
+      "password",
+      "raw_shell_command",
+      "shell_command",
+      "subprocess",
+      "exec",
+      "eval",
+      "auto_apply",
+      "apply_now",
+      "git_commit",
+      "git_push",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "direct_core_edit"
+    ],
+    "allowed_scope": [
+      "runtime_experimental/ai_sandbox_work/",
+      "reports/",
+      "tests/",
+      "docs/"
+    ],
+    "blocked_scope": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "real_provider_allowed_now": false,
+    "mock_provider_only": true
+  },
+  "output_contract": {
+    "state": "D106_PROVIDER_OUTPUT_CONTRACT",
+    "ok": true,
+    "boundary_id": "d106-24e955724528d266",
+    "mode": "AI_PROVIDER_OUTPUT_JSON_ONLY",
+    "created_at": "2026-05-08T09:18:58.440479+00:00",
+    "format": "json",
+    "required_output_fields": [
+      "proposal_id",
+      "proposal_type",
+      "intent",
+      "target_scope",
+      "candidate_files",
+      "risk_flags",
+      "guardrails",
+      "validation_plan",
+      "requires_human_review"
+    ],
+    "allowed_proposal_types": [
+      "documentation_proposal",
+      "test_proposal",
+      "sandbox_patch_proposal",
+      "analysis_proposal",
+      "schema_proposal"
+    ],
+    "forbidden_fields": [
+      "api_key",
+      "api_secret",
+      "token",
+      "password",
+      "raw_shell_command",
+      "shell_command",
+      "subprocess",
+      "exec",
+      "eval",
+      "auto_apply",
+      "apply_now",
+      "git_commit",
+      "git_push",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "direct_core_edit"
+    ],
+    "forbidden_actions": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec",
+      "subprocess_exec",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute",
+      "restore_execute",
+      "delete_runtime_candidate"
+    ],
+    "candidate_files_must_match_allowed_prefix": true,
+    "candidate_files_must_not_match_blocked_prefix": true,
+    "requires_human_review_must_be_true": true,
+    "next_required_gate": "D107_PROPOSAL_SCHEMA_VALIDATOR"
+  },
+  "forbidden_action_matrix": {
+    "state": "D106_FORBIDDEN_ACTION_MATRIX",
+    "ok": true,
+    "boundary_id": "d106-24e955724528d266",
+    "created_at": "2026-05-08T09:18:58.440482+00:00",
+    "forbidden_actions": {
+      "real_apply": true,
+      "auto_apply": true,
+      "route_insert": true,
+      "protected_core_mutation": true,
+      "canonical_memory_overwrite": true,
+      "external_ai_network_call": true,
+      "shell_exec": true,
+      "subprocess_exec": true,
+      "git_commit_by_ai": true,
+      "git_push_by_ai": true,
+      "rollback_execute": true,
+      "restore_execute": true,
+      "delete_runtime_candidate": true
+    },
+    "forbidden_fields": {
+      "api_key": true,
+      "api_secret": true,
+      "token": true,
+      "password": true,
+      "raw_shell_command": true,
+      "shell_command": true,
+      "subprocess": true,
+      "exec": true,
+      "eval": true,
+      "auto_apply": true,
+      "apply_now": true,
+      "git_commit": true,
+      "git_push": true,
+      "route_insert": true,
+      "protected_core_mutation": true,
+      "canonical_memory_overwrite": true,
+      "direct_core_edit": true
+    },
+    "blocked_paths": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "allowed_paths_for_proposals_only": [
+      "runtime_experimental/ai_sandbox_work/",
+      "reports/",
+      "tests/",
+      "docs/"
+    ],
+    "ai_may_call_network": false,
+    "ai_may_use_secrets": false,
+    "ai_may_execute_shell": false,
+    "ai_may_apply_patch": false,
+    "ai_may_commit_or_push": false,
+    "ai_may_mutate_protected_core": false
+  },
+  "d107_scope": {
+    "state": "D106_D107_PROPOSAL_SCHEMA_VALIDATOR_SCOPE",
+    "ok": true,
+    "boundary_id": "d106-24e955724528d266",
+    "created_at": "2026-05-08T09:18:58.440491+00:00",
+    "allowed_next_gate": "D107_PROPOSAL_SCHEMA_VALIDATOR",
+    "d107_allowed_to_create": [
+      "proposal_schema_validator",
+      "proposal_contract_report",
+      "proposal_rejection_report",
+      "proposal_acceptance_manifest"
+    ],
+    "d107_must_not_execute": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec",
+      "subprocess_exec",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute",
+      "restore_execute",
+      "delete_runtime_candidate",
+      "call_real_ai_provider",
+      "read_api_key",
+      "write_patch_to_core",
+      "write_patch_to_runtime"
+    ],
+    "proposal_contract": {
+      "required_output_fields": [
+        "proposal_id",
+        "proposal_type",
+        "intent",
+        "target_scope",
+        "candidate_files",
+        "risk_flags",
+        "guardrails",
+        "validation_plan",
+        "requires_human_review"
+      ],
+      "allowed_proposal_types": [
+        "documentation_proposal",
+        "test_proposal",
+        "sandbox_patch_proposal",
+        "analysis_proposal",
+        "schema_proposal"
+      ],
+      "allowed_candidate_prefixes": [
+        "runtime_experimental/ai_sandbox_work/",
+        "reports/",
+        "tests/",
+        "docs/"
+      ],
+      "blocked_candidate_prefixes": [
+        "app/orchestration/",
+        "core/",
+        "runtime/",
+        "bridges/",
+        "memory/"
+      ]
+    },
+    "required_phrase_for_later_gate": "APPROVE_D107_PROPOSAL_SCHEMA_VALIDATOR_ONLY"
+  },
+  "mock_provider_response": {
+    "proposal_id": "mock-proposal-a284ec3b57e82942",
+    "proposal_type": "analysis_proposal",
+    "intent": "bootstrap_ai_propose_only_loop",
+    "target_scope": "runtime_experimental/ai_sandbox_work/",
+    "candidate_files": [],
+    "risk_flags": [
+      "mock_provider_only",
+      "no_real_ai_network_call",
+      "proposal_requires_d107_validation"
+    ],
+    "guardrails": {
+      "external_ai_called": false,
+      "network_accessed": false,
+      "shell_executed": false,
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "git_commit_by_ai": false
+    },
+    "validation_plan": [
+      "D107 validates JSON schema",
+      "D107 rejects forbidden fields/actions",
+      "D108 may write only to sandbox after D107"
+    ],
+    "requires_human_review": true
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "mock_provider_only": true,
+    "json_only": true,
+    "proposal_only": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "AI_PROVIDER_BOUNDARY_READY",
+    "boundary_id": "d106-24e955724528d266",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D107_PROPOSAL_SCHEMA_VALIDATOR"
+  },
+  "success_condition": {
+    "provider_boundary_created": true,
+    "input_contract_created": true,
+    "output_contract_created": true,
+    "forbidden_matrix_created": true,
+    "mock_provider_only": true,
+    "real_provider_called": false,
+    "actual_apply_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D107 can validate AI proposal JSON before any sandbox writer sees it."
+  }
+}
