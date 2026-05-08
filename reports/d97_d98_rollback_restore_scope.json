@@ -1,0 +1,27 @@
+{
+  "state": "D97_D98_ROLLBACK_RESTORE_SCOPE",
+  "ok": true,
+  "reconfirmation_id": "d97-0e258a3b5e84b771",
+  "regression_id": "d96-f2deaea814400eb5",
+  "created_at": "2026-05-08T03:51:26.024559+00:00",
+  "allowed_next_gate": "D98_ROLLBACK_RESTORE_COMMAND_PACK",
+  "d98_allowed_to_create": [
+    "rollback_restore_command_pack",
+    "restore_manifest_reference",
+    "pre_execution_abort_plan"
+  ],
+  "d98_must_not_execute": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_now",
+    "delete_runtime_candidate"
+  ],
+  "apply_allowed_after_d97": false,
+  "route_insert_allowed_after_d97": false,
+  "protected_core_mutation_allowed_after_d97": false,
+  "required_phrase_for_later_gate": "APPROVE_D98_ROLLBACK_RESTORE_COMMAND_PACK_ONLY"
+}

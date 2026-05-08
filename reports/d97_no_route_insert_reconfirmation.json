@@ -1,0 +1,12 @@
+{
+  "state": "D97_NO_ROUTE_INSERT_RECONFIRMATION",
+  "ok": true,
+  "reconfirmation_id": "d97-0e258a3b5e84b771",
+  "regression_id": "d96-f2deaea814400eb5",
+  "created_at": "2026-05-08T03:51:26.024547+00:00",
+  "route_insert_allowed_now": false,
+  "route_inserted": false,
+  "route_mutation_performed": false,
+  "reason": "D97 only reconfirms no-route-insert state. It does not modify routing tables.",
+  "next_required_gate": "D98_ROLLBACK_RESTORE_COMMAND_PACK"
+}
