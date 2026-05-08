@@ -1,0 +1,27 @@
+{
+  "state": "D99_D100_CONTROLLED_EXECUTION_SCOPE",
+  "ok": true,
+  "capsule_id": "d99-4e20f31d67486066",
+  "pack_id": "d98-3107a11aaa0675be",
+  "created_at": "2026-05-08T04:15:37.372175+00:00",
+  "allowed_next_gate": "D100_CONTROLLED_HUMAN_EXECUTION_DECISION",
+  "d100_allowed_to_create": [
+    "controlled_human_execution_decision_request",
+    "final_apply_permission_matrix",
+    "human_operator_scope_statement"
+  ],
+  "d100_must_not_execute": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_now",
+    "delete_runtime_candidate"
+  ],
+  "apply_allowed_after_d99": false,
+  "route_insert_allowed_after_d99": false,
+  "protected_core_mutation_allowed_after_d99": false,
+  "required_phrase_for_later_gate": "APPROVE_D100_CONTROLLED_HUMAN_EXECUTION_DECISION_ONLY"
+}

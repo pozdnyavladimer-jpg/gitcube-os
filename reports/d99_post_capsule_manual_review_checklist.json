@@ -1,0 +1,29 @@
+{
+  "state": "D99_POST_CAPSULE_MANUAL_REVIEW_CHECKLIST",
+  "ok": true,
+  "capsule_id": "d99-4e20f31d67486066",
+  "created_at": "2026-05-08T04:15:37.372170+00:00",
+  "human_review_required": true,
+  "checklist": [
+    "Confirm D96 final local full regression passed.",
+    "Confirm D97 protected-core no-touch hash snapshot exists.",
+    "Confirm D97 no-route-insert reconfirmation exists.",
+    "Confirm D98 rollback/restore pack is documentation-only.",
+    "Confirm no actual apply was executed.",
+    "Confirm no route insertion was executed.",
+    "Confirm no protected-core mutation was executed.",
+    "Confirm no external AI/network call is required.",
+    "Confirm no AI git commit/push is allowed.",
+    "Confirm D100 must be a separate explicit human decision gate."
+  ],
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "runtime_code_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false
+  }
+}
