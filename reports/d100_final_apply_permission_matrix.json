@@ -1,0 +1,36 @@
+{
+  "state": "D100_FINAL_APPLY_PERMISSION_MATRIX",
+  "ok": true,
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "capsule_id": "d99-4e20f31d67486066",
+  "created_at": "2026-05-08T04:33:11.934468+00:00",
+  "matrix_mode": "HUMAN_DECISION_REQUEST_ONLY",
+  "ai_permissions": {
+    "propose_json": true,
+    "write_candidate_reports": true,
+    "run_real_apply": false,
+    "insert_route": false,
+    "mutate_protected_core": false,
+    "overwrite_canonical_memory": false,
+    "call_external_network_for_execution": false,
+    "git_commit_or_push": false,
+    "execute_rollback": false,
+    "delete_runtime_candidate": false
+  },
+  "human_permissions": {
+    "review_capsule": true,
+    "approve_next_gate_d101": true,
+    "run_manual_commands_later": "D101_OR_LATER_ONLY",
+    "approve_real_apply_now": false
+  },
+  "system_permissions": {
+    "verify_reports": true,
+    "block_on_missing_evidence": true,
+    "create_d101_scope": true,
+    "execute_apply_now": false
+  },
+  "apply_allowed_now": false,
+  "route_insert_allowed_now": false,
+  "protected_core_mutation_allowed_now": false,
+  "next_required_gate": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE"
+}

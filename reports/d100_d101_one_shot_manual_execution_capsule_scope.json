@@ -1,0 +1,28 @@
+{
+  "state": "D100_D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE_SCOPE",
+  "ok": true,
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "capsule_id": "d99-4e20f31d67486066",
+  "created_at": "2026-05-08T04:33:11.934476+00:00",
+  "allowed_next_gate": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE",
+  "d101_allowed_to_create": [
+    "one_shot_manual_execution_capsule",
+    "manual_command_preview",
+    "post_execution_required_checks",
+    "abort_on_mismatch_policy"
+  ],
+  "d101_must_not_execute": [
+    "actual_apply_by_ai",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "external_ai_network_execution",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_by_ai",
+    "delete_runtime_candidate_by_ai"
+  ],
+  "apply_allowed_after_d100": false,
+  "route_insert_allowed_after_d100": false,
+  "protected_core_mutation_allowed_after_d100": false,
+  "required_phrase_for_later_gate": "APPROVE_D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE_ONLY"
+}

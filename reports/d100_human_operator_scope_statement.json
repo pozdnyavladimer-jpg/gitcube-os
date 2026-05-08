@@ -1,0 +1,21 @@
+{
+  "state": "D100_HUMAN_OPERATOR_SCOPE_STATEMENT",
+  "ok": true,
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "capsule_id": "d99-4e20f31d67486066",
+  "created_at": "2026-05-08T04:33:11.934473+00:00",
+  "required_phrase": "APPROVE_D100_CONTROLLED_HUMAN_EXECUTION_DECISION_ONLY",
+  "human_statement": "I approve only the creation of a D101 one-shot manual execution capsule. This does not authorize autonomous AI apply, route insertion, protected-core mutation, canonical memory overwrite, external AI/network execution, rollback execution, or AI git actions.",
+  "approval_scope": "D101_CAPSULE_CREATION_ONLY",
+  "not_approved": [
+    "actual_apply_by_ai",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "external_ai_network_execution",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_by_ai",
+    "delete_runtime_candidate_by_ai"
+  ],
+  "approved_next_gate_if_reviewed": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE"
+}
