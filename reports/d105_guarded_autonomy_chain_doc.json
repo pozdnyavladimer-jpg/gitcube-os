@@ -1,0 +1,40 @@
+{
+  "state": "D105_GUARDED_AUTONOMY_CHAIN_DOC",
+  "ok": true,
+  "decision": "GUARDED_AUTONOMY_CHAIN_DOC_READY",
+  "created_at": "2026-05-08T07:44:37.346047+00:00",
+  "doc_path": "docs/GUARDED_AUTONOMY_CHAIN.md",
+  "report_path": "reports/d105_guarded_autonomy_chain_doc.json",
+  "doc_sha256": "b1d0ff8ff4a5c4822104fde4c5f440edddfe27c25059b96acd23b71ddddc74ce",
+  "previous_doc_sha256": "",
+  "main_readme_modified": false,
+  "writes": [
+    "docs/GUARDED_AUTONOMY_CHAIN.md",
+    "reports/d105_guarded_autonomy_chain_doc.json"
+  ],
+  "does_not_execute": [
+    "real_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_or_network_call",
+    "rollback",
+    "restore",
+    "git_commit_by_ai"
+  ],
+  "checks": {
+    "doc_exists": true,
+    "main_readme_untouched_by_script": true,
+    "contains_chain": true,
+    "contains_tag": true,
+    "contains_propose_only": true,
+    "contains_real_apply_blocked": true,
+    "contains_d104_terminal_state": true,
+    "contains_optional_readme_link": true
+  },
+  "summary": {
+    "purpose": "Create a separate Markdown explanation for the sealed D90-D104 guarded autonomy chain.",
+    "recommended_main_readme_action": "Optionally add a short link to docs/GUARDED_AUTONOMY_CHAIN.md.",
+    "safe_to_commit": true
+  }
+}
