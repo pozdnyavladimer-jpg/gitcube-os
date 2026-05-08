@@ -1,0 +1,17 @@
+{
+  "state": "D98_RESTORE_MANIFEST_REFERENCE",
+  "ok": true,
+  "pack_id": "d98-3107a11aaa0675be",
+  "created_at": "2026-05-08T04:03:12.431819+00:00",
+  "source_hash_snapshot_state": "D97_PROTECTED_FILE_HASH_SNAPSHOT",
+  "source_snapshot_sha256": "ba6b522f7f6071f8c826d8bb1feb62d50b58b82314fc6448bf1e57ba613935d7",
+  "protected_files_count": 88,
+  "restore_reference_mode": "DOCUMENTATION_ONLY",
+  "restore_not_executed": true,
+  "not_allowed_now": [
+    "git restore",
+    "git checkout --",
+    "git reset --hard",
+    "rm -rf runtime candidate"
+  ]
+}

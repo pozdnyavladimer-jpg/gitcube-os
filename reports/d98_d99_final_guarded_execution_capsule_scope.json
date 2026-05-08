@@ -1,0 +1,28 @@
+{
+  "state": "D98_D99_FINAL_GUARDED_EXECUTION_CAPSULE_SCOPE",
+  "ok": true,
+  "pack_id": "d98-3107a11aaa0675be",
+  "reconfirmation_id": "d97-0e258a3b5e84b771",
+  "regression_id": "d96-f2deaea814400eb5",
+  "created_at": "2026-05-08T04:03:12.431829+00:00",
+  "allowed_next_gate": "D99_FINAL_GUARDED_EXECUTION_CAPSULE",
+  "d99_allowed_to_create": [
+    "final_guarded_execution_capsule",
+    "final_no_apply_blocker_state",
+    "post_capsule_manual_review_checklist"
+  ],
+  "d99_must_not_execute": [
+    "actual_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_now",
+    "delete_runtime_candidate"
+  ],
+  "apply_allowed_after_d98": false,
+  "route_insert_allowed_after_d98": false,
+  "protected_core_mutation_allowed_after_d98": false,
+  "required_phrase_for_later_gate": "APPROVE_D99_FINAL_GUARDED_EXECUTION_CAPSULE_ONLY"
+}

@@ -1,0 +1,29 @@
+{
+  "state": "D98_PRE_EXECUTION_ABORT_PLAN",
+  "ok": true,
+  "pack_id": "d98-3107a11aaa0675be",
+  "created_at": "2026-05-08T04:03:12.431825+00:00",
+  "abort_if": [
+    "D97 protected-core hash snapshot is missing",
+    "D97 no-route-insert reconfirmation is missing",
+    "D96 final local regression is missing or failed",
+    "any protected-core file differs from reviewed snapshot without explicit human explanation",
+    "any route insertion is detected",
+    "any runtime/core/canonical memory mutation is detected before final capsule",
+    "any external AI/network call is required",
+    "any AI git commit or push is attempted",
+    "rollback command pack would require destructive execution"
+  ],
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "runtime_code_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false,
+    "rollback_executed": false
+  },
+  "human_review_required": true
+}
