@@ -1,0 +1,37 @@
+{
+  "state": "D103_D104_FINAL_AUDIT_LEDGER_SCOPE",
+  "ok": true,
+  "builder_id": "d103-42429ba16f49da93",
+  "verifier_id": "d102-698bd921a5222baf",
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "created_at": "2026-05-08T07:01:54.598637+00:00",
+  "allowed_next_gate": "D104_FINAL_AUDIT_LEDGER",
+  "d104_allowed_to_create": [
+    "final_audit_ledger",
+    "replay_log_index",
+    "guarded_autonomy_chain_summary",
+    "terminal_safety_state"
+  ],
+  "d104_must_not_execute": [
+    "actual_apply_by_ai",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "external_ai_network_execution",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_by_ai",
+    "delete_runtime_candidate_by_ai",
+    "run_manual_apply_now",
+    "execute_post_fix_mutation",
+    "execute_rollback_now",
+    "restore_files_now",
+    "delete_generated_candidate",
+    "execute_final_apply",
+    "execute_rollback_now",
+    "mutate_chain_history"
+  ],
+  "apply_allowed_after_d103": false,
+  "route_insert_allowed_after_d103": false,
+  "protected_core_mutation_allowed_after_d103": false,
+  "required_phrase_for_later_gate": "APPROVE_D104_FINAL_AUDIT_LEDGER_ONLY"
+}

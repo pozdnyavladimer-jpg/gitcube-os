@@ -1,0 +1,20 @@
+{
+  "state": "D103_ROLLBACK_READINESS_SUMMARY",
+  "ok": true,
+  "builder_id": "d103-42429ba16f49da93",
+  "verifier_id": "d102-698bd921a5222baf",
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "created_at": "2026-05-08T07:01:54.598634+00:00",
+  "readiness_decision": "ROLLBACK_EVIDENCE_READY_NO_ROLLBACK_EXECUTED",
+  "rollback_evidence_ready": true,
+  "ready_for_d104": true,
+  "rollback_executed": false,
+  "restore_executed": false,
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "canonical_memory_mutated": false,
+  "external_ai_called": false,
+  "network_accessed": false,
+  "git_commit_by_ai": false
+}
