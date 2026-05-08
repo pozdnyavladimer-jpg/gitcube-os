@@ -1,0 +1,36 @@
+{
+  "state": "D102_POST_EXECUTION_EVIDENCE_REPORT",
+  "ok": true,
+  "verifier_id": "d102-698bd921a5222baf",
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "created_at": "2026-05-08T06:41:42.477590+00:00",
+  "evidence_mode": "NO_EXECUTION_OBSERVED_VERIFICATION_READINESS",
+  "real_apply_observed": false,
+  "route_insert_observed": false,
+  "protected_core_mutation_observed": false,
+  "external_ai_execution_observed": false,
+  "rollback_execution_observed": false,
+  "source_artifacts_seen": {
+    "d101": [
+      "reports/d101_abort_on_mismatch_policy.json",
+      "reports/d101_d102_post_execution_verifier_scope.json",
+      "reports/d101_manual_command_preview.json",
+      "reports/d101_one_shot_manual_execution_capsule.json",
+      "reports/d101_post_execution_required_checks.json"
+    ],
+    "d100": [
+      "reports/d100_controlled_human_execution_decision_request.json",
+      "reports/d100_d101_one_shot_manual_execution_capsule_scope.json",
+      "reports/d100_final_apply_permission_matrix.json",
+      "reports/d100_human_operator_scope_statement.json"
+    ],
+    "d99": [
+      "reports/d99_d100_controlled_execution_scope.json",
+      "reports/d99_final_guarded_execution_capsule.json",
+      "reports/d99_final_no_apply_blocker_state.json",
+      "reports/d99_post_capsule_manual_review_checklist.json"
+    ]
+  },
+  "human_review_required": true
+}
