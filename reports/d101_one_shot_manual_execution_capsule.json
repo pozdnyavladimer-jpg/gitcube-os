@@ -1,0 +1,200 @@
+{
+  "state": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE",
+  "result": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE_CREATED",
+  "route": "FIELD_INTENT_ONE_SHOT_MANUAL_EXECUTION_CAPSULE",
+  "ok": true,
+  "decision": "ONE_SHOT_MANUAL_EXECUTION_CAPSULE_READY",
+  "created_at": "2026-05-08T04:43:54.760278+00:00",
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "source_capsule_id": "d99-4e20f31d67486066",
+  "pack_id": "d98-3107a11aaa0675be",
+  "regression_id": "d96-f2deaea814400eb5",
+  "manual_command_preview_path": "/workspaces/gitcube-os/reports/d101_manual_command_preview.json",
+  "post_execution_required_checks_path": "/workspaces/gitcube-os/reports/d101_post_execution_required_checks.json",
+  "abort_on_mismatch_policy_path": "/workspaces/gitcube-os/reports/d101_abort_on_mismatch_policy.json",
+  "d102_scope_path": "/workspaces/gitcube-os/reports/d101_d102_post_execution_verifier_scope.json",
+  "input_reports": {
+    "d100_report_path": "/workspaces/gitcube-os/reports/d100_controlled_human_execution_decision_request.json",
+    "d100_matrix_path": "/workspaces/gitcube-os/reports/d100_final_apply_permission_matrix.json",
+    "d100_operator_path": "/workspaces/gitcube-os/reports/d100_human_operator_scope_statement.json",
+    "d100_d101_scope_path": "/workspaces/gitcube-os/reports/d100_d101_one_shot_manual_execution_capsule_scope.json"
+  },
+  "one_shot_manual_execution_capsule": {
+    "state": "D101_ONE_SHOT_MANUAL_EXECUTION_CAPSULE_ARTIFACT",
+    "ok": true,
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "decision_id": "d100-95cc014b8b9cbd21",
+    "created_at": "2026-05-08T04:43:54.751191+00:00",
+    "mode": "ONE_SHOT_MANUAL_EXECUTION_CAPSULE_PREVIEW_ONLY",
+    "manual_only": true,
+    "ai_execution_allowed": false,
+    "real_apply_allowed_now": false,
+    "route_insert_allowed_now": false,
+    "protected_core_mutation_allowed_now": false,
+    "capsule_basis": [
+      "D99_FINAL_GUARDED_EXECUTION_CAPSULE_READY",
+      "D100_CONTROLLED_HUMAN_EXECUTION_DECISION_READY",
+      "D100_PERMISSION_MATRIX_REVIEWED"
+    ],
+    "approved_scope": "CREATE_MANUAL_ONE_SHOT_CAPSULE_ONLY",
+    "not_approved": [
+      "actual_apply_by_ai",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "external_ai_network_execution",
+      "git_commit_or_push_by_ai",
+      "execute_rollback_by_ai",
+      "delete_runtime_candidate_by_ai"
+    ],
+    "source_decision_id": "d100-95cc014b8b9cbd21",
+    "next_required_gate": "D102_POST_EXECUTION_VERIFIER"
+  },
+  "manual_command_preview": {
+    "state": "D101_MANUAL_COMMAND_PREVIEW",
+    "ok": true,
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "decision_id": "d100-95cc014b8b9cbd21",
+    "created_at": "2026-05-08T04:43:54.751218+00:00",
+    "commands_are_preview_only": true,
+    "commands_must_be_run_by_human_only": true,
+    "ai_must_not_execute": true,
+    "manual_preflight_commands": [
+      "git status --short",
+      "git diff --stat",
+      "python -m unittest discover -s tests -v",
+      "cat reports/d99_final_guarded_execution_capsule.json",
+      "cat reports/d100_final_apply_permission_matrix.json"
+    ],
+    "manual_execution_placeholder": [
+      "# Human operator may define exact one-shot command in a later gate.",
+      "# D101 does not provide a real apply command.",
+      "# No git apply / route insert / protected-core mutation is authorized here."
+    ],
+    "blocked_commands": [
+      "git apply",
+      "git commit",
+      "git push",
+      "route insert",
+      "git reset --hard",
+      "git checkout -- <protected-core-path>",
+      "python -c '<runtime mutation>'",
+      "curl",
+      "wget",
+      "ssh"
+    ]
+  },
+  "post_execution_required_checks": {
+    "state": "D101_POST_EXECUTION_REQUIRED_CHECKS",
+    "ok": true,
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "created_at": "2026-05-08T04:43:54.751224+00:00",
+    "required_after_any_future_manual_execution": [
+      "git status --short",
+      "git diff --stat",
+      "python -m unittest discover -s tests -v",
+      "python -m py_compile runtime_experimental/*.py",
+      "confirm protected-core hash snapshot has expected relationship to approved scope",
+      "confirm no route insertion occurred unless separately approved by later gate",
+      "confirm no external AI/network execution occurred",
+      "confirm rollback evidence is preserved",
+      "create D102 post-execution verifier report"
+    ],
+    "must_remain_false_until_later_gate": {
+      "ai_executed_apply": false,
+      "ai_inserted_route": false,
+      "ai_committed_or_pushed": false,
+      "external_ai_called_for_execution": false
+    }
+  },
+  "abort_on_mismatch_policy": {
+    "state": "D101_ABORT_ON_MISMATCH_POLICY",
+    "ok": true,
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "created_at": "2026-05-08T04:43:54.751230+00:00",
+    "abort_if": [
+      "D100 permission matrix is missing",
+      "D99 capsule is missing",
+      "manual command differs from reviewed capsule scope",
+      "manual command touches protected core without explicit later approval",
+      "manual command inserts route without explicit later approval",
+      "manual command requires network/external AI execution",
+      "manual command would git commit or push automatically",
+      "post-execution verifier cannot be created"
+    ],
+    "abort_action": "STOP_AND_REQUEST_HUMAN_REVIEW",
+    "rollback_may_be_considered_only_after": "D102_POST_EXECUTION_VERIFIER",
+    "rollback_not_executed_here": true
+  },
+  "d102_scope": {
+    "state": "D101_D102_POST_EXECUTION_VERIFIER_SCOPE",
+    "ok": true,
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "decision_id": "d100-95cc014b8b9cbd21",
+    "created_at": "2026-05-08T04:43:54.751235+00:00",
+    "allowed_next_gate": "D102_POST_EXECUTION_VERIFIER",
+    "d102_allowed_to_create": [
+      "post_execution_verifier",
+      "post_execution_evidence_report",
+      "changed_files_manifest",
+      "execution_integrity_summary"
+    ],
+    "d102_must_not_execute": [
+      "actual_apply_by_ai",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "external_ai_network_execution",
+      "git_commit_or_push_by_ai",
+      "execute_rollback_by_ai",
+      "delete_runtime_candidate_by_ai",
+      "run_manual_apply_now",
+      "execute_post_fix_mutation"
+    ],
+    "apply_allowed_after_d101": false,
+    "route_insert_allowed_after_d101": false,
+    "protected_core_mutation_allowed_after_d101": false,
+    "required_phrase_for_later_gate": "APPROVE_D102_POST_EXECUTION_VERIFIER_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "manual_capsule_preview_only": true,
+    "human_manual_only": true,
+    "approval_for_real_apply": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "ONE_SHOT_MANUAL_EXECUTION_CAPSULE_READY",
+    "capsule_id": "d101-eb2da2cc08564a13",
+    "decision_id": "d100-95cc014b8b9cbd21",
+    "source_capsule_id": "d99-4e20f31d67486066",
+    "pack_id": "d98-3107a11aaa0675be",
+    "regression_id": "d96-f2deaea814400eb5",
+    "errors_count": 0,
+    "warnings_count": 0
+  },
+  "success_condition": {
+    "one_shot_manual_execution_capsule_created": true,
+    "manual_command_preview_created": true,
+    "post_execution_required_checks_created": true,
+    "abort_policy_created": true,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_untouched": true,
+    "next_step": "D102 may create a post-execution verifier. Real apply remains blocked here."
+  }
+}

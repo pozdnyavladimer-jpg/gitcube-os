@@ -1,0 +1,23 @@
+{
+  "state": "D101_POST_EXECUTION_REQUIRED_CHECKS",
+  "ok": true,
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "created_at": "2026-05-08T04:43:54.751224+00:00",
+  "required_after_any_future_manual_execution": [
+    "git status --short",
+    "git diff --stat",
+    "python -m unittest discover -s tests -v",
+    "python -m py_compile runtime_experimental/*.py",
+    "confirm protected-core hash snapshot has expected relationship to approved scope",
+    "confirm no route insertion occurred unless separately approved by later gate",
+    "confirm no external AI/network execution occurred",
+    "confirm rollback evidence is preserved",
+    "create D102 post-execution verifier report"
+  ],
+  "must_remain_false_until_later_gate": {
+    "ai_executed_apply": false,
+    "ai_inserted_route": false,
+    "ai_committed_or_pushed": false,
+    "external_ai_called_for_execution": false
+  }
+}

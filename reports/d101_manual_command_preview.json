@@ -1,0 +1,34 @@
+{
+  "state": "D101_MANUAL_COMMAND_PREVIEW",
+  "ok": true,
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "created_at": "2026-05-08T04:43:54.751218+00:00",
+  "commands_are_preview_only": true,
+  "commands_must_be_run_by_human_only": true,
+  "ai_must_not_execute": true,
+  "manual_preflight_commands": [
+    "git status --short",
+    "git diff --stat",
+    "python -m unittest discover -s tests -v",
+    "cat reports/d99_final_guarded_execution_capsule.json",
+    "cat reports/d100_final_apply_permission_matrix.json"
+  ],
+  "manual_execution_placeholder": [
+    "# Human operator may define exact one-shot command in a later gate.",
+    "# D101 does not provide a real apply command.",
+    "# No git apply / route insert / protected-core mutation is authorized here."
+  ],
+  "blocked_commands": [
+    "git apply",
+    "git commit",
+    "git push",
+    "route insert",
+    "git reset --hard",
+    "git checkout -- <protected-core-path>",
+    "python -c '<runtime mutation>'",
+    "curl",
+    "wget",
+    "ssh"
+  ]
+}

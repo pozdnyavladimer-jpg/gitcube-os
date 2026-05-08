@@ -1,0 +1,30 @@
+{
+  "state": "D101_D102_POST_EXECUTION_VERIFIER_SCOPE",
+  "ok": true,
+  "capsule_id": "d101-eb2da2cc08564a13",
+  "decision_id": "d100-95cc014b8b9cbd21",
+  "created_at": "2026-05-08T04:43:54.751235+00:00",
+  "allowed_next_gate": "D102_POST_EXECUTION_VERIFIER",
+  "d102_allowed_to_create": [
+    "post_execution_verifier",
+    "post_execution_evidence_report",
+    "changed_files_manifest",
+    "execution_integrity_summary"
+  ],
+  "d102_must_not_execute": [
+    "actual_apply_by_ai",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "external_ai_network_execution",
+    "git_commit_or_push_by_ai",
+    "execute_rollback_by_ai",
+    "delete_runtime_candidate_by_ai",
+    "run_manual_apply_now",
+    "execute_post_fix_mutation"
+  ],
+  "apply_allowed_after_d101": false,
+  "route_insert_allowed_after_d101": false,
+  "protected_core_mutation_allowed_after_d101": false,
+  "required_phrase_for_later_gate": "APPROVE_D102_POST_EXECUTION_VERIFIER_ONLY"
+}
