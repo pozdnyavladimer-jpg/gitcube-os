@@ -1,0 +1,31 @@
+{
+  "state": "D115_FINAL_PRE_APPLY_LOCK_REPORT",
+  "ok": true,
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "decision_id": "d114-99b5d3c4cd3b941e",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T06:59:16.748793+00:00",
+  "lock_state": "REAL_APPLY_STILL_LOCKED",
+  "lock_reason": "D115 creates final phrase scope only; D116 manual apply window scope is still required.",
+  "permission_matrix_checked": true,
+  "operator_statement_checked": true,
+  "real_apply_permission": "NOT_GRANTED",
+  "real_apply_approved_now": false,
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "candidate_executed": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false
+  },
+  "blockers": [
+    "no D116 manual apply window scope",
+    "no D117 manual apply command packet",
+    "no final operator local execution evidence",
+    "no post-apply verification gate"
+  ]
+}

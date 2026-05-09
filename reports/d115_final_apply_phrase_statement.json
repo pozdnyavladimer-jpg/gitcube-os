@@ -1,0 +1,17 @@
+{
+  "state": "D115_FINAL_APPLY_PHRASE_STATEMENT",
+  "ok": true,
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "decision_id": "d114-99b5d3c4cd3b941e",
+  "review_id": "d113-008c2b60a14b3e1b",
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T06:59:16.748775+00:00",
+  "phrase_scope": "D116_MANUAL_APPLY_WINDOW_SCOPE_ONLY",
+  "required_phrase": "APPROVE_D116_MANUAL_APPLY_WINDOW_SCOPE_ONLY",
+  "human_statement": "I approve only the creation of the D116 manual apply window scope. This does not execute real apply. It does not authorize autonomous apply, route insertion, protected-core mutation, canonical memory overwrite, external AI/network calls, sandbox candidate execution, rollback/restore, or AI git actions.",
+  "source_permission": "GRANTED_FOR_PHRASE_SCOPE_ONLY",
+  "real_apply_approved_now": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}
