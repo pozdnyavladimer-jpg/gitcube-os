@@ -1,0 +1,20 @@
+{
+  "state": "D119_POST_APPLY_GIT_STATE_SUMMARY",
+  "ok": true,
+  "verification_id": "d119-c12c6faf8d0e9f7d",
+  "evidence_id": "d118-8003c4050c9dba4a",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T08:48:35.594504+00:00",
+  "summary_mode": "GIT_STATE_SUMMARY_TEMPLATE_ONLY",
+  "git_commands_executed_by_ai": false,
+  "operator_git_evidence_present": false,
+  "working_tree_before": "not captured yet",
+  "working_tree_after": "not captured yet",
+  "commands_run": [],
+  "exit_codes": {},
+  "git_state_status": "AWAITING_OPERATOR_EVIDENCE_OR_NO_APPLY_TO_VERIFY",
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false,
+  "route_inserted_by_ai": false,
+  "protected_core_mutated_by_ai": false
+}

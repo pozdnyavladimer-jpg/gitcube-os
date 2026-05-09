@@ -1,0 +1,23 @@
+{
+  "state": "D119_POST_APPLY_TEST_RESULTS_SUMMARY",
+  "ok": true,
+  "verification_id": "d119-c12c6faf8d0e9f7d",
+  "evidence_id": "d118-8003c4050c9dba4a",
+  "review_id": "d117-2ee58a66bb55dfb5",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T08:48:35.594490+00:00",
+  "summary_mode": "VERIFICATION_SCOPE_ONLY_NOT_EXECUTED",
+  "tests_executed_by_ai": false,
+  "operator_test_evidence_present": false,
+  "operator_reported_tests_summary": "not captured yet",
+  "required_before_d120": [
+    "operator local execution evidence reviewed",
+    "test command outputs captured",
+    "exit codes captured",
+    "no secrets included in evidence",
+    "git state reviewed"
+  ],
+  "verification_status": "AWAITING_OPERATOR_EVIDENCE_OR_NO_APPLY_TO_VERIFY",
+  "actual_apply_executed_by_ai": false,
+  "candidate_executed_by_ai": false
+}
