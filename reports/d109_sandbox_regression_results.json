@@ -1,0 +1,78 @@
+{
+  "state": "D109_SANDBOX_REGRESSION_RESULTS",
+  "ok": true,
+  "runner_id": "d109-3d862fad02282bd1",
+  "created_at": "2026-05-09T04:30:53.044601+00:00",
+  "commands": [
+    {
+      "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/sandbox_proposal_writer.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/proposal_schema_validator.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/ai_propose_only_provider_boundary.py",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d108_sandbox_proposal_writer -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_acceptance_already_wrote_sandbox (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_if_acceptance_already_wrote_sandbox) ... ok\ntest_blocks_missing_d107 (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_missing_d107) ... ok\ntest_blocks_proposal_to_core (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_proposal_to_core) ... ok\ntest_creates_sandbox_writer_outputs (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_creates_sandbox_writer_outputs) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.006s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d107_proposal_schema_validator -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_accepts_valid_proposal (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_accepts_valid_proposal) ... ok\ntest_blocks_if_d106_missing (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_blocks_if_d106_missing) ... ok\ntest_creates_validator_reports (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_creates_validator_reports) ... ok\ntest_rejects_blocked_core_path (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_blocked_core_path) ... ok\ntest_rejects_forbidden_shell_field (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_forbidden_shell_field) ... ok\ntest_rejects_missing_human_review (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_missing_human_review) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.008s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d106_ai_propose_only_provider_boundary -v",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "",
+      "stderr_tail": "test_blocks_if_d104_missing (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_blocks_if_d104_missing) ... ok\ntest_creates_boundary_and_contracts (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_creates_boundary_and_contracts) ... ok\ntest_rejects_blocked_candidate_path (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_rejects_blocked_candidate_path) ... ok\ntest_rejects_forbidden_payload (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_rejects_forbidden_payload) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.003s\n\nOK\n",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "git diff --stat",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": " D109_REGRESSION_RUNNER_BOOT.py | 6 +++---\n 1 file changed, 3 insertions(+), 3 deletions(-)\n",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    {
+      "command": "git status --short",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "AM D109_REGRESSION_RUNNER_BOOT.py\n?? runtime_experimental/regression_runner.py\n?? tests/test_d109_regression_runner.py\n",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    }
+  ],
+  "commands_count": 8,
+  "passed_count": 8,
+  "failed_count": 0,
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "shell_from_ai_executed": false
+}

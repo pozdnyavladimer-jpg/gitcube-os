@@ -1,0 +1,225 @@
+{
+  "state": "D109_REGRESSION_RUNNER",
+  "result": "D109_REGRESSION_RUNNER_CREATED",
+  "route": "FIELD_INTENT_REGRESSION_RUNNER",
+  "ok": true,
+  "decision": "REGRESSION_RUNNER_READY",
+  "created_at": "2026-05-09T04:30:53.045806+00:00",
+  "runner_id": "d109-3d862fad02282bd1",
+  "writer_id": "d108-467774c548e6c9fd",
+  "validator_id": "d107-280c064642696d3e",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d108_report": "reports/d108_sandbox_proposal_writer.json",
+  "static_checks": {
+    "state": "D109_SANDBOX_STATIC_CHECKS",
+    "ok": true,
+    "runner_id": "d109-3d862fad02282bd1",
+    "created_at": "2026-05-09T04:30:53.044570+00:00",
+    "sandbox_files_declared": [
+      "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+      "runtime_experimental/ai_sandbox_work/d108_sandbox_proposal_manifest.json",
+      "runtime_experimental/ai_sandbox_work/d108_writer_receipt.json"
+    ],
+    "existing_files": [
+      "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+      "runtime_experimental/ai_sandbox_work/d108_sandbox_proposal_manifest.json",
+      "runtime_experimental/ai_sandbox_work/d108_writer_receipt.json"
+    ],
+    "missing_files": [],
+    "blocked_paths_detected": [],
+    "json_integrity": {
+      "d108_report_loaded": true,
+      "manifest_loaded": true,
+      "receipt_loaded": true,
+      "sandbox_proposal_loaded": true
+    },
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "protected_core_mutated": false,
+    "route_inserted": false
+  },
+  "regression_results": {
+    "state": "D109_SANDBOX_REGRESSION_RESULTS",
+    "ok": true,
+    "runner_id": "d109-3d862fad02282bd1",
+    "created_at": "2026-05-09T04:30:53.044601+00:00",
+    "commands": [
+      {
+        "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/sandbox_proposal_writer.py",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/proposal_schema_validator.py",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m py_compile runtime_experimental/ai_propose_only_provider_boundary.py",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d108_sandbox_proposal_writer -v",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "test_blocks_if_acceptance_already_wrote_sandbox (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_if_acceptance_already_wrote_sandbox) ... ok\ntest_blocks_missing_d107 (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_missing_d107) ... ok\ntest_blocks_proposal_to_core (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_blocks_proposal_to_core) ... ok\ntest_creates_sandbox_writer_outputs (tests.test_d108_sandbox_proposal_writer.TestD108SandboxProposalWriter.test_creates_sandbox_writer_outputs) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.006s\n\nOK\n",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d107_proposal_schema_validator -v",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "test_accepts_valid_proposal (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_accepts_valid_proposal) ... ok\ntest_blocks_if_d106_missing (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_blocks_if_d106_missing) ... ok\ntest_creates_validator_reports (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_creates_validator_reports) ... ok\ntest_rejects_blocked_core_path (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_blocked_core_path) ... ok\ntest_rejects_forbidden_shell_field (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_forbidden_shell_field) ... ok\ntest_rejects_missing_human_review (tests.test_d107_proposal_schema_validator.TestD107ProposalSchemaValidator.test_rejects_missing_human_review) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.008s\n\nOK\n",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "/home/codespace/.python/current/bin/python -m unittest tests.test_d106_ai_propose_only_provider_boundary -v",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "",
+        "stderr_tail": "test_blocks_if_d104_missing (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_blocks_if_d104_missing) ... ok\ntest_creates_boundary_and_contracts (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_creates_boundary_and_contracts) ... ok\ntest_rejects_blocked_candidate_path (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_rejects_blocked_candidate_path) ... ok\ntest_rejects_forbidden_payload (tests.test_d106_ai_propose_only_provider_boundary.TestD106AIProposeOnlyProviderBoundary.test_rejects_forbidden_payload) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.003s\n\nOK\n",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "git diff --stat",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": " D109_REGRESSION_RUNNER_BOOT.py | 6 +++---\n 1 file changed, 3 insertions(+), 3 deletions(-)\n",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 90
+      },
+      {
+        "command": "git status --short",
+        "ok": true,
+        "returncode": 0,
+        "stdout_tail": "AM D109_REGRESSION_RUNNER_BOOT.py\n?? runtime_experimental/regression_runner.py\n?? tests/test_d109_regression_runner.py\n",
+        "stderr_tail": "",
+        "duration_timeout_seconds": 90
+      }
+    ],
+    "commands_count": 8,
+    "passed_count": 8,
+    "failed_count": 0,
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "shell_from_ai_executed": false
+  },
+  "diff_summary": {
+    "state": "D109_SANDBOX_DIFF_SUMMARY",
+    "ok": true,
+    "runner_id": "d109-3d862fad02282bd1",
+    "created_at": "2026-05-09T04:30:53.044629+00:00",
+    "git_diff_stat": {
+      "command": "git diff --stat",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": " D109_REGRESSION_RUNNER_BOOT.py | 6 +++---\n 1 file changed, 3 insertions(+), 3 deletions(-)\n",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    "git_status_short": {
+      "command": "git status --short",
+      "ok": true,
+      "returncode": 0,
+      "stdout_tail": "AM D109_REGRESSION_RUNNER_BOOT.py\n?? runtime_experimental/regression_runner.py\n?? tests/test_d109_regression_runner.py\n",
+      "stderr_tail": "",
+      "duration_timeout_seconds": 90
+    },
+    "documentation_only": true,
+    "actual_apply_executed": false,
+    "candidate_executed": false
+  },
+  "d110_scope": {
+    "state": "D109_D110_HUMAN_REVIEW_GATE_SCOPE",
+    "ok": true,
+    "runner_id": "d109-3d862fad02282bd1",
+    "created_at": "2026-05-09T04:30:53.044636+00:00",
+    "allowed_next_gate": "D110_HUMAN_REVIEW_GATE",
+    "d110_allowed_to_create": [
+      "human_review_gate",
+      "human_review_packet",
+      "proposal_review_summary",
+      "approval_or_rejection_record"
+    ],
+    "d110_must_not_execute": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute",
+      "restore_execute",
+      "apply_sandbox_candidate",
+      "execute_sandbox_candidate",
+      "commit_sandbox_candidate"
+    ],
+    "human_review_required": true,
+    "actual_apply_allowed_after_d109": false,
+    "route_insert_allowed_after_d109": false,
+    "protected_core_mutation_allowed_after_d109": false,
+    "sandbox_candidate_execution_allowed_after_d109": false,
+    "required_phrase_for_later_gate": "APPROVE_D110_HUMAN_REVIEW_GATE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "safe_local_commands_executed": true,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "sandbox_regression_only": true,
+    "candidate_execution_allowed": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "REGRESSION_RUNNER_READY",
+    "runner_id": "d109-3d862fad02282bd1",
+    "writer_id": "d108-467774c548e6c9fd",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "regression_ok": true,
+    "static_ok": true,
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D110_HUMAN_REVIEW_GATE"
+  },
+  "success_condition": {
+    "regression_runner_created": true,
+    "static_checks_created": true,
+    "regression_results_created": true,
+    "diff_summary_created": true,
+    "d110_scope_created": true,
+    "real_ai_called": false,
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D110 may create human review packet only."
+  }
+}
