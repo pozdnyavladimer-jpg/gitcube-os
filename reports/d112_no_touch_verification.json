@@ -1,0 +1,20 @@
+{
+  "state": "D112_NO_TOUCH_VERIFICATION",
+  "ok": true,
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "created_at": "2026-05-09T05:18:47.718365+00:00",
+  "verified_false": {
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "patch_applied": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false
+  },
+  "blocked_path_hits": [],
+  "safe_to_prepare_d113": true
+}

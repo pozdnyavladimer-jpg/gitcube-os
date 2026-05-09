@@ -1,0 +1,38 @@
+{
+  "state": "D112_DRY_RUN_PLAN",
+  "ok": true,
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "approval_id": "d111-c567dec53b0bc834",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T05:18:47.718336+00:00",
+  "mode": "DRY_RUN_ONLY_NO_FILE_MUTATION",
+  "source_approval_scope": "D112_DRY_RUN_APPLY_SCOPE_ONLY",
+  "operator_decision": "APPROVED_FOR_D112_DRY_RUN_SCOPE_ONLY",
+  "target_scope": "runtime_experimental/ai_sandbox_work/",
+  "candidate_files": [
+    "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+  ],
+  "planned_steps": [
+    "Load proposal and approval evidence",
+    "Prepare dry-run plan only",
+    "Prepare patch preview metadata only",
+    "Verify no protected files are touched",
+    "Verify no real apply is executed",
+    "Prepare D113 final apply review scope"
+  ],
+  "not_planned": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "shell_exec_from_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "sandbox_candidate_execution"
+  ],
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "dry_run_only": true
+}

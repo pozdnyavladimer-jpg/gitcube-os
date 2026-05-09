@@ -1,0 +1,173 @@
+{
+  "state": "D112_DRY_RUN_APPLY_SCOPE",
+  "result": "D112_DRY_RUN_APPLY_SCOPE_CREATED",
+  "route": "FIELD_INTENT_DRY_RUN_APPLY_SCOPE",
+  "ok": true,
+  "decision": "DRY_RUN_APPLY_SCOPE_READY",
+  "created_at": "2026-05-09T05:18:47.727315+00:00",
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "approval_id": "d111-c567dec53b0bc834",
+  "gate_id": "d110-1b3c36e16d727f67",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d111_report": "reports/d111_explicit_approval_gate.json",
+  "dry_run_plan": {
+    "state": "D112_DRY_RUN_PLAN",
+    "ok": true,
+    "dry_run_id": "d112-ea9b98083616bcff",
+    "approval_id": "d111-c567dec53b0bc834",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T05:18:47.718336+00:00",
+    "mode": "DRY_RUN_ONLY_NO_FILE_MUTATION",
+    "source_approval_scope": "D112_DRY_RUN_APPLY_SCOPE_ONLY",
+    "operator_decision": "APPROVED_FOR_D112_DRY_RUN_SCOPE_ONLY",
+    "target_scope": "runtime_experimental/ai_sandbox_work/",
+    "candidate_files": [
+      "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+    ],
+    "planned_steps": [
+      "Load proposal and approval evidence",
+      "Prepare dry-run plan only",
+      "Prepare patch preview metadata only",
+      "Verify no protected files are touched",
+      "Verify no real apply is executed",
+      "Prepare D113 final apply review scope"
+    ],
+    "not_planned": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "sandbox_candidate_execution"
+    ],
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "dry_run_only": true
+  },
+  "dry_run_patch_preview": {
+    "state": "D112_DRY_RUN_PATCH_PREVIEW",
+    "ok": true,
+    "dry_run_id": "d112-ea9b98083616bcff",
+    "created_at": "2026-05-09T05:18:47.718361+00:00",
+    "preview_type": "METADATA_ONLY_NO_PATCH_APPLICATION",
+    "candidate_files_preview": [
+      "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+    ],
+    "blocked_path_hits": [],
+    "patch_generated": false,
+    "patch_applied": false,
+    "files_mutated": [],
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "dry_run_only": true
+  },
+  "no_touch_verification": {
+    "state": "D112_NO_TOUCH_VERIFICATION",
+    "ok": true,
+    "dry_run_id": "d112-ea9b98083616bcff",
+    "created_at": "2026-05-09T05:18:47.718365+00:00",
+    "verified_false": {
+      "actual_apply_executed": false,
+      "candidate_executed": false,
+      "patch_applied": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "network_accessed": false,
+      "git_commit_by_ai": false,
+      "git_push_by_ai": false
+    },
+    "blocked_path_hits": [],
+    "safe_to_prepare_d113": true
+  },
+  "d113_scope": {
+    "state": "D112_D113_FINAL_APPLY_REVIEW_SCOPE",
+    "ok": true,
+    "dry_run_id": "d112-ea9b98083616bcff",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T05:18:47.718369+00:00",
+    "allowed_next_gate": "D113_FINAL_APPLY_REVIEW_SCOPE",
+    "d113_allowed_to_create": [
+      "final_apply_review_scope",
+      "final_apply_evidence_packet",
+      "final_apply_blocker_matrix",
+      "d114_final_human_apply_decision_scope"
+    ],
+    "d113_must_not_execute": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute",
+      "restore_execute",
+      "execute_sandbox_candidate",
+      "commit_sandbox_candidate"
+    ],
+    "final_apply_review_only": true,
+    "human_review_required": true,
+    "actual_apply_allowed_after_d112": false,
+    "route_insert_allowed_after_d112": false,
+    "protected_core_mutation_allowed_after_d112": false,
+    "sandbox_candidate_execution_allowed_after_d112": false,
+    "required_phrase_for_later_gate": "APPROVE_D113_FINAL_APPLY_REVIEW_SCOPE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "dry_run_only": true,
+    "patch_generated": false,
+    "patch_applied": false,
+    "candidate_execution_allowed": false,
+    "approval_for_real_apply": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "DRY_RUN_APPLY_SCOPE_READY",
+    "dry_run_id": "d112-ea9b98083616bcff",
+    "approval_id": "d111-c567dec53b0bc834",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "dry_run_only": true,
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D113_FINAL_APPLY_REVIEW_SCOPE"
+  },
+  "success_condition": {
+    "dry_run_scope_created": true,
+    "dry_run_plan_created": true,
+    "patch_preview_created": true,
+    "no_touch_verification_created": true,
+    "d113_scope_created": true,
+    "real_ai_called": false,
+    "actual_apply_executed": false,
+    "patch_applied": false,
+    "candidate_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D113 may create final apply review scope only. Real apply remains blocked."
+  }
+}
