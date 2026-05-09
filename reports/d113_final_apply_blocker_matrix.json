@@ -1,0 +1,36 @@
+{
+  "state": "D113_FINAL_APPLY_BLOCKER_MATRIX",
+  "ok": true,
+  "review_id": "d113-008c2b60a14b3e1b",
+  "created_at": "2026-05-09T05:30:27.581661+00:00",
+  "real_apply_current_status": "BLOCKED",
+  "blocked_until": "D114_FINAL_HUMAN_APPLY_DECISION_SCOPE",
+  "blockers": {
+    "no_d114_final_human_apply_decision": true,
+    "no_d115_final_apply_phrase": true,
+    "no_real_apply_permission_matrix": true,
+    "no_post_apply_rollback_plan": true,
+    "no_final_operator_commit_boundary": true
+  },
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "candidate_executed": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false
+  },
+  "not_approved": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "sandbox_candidate_execution",
+    "git_commit_or_push_by_ai"
+  ]
+}

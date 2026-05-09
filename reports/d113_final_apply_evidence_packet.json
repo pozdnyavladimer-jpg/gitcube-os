@@ -1,0 +1,40 @@
+{
+  "state": "D113_FINAL_APPLY_EVIDENCE_PACKET",
+  "ok": true,
+  "review_id": "d113-008c2b60a14b3e1b",
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "approval_id": "d111-c567dec53b0bc834",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T05:30:27.581617+00:00",
+  "review_mode": "FINAL_APPLY_REVIEW_ONLY",
+  "evidence_files": {
+    "d112_report": "reports/d112_dry_run_apply_scope.json",
+    "dry_run_plan": "reports/d112_dry_run_plan.json",
+    "patch_preview": "reports/d112_dry_run_patch_preview.json",
+    "no_touch_verification": "reports/d112_no_touch_verification.json",
+    "d112_d113_scope": "reports/d112_d113_final_apply_review_scope.json"
+  },
+  "dry_run_summary": {
+    "dry_run_only": true,
+    "candidate_files": [
+      "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+    ],
+    "patch_generated": false,
+    "patch_applied": false,
+    "files_mutated": [],
+    "safe_to_prepare_d113": true
+  },
+  "review_items": [
+    "Confirm D112 was dry-run-only",
+    "Confirm no patch was generated or applied",
+    "Confirm no files were mutated",
+    "Confirm no protected paths were touched",
+    "Confirm no candidate execution occurred",
+    "Confirm no route insertion occurred",
+    "Confirm no AI/network/API call occurred",
+    "Prepare D114 final human apply decision scope only"
+  ],
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "approval_for_real_apply": false
+}
