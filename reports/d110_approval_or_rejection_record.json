@@ -1,0 +1,27 @@
+{
+  "state": "D110_APPROVAL_OR_REJECTION_RECORD",
+  "ok": true,
+  "gate_id": "d110-1b3c36e16d727f67",
+  "created_at": "2026-05-09T04:52:36.311322+00:00",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "decision_state": "PENDING_HUMAN_DECISION",
+  "approval_granted_now": false,
+  "rejection_recorded_now": false,
+  "allowed_human_decisions": [
+    "REJECT_SANDBOX_PROPOSAL",
+    "REQUEST_MORE_SANDBOX_EVIDENCE",
+    "PREPARE_D111_EXPLICIT_APPROVAL_GATE_ONLY"
+  ],
+  "not_approved": [
+    "real_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "git_commit_or_push_by_ai",
+    "sandbox_candidate_execution"
+  ],
+  "human_phrase_required_for_later_gate": "APPROVE_D111_EXPLICIT_APPROVAL_GATE_ONLY",
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}
