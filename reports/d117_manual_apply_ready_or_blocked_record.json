@@ -1,0 +1,29 @@
+{
+  "state": "D117_MANUAL_APPLY_READY_OR_BLOCKED_RECORD",
+  "ok": true,
+  "review_id": "d117-2ee58a66bb55dfb5",
+  "created_at": "2026-05-09T07:28:56.460565+00:00",
+  "manual_apply_window_status": "READY_FOR_D118_EVIDENCE_SCOPE_ONLY",
+  "real_apply_current_status": "BLOCKED",
+  "ready_for": "D118_OPERATOR_LOCAL_EXECUTION_EVIDENCE_SCOPE",
+  "not_ready_for": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "sandbox_candidate_execution",
+    "git_commit_or_push_by_ai"
+  ],
+  "blocking_reasons": [
+    "D118 operator local execution evidence scope does not exist yet",
+    "No operator local execution evidence exists yet",
+    "No post-apply verification exists yet",
+    "No D120 controlled run seal exists yet"
+  ],
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "approval_for_real_apply": false,
+  "commands_executed_by_ai": false
+}

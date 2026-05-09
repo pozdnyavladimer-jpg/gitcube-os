@@ -1,0 +1,44 @@
+{
+  "state": "D117_REVIEWED_OPERATOR_COMMAND_PACKET",
+  "ok": true,
+  "review_id": "d117-2ee58a66bb55dfb5",
+  "window_id": "d116-9b3bcf3ec89b5cc3",
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T07:28:56.460544+00:00",
+  "review_mode": "COMMAND_REVIEW_ONLY_NOT_EXECUTED",
+  "original_packet": "reports/d116_operator_local_command_packet.json",
+  "reviewed_commands": [
+    "git status --short",
+    "python -m unittest discover -s tests -v",
+    "python -m py_compile runtime_experimental/*.py",
+    "cat reports/d115_final_pre_apply_lock_report.json",
+    "cat reports/d116_manual_apply_preflight_checklist.json",
+    "git diff --stat"
+  ],
+  "blocked_commands": [
+    "git apply",
+    "git commit",
+    "git push",
+    "route insert",
+    "direct protected-core edit",
+    "execute sandbox candidate",
+    "rollback execute",
+    "restore execute",
+    "external AI/network call"
+  ],
+  "review_notes": [
+    "Commands are documentation-only at D117.",
+    "No command is executed by this module.",
+    "No real apply command is included.",
+    "Manual execution evidence must be captured by D118 if a human later runs commands."
+  ],
+  "approved_for_d118_evidence_scope_only": true,
+  "approved_for_real_apply_now": false,
+  "commands_executed_by_ai": false,
+  "shell_executed_by_ai": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false
+}
