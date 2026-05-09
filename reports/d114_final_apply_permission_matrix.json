@@ -1,0 +1,48 @@
+{
+  "state": "D114_FINAL_APPLY_PERMISSION_MATRIX",
+  "ok": true,
+  "decision_id": "d114-99b5d3c4cd3b941e",
+  "review_id": "d113-008c2b60a14b3e1b",
+  "dry_run_id": "d112-ea9b98083616bcff",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T06:47:57.179350+00:00",
+  "real_apply_permission": "NOT_GRANTED",
+  "d115_phrase_scope_permission": "GRANTED_FOR_PHRASE_SCOPE_ONLY",
+  "permissions": {
+    "create_d115_final_apply_phrase_scope": true,
+    "prepare_final_apply_phrase_text": true,
+    "prepare_operator_final_decision_statement": true,
+    "real_apply_now": false,
+    "auto_apply_now": false,
+    "route_insert_now": false,
+    "protected_core_mutation_now": false,
+    "canonical_memory_overwrite_now": false,
+    "external_ai_or_network_call_now": false,
+    "sandbox_candidate_execution_now": false,
+    "ai_git_commit_or_push_now": false
+  },
+  "still_blocked": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "sandbox_candidate_execution",
+    "git_commit_or_push_by_ai"
+  ],
+  "evidence_files": {
+    "d112_report": "reports/d112_dry_run_apply_scope.json",
+    "dry_run_plan": "reports/d112_dry_run_plan.json",
+    "patch_preview": "reports/d112_dry_run_patch_preview.json",
+    "no_touch_verification": "reports/d112_no_touch_verification.json",
+    "d112_d113_scope": "reports/d112_d113_final_apply_review_scope.json"
+  },
+  "blockers_carried_forward": {
+    "no_d114_final_human_apply_decision": true,
+    "no_d115_final_apply_phrase": true,
+    "no_real_apply_permission_matrix": true,
+    "no_post_apply_rollback_plan": true,
+    "no_final_operator_commit_boundary": true
+  }
+}
