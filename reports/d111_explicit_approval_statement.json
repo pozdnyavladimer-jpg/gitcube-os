@@ -1,0 +1,23 @@
+{
+  "state": "D111_EXPLICIT_APPROVAL_STATEMENT",
+  "ok": true,
+  "approval_id": "d111-c567dec53b0bc834",
+  "gate_id": "d110-1b3c36e16d727f67",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T05:07:13.899407+00:00",
+  "operator_phrase": "APPROVE_D111_EXPLICIT_APPROVAL_GATE_ONLY",
+  "approval_scope": "D112_DRY_RUN_APPLY_SCOPE_ONLY",
+  "human_statement": "I approve only the creation of the D112 dry-run apply scope. This does not approve real apply, route insertion, protected-core mutation, canonical memory overwrite, external AI/network calls, candidate execution, or AI git actions.",
+  "explicitly_not_approved": [
+    "real_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "sandbox_candidate_execution",
+    "git_commit_or_push_by_ai"
+  ],
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "approval_for_real_apply": false
+}
