@@ -1,0 +1,38 @@
+{
+  "state": "D124_PROVIDER_RESPONSE_SHAPE_PROBE",
+  "ok": true,
+  "ping_id": "d124-6c778b3e4a4d72cc",
+  "config_id": "d123-71d67a6645229b69",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T11:49:48.179165+00:00",
+  "probe_mode": "MOCK_RESPONSE_SHAPE_ONLY_NO_PROVIDER_CALL",
+  "real_provider_called": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "response_shape": {
+    "proposal_id": "d124-shape-probe-proposal",
+    "proposal_type": "analysis_proposal",
+    "intent": "Verify that provider output can be converted into proposal intake format.",
+    "target_scope": "reports/",
+    "candidate_files": [],
+    "risk_flags": [],
+    "guardrails": {
+      "propose_only": true,
+      "requires_human_review": true,
+      "no_secret_values": true,
+      "no_network_side_effects": true,
+      "no_apply_side_effects": true,
+      "no_git_side_effects": true
+    },
+    "validation_plan": [
+      "schema validation",
+      "forbidden field scan",
+      "human review before any later candidate write"
+    ],
+    "requires_human_review": true
+  },
+  "response_valid_shape": true,
+  "dry_ping_only": true
+}
