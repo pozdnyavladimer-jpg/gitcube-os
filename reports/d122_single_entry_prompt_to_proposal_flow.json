@@ -1,0 +1,51 @@
+{
+  "state": "D122_SINGLE_ENTRY_PROMPT_TO_PROPOSAL_FLOW",
+  "ok": true,
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T11:25:54.736066+00:00",
+  "flow_mode": "MOCK_PROVIDER_PROPOSE_ONLY_NO_EXECUTION",
+  "single_entry_command": "python -m runtime_experimental.operator_dashboard_start_command_scope --prompt '<human prompt>'",
+  "flow_steps": [
+    "accept human prompt",
+    "wrap prompt in D121 input contract",
+    "mock provider returns proposal-shaped JSON",
+    "validate proposal shape against D121 output contract",
+    "write proposal only to allowed sandbox/report scope",
+    "stop before execution"
+  ],
+  "input_contract_reference": "reports/d121_provider_adapter_contract.json",
+  "output_contract_required_fields": [
+    "proposal_id",
+    "proposal_type",
+    "intent",
+    "target_scope",
+    "candidate_files",
+    "risk_flags",
+    "guardrails",
+    "validation_plan",
+    "requires_human_review"
+  ],
+  "allowed_output_paths": [
+    "runtime_experimental/ai_sandbox_work/",
+    "reports/",
+    "tests/",
+    "docs/"
+  ],
+  "blocked_output_paths": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "real_provider_called": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}
