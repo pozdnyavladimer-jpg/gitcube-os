@@ -1,0 +1,18 @@
+{
+  "state": "D126_SANDBOX_CANDIDATE_STATIC_SCAN",
+  "ok": true,
+  "candidate_id": "d126-530d22eac0f859e0",
+  "created_at": "2026-05-09T12:35:13.478959+00:00",
+  "scan_mode": "STATIC_PLAN_SCAN_ONLY_NO_EXECUTION",
+  "planned_files_count": 2,
+  "allowed_prefixes_ok": true,
+  "blocked_prefix_hits": [],
+  "forbidden_marker_hits": [],
+  "errors": [],
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}
