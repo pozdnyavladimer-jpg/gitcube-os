@@ -1,0 +1,142 @@
+{
+  "state": "D108_SANDBOX_PROPOSAL_WRITER",
+  "result": "D108_SANDBOX_PROPOSAL_WRITER_CREATED",
+  "route": "FIELD_INTENT_SANDBOX_PROPOSAL_WRITER",
+  "ok": true,
+  "decision": "SANDBOX_PROPOSAL_WRITER_READY",
+  "created_at": "2026-05-09T04:13:08.947647+00:00",
+  "writer_id": "d108-467774c548e6c9fd",
+  "validator_id": "d107-280c064642696d3e",
+  "boundary_id": "d106-24e955724528d266",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "sandbox_proposal_path": "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+  "sandbox_manifest": {
+    "state": "D108_SANDBOX_PROPOSAL_MANIFEST",
+    "ok": true,
+    "writer_id": "d108-467774c548e6c9fd",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T04:13:08.946390+00:00",
+    "write_mode": "SANDBOX_JSON_COPY_ONLY",
+    "sandbox_dir": "runtime_experimental/ai_sandbox_work",
+    "sandbox_files": [
+      "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+      "runtime_experimental/ai_sandbox_work/d108_sandbox_proposal_manifest.json",
+      "runtime_experimental/ai_sandbox_work/d108_writer_receipt.json"
+    ],
+    "source_candidate_files": [
+      "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+    ],
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false
+  },
+  "writer_receipt": {
+    "state": "D108_WRITER_RECEIPT",
+    "ok": true,
+    "writer_id": "d108-467774c548e6c9fd",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T04:13:08.946408+00:00",
+    "written_files": [
+      "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+      "runtime_experimental/ai_sandbox_work/d108_sandbox_proposal_manifest.json",
+      "runtime_experimental/ai_sandbox_work/d108_writer_receipt.json"
+    ],
+    "writes_limited_to": [
+      "runtime_experimental/ai_sandbox_work/",
+      "reports/"
+    ],
+    "not_written_to": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "external_ai_called": false,
+    "network_accessed": false,
+    "shell_executed": false,
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "git_commit_by_ai": false
+  },
+  "d109_scope": {
+    "state": "D108_D109_REGRESSION_RUNNER_SCOPE",
+    "ok": true,
+    "writer_id": "d108-467774c548e6c9fd",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T04:13:08.946412+00:00",
+    "allowed_next_gate": "D109_REGRESSION_RUNNER",
+    "d109_allowed_to_create": [
+      "regression_runner",
+      "sandbox_static_checks",
+      "sandbox_regression_results",
+      "sandbox_diff_summary",
+      "d110_human_review_gate_scope"
+    ],
+    "d109_must_not_execute": [
+      "real_apply",
+      "auto_apply",
+      "route_insert",
+      "protected_core_mutation",
+      "canonical_memory_overwrite",
+      "external_ai_network_call",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute",
+      "restore_execute",
+      "apply_sandbox_candidate",
+      "execute_sandbox_candidate",
+      "commit_sandbox_candidate"
+    ],
+    "actual_apply_allowed_after_d108": false,
+    "route_insert_allowed_after_d108": false,
+    "protected_core_mutation_allowed_after_d108": false,
+    "sandbox_candidate_execution_allowed_after_d108": false,
+    "required_phrase_for_later_gate": "APPROVE_D109_REGRESSION_RUNNER_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "sandbox_write_only": true,
+    "proposal_json_copy_only": true,
+    "candidate_execution_allowed": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "SANDBOX_PROPOSAL_WRITER_READY",
+    "writer_id": "d108-467774c548e6c9fd",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D109_REGRESSION_RUNNER"
+  },
+  "success_condition": {
+    "sandbox_proposal_written": true,
+    "sandbox_manifest_created": true,
+    "writer_receipt_created": true,
+    "d109_scope_created": true,
+    "real_ai_called": false,
+    "actual_apply_executed": false,
+    "candidate_executed": false,
+    "protected_core_untouched": true,
+    "next_step": "D109 may run regression/static checks on sandbox artifacts only."
+  }
+}

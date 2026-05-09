@@ -1,0 +1,36 @@
+{
+  "state": "D108_D109_REGRESSION_RUNNER_SCOPE",
+  "ok": true,
+  "writer_id": "d108-467774c548e6c9fd",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T04:13:08.946412+00:00",
+  "allowed_next_gate": "D109_REGRESSION_RUNNER",
+  "d109_allowed_to_create": [
+    "regression_runner",
+    "sandbox_static_checks",
+    "sandbox_regression_results",
+    "sandbox_diff_summary",
+    "d110_human_review_gate_scope"
+  ],
+  "d109_must_not_execute": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "shell_exec_from_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute",
+    "restore_execute",
+    "apply_sandbox_candidate",
+    "execute_sandbox_candidate",
+    "commit_sandbox_candidate"
+  ],
+  "actual_apply_allowed_after_d108": false,
+  "route_insert_allowed_after_d108": false,
+  "protected_core_mutation_allowed_after_d108": false,
+  "sandbox_candidate_execution_allowed_after_d108": false,
+  "required_phrase_for_later_gate": "APPROVE_D109_REGRESSION_RUNNER_ONLY"
+}

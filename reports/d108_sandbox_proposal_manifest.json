@@ -1,0 +1,22 @@
+{
+  "state": "D108_SANDBOX_PROPOSAL_MANIFEST",
+  "ok": true,
+  "writer_id": "d108-467774c548e6c9fd",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T04:13:08.946390+00:00",
+  "write_mode": "SANDBOX_JSON_COPY_ONLY",
+  "sandbox_dir": "runtime_experimental/ai_sandbox_work",
+  "sandbox_files": [
+    "runtime_experimental/ai_sandbox_work/d108_accepted_proposal.json",
+    "runtime_experimental/ai_sandbox_work/d108_sandbox_proposal_manifest.json",
+    "runtime_experimental/ai_sandbox_work/d108_writer_receipt.json"
+  ],
+  "source_candidate_files": [
+    "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+  ],
+  "actual_apply_executed": false,
+  "candidate_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "canonical_memory_mutated": false
+}
