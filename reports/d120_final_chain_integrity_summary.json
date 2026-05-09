@@ -1,0 +1,38 @@
+{
+  "state": "D120_FINAL_CHAIN_INTEGRITY_SUMMARY",
+  "ok": true,
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "verification_id": "d119-c12c6faf8d0e9f7d",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T09:04:47.742949+00:00",
+  "sealed_range": "D106-D120",
+  "integrity_status": "SEALED_WITH_REAL_APPLY_BY_AI_BLOCKED",
+  "checks": {
+    "d119_ok": true,
+    "test_results_summary_ok": true,
+    "git_state_summary_ok": true,
+    "real_apply_by_ai_blocked": true,
+    "ai_shell_execution_blocked": true,
+    "ai_git_action_blocked": true,
+    "protected_core_mutation_by_ai_blocked": true,
+    "canonical_memory_overwrite_by_ai_blocked": true
+  },
+  "must_remain_false": {
+    "actual_apply_executed_by_ai": false,
+    "route_inserted_by_ai": false,
+    "protected_core_mutated_by_ai": false,
+    "canonical_memory_mutated_by_ai": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "rollback_executed_by_ai": false,
+    "restore_executed_by_ai": false
+  },
+  "final_principle": [
+    "Autonomy may think.",
+    "Autonomy may propose.",
+    "Autonomy may verify.",
+    "Autonomy may not silently execute."
+  ]
+}

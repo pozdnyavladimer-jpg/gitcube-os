@@ -1,0 +1,15 @@
+{
+  "state": "D120_FIRST_RUN_RELEASE_TAG_PLAN",
+  "ok": true,
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "created_at": "2026-05-09T09:04:47.742955+00:00",
+  "tag_plan_only": true,
+  "tag_created_by_ai": false,
+  "tag_pushed_by_ai": false,
+  "recommended_tag": "guarded-autonomy-d106-d120-first-controlled-run",
+  "manual_commands_for_human_only": [
+    "git tag guarded-autonomy-d106-d120-first-controlled-run",
+    "git push origin guarded-autonomy-d106-d120-first-controlled-run"
+  ],
+  "note": "This file documents a recommended manual tag only. D120 does not create or push tags."
+}
