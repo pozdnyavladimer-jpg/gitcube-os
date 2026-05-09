@@ -1,0 +1,182 @@
+{
+  "state": "D123_PROVIDER_CONFIG_MANUAL_ENABLE_SCOPE",
+  "result": "D123_PROVIDER_CONFIG_MANUAL_ENABLE_SCOPE_CREATED",
+  "route": "FIELD_INTENT_PROVIDER_CONFIG_MANUAL_ENABLE_SCOPE",
+  "ok": true,
+  "decision": "PROVIDER_CONFIG_MANUAL_ENABLE_SCOPE_READY",
+  "created_at": "2026-05-09T11:39:07.267489+00:00",
+  "config_id": "d123-71d67a6645229b69",
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d122_report": "reports/d122_operator_dashboard_start_command_scope.json",
+  "provider_secret_placeholder_policy": {
+    "state": "D123_PROVIDER_SECRET_PLACEHOLDER_POLICY",
+    "ok": true,
+    "config_id": "d123-71d67a6645229b69",
+    "dashboard_id": "d122-3004facac59fe539",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T11:39:07.266837+00:00",
+    "policy_mode": "PLACEHOLDER_ONLY_NO_SECRET_READ",
+    "secret_read_now": false,
+    "api_key_read_now": false,
+    "real_provider_enabled_now": false,
+    "allowed_placeholder_names": [
+      "PROVIDER_NAME_PLACEHOLDER",
+      "PROVIDER_MODEL_PLACEHOLDER",
+      "PROVIDER_ENDPOINT_PLACEHOLDER",
+      "PROVIDER_API_KEY_ENV_NAME_PLACEHOLDER"
+    ],
+    "forbidden_values": [
+      "raw api key value",
+      "raw token value",
+      "password",
+      "private key",
+      "secret environment dump"
+    ],
+    "manual_operator_steps_for_later": [
+      "Choose provider name manually",
+      "Choose model name manually",
+      "Store real secret only in local environment outside repository",
+      "Never commit real secrets",
+      "Only D124 may perform a dry ping scope after explicit human review"
+    ]
+  },
+  "network_allowlist_dry_plan": {
+    "state": "D123_NETWORK_ALLOWLIST_DRY_PLAN",
+    "ok": true,
+    "config_id": "d123-71d67a6645229b69",
+    "dashboard_id": "d122-3004facac59fe539",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "created_at": "2026-05-09T11:39:07.266849+00:00",
+    "plan_mode": "DRY_PLAN_ONLY_NO_NETWORK",
+    "network_accessed_now": false,
+    "real_provider_call_now": false,
+    "allowlist_enabled_now": false,
+    "candidate_allowlist_entries": [
+      {
+        "name": "provider_api_endpoint_placeholder",
+        "value": "https://provider.example.invalid/v1",
+        "status": "placeholder_not_enabled"
+      }
+    ],
+    "dry_checks_for_d124": [
+      "confirm provider endpoint placeholder",
+      "confirm secret env name placeholder",
+      "confirm no raw secret in repository",
+      "confirm D124 dry ping scope before any real request",
+      "confirm provider response must be proposal-shaped only"
+    ]
+  },
+  "d124_scope": {
+    "state": "D123_D124_REAL_PROVIDER_DRY_PING_SCOPE",
+    "ok": true,
+    "config_id": "d123-71d67a6645229b69",
+    "dashboard_id": "d122-3004facac59fe539",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T11:39:07.266854+00:00",
+    "allowed_next_gate": "D124_REAL_PROVIDER_DRY_PING_SCOPE",
+    "d124_allowed_to_create": [
+      "real_provider_dry_ping_scope",
+      "provider_request_shape_probe",
+      "provider_response_shape_probe",
+      "d125_provider_response_to_proposal_intake_scope"
+    ],
+    "d124_must_not_execute": [
+      "real_apply_by_ai",
+      "auto_apply",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute_by_ai",
+      "restore_execute_by_ai",
+      "execute_sandbox_candidate_by_ai",
+      "commit_sandbox_candidate_by_ai"
+    ],
+    "d124_must_remain_dry": [
+      "no apply",
+      "no route insertion",
+      "no protected core mutation",
+      "no git action by AI",
+      "provider output must be proposal-shaped JSON only"
+    ],
+    "real_provider_dry_ping_scope_only": true,
+    "human_review_required": true,
+    "real_provider_enabled_after_d123": false,
+    "network_call_executed_after_d123": false,
+    "api_key_read_after_d123": false,
+    "real_apply_allowed_after_d123_by_ai": false,
+    "route_insert_allowed_after_d123_by_ai": false,
+    "protected_core_mutation_allowed_after_d123_by_ai": false,
+    "required_phrase_for_later_gate": "APPROVE_D124_REAL_PROVIDER_DRY_PING_SCOPE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "provider_config_manual_enable_scope_only": true,
+    "placeholder_policy_only": true,
+    "network_allowlist_dry_plan_only": true,
+    "real_provider_enabled_now": false,
+    "real_provider_called_now": false,
+    "approval_for_d124_dry_ping_scope_only": true,
+    "approval_for_real_apply_by_ai": false,
+    "candidate_execution_allowed_by_ai": false,
+    "commands_executed_by_ai": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "PROVIDER_CONFIG_MANUAL_ENABLE_SCOPE_READY",
+    "config_id": "d123-71d67a6645229b69",
+    "dashboard_id": "d122-3004facac59fe539",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "provider_config_status": "PLACEHOLDER_ONLY",
+    "real_provider_status": "DISABLED",
+    "network_status": "DRY_PLAN_ONLY",
+    "secret_status": "PLACEHOLDER_ONLY_NOT_READ",
+    "real_apply_by_ai_status": "BLOCKED",
+    "approval_scope": "D124_REAL_PROVIDER_DRY_PING_SCOPE_ONLY",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D124_REAL_PROVIDER_DRY_PING_SCOPE"
+  },
+  "success_condition": {
+    "provider_config_scope_created": true,
+    "secret_placeholder_policy_created": true,
+    "network_allowlist_dry_plan_created": true,
+    "d124_scope_created": true,
+    "real_provider_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "actual_apply_executed_by_ai": false,
+    "candidate_executed_by_ai": false,
+    "protected_core_untouched_by_ai": true,
+    "next_step": "D124 may create real provider dry ping scope only."
+  }
+}

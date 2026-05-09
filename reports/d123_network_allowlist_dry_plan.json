@@ -1,0 +1,26 @@
+{
+  "state": "D123_NETWORK_ALLOWLIST_DRY_PLAN",
+  "ok": true,
+  "config_id": "d123-71d67a6645229b69",
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "created_at": "2026-05-09T11:39:07.266849+00:00",
+  "plan_mode": "DRY_PLAN_ONLY_NO_NETWORK",
+  "network_accessed_now": false,
+  "real_provider_call_now": false,
+  "allowlist_enabled_now": false,
+  "candidate_allowlist_entries": [
+    {
+      "name": "provider_api_endpoint_placeholder",
+      "value": "https://provider.example.invalid/v1",
+      "status": "placeholder_not_enabled"
+    }
+  ],
+  "dry_checks_for_d124": [
+    "confirm provider endpoint placeholder",
+    "confirm secret env name placeholder",
+    "confirm no raw secret in repository",
+    "confirm D124 dry ping scope before any real request",
+    "confirm provider response must be proposal-shaped only"
+  ]
+}
