@@ -1,0 +1,36 @@
+{
+  "state": "D116_MANUAL_APPLY_PREFLIGHT_CHECKLIST",
+  "ok": true,
+  "window_id": "d116-9b3bcf3ec89b5cc3",
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "decision_id": "d114-99b5d3c4cd3b941e",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T07:16:58.146553+00:00",
+  "manual_window_mode": "LOCAL_OPERATOR_REVIEW_ONLY",
+  "required_phrase_from_d115": "APPROVE_D116_MANUAL_APPLY_WINDOW_SCOPE_ONLY",
+  "lock_state": "REAL_APPLY_STILL_LOCKED",
+  "preflight_items": [
+    "Confirm D115 final phrase scope exists",
+    "Confirm real apply is still locked",
+    "Confirm command packet is documentation-only",
+    "Confirm operator must run commands manually, not AI",
+    "Confirm no shell command is executed by this module",
+    "Confirm no route insertion is performed",
+    "Confirm no protected-core mutation is performed",
+    "Confirm rollback/restore is not executed automatically",
+    "Prepare D117 manual apply command review scope only"
+  ],
+  "must_remain_false": {
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "external_ai_called": false,
+    "network_accessed": false,
+    "candidate_executed": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false
+  },
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}

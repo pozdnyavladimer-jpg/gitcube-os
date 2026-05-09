@@ -1,0 +1,35 @@
+{
+  "state": "D116_OPERATOR_LOCAL_COMMAND_PACKET",
+  "ok": true,
+  "window_id": "d116-9b3bcf3ec89b5cc3",
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "decision_id": "d114-99b5d3c4cd3b941e",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T07:16:58.146575+00:00",
+  "packet_mode": "DOCUMENTATION_ONLY_NOT_EXECUTED",
+  "commands_are_not_executed_by_ai": true,
+  "human_may_run_manually_after_d117": true,
+  "commands": [
+    "git status --short",
+    "python -m unittest discover -s tests -v",
+    "python -m py_compile runtime_experimental/*.py",
+    "cat reports/d115_final_pre_apply_lock_report.json",
+    "cat reports/d116_manual_apply_preflight_checklist.json",
+    "git diff --stat"
+  ],
+  "blocked_commands": [
+    "git apply",
+    "git commit",
+    "git push",
+    "route insert",
+    "direct protected-core edit",
+    "execute sandbox candidate",
+    "rollback execute",
+    "restore execute",
+    "external AI/network call"
+  ],
+  "real_apply_command_included": false,
+  "shell_executed_by_ai": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}
