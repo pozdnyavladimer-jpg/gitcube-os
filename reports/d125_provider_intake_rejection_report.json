@@ -1,0 +1,17 @@
+{
+  "state": "D125_PROVIDER_INTAKE_REJECTION_REPORT",
+  "ok": true,
+  "intake_id": "d125-164611256079da18",
+  "created_at": "2026-05-09T12:22:13.527432+00:00",
+  "report_mode": "REJECTION_REPORT_TEMPLATE_ONLY",
+  "provider_response_rejected": false,
+  "rejection_reasons": [],
+  "accepted_for_d126_sandbox_candidate_scope": true,
+  "human_review_required": true,
+  "real_provider_called": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}

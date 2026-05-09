@@ -1,0 +1,69 @@
+{
+  "state": "D125_PROVIDER_RESPONSE_SCHEMA_VALIDATOR",
+  "ok": true,
+  "intake_id": "d125-164611256079da18",
+  "ping_id": "d124-6c778b3e4a4d72cc",
+  "config_id": "d123-71d67a6645229b69",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T12:22:13.527410+00:00",
+  "validator_mode": "PROPOSAL_SHAPE_ONLY_NO_EXECUTION",
+  "required_fields": [
+    "proposal_id",
+    "proposal_type",
+    "intent",
+    "target_scope",
+    "candidate_files",
+    "risk_flags",
+    "guardrails",
+    "validation_plan",
+    "requires_human_review"
+  ],
+  "allowed_proposal_types": [
+    "documentation_proposal",
+    "test_proposal",
+    "sandbox_patch_proposal",
+    "analysis_proposal",
+    "schema_proposal"
+  ],
+  "allowed_candidate_prefixes": [
+    "runtime_experimental/ai_sandbox_work/",
+    "reports/",
+    "tests/",
+    "docs/"
+  ],
+  "blocked_candidate_prefixes": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "forbidden_output_fields": [
+    "api_key",
+    "api_secret",
+    "token",
+    "password",
+    "raw_shell_command",
+    "shell_command",
+    "subprocess",
+    "exec",
+    "eval",
+    "auto_apply",
+    "apply_now",
+    "git_commit",
+    "git_push",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "direct_core_edit"
+  ],
+  "response_shape_valid": true,
+  "response_shape_errors": [],
+  "real_provider_called": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "actual_apply_executed": false,
+  "candidate_executed": false
+}
