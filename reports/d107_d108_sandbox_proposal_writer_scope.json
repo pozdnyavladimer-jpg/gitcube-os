@@ -1,0 +1,52 @@
+{
+  "state": "D107_D108_SANDBOX_PROPOSAL_WRITER_SCOPE",
+  "ok": true,
+  "validator_id": "d107-280c064642696d3e",
+  "created_at": "2026-05-09T03:51:18.761786+00:00",
+  "allowed_next_gate": "D108_SANDBOX_PROPOSAL_WRITER",
+  "accepted_proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "d108_allowed_to_create": [
+    "sandbox_proposal_writer",
+    "sandbox_proposal_manifest",
+    "sandbox_candidate_copy",
+    "sandbox_writer_receipt"
+  ],
+  "d108_must_not_execute": [
+    "real_apply",
+    "auto_apply",
+    "route_insert",
+    "protected_core_mutation",
+    "canonical_memory_overwrite",
+    "external_ai_network_call",
+    "shell_exec",
+    "subprocess_exec",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute",
+    "restore_execute",
+    "delete_runtime_candidate",
+    "call_real_ai_provider",
+    "read_api_key",
+    "write_patch_to_core",
+    "write_patch_to_runtime",
+    "write_patch_to_app_orchestration",
+    "execute_candidate",
+    "commit_candidate"
+  ],
+  "allowed_write_prefixes": [
+    "runtime_experimental/ai_sandbox_work/",
+    "reports/"
+  ],
+  "blocked_write_prefixes": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "sandbox_write_allowed_after_d107": true,
+  "actual_apply_allowed_after_d107": false,
+  "route_insert_allowed_after_d107": false,
+  "protected_core_mutation_allowed_after_d107": false,
+  "required_phrase_for_later_gate": "APPROVE_D108_SANDBOX_PROPOSAL_WRITER_ONLY"
+}

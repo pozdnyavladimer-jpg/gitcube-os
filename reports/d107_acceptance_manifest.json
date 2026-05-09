@@ -1,0 +1,18 @@
+{
+  "state": "D107_ACCEPTANCE_MANIFEST",
+  "ok": true,
+  "validator_id": "d107-280c064642696d3e",
+  "created_at": "2026-05-09T03:51:18.761768+00:00",
+  "accepted_proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "accepted_proposal_type": "analysis_proposal",
+  "accepted_target_scope": "runtime_experimental/ai_sandbox_work/",
+  "accepted_candidate_files": [
+    "runtime_experimental/ai_sandbox_work/proposal_manifest.json"
+  ],
+  "accepted_for": "D108_SANDBOX_PROPOSAL_WRITER_ONLY",
+  "actual_apply_executed": false,
+  "sandbox_write_executed": false,
+  "protected_core_mutated": false,
+  "route_inserted": false,
+  "requires_human_review": true
+}
