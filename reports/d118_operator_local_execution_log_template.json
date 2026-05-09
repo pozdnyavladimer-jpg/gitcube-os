@@ -1,0 +1,47 @@
+{
+  "state": "D118_OPERATOR_LOCAL_EXECUTION_LOG_TEMPLATE",
+  "ok": true,
+  "evidence_id": "d118-8003c4050c9dba4a",
+  "review_id": "d117-2ee58a66bb55dfb5",
+  "window_id": "d116-9b3bcf3ec89b5cc3",
+  "phrase_id": "d115-e96b5e8062ee5537",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T08:29:43.609942+00:00",
+  "template_mode": "HUMAN_LOCAL_EVIDENCE_TEMPLATE_ONLY",
+  "instructions": [
+    "Only a human operator may fill this evidence after local execution.",
+    "Do not mark execution as complete unless commands were run locally by the operator.",
+    "Capture command, timestamp, exit code, and short output summary.",
+    "Do not include secrets, tokens, API keys, or private environment values.",
+    "D118 script itself does not execute any command."
+  ],
+  "commands_to_capture_from_review": [
+    "git status --short",
+    "python -m unittest discover -s tests -v",
+    "python -m py_compile runtime_experimental/*.py",
+    "cat reports/d115_final_pre_apply_lock_report.json",
+    "cat reports/d116_manual_apply_preflight_checklist.json",
+    "git diff --stat"
+  ],
+  "required_evidence_fields": [
+    "operator",
+    "local_timestamp",
+    "working_tree_before",
+    "commands_run",
+    "exit_codes",
+    "working_tree_after",
+    "tests_summary",
+    "manual_notes"
+  ],
+  "forbidden_evidence_fields": [
+    "api_key",
+    "api_secret",
+    "token",
+    "password",
+    "private_key",
+    "raw_secret_env"
+  ],
+  "shell_executed_by_ai": false,
+  "actual_apply_executed_by_ai": false,
+  "candidate_executed_by_ai": false
+}
