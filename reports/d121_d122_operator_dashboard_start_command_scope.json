@@ -1,0 +1,38 @@
+{
+  "state": "D121_D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE",
+  "ok": true,
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-09T09:18:01.399259+00:00",
+  "allowed_next_gate": "D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE",
+  "d122_allowed_to_create": [
+    "operator_dashboard_start_command",
+    "single_entry_prompt_to_proposal_flow",
+    "dashboard_preflight_checklist",
+    "d123_provider_config_manual_enable_scope"
+  ],
+  "d122_must_not_execute": [
+    "real_apply_by_ai",
+    "auto_apply",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "external_ai_network_call_now",
+    "shell_exec_from_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai",
+    "execute_sandbox_candidate_by_ai",
+    "commit_sandbox_candidate_by_ai"
+  ],
+  "operator_dashboard_scope_only": true,
+  "human_review_required": true,
+  "real_provider_enablement_allowed_now": false,
+  "real_apply_allowed_after_d121_by_ai": false,
+  "route_insert_allowed_after_d121_by_ai": false,
+  "protected_core_mutation_allowed_after_d121_by_ai": false,
+  "sandbox_candidate_execution_allowed_after_d121_by_ai": false,
+  "required_phrase_for_later_gate": "APPROVE_D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE_ONLY"
+}

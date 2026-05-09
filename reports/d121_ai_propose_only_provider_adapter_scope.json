@@ -1,0 +1,345 @@
+{
+  "state": "D121_AI_PROPOSE_ONLY_PROVIDER_ADAPTER_SCOPE",
+  "result": "D121_AI_PROPOSE_ONLY_PROVIDER_ADAPTER_CREATED",
+  "route": "FIELD_INTENT_AI_PROPOSE_ONLY_PROVIDER_ADAPTER",
+  "ok": true,
+  "decision": "AI_PROPOSE_ONLY_PROVIDER_ADAPTER_READY",
+  "created_at": "2026-05-09T09:18:01.400104+00:00",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d120_report": "reports/d120_first_controlled_run_seal_scope.json",
+  "provider_adapter_contract": {
+    "state": "D121_PROVIDER_ADAPTER_CONTRACT",
+    "ok": true,
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T09:18:01.399107+00:00",
+    "mode": "AI_PROVIDER_PROPOSE_ONLY",
+    "real_provider_enabled_now": false,
+    "mock_provider_only": true,
+    "network_allowed_now": false,
+    "secrets_allowed_now": false,
+    "api_key_read_allowed_now": false,
+    "input_contract": {
+      "required_fields": [
+        "request_id",
+        "human_prompt",
+        "target_scope",
+        "allowed_paths",
+        "blocked_paths",
+        "expected_output_contract"
+      ],
+      "blocked_fields": [
+        "api_key",
+        "api_secret",
+        "token",
+        "password",
+        "raw_shell_command",
+        "shell_command",
+        "subprocess",
+        "exec",
+        "eval",
+        "auto_apply",
+        "apply_now",
+        "git_commit",
+        "git_push",
+        "route_insert",
+        "protected_core_mutation",
+        "canonical_memory_overwrite",
+        "direct_core_edit"
+      ],
+      "max_prompt_chars": 12000
+    },
+    "output_contract": {
+      "format": "json",
+      "required_fields": [
+        "proposal_id",
+        "proposal_type",
+        "intent",
+        "target_scope",
+        "candidate_files",
+        "risk_flags",
+        "guardrails",
+        "validation_plan",
+        "requires_human_review"
+      ],
+      "allowed_proposal_types": [
+        "documentation_proposal",
+        "test_proposal",
+        "sandbox_patch_proposal",
+        "analysis_proposal",
+        "schema_proposal"
+      ],
+      "forbidden_fields": [
+        "api_key",
+        "api_secret",
+        "token",
+        "password",
+        "raw_shell_command",
+        "shell_command",
+        "subprocess",
+        "exec",
+        "eval",
+        "auto_apply",
+        "apply_now",
+        "git_commit",
+        "git_push",
+        "route_insert",
+        "protected_core_mutation",
+        "canonical_memory_overwrite",
+        "direct_core_edit"
+      ],
+      "forbidden_actions": [
+        "real_apply",
+        "auto_apply",
+        "route_insert",
+        "protected_core_mutation",
+        "canonical_memory_overwrite",
+        "external_ai_network_call_now",
+        "shell_exec",
+        "subprocess_exec",
+        "git_commit_by_ai",
+        "git_push_by_ai",
+        "rollback_execute",
+        "restore_execute",
+        "delete_runtime_candidate"
+      ]
+    },
+    "allowed_paths_for_proposals_only": [
+      "runtime_experimental/ai_sandbox_work/",
+      "reports/",
+      "tests/",
+      "docs/"
+    ],
+    "blocked_paths": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "provider_must_not": [
+      "read secrets",
+      "call network from this module",
+      "execute shell",
+      "create subprocess",
+      "apply patches",
+      "mutate protected core",
+      "commit or push git",
+      "route insert"
+    ]
+  },
+  "mock_provider_request_response": {
+    "state": "D121_MOCK_PROVIDER_REQUEST_RESPONSE",
+    "ok": true,
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "created_at": "2026-05-09T09:18:01.399131+00:00",
+    "mock_only": true,
+    "real_provider_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "request": {
+      "request_id": "mock-d121-request",
+      "human_prompt": "Create a harmless documentation proposal for the guarded autonomy chain.",
+      "target_scope": "docs/",
+      "allowed_paths": [
+        "runtime_experimental/ai_sandbox_work/",
+        "reports/",
+        "tests/",
+        "docs/"
+      ],
+      "blocked_paths": [
+        "app/orchestration/",
+        "core/",
+        "runtime/",
+        "bridges/",
+        "memory/"
+      ],
+      "expected_output_contract": {
+        "format": "json",
+        "required_fields": [
+          "proposal_id",
+          "proposal_type",
+          "intent",
+          "target_scope",
+          "candidate_files",
+          "risk_flags",
+          "guardrails",
+          "validation_plan",
+          "requires_human_review"
+        ],
+        "allowed_proposal_types": [
+          "documentation_proposal",
+          "test_proposal",
+          "sandbox_patch_proposal",
+          "analysis_proposal",
+          "schema_proposal"
+        ],
+        "forbidden_fields": [
+          "api_key",
+          "api_secret",
+          "token",
+          "password",
+          "raw_shell_command",
+          "shell_command",
+          "subprocess",
+          "exec",
+          "eval",
+          "auto_apply",
+          "apply_now",
+          "git_commit",
+          "git_push",
+          "route_insert",
+          "protected_core_mutation",
+          "canonical_memory_overwrite",
+          "direct_core_edit"
+        ],
+        "forbidden_actions": [
+          "real_apply",
+          "auto_apply",
+          "route_insert",
+          "protected_core_mutation",
+          "canonical_memory_overwrite",
+          "external_ai_network_call_now",
+          "shell_exec",
+          "subprocess_exec",
+          "git_commit_by_ai",
+          "git_push_by_ai",
+          "rollback_execute",
+          "restore_execute",
+          "delete_runtime_candidate"
+        ]
+      }
+    },
+    "response": {
+      "proposal_id": "d121-mock-proposal",
+      "proposal_type": "documentation_proposal",
+      "intent": "Document the sealed D106-D120 guarded autonomy cycle.",
+      "target_scope": "docs/",
+      "candidate_files": [
+        {
+          "path": "docs/guarded_autonomy_first_controlled_run.md",
+          "operation": "create",
+          "content_summary": "Human-readable summary of the sealed propose-only guarded autonomy cycle."
+        }
+      ],
+      "risk_flags": [],
+      "guardrails": {
+        "propose_only": true,
+        "requires_human_review": true,
+        "no_shell": true,
+        "no_network": true,
+        "no_secrets": true,
+        "no_apply": true,
+        "no_git_actions": true,
+        "routing_changes_blocked": true,
+        "protected_area_changes_blocked": true
+      },
+      "validation_plan": [
+        "validate schema",
+        "write only to sandbox/docs/report path",
+        "run tests before any later human review"
+      ],
+      "requires_human_review": true
+    },
+    "forbidden_hits": [],
+    "response_valid_shape": true
+  },
+  "d122_scope": {
+    "state": "D121_D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE",
+    "ok": true,
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-09T09:18:01.399259+00:00",
+    "allowed_next_gate": "D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE",
+    "d122_allowed_to_create": [
+      "operator_dashboard_start_command",
+      "single_entry_prompt_to_proposal_flow",
+      "dashboard_preflight_checklist",
+      "d123_provider_config_manual_enable_scope"
+    ],
+    "d122_must_not_execute": [
+      "real_apply_by_ai",
+      "auto_apply",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "external_ai_network_call_now",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute_by_ai",
+      "restore_execute_by_ai",
+      "execute_sandbox_candidate_by_ai",
+      "commit_sandbox_candidate_by_ai"
+    ],
+    "operator_dashboard_scope_only": true,
+    "human_review_required": true,
+    "real_provider_enablement_allowed_now": false,
+    "real_apply_allowed_after_d121_by_ai": false,
+    "route_insert_allowed_after_d121_by_ai": false,
+    "protected_core_mutation_allowed_after_d121_by_ai": false,
+    "sandbox_candidate_execution_allowed_after_d121_by_ai": false,
+    "required_phrase_for_later_gate": "APPROVE_D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "provider_adapter_scope_only": true,
+    "real_provider_enabled_now": false,
+    "mock_provider_only": true,
+    "proposal_output_only": true,
+    "approval_for_real_apply_by_ai": false,
+    "candidate_execution_allowed_by_ai": false,
+    "commands_executed_by_ai": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "AI_PROPOSE_ONLY_PROVIDER_ADAPTER_READY",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "provider_mode": "MOCK_PROPOSE_ONLY",
+    "real_provider_status": "DISABLED",
+    "network_status": "BLOCKED",
+    "real_apply_by_ai_status": "BLOCKED",
+    "approval_scope": "D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE_ONLY",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D122_OPERATOR_DASHBOARD_START_COMMAND_SCOPE"
+  },
+  "success_condition": {
+    "provider_adapter_scope_created": true,
+    "provider_contract_created": true,
+    "mock_exchange_created": true,
+    "d122_scope_created": true,
+    "real_provider_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "actual_apply_executed_by_ai": false,
+    "candidate_executed_by_ai": false,
+    "protected_core_untouched_by_ai": true,
+    "next_step": "D122 may create operator dashboard/start command scope only."
+  }
+}
