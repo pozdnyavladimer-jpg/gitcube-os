@@ -30,5 +30,7 @@
   "network_accessed": false,
   "api_key_read": false,
   "secret_read": false,
-  "human_review_required": true
+  "human_review_required": true,
+  "write_materialization_id": "d134-b539ab883022d810",
+  "real_apply_executed": false
 }

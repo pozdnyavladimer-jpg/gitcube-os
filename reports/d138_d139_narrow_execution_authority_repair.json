@@ -1,0 +1,54 @@
+{
+  "state": "D138_D139_NARROW_EXECUTION_AUTHORITY_REPAIR",
+  "result": "D138_D139_NARROW_EXECUTION_AUTHORITY_REPAIR_CREATED",
+  "ok": true,
+  "decision": "D138_D139_NARROW_EXECUTION_AUTHORITY_REPAIRED",
+  "created_at": "2026-05-10T09:39:07.913724+00:00",
+  "repair_id": "d138-d139-repair-2601d78d9d91beca",
+  "source_files": [
+    "reports/d138_sandbox_candidate_human_execution_intent_scope.json",
+    "reports/d138_sandbox_candidate_human_execution_intent_record.json",
+    "reports/d138_sandbox_candidate_execution_authority_guard.json",
+    "reports/d138_d139_sandbox_candidate_controlled_execution_run_scope.json"
+  ],
+  "rewritten_files": [
+    "reports/d138_sandbox_candidate_human_execution_intent_scope.json",
+    "reports/d138_sandbox_candidate_human_execution_intent_record.json",
+    "reports/d138_sandbox_candidate_execution_authority_guard.json",
+    "reports/d138_d139_sandbox_candidate_controlled_execution_run_scope.json"
+  ],
+  "guardrails": {
+    "candidate_executed_now": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "shell_executed_by_ai": false,
+    "git_action_by_ai": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "repair_only": true,
+    "d139_may_be_retried_after_repair": true
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "repair_status": "NARROW_AUTHORITY_REPAIRED",
+    "candidate_status": "MATERIALIZED_VALIDATED_NOT_EXECUTED_NOT_APPLIED",
+    "execution_status": "NOT_EXECUTED",
+    "real_apply_by_ai_status": "BLOCKED",
+    "route_insert_status": "BLOCKED",
+    "network_status": "NOT_ACCESSED",
+    "secret_status": "NOT_READ",
+    "shell_status": "NOT_EXECUTED",
+    "git_action_by_ai_status": "BLOCKED",
+    "approval_scope": "D139_SANDBOX_CANDIDATE_CONTROLLED_EXECUTION_RUN_SCOPE_ONLY",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D139_SANDBOX_CANDIDATE_CONTROLLED_EXECUTION_RUN_SCOPE"
+  }
+}

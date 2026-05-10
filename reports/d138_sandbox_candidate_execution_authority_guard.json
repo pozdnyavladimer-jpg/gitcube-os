@@ -22,7 +22,10 @@
     "rollback_execute_by_ai",
     "restore_execute_by_ai",
     "network_provider_call_by_ai",
-    "secret_read_by_ai"
+    "secret_read_by_ai",
+    "shell_exec_from_ai_outside_declared_runner",
+    "network_provider_call",
+    "secret_read"
   ],
   "sandbox_execution_allowed_now": false,
   "sandbox_execution_allowed_next_gate_only": true,
@@ -37,5 +40,17 @@
   "network_accessed": false,
   "api_key_read": false,
   "secret_read": false,
-  "human_review_required": true
+  "human_review_required": true,
+  "authority_mode": "HUMAN_INTENT_REQUIRED_SANDBOX_EXECUTION_ONLY_NO_APPLY",
+  "preflight_id": "d136-77fbeb7174a0da62",
+  "validation_id": "d135-235208e5f40a1ad8",
+  "write_materialization_id": "d134-b539ab883022d810",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "allow_real_apply": false,
+  "allow_route_insert": false,
+  "allow_protected_core_mutation": false,
+  "allow_network": false,
+  "allow_secret_read": false,
+  "allow_shell_exec": false,
+  "allow_git_action_by_ai": false
 }
