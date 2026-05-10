@@ -1,0 +1,43 @@
+{
+  "state": "D127_D128_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE",
+  "ok": true,
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "intake_id": "d125-164611256079da18",
+  "ping_id": "d124-6c778b3e4a4d72cc",
+  "config_id": "d123-71d67a6645229b69",
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T04:28:49.782152+00:00",
+  "allowed_next_gate": "D128_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE",
+  "d128_allowed_to_create": [
+    "sandbox_candidate_test_plan_scope",
+    "sandbox_candidate_test_matrix",
+    "sandbox_candidate_no_touch_assertions",
+    "d129_sandbox_candidate_dry_test_runner_scope"
+  ],
+  "d128_must_not_execute": [
+    "execute_sandbox_candidate_by_ai",
+    "commit_sandbox_candidate_by_ai",
+    "real_apply_by_ai",
+    "auto_apply",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "shell_exec_from_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai"
+  ],
+  "sandbox_candidate_test_plan_scope_only": true,
+  "human_review_required": true,
+  "candidate_written_after_d127": false,
+  "candidate_executed_after_d127_by_ai": false,
+  "real_apply_allowed_after_d127_by_ai": false,
+  "route_insert_allowed_after_d127_by_ai": false,
+  "protected_core_mutation_allowed_after_d127_by_ai": false,
+  "required_phrase_for_later_gate": "APPROVE_D128_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE_ONLY"
+}

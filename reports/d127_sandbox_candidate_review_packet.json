@@ -1,0 +1,44 @@
+{
+  "state": "D127_SANDBOX_CANDIDATE_REVIEW_PACKET",
+  "ok": true,
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "intake_id": "d125-164611256079da18",
+  "ping_id": "d124-6c778b3e4a4d72cc",
+  "config_id": "d123-71d67a6645229b69",
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T04:28:49.782128+00:00",
+  "packet_mode": "HUMAN_REVIEW_PACKET_ONLY_NO_EXECUTION",
+  "candidate_status": "PLANNED_ONLY_NOT_WRITTEN_NOT_EXECUTED",
+  "write_plan_reference": "reports/d126_sandbox_candidate_write_plan.json",
+  "static_scan_reference": "reports/d126_sandbox_candidate_static_scan.json",
+  "candidate_root": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/",
+  "planned_files": [
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+      "operation": "create",
+      "purpose": "proposal intake manifest for later human review"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+      "operation": "create",
+      "purpose": "human-readable sandbox candidate summary"
+    }
+  ],
+  "static_scan_ok": true,
+  "review_questions": [
+    "Does the sandbox candidate stay inside allowed sandbox/report/test/doc scope?",
+    "Does the plan avoid protected core/runtime/memory/route mutation?",
+    "Does the plan avoid shell, network, secret, apply, rollback, restore, and git actions?",
+    "Is it safe to proceed to D128 test-plan scope only?"
+  ],
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}
