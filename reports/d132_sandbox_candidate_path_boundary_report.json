@@ -1,0 +1,46 @@
+{
+  "state": "D132_SANDBOX_CANDIDATE_PATH_BOUNDARY_REPORT",
+  "ok": true,
+  "static_validation_id": "d132-48abfd10aa00812e",
+  "write_once_id": "d131-c6f9e79dd9187200",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T07:03:59.973850+00:00",
+  "boundary_mode": "PATH_BOUNDARY_STATIC_ONLY_NO_FILESYSTEM_SCAN",
+  "boundary_status": "STATIC_PATH_BOUNDARY_PASS",
+  "allowed_candidate_write_root": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/",
+  "static_paths_checked": [
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_payload.json"
+  ],
+  "blocked_paths": [],
+  "protected_targets": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "protected_targets_status": {
+    "app/orchestration/": "OUT_OF_CANDIDATE_WRITE_SCOPE",
+    "core/": "OUT_OF_CANDIDATE_WRITE_SCOPE",
+    "runtime/": "OUT_OF_CANDIDATE_WRITE_SCOPE",
+    "bridges/": "OUT_OF_CANDIDATE_WRITE_SCOPE",
+    "memory/": "OUT_OF_CANDIDATE_WRITE_SCOPE"
+  },
+  "filesystem_scan_executed": false,
+  "git_diff_executed": false,
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "canonical_memory_mutated": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "human_review_required": true
+}
