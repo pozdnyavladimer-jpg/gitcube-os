@@ -1,0 +1,49 @@
+{
+  "state": "D142_D143_SANDBOX_CANDIDATE_GUARDED_APPLY_SCOPE",
+  "ok": true,
+  "intent_id": "d142-6a4c97fc24edd059",
+  "preflight_id": "d141-5db0a75f4f15f19c",
+  "verification_id": "d140-9f7a2c328ee9808d",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T10:46:23.606610+00:00",
+  "allowed_next_gate": "D143_SANDBOX_CANDIDATE_GUARDED_APPLY_SCOPE",
+  "d143_allowed_to_create": [
+    "sandbox_candidate_guarded_apply_scope",
+    "sandbox_candidate_guarded_apply_plan",
+    "sandbox_candidate_guarded_apply_receipt",
+    "d144_sandbox_candidate_post_apply_verification_scope"
+  ],
+  "d143_allowed_to_apply": [
+    "guarded_candidate_changes_declared_in_sandbox_payload_only_if_operator_runs_d143_boot"
+  ],
+  "d143_must_not_execute": [
+    "auto_apply_by_ai",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "shell_exec_from_ai",
+    "external_network_call_by_ai",
+    "secret_read_by_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai",
+    "candidate_reexecution_by_ai"
+  ],
+  "sandbox_candidate_guarded_apply_scope_only": true,
+  "human_review_required": true,
+  "candidate_executed_in_sandbox_after_d139": true,
+  "candidate_executed_after_d142_by_ai": false,
+  "guarded_apply_allowed_after_d142_operator_only": true,
+  "real_apply_allowed_after_d142_by_ai": false,
+  "auto_apply_allowed_after_d142_by_ai": false,
+  "route_insert_allowed_after_d142_by_ai": false,
+  "protected_core_mutation_allowed_after_d142_by_ai": false,
+  "network_allowed_after_d142_by_ai": false,
+  "secret_read_allowed_after_d142_by_ai": false,
+  "shell_allowed_after_d142_by_ai": false,
+  "git_action_allowed_after_d142_by_ai": false,
+  "required_phrase_for_later_gate": "APPROVE_D142_SANDBOX_CANDIDATE_HUMAN_APPLY_INTENT_SCOPE_ONLY"
+}
