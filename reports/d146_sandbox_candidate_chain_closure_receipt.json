@@ -1,0 +1,32 @@
+{
+  "state": "D146_SANDBOX_CANDIDATE_CHAIN_CLOSURE_RECEIPT",
+  "ok": true,
+  "archive_id": "d146-6c0e5dd052e0312a",
+  "audit_id": "d145-ed9a25870efefd73",
+  "verification_id": "d144-0edb8418488842cf",
+  "apply_id": "d143-6f2508afb827b120",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "created_at": "2026-05-10T11:38:06.965506+00:00",
+  "closure_mode": "SANDBOX_CHAIN_CLOSURE_RECEIPT_ONLY_NO_PROMOTION",
+  "closure_status": "SANDBOX_CHAIN_ARCHIVED_READY_FOR_PROMOTION_DECISION",
+  "chain_summary": [
+    "D139 sandbox execution completed",
+    "D140 post execution verified",
+    "D141 apply preflight created",
+    "D142 human apply intent recorded",
+    "D143 sandbox guarded apply evidence created",
+    "D144 post apply verified",
+    "D145 final audit ledger created",
+    "D146 archive manifest created"
+  ],
+  "candidate_executed_again_now": false,
+  "real_core_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}

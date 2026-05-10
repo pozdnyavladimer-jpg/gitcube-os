@@ -1,0 +1,136 @@
+{
+  "state": "D146_SANDBOX_CANDIDATE_ARCHIVE_MANIFEST",
+  "ok": true,
+  "archive_id": "d146-6c0e5dd052e0312a",
+  "audit_id": "d145-ed9a25870efefd73",
+  "verification_id": "d144-0edb8418488842cf",
+  "apply_id": "d143-6f2508afb827b120",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T11:38:06.965471+00:00",
+  "archive_mode": "SANDBOX_CANDIDATE_ARCHIVE_MANIFEST_ONLY_NO_CORE_APPLY",
+  "archive_status": "ARCHIVE_MANIFEST_CREATED_NOT_COMPRESSED_NOT_UPLOADED",
+  "archive_items": [
+    {
+      "path": "reports/d139_sandbox_candidate_controlled_execution_run_scope.json",
+      "present": true,
+      "size_bytes": 9782
+    },
+    {
+      "path": "reports/d139_sandbox_candidate_execution_run_result.json",
+      "present": true,
+      "size_bytes": 2040
+    },
+    {
+      "path": "reports/d139_sandbox_candidate_execution_safety_receipt.json",
+      "present": true,
+      "size_bytes": 1658
+    },
+    {
+      "path": "reports/d140_sandbox_candidate_post_execution_verification_scope.json",
+      "present": true,
+      "size_bytes": 7280
+    },
+    {
+      "path": "reports/d140_sandbox_candidate_post_execution_verification_report.json",
+      "present": true,
+      "size_bytes": 1104
+    },
+    {
+      "path": "reports/d140_sandbox_candidate_execution_integrity_receipt.json",
+      "present": true,
+      "size_bytes": 1159
+    },
+    {
+      "path": "reports/d141_sandbox_candidate_apply_preflight_scope.json",
+      "present": true,
+      "size_bytes": 7374
+    },
+    {
+      "path": "reports/d141_sandbox_candidate_apply_preflight_report.json",
+      "present": true,
+      "size_bytes": 1161
+    },
+    {
+      "path": "reports/d141_sandbox_candidate_apply_blockers.json",
+      "present": true,
+      "size_bytes": 1091
+    },
+    {
+      "path": "reports/d142_sandbox_candidate_human_apply_intent_scope.json",
+      "present": true,
+      "size_bytes": 8561
+    },
+    {
+      "path": "reports/d142_sandbox_candidate_human_apply_intent_record.json",
+      "present": true,
+      "size_bytes": 1403
+    },
+    {
+      "path": "reports/d142_sandbox_candidate_apply_authority_guard.json",
+      "present": true,
+      "size_bytes": 1490
+    },
+    {
+      "path": "reports/d143_sandbox_candidate_guarded_apply_scope.json",
+      "present": true,
+      "size_bytes": 8633
+    },
+    {
+      "path": "reports/d143_sandbox_candidate_guarded_apply_plan.json",
+      "present": true,
+      "size_bytes": 1602
+    },
+    {
+      "path": "reports/d143_sandbox_candidate_guarded_apply_receipt.json",
+      "present": true,
+      "size_bytes": 1347
+    },
+    {
+      "path": "reports/d144_sandbox_candidate_post_apply_verification_scope.json",
+      "present": true,
+      "size_bytes": 8129
+    },
+    {
+      "path": "reports/d144_sandbox_candidate_post_apply_verification_report.json",
+      "present": true,
+      "size_bytes": 1273
+    },
+    {
+      "path": "reports/d144_sandbox_candidate_apply_integrity_receipt.json",
+      "present": true,
+      "size_bytes": 1388
+    },
+    {
+      "path": "reports/d145_sandbox_candidate_final_audit_scope.json",
+      "present": true,
+      "size_bytes": 12186
+    },
+    {
+      "path": "reports/d145_sandbox_candidate_final_audit_ledger.json",
+      "present": true,
+      "size_bytes": 4496
+    },
+    {
+      "path": "reports/d145_sandbox_candidate_replay_index.json",
+      "present": true,
+      "size_bytes": 2220
+    }
+  ],
+  "archive_items_total": 21,
+  "archive_items_present": 21,
+  "source_ledger_state": "D145_SANDBOX_CANDIDATE_FINAL_AUDIT_LEDGER",
+  "source_replay_index_state": "D145_SANDBOX_CANDIDATE_REPLAY_INDEX",
+  "candidate_executed_again_now": false,
+  "sandbox_apply_replayed_now": false,
+  "real_apply_executed": false,
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}

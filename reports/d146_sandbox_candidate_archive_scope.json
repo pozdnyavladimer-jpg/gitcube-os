@@ -1,0 +1,297 @@
+{
+  "state": "D146_SANDBOX_CANDIDATE_ARCHIVE_SCOPE",
+  "result": "D146_SANDBOX_CANDIDATE_ARCHIVE_SCOPE_CREATED",
+  "route": "FIELD_INTENT_SANDBOX_CANDIDATE_ARCHIVE_SCOPE",
+  "ok": true,
+  "decision": "SANDBOX_CANDIDATE_ARCHIVE_SCOPE_READY",
+  "created_at": "2026-05-10T11:38:06.972217+00:00",
+  "archive_id": "d146-6c0e5dd052e0312a",
+  "audit_id": "d145-ed9a25870efefd73",
+  "verification_id": "d144-0edb8418488842cf",
+  "apply_id": "d143-6f2508afb827b120",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d145_report": "reports/d145_sandbox_candidate_final_audit_scope.json",
+  "sandbox_candidate_archive_manifest": {
+    "state": "D146_SANDBOX_CANDIDATE_ARCHIVE_MANIFEST",
+    "ok": true,
+    "archive_id": "d146-6c0e5dd052e0312a",
+    "audit_id": "d145-ed9a25870efefd73",
+    "verification_id": "d144-0edb8418488842cf",
+    "apply_id": "d143-6f2508afb827b120",
+    "run_id": "d139-31fd378826e9997a",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-10T11:38:06.965471+00:00",
+    "archive_mode": "SANDBOX_CANDIDATE_ARCHIVE_MANIFEST_ONLY_NO_CORE_APPLY",
+    "archive_status": "ARCHIVE_MANIFEST_CREATED_NOT_COMPRESSED_NOT_UPLOADED",
+    "archive_items": [
+      {
+        "path": "reports/d139_sandbox_candidate_controlled_execution_run_scope.json",
+        "present": true,
+        "size_bytes": 9782
+      },
+      {
+        "path": "reports/d139_sandbox_candidate_execution_run_result.json",
+        "present": true,
+        "size_bytes": 2040
+      },
+      {
+        "path": "reports/d139_sandbox_candidate_execution_safety_receipt.json",
+        "present": true,
+        "size_bytes": 1658
+      },
+      {
+        "path": "reports/d140_sandbox_candidate_post_execution_verification_scope.json",
+        "present": true,
+        "size_bytes": 7280
+      },
+      {
+        "path": "reports/d140_sandbox_candidate_post_execution_verification_report.json",
+        "present": true,
+        "size_bytes": 1104
+      },
+      {
+        "path": "reports/d140_sandbox_candidate_execution_integrity_receipt.json",
+        "present": true,
+        "size_bytes": 1159
+      },
+      {
+        "path": "reports/d141_sandbox_candidate_apply_preflight_scope.json",
+        "present": true,
+        "size_bytes": 7374
+      },
+      {
+        "path": "reports/d141_sandbox_candidate_apply_preflight_report.json",
+        "present": true,
+        "size_bytes": 1161
+      },
+      {
+        "path": "reports/d141_sandbox_candidate_apply_blockers.json",
+        "present": true,
+        "size_bytes": 1091
+      },
+      {
+        "path": "reports/d142_sandbox_candidate_human_apply_intent_scope.json",
+        "present": true,
+        "size_bytes": 8561
+      },
+      {
+        "path": "reports/d142_sandbox_candidate_human_apply_intent_record.json",
+        "present": true,
+        "size_bytes": 1403
+      },
+      {
+        "path": "reports/d142_sandbox_candidate_apply_authority_guard.json",
+        "present": true,
+        "size_bytes": 1490
+      },
+      {
+        "path": "reports/d143_sandbox_candidate_guarded_apply_scope.json",
+        "present": true,
+        "size_bytes": 8633
+      },
+      {
+        "path": "reports/d143_sandbox_candidate_guarded_apply_plan.json",
+        "present": true,
+        "size_bytes": 1602
+      },
+      {
+        "path": "reports/d143_sandbox_candidate_guarded_apply_receipt.json",
+        "present": true,
+        "size_bytes": 1347
+      },
+      {
+        "path": "reports/d144_sandbox_candidate_post_apply_verification_scope.json",
+        "present": true,
+        "size_bytes": 8129
+      },
+      {
+        "path": "reports/d144_sandbox_candidate_post_apply_verification_report.json",
+        "present": true,
+        "size_bytes": 1273
+      },
+      {
+        "path": "reports/d144_sandbox_candidate_apply_integrity_receipt.json",
+        "present": true,
+        "size_bytes": 1388
+      },
+      {
+        "path": "reports/d145_sandbox_candidate_final_audit_scope.json",
+        "present": true,
+        "size_bytes": 12186
+      },
+      {
+        "path": "reports/d145_sandbox_candidate_final_audit_ledger.json",
+        "present": true,
+        "size_bytes": 4496
+      },
+      {
+        "path": "reports/d145_sandbox_candidate_replay_index.json",
+        "present": true,
+        "size_bytes": 2220
+      }
+    ],
+    "archive_items_total": 21,
+    "archive_items_present": 21,
+    "source_ledger_state": "D145_SANDBOX_CANDIDATE_FINAL_AUDIT_LEDGER",
+    "source_replay_index_state": "D145_SANDBOX_CANDIDATE_REPLAY_INDEX",
+    "candidate_executed_again_now": false,
+    "sandbox_apply_replayed_now": false,
+    "real_apply_executed": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "network_accessed": false,
+    "secret_read": false,
+    "shell_executed_by_ai": false,
+    "git_action_by_ai": false,
+    "human_review_required": true
+  },
+  "sandbox_candidate_chain_closure_receipt": {
+    "state": "D146_SANDBOX_CANDIDATE_CHAIN_CLOSURE_RECEIPT",
+    "ok": true,
+    "archive_id": "d146-6c0e5dd052e0312a",
+    "audit_id": "d145-ed9a25870efefd73",
+    "verification_id": "d144-0edb8418488842cf",
+    "apply_id": "d143-6f2508afb827b120",
+    "run_id": "d139-31fd378826e9997a",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "created_at": "2026-05-10T11:38:06.965506+00:00",
+    "closure_mode": "SANDBOX_CHAIN_CLOSURE_RECEIPT_ONLY_NO_PROMOTION",
+    "closure_status": "SANDBOX_CHAIN_ARCHIVED_READY_FOR_PROMOTION_DECISION",
+    "chain_summary": [
+      "D139 sandbox execution completed",
+      "D140 post execution verified",
+      "D141 apply preflight created",
+      "D142 human apply intent recorded",
+      "D143 sandbox guarded apply evidence created",
+      "D144 post apply verified",
+      "D145 final audit ledger created",
+      "D146 archive manifest created"
+    ],
+    "candidate_executed_again_now": false,
+    "real_core_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "network_accessed": false,
+    "secret_read": false,
+    "shell_executed_by_ai": false,
+    "git_action_by_ai": false,
+    "human_review_required": true
+  },
+  "d147_scope": {
+    "state": "D146_D147_SANDBOX_CANDIDATE_PROMOTION_DECISION_SCOPE",
+    "ok": true,
+    "archive_id": "d146-6c0e5dd052e0312a",
+    "audit_id": "d145-ed9a25870efefd73",
+    "verification_id": "d144-0edb8418488842cf",
+    "apply_id": "d143-6f2508afb827b120",
+    "run_id": "d139-31fd378826e9997a",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-10T11:38:06.965515+00:00",
+    "allowed_next_gate": "D147_SANDBOX_CANDIDATE_PROMOTION_DECISION_SCOPE",
+    "d147_allowed_to_create": [
+      "sandbox_candidate_promotion_decision_scope",
+      "sandbox_candidate_promotion_decision_record",
+      "sandbox_candidate_core_apply_request_or_close_record",
+      "d148_sandbox_candidate_core_apply_request_scope"
+    ],
+    "d147_must_not_execute": [
+      "real_core_apply_by_ai",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "shell_exec_from_ai",
+      "network_call_by_ai",
+      "secret_read_by_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute_by_ai",
+      "restore_execute_by_ai",
+      "candidate_execution_again_by_ai"
+    ],
+    "sandbox_candidate_promotion_decision_scope_only": true,
+    "human_review_required": true,
+    "candidate_executed_after_d146_by_ai": false,
+    "real_apply_allowed_after_d146_by_ai": false,
+    "route_insert_allowed_after_d146_by_ai": false,
+    "protected_core_mutation_allowed_after_d146_by_ai": false,
+    "network_allowed_after_d146_by_ai": false,
+    "secret_read_allowed_after_d146_by_ai": false,
+    "shell_allowed_after_d146_by_ai": false,
+    "git_action_allowed_after_d146_by_ai": false,
+    "required_phrase_for_later_gate": "APPROVE_D147_SANDBOX_CANDIDATE_PROMOTION_DECISION_SCOPE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "shell_executed_by_ai": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "real_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "git_action_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "sandbox_candidate_archive_scope_only": true,
+    "archive_manifest_only": true,
+    "chain_closure_receipt_only": true,
+    "candidate_executed_again_now": false,
+    "sandbox_apply_replayed_now": false,
+    "approval_for_d147_promotion_decision_scope_only": true,
+    "approval_for_real_core_apply_by_ai": false,
+    "approval_for_route_insert_by_ai": false,
+    "approval_for_protected_core_mutation_by_ai": false,
+    "commands_executed_by_ai": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "SANDBOX_CANDIDATE_ARCHIVE_SCOPE_READY",
+    "archive_id": "d146-6c0e5dd052e0312a",
+    "audit_id": "d145-ed9a25870efefd73",
+    "verification_id": "d144-0edb8418488842cf",
+    "apply_id": "d143-6f2508afb827b120",
+    "run_id": "d139-31fd378826e9997a",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "archive_status": "ARCHIVE_MANIFEST_CREATED_NOT_COMPRESSED_NOT_UPLOADED",
+    "chain_closure_status": "SANDBOX_CHAIN_ARCHIVED_READY_FOR_PROMOTION_DECISION",
+    "candidate_status": "MATERIALIZED_EXECUTED_SANDBOX_APPLY_VERIFIED_ARCHIVED_NOT_CORE_APPLIED",
+    "real_provider_status": "NOT_CALLED",
+    "network_status": "NOT_ACCESSED",
+    "secret_status": "NOT_READ",
+    "shell_status": "NOT_EXECUTED",
+    "real_apply_by_ai_status": "BLOCKED",
+    "route_insert_status": "BLOCKED",
+    "protected_core_status": "UNTOUCHED_BY_AI",
+    "approval_scope": "D147_SANDBOX_CANDIDATE_PROMOTION_DECISION_SCOPE_ONLY",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D147_SANDBOX_CANDIDATE_PROMOTION_DECISION_SCOPE"
+  },
+  "success_condition": {
+    "sandbox_candidate_archive_scope_created": true,
+    "sandbox_candidate_archive_manifest_created": true,
+    "sandbox_candidate_chain_closure_receipt_created": true,
+    "d147_scope_created": true,
+    "real_core_apply_executed": false,
+    "route_inserted": false,
+    "protected_core_mutated": false,
+    "candidate_executed_again": false,
+    "next_step": "D147 may create sandbox candidate promotion decision scope only."
+  }
+}
