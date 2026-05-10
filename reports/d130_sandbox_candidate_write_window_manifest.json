@@ -1,0 +1,42 @@
+{
+  "state": "D130_SANDBOX_CANDIDATE_WRITE_WINDOW_MANIFEST",
+  "ok": true,
+  "window_id": "d130-eea71d640dc52681",
+  "runner_id": "d129-f5938d9c6bda27af",
+  "plan_id": "d128-344a0b4f80f6d112",
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T06:02:44.338407+00:00",
+  "manifest_mode": "WRITE_WINDOW_MANIFEST_ONLY_NO_CANDIDATE_WRITE",
+  "write_window_status": "OPENED_FOR_D131_SCOPE_ONLY_NOT_USED",
+  "allowed_candidate_write_root": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/",
+  "planned_candidate_files_for_later_gate": [
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+    "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_payload.json"
+  ],
+  "allowed_report_outputs_for_later_gate": [
+    "reports/d131_sandbox_candidate_write_once_scope.json",
+    "reports/d131_sandbox_candidate_write_once_manifest.json",
+    "reports/d131_sandbox_candidate_materialized_preview.json",
+    "reports/d131_d132_sandbox_candidate_static_validation_scope.json"
+  ],
+  "write_policy": {
+    "write_once_only_after_d131_gate": true,
+    "candidate_root_only": true,
+    "no_overwrite_without_later_gate": true,
+    "no_execution_after_write": true,
+    "no_apply_after_write": true,
+    "human_review_required": true
+  },
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "human_review_required": true
+}
