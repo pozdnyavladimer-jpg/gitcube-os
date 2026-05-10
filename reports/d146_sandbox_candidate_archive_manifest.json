@@ -9,7 +9,7 @@
   "candidate_id": "d126-530d22eac0f859e0",
   "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
   "created_at": "2026-05-10T11:38:06.965471+00:00",
-  "archive_mode": "SANDBOX_CANDIDATE_ARCHIVE_MANIFEST_ONLY_NO_CORE_APPLY",
+  "archive_mode": "ARCHIVE_MANIFEST_ONLY_NOT_COMPRESSED_NOT_UPLOADED",
   "archive_status": "ARCHIVE_MANIFEST_CREATED_NOT_COMPRESSED_NOT_UPLOADED",
   "archive_items": [
     {
@@ -132,5 +132,16 @@
   "secret_read": false,
   "shell_executed_by_ai": false,
   "git_action_by_ai": false,
-  "human_review_required": true
+  "human_review_required": true,
+  "manifest_mode": "ARCHIVE_MANIFEST_ONLY_NOT_COMPRESSED_NOT_UPLOADED",
+  "archive_manifest_mode": "ARCHIVE_MANIFEST_ONLY_NOT_COMPRESSED_NOT_UPLOADED",
+  "mode": "ARCHIVE_MANIFEST_ONLY_NOT_COMPRESSED_NOT_UPLOADED",
+  "archive_manifest_only": true,
+  "compressed": false,
+  "uploaded": false,
+  "archive_compressed": false,
+  "archive_uploaded": false,
+  "shell_from_ai_executed": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false
 }

@@ -28,5 +28,15 @@
   "secret_read": false,
   "shell_executed_by_ai": false,
   "git_action_by_ai": false,
-  "human_review_required": true
+  "human_review_required": true,
+  "real_apply_executed": false,
+  "actual_apply_executed": false,
+  "real_apply_executed_by_ai": false,
+  "actual_apply_executed_by_ai": false,
+  "secret_read_by_ai": false,
+  "shell_from_ai_executed": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false,
+  "sandbox_only": true,
+  "archive_closed_without_real_apply": true
 }
