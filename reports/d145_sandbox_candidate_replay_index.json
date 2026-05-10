@@ -1,0 +1,66 @@
+{
+  "state": "D145_SANDBOX_CANDIDATE_REPLAY_INDEX",
+  "ok": true,
+  "audit_id": "d145-ed9a25870efefd73",
+  "verification_id": "d144-0edb8418488842cf",
+  "apply_id": "d143-6f2508afb827b120",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T11:33:18.737663+00:00",
+  "replay_mode": "REPLAY_INDEX_ONLY_NO_EXECUTION",
+  "replay_order": [
+    "candidate_manifest.json",
+    "candidate_payload.json",
+    "sandbox_execution_result.json",
+    "sandbox_apply_result.json",
+    "d139_execution_scope_report",
+    "d140_post_execution_verification_report",
+    "d143_guarded_apply_report",
+    "d144_post_apply_verification_report"
+  ],
+  "candidate_replay_files": [
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+      "present": true,
+      "digest16": "83432e064abefdf3"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_payload.json",
+      "present": true,
+      "digest16": "7c839b5cff4cda88"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+      "present": true,
+      "digest16": "f38bbb6cd1b96182"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/sandbox_execution_result.json",
+      "present": true,
+      "digest16": "fed89c22ef16b077"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/sandbox_apply_result.json",
+      "present": true,
+      "digest16": "441d06cd03f0e55e"
+    }
+  ],
+  "candidate_replay_files_all_present": true,
+  "replay_status": "INDEX_CREATED_NOT_REPLAYED",
+  "actual_replay_executed": false,
+  "actual_apply_executed": false,
+  "real_core_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_from_ai_executed": false,
+  "shell_executed_by_ai": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false,
+  "git_action_by_ai": false,
+  "candidate_executed_now": false,
+  "candidate_executed_by_ai": false,
+  "human_review_required": true
+}

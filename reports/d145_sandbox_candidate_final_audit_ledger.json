@@ -1,0 +1,139 @@
+{
+  "state": "D145_SANDBOX_CANDIDATE_FINAL_AUDIT_LEDGER",
+  "ok": true,
+  "audit_id": "d145-ed9a25870efefd73",
+  "verification_id": "d144-0edb8418488842cf",
+  "apply_id": "d143-6f2508afb827b120",
+  "run_id": "d139-31fd378826e9997a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T11:33:18.735140+00:00",
+  "ledger_mode": "FINAL_AUDIT_LEDGER_ONLY_NO_EXECUTION_NO_CORE_MUTATION",
+  "audited_range": "D126_D145_SANDBOX_CANDIDATE_CHAIN",
+  "artifact_entries": [
+    {
+      "path": "reports/d126_sandbox_candidate_scope.json",
+      "present": false,
+      "digest16": null
+    },
+    {
+      "path": "reports/d127_sandbox_candidate_human_review_scope.json",
+      "present": true,
+      "digest16": "e69d4bdf9e2fcf36"
+    },
+    {
+      "path": "reports/d128_sandbox_candidate_test_plan_scope.json",
+      "present": true,
+      "digest16": "bab4a1f90e6b8739"
+    },
+    {
+      "path": "reports/d129_sandbox_candidate_dry_test_runner_scope.json",
+      "present": true,
+      "digest16": "3025b3c55cdabb18"
+    },
+    {
+      "path": "reports/d130_sandbox_candidate_write_window_scope.json",
+      "present": true,
+      "digest16": "40a366f01f609a23"
+    },
+    {
+      "path": "reports/d131_sandbox_candidate_write_once_scope.json",
+      "present": true,
+      "digest16": "d2404b5eaaa11355"
+    },
+    {
+      "path": "reports/d132_sandbox_candidate_static_validation_scope.json",
+      "present": true,
+      "digest16": "3cba6ce1eb0f362b"
+    },
+    {
+      "path": "reports/d133_sandbox_candidate_materialization_scope.json",
+      "present": true,
+      "digest16": "deb106b4c32c34e9"
+    },
+    {
+      "path": "reports/d134_sandbox_candidate_write_materialization_scope.json",
+      "present": true,
+      "digest16": "8a3cb90302d5bfae"
+    },
+    {
+      "path": "reports/d135_sandbox_candidate_post_write_validation_scope.json",
+      "present": true,
+      "digest16": "455e3dd8d1e15760"
+    },
+    {
+      "path": "reports/d136_sandbox_candidate_execution_preflight_scope.json",
+      "present": true,
+      "digest16": "1c2947aca0ee6d3e"
+    },
+    {
+      "path": "reports/d137_sandbox_candidate_controlled_execution_scope.json",
+      "present": true,
+      "digest16": "fd60d48efbfca155"
+    },
+    {
+      "path": "reports/d138_sandbox_candidate_human_execution_intent_scope.json",
+      "present": true,
+      "digest16": "ef40ab0478e5e958"
+    },
+    {
+      "path": "reports/d139_sandbox_candidate_controlled_execution_run_scope.json",
+      "present": true,
+      "digest16": "16ae7e4912fe311d"
+    },
+    {
+      "path": "reports/d140_sandbox_candidate_post_execution_verification_scope.json",
+      "present": true,
+      "digest16": "60ced2f255bf8b51"
+    },
+    {
+      "path": "reports/d141_sandbox_candidate_apply_preflight_scope.json",
+      "present": true,
+      "digest16": "5f768c9f0d8801af"
+    },
+    {
+      "path": "reports/d142_sandbox_candidate_human_apply_intent_scope.json",
+      "present": true,
+      "digest16": "93fd55942e3236f8"
+    },
+    {
+      "path": "reports/d143_sandbox_candidate_guarded_apply_scope.json",
+      "present": true,
+      "digest16": "ab30b62b196d4ebf"
+    },
+    {
+      "path": "reports/d144_sandbox_candidate_post_apply_verification_scope.json",
+      "present": true,
+      "digest16": "d4f3016ccbd3bdf3"
+    }
+  ],
+  "artifacts_present_count": 18,
+  "artifacts_total": 19,
+  "post_apply_verification_status": "SANDBOX_APPLY_VERIFIED_NO_CORE_MUTATION",
+  "sandbox_apply_integrity_status": "SANDBOX_APPLY_EVIDENCE_PRESENT_AND_VALIDATED",
+  "candidate_status": "MATERIALIZED_EXECUTED_SANDBOX_APPLY_VERIFIED_FINAL_AUDIT_READY_NOT_CORE_APPLIED",
+  "real_provider_status": "NOT_CALLED",
+  "network_status": "NOT_ACCESSED",
+  "secret_status": "NOT_READ",
+  "shell_status": "NOT_EXECUTED",
+  "real_apply_by_ai_status": "BLOCKED",
+  "route_insert_status": "BLOCKED",
+  "protected_core_status": "UNTOUCHED_BY_AI",
+  "actual_apply_executed": false,
+  "real_apply_executed": false,
+  "real_core_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "canonical_memory_mutated": false,
+  "network_accessed": false,
+  "api_key_read": false,
+  "secret_read": false,
+  "shell_from_ai_executed": false,
+  "shell_executed_by_ai": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false,
+  "git_action_by_ai": false,
+  "candidate_executed_now": false,
+  "candidate_executed_by_ai": false,
+  "human_review_required": true
+}
