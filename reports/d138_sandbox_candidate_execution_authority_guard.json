@@ -5,7 +5,7 @@
   "scope_id": "d137-a261291364a8c4a7",
   "candidate_id": "d126-530d22eac0f859e0",
   "created_at": "2026-05-10T09:03:12.887831+00:00",
-  "guard_mode": "HUMAN_INTENT_REQUIRED_SANDBOX_EXECUTION_ONLY_NO_APPLY",
+  "guard_mode": "SANDBOX_EXECUTION_AUTHORITY_GUARD_ONLY",
   "allowed_after_d138": [
     "create_d139_controlled_execution_run_scope",
     "prepare_sandbox_only_execution_command"
@@ -41,7 +41,7 @@
   "api_key_read": false,
   "secret_read": false,
   "human_review_required": true,
-  "authority_mode": "HUMAN_INTENT_REQUIRED_SANDBOX_EXECUTION_ONLY_NO_APPLY",
+  "authority_mode": "SANDBOX_EXECUTION_AUTHORITY_GUARD_ONLY",
   "preflight_id": "d136-77fbeb7174a0da62",
   "validation_id": "d135-235208e5f40a1ad8",
   "write_materialization_id": "d134-b539ab883022d810",
@@ -52,5 +52,14 @@
   "allow_network": false,
   "allow_secret_read": false,
   "allow_shell_exec": false,
-  "allow_git_action_by_ai": false
+  "allow_git_action_by_ai": false,
+  "network_allowed_after_d138_by_ai": false,
+  "secret_read_allowed_after_d138_by_ai": false,
+  "shell_allowed_after_d138_by_ai": false,
+  "git_action_allowed_after_d138_by_ai": false,
+  "real_apply_allowed_after_d138_by_ai": false,
+  "route_insert_allowed_after_d138_by_ai": false,
+  "protected_core_mutation_allowed_after_d138_by_ai": false,
+  "allowed_next_gate": "D139_SANDBOX_CANDIDATE_CONTROLLED_EXECUTION_RUN_SCOPE",
+  "next_step": "D139_SANDBOX_CANDIDATE_CONTROLLED_EXECUTION_RUN_SCOPE"
 }

@@ -60,5 +60,13 @@
   "network_allowed_after_d138": false,
   "secret_read_allowed_after_d138": false,
   "shell_allowed_after_d138_by_ai": false,
-  "git_action_allowed_after_d138_by_ai": false
+  "git_action_allowed_after_d138_by_ai": false,
+  "allow_real_apply": false,
+  "allow_network": false,
+  "allow_secret_read": false,
+  "allow_shell_exec": false,
+  "allow_git_action_by_ai": false,
+  "network_allowed_after_d138_by_ai": false,
+  "secret_read_allowed_after_d138_by_ai": false,
+  "next_step": "D139_SANDBOX_CANDIDATE_CONTROLLED_EXECUTION_RUN_SCOPE"
 }
