@@ -1,0 +1,210 @@
+{
+  "state": "D128_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE",
+  "result": "D128_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE_CREATED",
+  "route": "FIELD_INTENT_SANDBOX_CANDIDATE_TEST_PLAN_SCOPE",
+  "ok": true,
+  "decision": "SANDBOX_CANDIDATE_TEST_PLAN_SCOPE_READY",
+  "created_at": "2026-05-10T04:38:44.043517+00:00",
+  "plan_id": "d128-344a0b4f80f6d112",
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "intake_id": "d125-164611256079da18",
+  "ping_id": "d124-6c778b3e4a4d72cc",
+  "config_id": "d123-71d67a6645229b69",
+  "dashboard_id": "d122-3004facac59fe539",
+  "adapter_id": "d121-b74d3eb40e948a7b",
+  "seal_id": "d120-96b874c3abcbdbf2",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "source_d127_report": "reports/d127_sandbox_candidate_human_review_scope.json",
+  "sandbox_candidate_test_matrix": {
+    "state": "D128_SANDBOX_CANDIDATE_TEST_MATRIX",
+    "ok": true,
+    "plan_id": "d128-344a0b4f80f6d112",
+    "review_id": "d127-5e67ca70bbbfedc0",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-10T04:38:44.038074+00:00",
+    "matrix_mode": "TEST_PLAN_ONLY_NO_EXECUTION",
+    "candidate_status": "PLANNED_ONLY_NOT_WRITTEN_NOT_EXECUTED",
+    "test_groups": [
+      {
+        "name": "schema_and_manifest_checks",
+        "purpose": "Confirm candidate manifest and summary shape before any candidate write.",
+        "dry_only": true
+      },
+      {
+        "name": "path_boundary_checks",
+        "purpose": "Confirm planned files stay inside allowed sandbox/report/test/doc paths.",
+        "dry_only": true
+      },
+      {
+        "name": "no_touch_assertions",
+        "purpose": "Confirm protected targets remain untouched.",
+        "dry_only": true
+      },
+      {
+        "name": "no_execution_assertions",
+        "purpose": "Confirm no provider/network/shell/apply/git/candidate execution occurs.",
+        "dry_only": true
+      }
+    ],
+    "planned_files_reference": [
+      {
+        "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+        "operation": "create",
+        "purpose": "proposal intake manifest for later human review"
+      },
+      {
+        "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+        "operation": "create",
+        "purpose": "human-readable sandbox candidate summary"
+      }
+    ],
+    "candidate_files_written_now": false,
+    "candidate_executed_now": false,
+    "actual_apply_executed": false,
+    "shell_executed_by_ai": false,
+    "git_action_by_ai": false,
+    "human_review_required": true
+  },
+  "sandbox_candidate_no_touch_assertions": {
+    "state": "D128_SANDBOX_CANDIDATE_NO_TOUCH_ASSERTIONS",
+    "ok": true,
+    "plan_id": "d128-344a0b4f80f6d112",
+    "review_id": "d127-5e67ca70bbbfedc0",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "created_at": "2026-05-10T04:38:44.038101+00:00",
+    "assertion_mode": "NO_TOUCH_ASSERTIONS_ONLY_NO_EXECUTION",
+    "no_touch_targets": [
+      "app/orchestration/",
+      "core/",
+      "runtime/",
+      "bridges/",
+      "memory/"
+    ],
+    "must_remain_false": {
+      "candidate_files_written_now": false,
+      "candidate_executed_now": false,
+      "actual_apply_executed": false,
+      "route_inserted": false,
+      "protected_core_mutated": false,
+      "canonical_memory_mutated": false,
+      "external_ai_called": false,
+      "network_accessed": false,
+      "api_key_read": false,
+      "secret_read": false,
+      "shell_from_ai_executed": false,
+      "git_commit_by_ai": false,
+      "git_push_by_ai": false,
+      "rollback_executed": false,
+      "restore_executed": false
+    },
+    "human_review_required": true
+  },
+  "d129_scope": {
+    "state": "D128_D129_SANDBOX_CANDIDATE_DRY_TEST_RUNNER_SCOPE",
+    "ok": true,
+    "plan_id": "d128-344a0b4f80f6d112",
+    "review_id": "d127-5e67ca70bbbfedc0",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "intake_id": "d125-164611256079da18",
+    "ping_id": "d124-6c778b3e4a4d72cc",
+    "config_id": "d123-71d67a6645229b69",
+    "dashboard_id": "d122-3004facac59fe539",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "created_at": "2026-05-10T04:38:44.038109+00:00",
+    "allowed_next_gate": "D129_SANDBOX_CANDIDATE_DRY_TEST_RUNNER_SCOPE",
+    "d129_allowed_to_create": [
+      "sandbox_candidate_dry_test_runner_scope",
+      "sandbox_candidate_dry_test_results",
+      "sandbox_candidate_integrity_diff_summary",
+      "d130_sandbox_candidate_write_window_scope"
+    ],
+    "d129_must_not_execute": [
+      "execute_sandbox_candidate_by_ai",
+      "commit_sandbox_candidate_by_ai",
+      "real_apply_by_ai",
+      "auto_apply",
+      "route_insert_by_ai",
+      "protected_core_mutation_by_ai",
+      "canonical_memory_overwrite_by_ai",
+      "shell_exec_from_ai",
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "rollback_execute_by_ai",
+      "restore_execute_by_ai"
+    ],
+    "sandbox_candidate_dry_test_runner_scope_only": true,
+    "human_review_required": true,
+    "candidate_written_after_d128": false,
+    "candidate_executed_after_d128_by_ai": false,
+    "real_apply_allowed_after_d128_by_ai": false,
+    "route_insert_allowed_after_d128_by_ai": false,
+    "protected_core_mutation_allowed_after_d128_by_ai": false,
+    "required_phrase_for_later_gate": "APPROVE_D129_SANDBOX_CANDIDATE_DRY_TEST_RUNNER_SCOPE_ONLY"
+  },
+  "guardrails": {
+    "external_ai_called": false,
+    "network_accessed": false,
+    "api_key_read": false,
+    "secret_read": false,
+    "shell_from_ai_executed": false,
+    "runtime_code_mutated": false,
+    "protected_core_mutated": false,
+    "canonical_memory_mutated": false,
+    "actual_apply_executed": false,
+    "route_inserted": false,
+    "git_commit_by_ai": false,
+    "git_push_by_ai": false,
+    "rollback_executed": false,
+    "restore_executed": false,
+    "sandbox_candidate_test_plan_scope_only": true,
+    "test_matrix_only": true,
+    "no_touch_assertions_only": true,
+    "candidate_files_written_now": false,
+    "candidate_executed_now": false,
+    "approval_for_d129_dry_test_runner_scope_only": true,
+    "approval_for_candidate_execution": false,
+    "approval_for_real_apply_by_ai": false,
+    "candidate_execution_allowed_by_ai": false,
+    "commands_executed_by_ai": false
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "summary": {
+    "decision": "SANDBOX_CANDIDATE_TEST_PLAN_SCOPE_READY",
+    "plan_id": "d128-344a0b4f80f6d112",
+    "review_id": "d127-5e67ca70bbbfedc0",
+    "candidate_id": "d126-530d22eac0f859e0",
+    "adapter_id": "d121-b74d3eb40e948a7b",
+    "seal_id": "d120-96b874c3abcbdbf2",
+    "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+    "test_plan_status": "PLAN_CREATED_NOT_RUN",
+    "candidate_status": "PLANNED_ONLY_NOT_WRITTEN_NOT_EXECUTED",
+    "no_touch_status": "ASSERTIONS_CREATED",
+    "real_provider_status": "NOT_CALLED",
+    "network_status": "NOT_ACCESSED",
+    "secret_status": "NOT_READ",
+    "real_apply_by_ai_status": "BLOCKED",
+    "approval_scope": "D129_SANDBOX_CANDIDATE_DRY_TEST_RUNNER_SCOPE_ONLY",
+    "errors_count": 0,
+    "warnings_count": 0,
+    "next_step": "D129_SANDBOX_CANDIDATE_DRY_TEST_RUNNER_SCOPE"
+  },
+  "success_condition": {
+    "sandbox_candidate_test_plan_scope_created": true,
+    "sandbox_candidate_test_matrix_created": true,
+    "sandbox_candidate_no_touch_assertions_created": true,
+    "d129_scope_created": true,
+    "candidate_files_written": false,
+    "candidate_executed_by_ai": false,
+    "actual_apply_executed_by_ai": false,
+    "protected_core_untouched_by_ai": true,
+    "next_step": "D129 may create sandbox candidate dry test runner scope only."
+  }
+}

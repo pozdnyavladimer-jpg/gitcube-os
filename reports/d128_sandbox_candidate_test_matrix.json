@@ -1,0 +1,51 @@
+{
+  "state": "D128_SANDBOX_CANDIDATE_TEST_MATRIX",
+  "ok": true,
+  "plan_id": "d128-344a0b4f80f6d112",
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T04:38:44.038074+00:00",
+  "matrix_mode": "TEST_PLAN_ONLY_NO_EXECUTION",
+  "candidate_status": "PLANNED_ONLY_NOT_WRITTEN_NOT_EXECUTED",
+  "test_groups": [
+    {
+      "name": "schema_and_manifest_checks",
+      "purpose": "Confirm candidate manifest and summary shape before any candidate write.",
+      "dry_only": true
+    },
+    {
+      "name": "path_boundary_checks",
+      "purpose": "Confirm planned files stay inside allowed sandbox/report/test/doc paths.",
+      "dry_only": true
+    },
+    {
+      "name": "no_touch_assertions",
+      "purpose": "Confirm protected targets remain untouched.",
+      "dry_only": true
+    },
+    {
+      "name": "no_execution_assertions",
+      "purpose": "Confirm no provider/network/shell/apply/git/candidate execution occurs.",
+      "dry_only": true
+    }
+  ],
+  "planned_files_reference": [
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_manifest.json",
+      "operation": "create",
+      "purpose": "proposal intake manifest for later human review"
+    },
+    {
+      "path": "runtime_experimental/ai_sandbox_work/d126-530d22eac0f859e0/candidate_summary.md",
+      "operation": "create",
+      "purpose": "human-readable sandbox candidate summary"
+    }
+  ],
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}
