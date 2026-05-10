@@ -1,0 +1,31 @@
+{
+  "state": "D129_SANDBOX_CANDIDATE_INTEGRITY_DIFF_SUMMARY",
+  "ok": true,
+  "runner_id": "d129-f5938d9c6bda27af",
+  "plan_id": "d128-344a0b4f80f6d112",
+  "review_id": "d127-5e67ca70bbbfedc0",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "created_at": "2026-05-10T05:29:23.443281+00:00",
+  "summary_mode": "DECLARED_NO_TOUCH_DIFF_SUMMARY_NO_GIT_DIFF_EXECUTION",
+  "git_diff_executed": false,
+  "filesystem_scan_executed": false,
+  "candidate_files_written_now": false,
+  "candidate_executed_now": false,
+  "actual_apply_executed": false,
+  "protected_targets": [
+    "app/orchestration/",
+    "core/",
+    "runtime/",
+    "bridges/",
+    "memory/"
+  ],
+  "protected_targets_status": {
+    "app/orchestration/": "NO_TOUCH_ASSERTED",
+    "core/": "NO_TOUCH_ASSERTED",
+    "runtime/": "NO_TOUCH_ASSERTED",
+    "bridges/": "NO_TOUCH_ASSERTED",
+    "memory/": "NO_TOUCH_ASSERTED"
+  },
+  "integrity_status": "NO_TOUCH_ASSERTIONS_HELD_BY_SCOPE",
+  "human_review_required": true
+}
