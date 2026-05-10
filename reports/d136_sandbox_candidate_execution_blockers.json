@@ -1,0 +1,28 @@
+{
+  "state": "D136_SANDBOX_CANDIDATE_EXECUTION_BLOCKERS",
+  "ok": true,
+  "preflight_id": "d136-77fbeb7174a0da62",
+  "validation_id": "d135-235208e5f40a1ad8",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "created_at": "2026-05-10T08:00:26.062617+00:00",
+  "blocker_mode": "DECLARE_EXECUTION_BOUNDARIES_NO_EXECUTION",
+  "still_blocked": [
+    "real_apply_by_ai",
+    "auto_apply",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "shell_exec_from_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai",
+    "network_provider_call_by_ai",
+    "secret_read_by_ai"
+  ],
+  "candidate_execution_performed": false,
+  "actual_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "human_review_required": true
+}
