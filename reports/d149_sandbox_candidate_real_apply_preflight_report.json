@@ -1,0 +1,55 @@
+{
+  "state": "D149_SANDBOX_CANDIDATE_REAL_APPLY_PREFLIGHT_REPORT",
+  "ok": true,
+  "preflight_id": "d149-917079ed40006f25",
+  "intent_id": "d148-564e378de31215cb",
+  "decision_id": "d147-635525bf673d2bd2",
+  "archive_id": "d146-6c0e5dd052e0312a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-10T12:03:39.399330+00:00",
+  "preflight_mode": "REAL_APPLY_PREFLIGHT_ONLY_NO_REAL_APPLY",
+  "preflight_status": "REAL_APPLY_PREFLIGHT_CREATED_NO_EXECUTION",
+  "candidate_status": "SANDBOX_CHAIN_READY_FOR_HUMAN_SIGNED_REAL_APPLY_EXECUTION_NOT_CORE_APPLIED",
+  "checks": [
+    {
+      "name": "sandbox_execution_verified",
+      "status": "PASS",
+      "dry_preflight_only": true
+    },
+    {
+      "name": "sandbox_apply_evidence_verified",
+      "status": "PASS",
+      "dry_preflight_only": true
+    },
+    {
+      "name": "final_audit_ledger_present",
+      "status": "PASS",
+      "dry_preflight_only": true
+    },
+    {
+      "name": "archive_scope_present",
+      "status": "PASS",
+      "dry_preflight_only": true
+    },
+    {
+      "name": "human_real_apply_intent_present",
+      "status": "PASS",
+      "dry_preflight_only": true
+    },
+    {
+      "name": "no_core_apply_executed_yet",
+      "status": "PASS",
+      "dry_preflight_only": true
+    }
+  ],
+  "actual_apply_executed": false,
+  "real_apply_executed": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}
