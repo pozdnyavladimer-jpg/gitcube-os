@@ -46,5 +46,9 @@
   "real_apply_allowed_after_d139_by_ai": false,
   "route_insert_allowed_after_d139_by_ai": false,
   "protected_core_mutation_allowed_after_d139_by_ai": false,
-  "required_phrase_for_later_gate": "APPROVE_D140_SANDBOX_CANDIDATE_POST_EXECUTION_VERIFICATION_SCOPE_ONLY"
+  "required_phrase_for_later_gate": "APPROVE_D140_SANDBOX_CANDIDATE_POST_EXECUTION_VERIFICATION_SCOPE_ONLY",
+  "network_allowed_after_d139_by_ai": false,
+  "secret_read_allowed_after_d139_by_ai": false,
+  "shell_allowed_after_d139_by_ai": false,
+  "git_action_allowed_after_d139_by_ai": false
 }
