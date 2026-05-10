@@ -1,0 +1,15 @@
+{
+  "state": "SANDBOX_CANDIDATE_MATERIALIZED_PAYLOAD",
+  "ok": true,
+  "write_materialization_id": "d134-b539ab883022d810",
+  "materialization_id": "d133-00c099b690263c8c",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "payload_mode": "SAFE_SANDBOX_CANDIDATE_PLACEHOLDER_NO_EXECUTION",
+  "candidate_intent": "preserve guarded autonomy chain candidate for later post-write validation",
+  "execution_mode": "NOT_EXECUTED",
+  "apply_mode": "NOT_APPLIED",
+  "route_insert_mode": "BLOCKED",
+  "protected_core_mode": "UNTOUCHED_BY_AI",
+  "next_required_gate": "D135_SANDBOX_CANDIDATE_POST_WRITE_VALIDATION_SCOPE"
+}
