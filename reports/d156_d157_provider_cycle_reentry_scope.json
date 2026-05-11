@@ -1,0 +1,42 @@
+{
+  "state": "D156_D157_PROVIDER_CYCLE_REENTRY_SCOPE",
+  "ok": true,
+  "next_cycle_id": "d156-be5b2085029deabc",
+  "cycle_closure_id": "d155-be4c57f12c07ecc8",
+  "archive2_id": "d154-64c8e87be194b9a5",
+  "audit_id": "d153-4b428927e345fbf7",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-11T08:35:52.790556+00:00",
+  "allowed_next_gate": "D157_PROVIDER_CYCLE_REENTRY_SCOPE",
+  "provider_cycle_reentry_scope_only": true,
+  "fresh_intent_required": true,
+  "human_review_required": true,
+  "d157_allowed_to_create": [
+    "provider_cycle_reentry_scope",
+    "provider_reentry_config_manifest",
+    "provider_reentry_dry_ping_scope",
+    "d158_proposal_cycle_reentry_intake_scope"
+  ],
+  "d157_must_not_execute": [
+    "real_provider_call",
+    "real_core_apply",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "shell_exec_from_ai",
+    "network_call_by_ai",
+    "secret_read_by_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai"
+  ],
+  "real_apply_allowed_after_d156_by_ai": false,
+  "route_insert_allowed_after_d156_by_ai": false,
+  "protected_core_mutation_allowed_after_d156_by_ai": false,
+  "network_allowed_after_d156_by_ai": false,
+  "secret_read_allowed_after_d156_by_ai": false,
+  "shell_allowed_after_d156_by_ai": false,
+  "git_action_allowed_after_d156_by_ai": false
+}
