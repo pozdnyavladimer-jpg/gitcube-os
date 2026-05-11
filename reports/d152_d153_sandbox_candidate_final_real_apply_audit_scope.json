@@ -1,0 +1,43 @@
+{
+  "state": "D152_D153_SANDBOX_CANDIDATE_FINAL_REAL_APPLY_AUDIT_SCOPE",
+  "ok": true,
+  "verification_id": "d152-7c279390fb6b9cb8",
+  "run_apply_id": "d151-a5de846256bafd79",
+  "signature_id": "d150-f24ca5b4fd5e326e",
+  "preflight_id": "d149-917079ed40006f25",
+  "intent_id": "d148-564e378de31215cb",
+  "decision_id": "d147-635525bf673d2bd2",
+  "archive_id": "d146-6c0e5dd052e0312a",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-11T06:17:01.668126+00:00",
+  "allowed_next_gate": "D153_SANDBOX_CANDIDATE_FINAL_REAL_APPLY_AUDIT_SCOPE",
+  "sandbox_candidate_final_real_apply_audit_scope_only": true,
+  "human_review_required": true,
+  "d153_allowed_to_create": [
+    "final_real_apply_audit_scope",
+    "real_apply_audit_ledger",
+    "real_apply_replay_index",
+    "d154_real_apply_chain_archive_scope"
+  ],
+  "d153_must_not_execute": [
+    "real_core_apply_again",
+    "route_insert_by_ai",
+    "protected_core_mutation_by_ai",
+    "canonical_memory_overwrite_by_ai",
+    "shell_exec_from_ai",
+    "network_call_by_ai",
+    "secret_read_by_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "rollback_execute_by_ai",
+    "restore_execute_by_ai"
+  ],
+  "real_apply_allowed_after_d152_by_ai": false,
+  "route_insert_allowed_after_d152_by_ai": false,
+  "protected_core_mutation_allowed_after_d152_by_ai": false,
+  "network_allowed_after_d152_by_ai": false,
+  "secret_read_allowed_after_d152_by_ai": false,
+  "shell_allowed_after_d152_by_ai": false,
+  "git_action_allowed_after_d152_by_ai": false
+}
