@@ -1,0 +1,30 @@
+{
+  "state": "D153_SANDBOX_CANDIDATE_REAL_APPLY_REPLAY_INDEX",
+  "ok": true,
+  "audit_id": "d153-4b428927e345fbf7",
+  "verification_id": "d152-7c279390fb6b9cb8",
+  "run_apply_id": "d151-a5de846256bafd79",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-11T06:36:52.533274+00:00",
+  "replay_index_mode": "REAL_APPLY_REPLAY_INDEX_ONLY_NO_EXECUTION",
+  "replay_status": "REAL_APPLY_CHAIN_REPLAY_INDEX_CREATED_NO_EXECUTION",
+  "replay_sources": [
+    "reports/d147_sandbox_candidate_promotion_decision_scope.json",
+    "reports/d148_sandbox_candidate_human_real_apply_intent_scope.json",
+    "reports/d149_sandbox_candidate_guarded_real_apply_preflight_scope.json",
+    "reports/d150_sandbox_candidate_human_signed_real_apply_execution_scope.json",
+    "reports/d151_sandbox_candidate_guarded_real_apply_run_scope.json",
+    "reports/d152_sandbox_candidate_post_real_apply_verification_scope.json"
+  ],
+  "replay_executes_anything": false,
+  "actual_apply_executed_by_ai": false,
+  "real_apply_executed_by_ai": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "human_review_required": true
+}
