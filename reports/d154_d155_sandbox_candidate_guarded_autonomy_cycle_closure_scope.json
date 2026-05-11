@@ -1,0 +1,27 @@
+{
+  "state": "D154_D155_SANDBOX_CANDIDATE_GUARDED_AUTONOMY_CYCLE_CLOSURE_SCOPE",
+  "ok": true,
+  "archive2_id": "d154-64c8e87be194b9a5",
+  "audit_id": "d153-4b428927e345fbf7",
+  "verification_id": "d152-7c279390fb6b9cb8",
+  "run_apply_id": "d151-a5de846256bafd79",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-11T07:06:44.062969+00:00",
+  "allowed_next_gate": "D155_SANDBOX_CANDIDATE_GUARDED_AUTONOMY_CYCLE_CLOSURE_SCOPE",
+  "sandbox_candidate_guarded_autonomy_cycle_closure_scope_only": true,
+  "human_review_required": true,
+  "d155_allowed_to_create": [
+    "guarded_autonomy_cycle_closure_scope",
+    "guarded_autonomy_cycle_closure_report",
+    "guarded_autonomy_cycle_replay_index",
+    "d156_controlled_autonomy_next_cycle_intake_scope"
+  ],
+  "real_apply_allowed_after_d154_by_ai": false,
+  "route_insert_allowed_after_d154_by_ai": false,
+  "protected_core_mutation_allowed_after_d154_by_ai": false,
+  "network_allowed_after_d154_by_ai": false,
+  "secret_read_allowed_after_d154_by_ai": false,
+  "shell_allowed_after_d154_by_ai": false,
+  "git_action_allowed_after_d154_by_ai": false
+}
