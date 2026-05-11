@@ -1,0 +1,22 @@
+{
+  "state": "D157_PROVIDER_REENTRY_DRY_PING_SCOPE",
+  "ok": true,
+  "reentry_id": "d157-b721ce7b70eab8e2",
+  "next_cycle_id": "d156-be5b2085029deabc",
+  "candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-11T09:02:02.837035+00:00",
+  "dry_ping_mode": "PROVIDER_REENTRY_DRY_PING_SCOPE_ONLY_NO_NETWORK",
+  "dry_ping_status": "DRY_PING_SCOPE_CREATED_PROVIDER_NOT_CALLED",
+  "dry_ping_executes_provider": false,
+  "real_provider_call_performed": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "git_action_by_ai": false,
+  "actual_apply_executed_by_ai": false,
+  "real_apply_executed_by_ai": false,
+  "route_inserted": false,
+  "protected_core_mutated": false,
+  "human_review_required": true
+}
