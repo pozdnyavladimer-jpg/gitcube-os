@@ -1,0 +1,59 @@
+{
+  "state": "D158_CANONICAL_GUARD_SCHEMA",
+  "ok": true,
+  "schema_status": "CANONICAL_GUARD_SCHEMA_CREATED_FOR_D158_PLUS",
+  "normalization_rule": "MISSING_SAFE_ALIASES_NORMALIZE_TO_FALSE_DANGEROUS_TRUE_FLAGS_BLOCK",
+  "canonical_false_flags": [
+    "external_ai_called",
+    "network_accessed",
+    "api_key_read",
+    "secret_read",
+    "shell_from_ai_executed",
+    "shell_executed_by_ai",
+    "runtime_code_mutated",
+    "protected_core_mutated",
+    "protected_core_mutated_by_ai",
+    "canonical_memory_mutated",
+    "actual_apply_executed",
+    "actual_apply_executed_by_ai",
+    "real_apply_executed_by_ai",
+    "route_inserted",
+    "route_inserted_by_ai",
+    "git_commit_by_ai",
+    "git_push_by_ai",
+    "git_action_by_ai",
+    "rollback_executed",
+    "restore_executed"
+  ],
+  "safe_alias_groups": {
+    "shell": [
+      "shell_from_ai_executed",
+      "shell_executed_by_ai"
+    ],
+    "git": [
+      "git_commit_by_ai",
+      "git_push_by_ai",
+      "git_action_by_ai"
+    ],
+    "route": [
+      "route_inserted",
+      "route_inserted_by_ai"
+    ],
+    "protected_core": [
+      "protected_core_mutated",
+      "protected_core_mutated_by_ai"
+    ],
+    "apply": [
+      "actual_apply_executed",
+      "actual_apply_executed_by_ai",
+      "real_apply_executed_by_ai"
+    ],
+    "network": [
+      "network_accessed"
+    ],
+    "secret": [
+      "secret_read",
+      "api_key_read"
+    ]
+  }
+}
