@@ -1,0 +1,79 @@
+{
+  "state": "D161_SANDBOX_CANDIDATE_REENTRY_TEST_MATRIX",
+  "ok": true,
+  "plan_id": "d161-fe5b50d03920381d",
+  "review_id": "d160-bbaab8bd284cb7a4",
+  "scope_id": "d159-9842494c87a48659",
+  "intake_id": "d158-db1a8d10379e0353",
+  "reentry_id": "d157-b721ce7b70eab8e2",
+  "next_cycle_id": "d156-be5b2085029deabc",
+  "cycle_closure_id": "d155-be4c57f12c07ecc8",
+  "previous_candidate_id": "d126-530d22eac0f859e0",
+  "proposal_id": "d107-valid-proposal-acc04e9b955f128f",
+  "created_at": "2026-05-19T10:58:24.664480+00:00",
+  "test_matrix_status": "TEST_MATRIX_CREATED_DRY_PLAN_ONLY_NO_CANDIDATE_EXECUTION",
+  "canonical_guard_schema_applied": true,
+  "fresh_intent_required": true,
+  "provider_response_required_before_candidate": true,
+  "human_review_required": true,
+  "candidate_payload_available": false,
+  "candidate_payload_written": false,
+  "candidate_files_created": false,
+  "candidate_execution_requested": false,
+  "candidate_executed": false,
+  "apply_requested": false,
+  "apply_executed": false,
+  "dry_test_plan_only": true,
+  "test_items": [
+    {
+      "id": "D161-T1",
+      "name": "validate canonical guard schema presence",
+      "kind": "schema",
+      "must_not_execute_candidate": true
+    },
+    {
+      "id": "D161-T2",
+      "name": "assert provider response is still not ingested",
+      "kind": "status",
+      "must_not_call_provider": true
+    },
+    {
+      "id": "D161-T3",
+      "name": "assert candidate payload is still not written",
+      "kind": "safety",
+      "must_not_write_candidate_payload": true
+    },
+    {
+      "id": "D161-T4",
+      "name": "assert no apply route exists",
+      "kind": "guard",
+      "must_not_apply": true
+    },
+    {
+      "id": "D161-T5",
+      "name": "assert no shell/network/secret/git action by AI",
+      "kind": "no_touch",
+      "must_not_touch_external_surfaces": true
+    }
+  ],
+  "shell_from_ai_executed": false,
+  "shell_executed_by_ai": false,
+  "git_commit_by_ai": false,
+  "git_push_by_ai": false,
+  "git_action_by_ai": false,
+  "route_inserted": false,
+  "route_inserted_by_ai": false,
+  "protected_core_mutated": false,
+  "protected_core_mutated_by_ai": false,
+  "actual_apply_executed": false,
+  "actual_apply_executed_by_ai": false,
+  "real_apply_executed_by_ai": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "api_key_read": false,
+  "external_ai_called": false,
+  "runtime_code_mutated": false,
+  "canonical_memory_mutated": false,
+  "rollback_executed": false,
+  "restore_executed": false
+}
