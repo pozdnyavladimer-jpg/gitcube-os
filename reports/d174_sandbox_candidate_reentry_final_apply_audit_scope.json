@@ -268,7 +268,8 @@
     "apply_executed": false,
     "real_provider_call_performed": false,
     "provider_response_ingested": false,
-    "provider_response_captured": false
+    "provider_response_captured": false,
+    "real_apply_allowed": false
   },
   "validation": {
     "ok": true,
@@ -318,5 +319,32 @@
     "route_inserted_by_ai": false,
     "protected_core_mutated_by_ai": false,
     "next_step": "D175 may create chain archive scope only."
-  }
+  },
+  "candidate_apply_executed": false,
+  "candidate_apply_executed_by_ai": false,
+  "real_provider_call_performed": false,
+  "provider_response_ingested": false,
+  "provider_response_captured": false,
+  "apply_requested": false,
+  "apply_executed": false,
+  "real_apply_allowed": false,
+  "real_apply_executed": false,
+  "actual_apply_executed": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "actual_apply_executed_by_ai": false,
+  "real_apply_executed_by_ai": false,
+  "route_inserted": false,
+  "route_inserted_by_ai": false,
+  "protected_core_mutated": false,
+  "protected_core_mutated_by_ai": false,
+  "git_action_by_ai": false,
+  "real_apply_allowed_after_d174_by_ai": false,
+  "route_insert_allowed_after_d174_by_ai": false,
+  "protected_core_mutation_allowed_after_d174_by_ai": false,
+  "network_allowed_after_d174_by_ai": false,
+  "secret_read_allowed_after_d174_by_ai": false,
+  "shell_allowed_after_d174_by_ai": false,
+  "git_action_allowed_after_d174_by_ai": false
 }

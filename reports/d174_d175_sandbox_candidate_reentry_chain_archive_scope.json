@@ -63,5 +63,23 @@
     "git_push_by_ai",
     "rollback_execute_by_ai",
     "restore_execute_by_ai"
-  ]
+  ],
+  "real_provider_call_performed": false,
+  "provider_response_ingested": false,
+  "provider_response_captured": false,
+  "apply_requested": false,
+  "apply_executed": false,
+  "real_apply_allowed": false,
+  "real_apply_executed": false,
+  "actual_apply_executed": false,
+  "network_accessed": false,
+  "secret_read": false,
+  "shell_executed_by_ai": false,
+  "actual_apply_executed_by_ai": false,
+  "real_apply_executed_by_ai": false,
+  "route_inserted": false,
+  "route_inserted_by_ai": false,
+  "protected_core_mutated": false,
+  "protected_core_mutated_by_ai": false,
+  "git_action_by_ai": false
 }

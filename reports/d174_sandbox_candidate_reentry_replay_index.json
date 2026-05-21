@@ -70,5 +70,13 @@
   "apply_executed": false,
   "real_provider_call_performed": false,
   "provider_response_ingested": false,
-  "provider_response_captured": false
+  "provider_response_captured": false,
+  "real_apply_allowed": false,
+  "real_apply_allowed_after_d174_by_ai": false,
+  "route_insert_allowed_after_d174_by_ai": false,
+  "protected_core_mutation_allowed_after_d174_by_ai": false,
+  "network_allowed_after_d174_by_ai": false,
+  "secret_read_allowed_after_d174_by_ai": false,
+  "shell_allowed_after_d174_by_ai": false,
+  "git_action_allowed_after_d174_by_ai": false
 }
