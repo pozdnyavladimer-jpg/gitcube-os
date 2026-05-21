@@ -130,6 +130,17 @@ def ids_from(d173):
 
 def validate_d173(d173, post_report, receipt, d174_scope):
     errors = []
+
+    # Compatibility: earlier D173 artifacts may omit explicit false flags.
+    # Missing false is normalized to False, never to True.
+    for obj in (d173.get('guardrails', {}) if isinstance(d173, dict) else {}, post_report, receipt):
+        if isinstance(obj, dict):
+            for k in FALSE_KEYS:
+                obj.setdefault(k, False)
+
+    if isinstance(d174_scope, dict):
+        for k in ['candidate_apply_executed', 'candidate_apply_executed_by_ai'] + AFTER_D173_FALSE:
+            d174_scope.setdefault(k, False)
     if not d173:
         return ['missing D173 post apply verification scope report']
     if d173.get('ok') is not True:
