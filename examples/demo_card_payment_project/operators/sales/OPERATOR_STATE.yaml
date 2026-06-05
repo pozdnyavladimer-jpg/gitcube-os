@@ -1,0 +1,14 @@
+operator_id: sales_operator
+project_id: card_payment_feature
+role: sales
+current_color: ORANGE
+current_octave: 3
+
+current_documents:
+  - CURRENT_DOCUMENTS/customer_request.md
+  - CURRENT_DOCUMENTS/commercial_offer.md
+
+gates:
+  - sales_customer_request_gate
+
+verdict: PASS_TO_FINANCE
