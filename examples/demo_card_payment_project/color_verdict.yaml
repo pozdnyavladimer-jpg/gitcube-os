@@ -28,6 +28,11 @@ checked_layers:
       - audit_memory_gate
       - support_payment_failure_gate
 
+required_operators:
+  - audit_operator
+  - finance_operator
+  - support_operator
+
 verdict: HOLD
 
 required_action:
