@@ -1,0 +1,15 @@
+operator_id: support_operator
+project_id: card_payment_feature
+role: support
+current_color: BLACK
+current_octave: 6
+
+current_documents: []
+
+missing_documents:
+  - CURRENT_DOCUMENTS/payment_failure_support_note.md
+
+gates:
+  - support_payment_failure_gate
+
+verdict: HOLD
