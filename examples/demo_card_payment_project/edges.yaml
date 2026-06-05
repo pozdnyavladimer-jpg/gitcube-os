@@ -1,0 +1,32 @@
+project_id: card_payment_feature
+
+required_edges:
+  - id: payment_success_to_order
+    from_operator: dev_operator
+    to_operator: sales_operator
+    required_document: order_payment_status.md
+    status: CONFIRMED
+
+  - id: payment_success_to_finance
+    from_operator: dev_operator
+    to_operator: finance_operator
+    required_document: payment_success_accounting_event.md
+    status: MISSING
+
+  - id: payment_success_to_audit
+    from_operator: dev_operator
+    to_operator: audit_operator
+    required_document: payment_memory_rule.md
+    status: MISSING
+
+  - id: payment_failure_to_support
+    from_operator: dev_operator
+    to_operator: support_operator
+    required_document: payment_failure_support_note.md
+    status: MISSING
+
+  - id: payment_refund_to_finance
+    from_operator: dev_operator
+    to_operator: finance_operator
+    required_document: refund_policy_for_payment.md
+    status: MISSING
