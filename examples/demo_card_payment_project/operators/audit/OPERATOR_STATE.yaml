@@ -1,0 +1,15 @@
+operator_id: audit_operator
+project_id: card_payment_feature
+role: audit
+current_color: VIOLET
+current_octave: 9
+
+current_documents: []
+
+missing_documents:
+  - CURRENT_DOCUMENTS/payment_memory_rule.md
+
+gates:
+  - audit_memory_gate
+
+verdict: HOLD
