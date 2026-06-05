@@ -1,0 +1,22 @@
+project_id: card_payment_feature
+
+gates:
+  finance_payment_terms_gate:
+    owner: finance_operator
+    status: OPEN
+    required_document: payment_terms_confirmation.md
+
+  audit_memory_gate:
+    owner: audit_operator
+    status: OPEN
+    required_document: payment_memory_rule.md
+
+  support_payment_failure_gate:
+    owner: support_operator
+    status: OPEN
+    required_document: payment_failure_support_note.md
+
+  dev_local_implementation_gate:
+    owner: dev_operator
+    status: CLOSED
+    required_document: ui_payment_task.md
