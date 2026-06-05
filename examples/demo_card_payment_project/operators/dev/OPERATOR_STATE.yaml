@@ -1,0 +1,14 @@
+operator_id: dev_operator
+project_id: card_payment_feature
+role: development
+current_color: YELLOW
+current_octave: 3
+
+current_documents:
+  - CURRENT_DOCUMENTS/ui_payment_task.md
+  - CURRENT_DOCUMENTS/payment_provider_draft.md
+
+gates:
+  - dev_local_implementation_gate
+
+verdict: DRAFT_ALLOWED_COMMIT_BLOCKED
