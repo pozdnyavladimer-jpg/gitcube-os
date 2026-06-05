@@ -1,0 +1,38 @@
+project_id: card_payment_feature
+customer_request: "Add card payment to the website."
+
+visible_color: GREEN
+suspected_true_state: YELLOW_BLUE_INCOMPLETE
+false_green_risk: true
+
+checked_layers:
+  three_v_signal:
+    status: PRESENT
+    evidence:
+      - customer_request
+      - ui_payment_task
+      - payment_button_possible
+
+  six_v_route:
+    status: INCOMPLETE
+    missing_edges:
+      - payment_success_to_finance
+      - payment_success_to_audit
+      - payment_failure_to_support
+      - payment_refund_to_finance
+
+  nine_v_gate:
+    status: INCOMPLETE
+    missing_gates:
+      - finance_payment_terms_gate
+      - audit_memory_gate
+      - support_payment_failure_gate
+
+verdict: HOLD
+
+required_action:
+  - create_missing_document_edges
+  - request_operator_gates
+  - define_refund_rollback
+  - add_contact_coverage_test
+  - record_memory_atom
