@@ -1,0 +1,18 @@
+operator_id: finance_operator
+project_id: card_payment_feature
+role: finance
+current_color: BLUE
+current_octave: 5
+
+current_documents:
+  - CURRENT_DOCUMENTS/invoice.md
+
+missing_documents:
+  - CURRENT_DOCUMENTS/payment_terms_confirmation.md
+  - CURRENT_DOCUMENTS/payment_success_accounting_event.md
+
+gates:
+  - finance_payment_terms_gate
+  - accounting_record_check
+
+verdict: HOLD
