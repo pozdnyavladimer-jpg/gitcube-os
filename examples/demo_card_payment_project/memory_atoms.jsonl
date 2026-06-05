@@ -1,0 +1,1 @@
+{"memory_atom_id":"mem_card_payment_001","project_id":"card_payment_feature","customer_request":"Add card payment to the website.","visible_color":"GREEN","suspected_true_state":"YELLOW_BLUE_INCOMPLETE","false_green_risk":true,"verdict":"HOLD","reason":"The visible UI flow can be drafted, but finance, audit, support, and refund document edges are missing."}
